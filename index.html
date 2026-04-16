@@ -809,8 +809,7 @@
 
   <div class="ship-banner">
     <div>5-Pack · <span>$21</span></div>
-    <div>Shipping · <span>$5 (1–9 packs) · $8 (10+ packs)</span></div>
-    <div>Large orders · <span>Custom rate</span></div>
+    <div>Shipping · <span>$5 (1–9 packs) · $7 (10–15 packs) · $11 (16+ packs)</span></div>
     <div>Local pickup · <span>Available</span></div>
   </div>
 
@@ -1215,9 +1214,9 @@ function calcShipping() {
   if (cart.length === 0) return { cost: 0, label: "Add flies to see shipping cost" };
   if (orderFulfillment === 'pickup') return { cost: 0, label: "📍 Local Pickup — No shipping charge" };
   const totalPacks = cart.reduce((s,i)=>s+i.qty, 0);
-  if (totalPacks >= 10) return { cost: null, label: "⚠ Large order — Custom shipping rate will be quoted" };
-  const cost = totalPacks >= 10 ? 8 : 5;
-  return { cost, label: `📦 USPS Tracked Shipping · $${cost}` };
+  if (totalPacks >= 16) return { cost: 11, label: `📦 USPS Tracked Shipping · $11 (large order)` };
+  if (totalPacks >= 10) return { cost: 7, label: `📦 USPS Tracked Shipping · $7` };
+  return { cost: 5, label: `📦 USPS Tracked Shipping · $5` };
 }
 
 function updateCartUI() {
@@ -1281,8 +1280,9 @@ let currentOrderSummaryText = '';
 function buildOrderSummary() {
   const flyTotal = cart.reduce((s,i)=>s+i.fly.price*i.qty, 0);
   const { cost } = calcShipping();
-  const grandTotal = flyTotal + (cost??0);
   const isPickup = orderFulfillment === 'pickup';
+  const shippingCost = isPickup ? 0 : (cost ?? 0);
+  const grandTotal = flyTotal + shippingCost;
 
   let lines = cart.map(item=>`
     <div class="order-line">
@@ -1291,16 +1291,13 @@ function buildOrderSummary() {
     </div>
   `).join("");
 
-  if (!isPickup) {
-    if (cost === null) {
-      lines += `<div class="order-line shipping"><span>Shipping — Large order (to be quoted)</span><span class="price">TBD</span></div>`;
-    } else {
-      lines += `<div class="order-line shipping"><span>Shipping · USPS Tracked</span><span class="price">$${cost.toFixed(2)}</span></div>`;
-    }
-  } else {
+  if (isPickup) {
     lines += `<div class="order-line shipping"><span>📍 Local Pickup</span><span class="price">FREE</span></div>`;
+  } else {
+    lines += `<div class="order-line shipping"><span>Shipping · USPS Tracked</span><span class="price">$${cost.toFixed(2)}</span></div>`;
   }
-  lines += `<div class="order-total-line"><span>Order Total</span><span>$${grandTotal.toFixed(2)}${cost===null&&!isPickup?" + shipping":""}</span></div>`;
+
+  lines += `<div class="order-total-line"><span>Order Total</span><span>$${grandTotal.toFixed(2)}</span></div>`;
   document.getElementById("orderSummary").innerHTML = lines;
 
   // Rebuild plain text for email
@@ -1309,8 +1306,8 @@ function buildOrderSummary() {
   ).join("\n");
   const fulfillmentLine = isPickup ? "\n  Fulfillment: LOCAL PICKUP" : "";
   currentOrderSummaryText = itemLines + fulfillmentLine + "\n\n  Subtotal: $" + flyTotal.toFixed(2) +
-    (isPickup ? "\n  Shipping: FREE (pickup)" : cost !== null ? "\n  Shipping: $" + cost.toFixed(2) : "\n  Shipping: TBD (large order)") +
-    "\n  TOTAL: $" + grandTotal.toFixed(2) + (cost===null&&!isPickup?" + shipping":"");
+    (isPickup ? "\n  Shipping: FREE (pickup)" : "\n  Shipping: $" + cost.toFixed(2)) +
+    "\n  TOTAL: $" + grandTotal.toFixed(2);
 }
 
 function goCheckout() {
