@@ -1503,6 +1503,85 @@
     text-transform: uppercase;
   }
   footer span { color: var(--red); }
+
+  /* AFFILIATES PAGE */
+  .affiliates-page {
+    max-width: 800px;
+    margin: 48px auto;
+    padding: 0 20px 60px;
+  }
+  .affiliates-page h2 {
+    font-family: 'Bebas Neue', Impact, sans-serif;
+    font-size: 2.2rem;
+    letter-spacing: 0.08em;
+    color: #fff;
+    margin-bottom: 6px;
+  }
+  .affiliates-intro {
+    font-size: 0.95rem;
+    color: var(--gray);
+    margin-bottom: 36px;
+    font-style: italic;
+  }
+  .affiliate-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 24px;
+  }
+  .affiliate-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+  }
+  .affiliate-card-img {
+    padding: 24px 24px 0;
+  }
+  .affiliate-card-img img {
+    display: block;
+    max-width: 100%;
+    border-radius: 6px;
+    margin: 0 auto;
+  }
+  .affiliate-card-body {
+    padding: 20px 24px 24px;
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    gap: 14px;
+  }
+  .affiliate-card-name {
+    font-family: 'Bebas Neue', Impact, sans-serif;
+    font-size: 1.5rem;
+    letter-spacing: 0.06em;
+    color: #fff;
+  }
+  .affiliate-card-desc {
+    font-size: 0.9rem;
+    color: #bbb;
+    line-height: 1.55;
+    flex: 1;
+  }
+  .affiliate-btn {
+    display: inline-block;
+    background: var(--red);
+    color: #fff;
+    border: 2px solid #ff6b5b;
+    border-radius: 4px;
+    padding: 11px 22px;
+    font-family: 'Barlow Condensed', Impact, sans-serif;
+    font-size: 1rem;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    text-decoration: none;
+    text-align: center;
+    box-shadow: 0 0 12px rgba(192,57,43,0.55);
+    transition: background 0.2s;
+  }
+  .affiliate-btn:hover { background: var(--red-bright); }
 </style>
 </head>
 <body>
@@ -1517,6 +1596,7 @@
     <button class="nav-btn" id="nav-blog" onclick="showPage('blog')">Blog</button>
     <button class="nav-btn" id="nav-about" onclick="showPage('about')">About</button>
     <button class="nav-btn" id="nav-contact" onclick="showPage('contact')">Contact</button>
+    <button class="nav-btn" id="nav-affiliates" onclick="showPage('affiliates')">Affiliates</button>
   </nav>
   <button class="cart-btn" onclick="openCart()">
     🪝 Cart <span class="cart-count" id="cartCount">0</span>
@@ -2532,6 +2612,36 @@
   <button class="lightbox-close" onclick="closeLightbox()">✕</button>
   <img id="lightboxImg" src="" alt="">
   <div class="lightbox-name" id="lightboxName"></div>
+</div>
+
+<div id="page-affiliates" class="page">
+  <div class="hero" style="padding:36px 20px 28px;">
+    <div class="hero-tag">Gear We Trust</div>
+    <h1 style="font-size:clamp(2rem,8vw,4.5rem);">GEAR WE <span>TRUST</span></h1>
+    <div class="hero-divider"></div>
+  </div>
+
+  <div class="affiliates-page">
+    <p class="affiliates-intro">Products we personally use and trust on the water — every item listed here has earned a spot in our kit.</p>
+
+    <div class="affiliate-grid">
+
+      <!-- Bloop Beads -->
+      <div class="affiliate-card">
+        <div class="affiliate-card-img">
+          <img src="bloop-beads.png" alt="Bloop Beads tungsten fly tying beads">
+        </div>
+        <div class="affiliate-card-body">
+          <div class="affiliate-card-name">Bloop Beads</div>
+          <p class="affiliate-card-desc">High quality tungsten beads — the exact beads we use tying your flies. Built for fly tiers who don't cut corners.</p>
+          <a class="affiliate-btn" href="https://www.bloopbeadco.com/referral/rPsFB0Ch9L48?utm_source=referral_program" target="_blank" rel="noopener noreferrer">Shop Bloop Beads</a>
+        </div>
+      </div>
+
+      <!-- More affiliate cards go here -->
+
+    </div>
+  </div>
 </div>
 
 <div class="toast" id="toast"></div>
