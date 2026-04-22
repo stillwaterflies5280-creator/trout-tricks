@@ -181,6 +181,13 @@
   .nav-btn:hover { color: #fff; background: #2a2a2a; }
   .nav-btn.active { color: var(--red); }
   .nav-overlay { display: none; }
+  .nav-more { position:relative; display:inline-block; }
+  .nav-more-btn { text-decoration:none; }
+  .nav-more-dropdown { display:none; position:absolute; top:calc(100% + 6px); right:0; background:#1a1a1a; border:1px solid #333; border-radius:4px; z-index:150; min-width:140px; box-shadow:0 4px 16px rgba(0,0,0,0.5); }
+  .nav-more-dropdown.open { display:block; }
+  .nav-more-item { display:block; width:100%; padding:10px 16px; color:#aaa; text-decoration:none; font-family:'Barlow Condensed',Impact,sans-serif; font-size:0.82rem; font-weight:700; letter-spacing:0.08em; text-transform:uppercase; white-space:nowrap; box-sizing:border-box; }
+  .nav-more-item:hover { color:#fff; background:#2a2a2a; }
+  .nav-more-item.active { color:var(--red); }
 
   /* PAGES */
   .page { display: none; }
@@ -1595,11 +1602,16 @@
     <a class="nav-btn" href="index.html">The Flies</a>
     <a class="nav-btn active" href="fish.html">The Fish</a>
     <a class="nav-btn" href="https://www.teamwildoutdoor.com/" target="_blank" rel="noopener">Book a Trip</a>
-    <a class="nav-btn" href="community.html">Community</a>
-    <a class="nav-btn" href="blog.html">Blog</a>
     <a class="nav-btn" href="about.html">About</a>
     <a class="nav-btn" href="contact.html">Contact</a>
-    <a class="nav-btn" href="affiliates.html">Affiliates</a>
+    <div class="nav-more">
+      <button class="nav-btn nav-more-btn" id="moreBtn" onclick="toggleMoreMenu(event)">More &#9662;</button>
+      <div class="nav-more-dropdown" id="moreDropdown">
+        <a class="nav-more-item" href="blog.html">Blog</a>
+        <a class="nav-more-item" href="community.html">Community</a>
+        <a class="nav-more-item" href="affiliates.html">Affiliates</a>
+      </div>
+    </div>
   </nav>
   <button class="cart-btn" onclick="openCart()">
     🪹 Cart <span class="cart-count" id="cartCount">0</span>
