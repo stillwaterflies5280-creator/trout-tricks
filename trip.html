@@ -1154,7 +1154,7 @@
   @media (max-width: 480px) {
     header { padding: 0 12px; gap: 6px; }
     .logo { font-size: 1.4rem; }
-    .nav-btn { font-size: 1rem; }
+    .nav-btn { font-size: 0.68rem; padding: 4px 5px; }
     .cart-btn { padding: 7px 10px; font-size: 0.85rem; }
     .hero h1 { font-size: clamp(2.2rem, 10vw, 4rem); }
     .catalog { padding: 4px 10px 32px; }
@@ -1611,20 +1611,14 @@
   <nav id="mainNav">
     <a class="nav-btn" href="index.html">The Flies</a>
     <a class="nav-btn" href="fish.html">The Fish</a>
-    <a class="nav-btn" href="https://www.teamwildoutdoor.com/" target="_blank" rel="noopener">Book a Trip</a>
+    <a class="nav-btn active" href="trip.html">Book a Trip</a>
+    <a class="nav-btn" href="affiliates.html">Affiliates</a>
+    <a class="nav-btn" href="blog.html">Blog</a>
     <a class="nav-btn" href="about.html">About</a>
     <a class="nav-btn" href="contact.html">Contact</a>
-    <div class="nav-more">
-      <button class="nav-btn nav-more-btn" id="moreBtn" onclick="toggleMoreMenu(event)">More &#9662;</button>
-      <div class="nav-more-dropdown" id="moreDropdown">
-        <a class="nav-more-item" href="blog.html">Blog</a>
-        <a class="nav-more-item" href="community.html">Community</a>
-        <a class="nav-more-item" href="affiliates.html">Affiliates</a>
-      </div>
-    </div>
   </nav>
   <button class="cart-btn" onclick="openCart()">
-    🪹 Cart <span class="cart-count" id="cartCount">0</span>
+    🪝 Cart <span class="cart-count" id="cartCount">0</span>
   </button>
 </header>
 <div class="nav-overlay" id="navOverlay"></div>
