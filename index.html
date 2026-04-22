@@ -1502,16 +1502,26 @@
   /* FOOTER */
   footer {
     background: #000;
-    border-top: 1px solid var(--border);
-    padding: 20px;
-    text-align: center;
-    font-size: 0.78rem;
-    color: #444;
+    border-top: 2px solid var(--red);
+    padding: 40px 20px 24px;
     font-family: 'Barlow Condensed', sans-serif;
-    letter-spacing: 0.06em;
-    text-transform: uppercase;
   }
-  footer span { color: var(--red); }
+  .footer-inner { max-width:900px; margin:0 auto; display:flex; gap:32px; flex-wrap:wrap; justify-content:space-between; }
+  .footer-col { flex:1; min-width:180px; }
+  .footer-logo { font-family:'Bebas Neue',Impact,sans-serif; font-size:1.6rem; letter-spacing:0.08em; color:#fff; line-height:1; margin-bottom:8px; }
+  .footer-logo span { color:var(--red); }
+  .footer-tagline { font-size:0.78rem; color:#666; line-height:1.6; letter-spacing:0.04em; max-width:220px; }
+  .footer-col-title { font-size:0.7rem; letter-spacing:0.18em; text-transform:uppercase; color:#555; margin-bottom:12px; }
+  .footer-links { display:flex; flex-direction:column; gap:7px; }
+  .footer-links a { color:#aaa; text-decoration:none; font-size:0.82rem; letter-spacing:0.06em; text-transform:uppercase; transition:color 0.2s; }
+  .footer-links a:hover { color:#fff; }
+  .footer-contact { display:flex; flex-direction:column; gap:7px; }
+  .footer-contact a { color:#aaa; text-decoration:none; font-size:0.82rem; letter-spacing:0.04em; transition:color 0.2s; }
+  .footer-contact a:hover { color:#fff; }
+  .footer-contact-note { font-size:0.72rem; color:#555; margin-top:2px; }
+  .footer-divider { border:none; border-top:1px solid #1a1a1a; margin:28px auto 16px; max-width:900px; }
+  .footer-copy { text-align:center; font-size:0.72rem; color:#444; letter-spacing:0.08em; text-transform:uppercase; }
+  @media(max-width:600px){ .footer-inner { flex-direction:column; gap:24px; } }
 
   /* AFFILIATES PAGE */
   .affiliates-page {
@@ -1906,7 +1916,36 @@
 <div class="toast" id="toast"></div>
 
 <footer>
-  &copy; 2026 <span>Trout Tricks</span> · Hand-tied in the USA · All patterns tied to order
+  <div class="footer-inner">
+    <div class="footer-col">
+      <div class="footer-logo">TROUT <span>TRICKS</span></div>
+      <div class="footer-tagline">Hand-tied in Colorado. Guide tested on the best stillwaters in the West.</div>
+    </div>
+    <div class="footer-col">
+      <div class="footer-col-title">Quick Links</div>
+      <div class="footer-links">
+        <a href="index.html">The Flies</a>
+        <a href="fish.html">The Fish</a>
+        <a href="https://www.teamwildoutdoor.com/" target="_blank" rel="noopener">Book a Trip</a>
+        <a href="blog.html">Blog</a>
+        <a href="affiliates.html">Affiliates</a>
+        <a href="contact.html">Contact</a>
+      </div>
+    </div>
+    <div class="footer-col">
+      <div class="footer-col-title">Contact</div>
+      <div class="footer-contact">
+        <a href="tel:3039178278">(303) 917-8278</a>
+        <a href="mailto:stillwaterflies5280@gmail.com">stillwaterflies5280@gmail.com</a>
+        <div>
+          <div style="color:#aaa;font-size:0.82rem;letter-spacing:0.04em;">Westminster, CO</div>
+          <div class="footer-contact-note">Free local pickup available</div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <hr class="footer-divider">
+  <div class="footer-copy">&copy; 2026 Trout Tricks &middot; Hand-tied in the USA &middot; All patterns tied to order</div>
 </footer>
 
 <script>
