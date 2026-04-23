@@ -1842,6 +1842,104 @@
   .testimonial { background:#181818; border-left:3px solid var(--red); padding:16px 20px; border-radius:4px; }
   .testimonial-quote { color:#ccc; font-size:0.9rem; line-height:1.7; }
   .testimonial-attr { color:var(--gold); font-size:0.8rem; margin-top:10px; }
+
+  /* GUIDE'S CHOICE */
+  .guide-choice-eyebrow {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 2rem;
+    letter-spacing: 0.1em;
+    color: var(--white);
+    padding: 32px 20px 4px;
+    display: flex;
+    align-items: center;
+    gap: 14px;
+  }
+  .guide-choice-eyebrow::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: var(--border);
+  }
+  .guide-choice-sub {
+    text-align: center;
+    font-size: 0.78rem;
+    color: var(--gray);
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    margin: 4px 0 20px;
+  }
+  .guide-choice-card {
+    max-width: 860px;
+    margin: 0 auto 8px;
+    background: var(--card);
+    border: 2px solid var(--red);
+    border-radius: 8px;
+    overflow: hidden;
+    display: flex;
+    box-shadow: 0 4px 28px rgba(192,57,43,0.25);
+  }
+  .guide-choice-img {
+    width: 320px;
+    min-width: 320px;
+    overflow: hidden;
+    background: #000;
+    cursor: zoom-in;
+    position: relative;
+  }
+  .guide-choice-img img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+    transition: transform 0.4s ease;
+  }
+  .guide-choice-card:hover .guide-choice-img img { transform: scale(1.03); }
+  .guide-choice-body {
+    flex: 1;
+    padding: 28px 32px;
+    display: flex;
+    flex-direction: column;
+  }
+  .guide-choice-badge {
+    display: inline-block;
+    background: var(--gold-dim);
+    color: #000;
+    font-size: 0.7rem;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    padding: 3px 10px;
+    border-radius: 3px;
+    margin-bottom: 14px;
+    align-self: flex-start;
+  }
+  .guide-choice-name {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 1.9rem;
+    letter-spacing: 0.06em;
+    color: var(--white);
+    margin-bottom: 6px;
+    line-height: 1;
+  }
+  .guide-choice-price {
+    font-size: 1.4rem;
+    color: var(--gold);
+    font-weight: 700;
+    margin-bottom: 16px;
+  }
+  .guide-choice-price span { font-size: 0.85rem; color: var(--gray); font-weight: 400; }
+  .guide-choice-desc {
+    font-size: 0.88rem;
+    color: #ccc;
+    line-height: 1.75;
+    flex: 1;
+    margin-bottom: 24px;
+  }
+  @media(max-width: 640px) {
+    .guide-choice-card { flex-direction: column; }
+    .guide-choice-img { width: 100%; min-width: 0; height: 240px; }
+    .guide-choice-body { padding: 20px; }
+  }
 </style>
 </head>
 
@@ -1914,6 +2012,22 @@
           <div class="highlight-desc">Drops fast to the strike zone</div>
         </div>
       </div>
+    </div>
+  </div>
+
+  <!-- GUIDE'S CHOICE -->
+  <div class="guide-choice-eyebrow">Guide's Choice</div>
+  <div class="guide-choice-sub">Let the guide decide.</div>
+  <div class="guide-choice-card">
+    <div class="guide-choice-img" onclick="openLightbox('guidechoice','Guide\'s Choice Box')">
+      <img src="guidechoice.jpg" alt="Guide's Choice Box" loading="lazy">
+    </div>
+    <div class="guide-choice-body">
+      <div class="guide-choice-badge">Best Value</div>
+      <div class="guide-choice-name">Guide's Choice Box</div>
+      <div class="guide-choice-price">$110 <span>/ 25 flies</span></div>
+      <div class="guide-choice-desc">Let Thomas Frank pick your flies. Every Guide's Choice Box includes 4 hand-selected packs of chironomids in proven sizes and colors, plus 1 pack of leeches — all chosen based on what's actually working on Colorado's best stillwaters right now. 25 flies total. No guessing. Just fish.</div>
+      <button class="add-btn" onclick="addGuideChoiceToCart()">Add to Cart</button>
     </div>
   </div>
 
@@ -2214,6 +2328,7 @@ const FLY_IMAGES = {
   fly8: "images/fly8.jpg",
   fly9: "images/fly9.jpg",
   "balanced-leech": "balanced-leech.jpg",
+  guidechoice: "guidechoice.jpg",
   "mayers1": "mayers1.jpg",
   "mayers2": "mayers2.jpg",
   "mayers3": "mayers3.jpg",
@@ -2558,6 +2673,29 @@ function openGalleryLightbox(flyId) {
   const fly = flies.find(f => f.id === flyId);
   if (!fly || !fly.gallery) return;
   openLightbox(fly.gallery[galleryState[flyId] || 0], fly.name);
+}
+
+const guideChoiceFly = {
+  id: "gc",
+  name: "Guide's Choice Box",
+  price: 110,
+  img: "guidechoice",
+  sizes: ["25 flies — Guide Selected"]
+};
+
+function addGuideChoiceToCart() {
+  const uid = Date.now() + "-gc";
+  cart.push({
+    fly: guideChoiceFly,
+    size: "25 flies — Guide Selected",
+    color: null,
+    qty: 1,
+    pickup: false,
+    uid
+  });
+  updateCartUI();
+  showToast("Guide's Choice Box added!");
+  openCart();
 }
 
 function buildCatalog() {
