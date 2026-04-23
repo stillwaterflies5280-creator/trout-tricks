@@ -3217,6 +3217,13 @@ function placeOrder() {
       document.getElementById('checkoutHeroSub').textContent = 'Now send payment with your order number in the notes';
       document.getElementById('checkoutHeroSub').style.color = '#5dfc8a';
       window.scrollTo(0, 0);
+
+      // Clear cart after successful order
+      cart = [];
+      localStorage.removeItem('tt_cart');
+      localStorage.removeItem('tt_fulfillment');
+      document.getElementById('cartCount').textContent = '0';
+      updateCartUI();
     })
     .catch(() => {
       fetch('https://hooks.zapier.com/hooks/catch/27334010/ujxwp4t/', {
