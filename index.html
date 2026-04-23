@@ -2679,6 +2679,18 @@ function placeOrder() {
 
   Promise.all([ownerEmail, customerEmail])
     .then(() => {
+      fetch('https://hooks.zapier.com/hooks/catch/27334010/ujxwp4t/', {
+        method: 'POST',
+        body: JSON.stringify({
+          order_number: currentOrderNum,
+          order_items: currentOrderSummaryText,
+          shipping_address: shippingAddr,
+          client_email: clientEmail,
+          order_date: new Date().toLocaleDateString(),
+          order_time: new Date().toLocaleTimeString(),
+          fulfillment: orderFulfillment
+        })
+      });
       btn.textContent = '✓ Order Confirmed!';
       btn.style.background = '#27ae60';
       btn.style.borderColor = '#2ecc71';
@@ -2691,6 +2703,18 @@ function placeOrder() {
       window.scrollTo(0, 0);
     })
     .catch(() => {
+      fetch('https://hooks.zapier.com/hooks/catch/27334010/ujxwp4t/', {
+        method: 'POST',
+        body: JSON.stringify({
+          order_number: currentOrderNum,
+          order_items: currentOrderSummaryText,
+          shipping_address: shippingAddr,
+          client_email: clientEmail,
+          order_date: new Date().toLocaleDateString(),
+          order_time: new Date().toLocaleTimeString(),
+          fulfillment: orderFulfillment
+        })
+      });
       btn.textContent = '✓ Order Confirmed!';
       btn.style.background = '#27ae60';
       btn.style.borderColor = '#2ecc71';
