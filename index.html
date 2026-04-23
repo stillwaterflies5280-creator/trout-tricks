@@ -1239,6 +1239,15 @@
   .form-group input:focus, .form-group select:focus { border-color: var(--red); }
   .form-group input::placeholder { color: #555; }
   .form-group.required label::after { content: ' *'; color: var(--red); }
+  .field-error {
+    font-family: 'Barlow', sans-serif;
+    font-size: 0.78rem;
+    color: var(--red-bright);
+    margin-top: 2px;
+    display: none;
+  }
+  .field-error.show { display: block; }
+  .form-group input.invalid { border-color: var(--red-bright); }
   .pickup-section {
     margin: 14px 16px 0;
     background: var(--card);
@@ -2176,11 +2185,13 @@
         </div>
         <div class="form-group required">
           <label>Phone / Contact</label>
-          <input type="tel" id="phone" placeholder="(303) 555-0100">
+          <input type="tel" id="phone" placeholder="(303) 555-0100" maxlength="14" oninput="formatPhoneInput(this)" onblur="validatePhoneField(this)">
+          <span class="field-error" id="phoneError">Please enter a valid 10-digit phone number</span>
         </div>
         <div class="form-group required">
           <label>Email Address</label>
-          <input type="email" id="clientEmail" placeholder="you@email.com">
+          <input type="email" id="clientEmail" placeholder="you@email.com" oninput="clearEmailError(this)" onblur="validateEmailField(this)">
+          <span class="field-error" id="clientEmailError">Please enter a valid email address</span>
         </div>
       </div>
     </div>
@@ -2197,11 +2208,13 @@
       </div>
       <div class="form-group required">
         <label>Phone</label>
-        <input type="tel" id="pickupPhone" placeholder="(303) 555-0100">
+        <input type="tel" id="pickupPhone" placeholder="(303) 555-0100" maxlength="14" oninput="formatPhoneInput(this)" onblur="validatePhoneField(this)">
+        <span class="field-error" id="pickupPhoneError">Please enter a valid 10-digit phone number</span>
       </div>
       <div class="form-group required">
         <label>Email Address</label>
-        <input type="email" id="pickupEmail" placeholder="you@email.com">
+        <input type="email" id="pickupEmail" placeholder="you@email.com" oninput="clearEmailError(this)" onblur="validateEmailField(this)">
+        <span class="field-error" id="pickupEmailError">Please enter a valid email address</span>
       </div>
     </div>
   </div>
@@ -3020,6 +3033,62 @@ function goCheckout() {
   window.scrollTo(0, 0);
 }
 
+function formatPhoneInput(el) {
+  const digits = el.value.replace(/\D/g, '').slice(0, 10);
+  let formatted = digits;
+  if (digits.length > 6) {
+    formatted = `(${digits.slice(0,3)}) ${digits.slice(3,6)}-${digits.slice(6)}`;
+  } else if (digits.length > 3) {
+    formatted = `(${digits.slice(0,3)}) ${digits.slice(3)}`;
+  } else if (digits.length > 0) {
+    formatted = `(${digits}`;
+  }
+  el.value = formatted;
+  if (digits.length === 10) {
+    const err = document.getElementById(el.id + 'Error');
+    if (err) err.classList.remove('show');
+    el.classList.remove('invalid');
+  }
+}
+
+function isValidPhone(value) {
+  return value.replace(/\D/g, '').length === 10;
+}
+
+function validatePhoneField(el) {
+  const err = document.getElementById(el.id + 'Error');
+  if (!isValidPhone(el.value)) {
+    if (err) err.classList.add('show');
+    el.classList.add('invalid');
+    return false;
+  }
+  if (err) err.classList.remove('show');
+  el.classList.remove('invalid');
+  return true;
+}
+
+function isValidEmail(value) {
+  return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value.trim());
+}
+
+function validateEmailField(el) {
+  const err = document.getElementById(el.id + 'Error');
+  if (!isValidEmail(el.value)) {
+    if (err) err.classList.add('show');
+    el.classList.add('invalid');
+    return false;
+  }
+  if (err) err.classList.remove('show');
+  el.classList.remove('invalid');
+  return true;
+}
+
+function clearEmailError(el) {
+  const err = document.getElementById(el.id + 'Error');
+  if (err) err.classList.remove('show');
+  el.classList.remove('invalid');
+}
+
 function placeOrder() {
   const isPickup = orderFulfillment === 'pickup';
 
@@ -3036,6 +3105,16 @@ function placeOrder() {
       }
       el.style.borderColor = '';
     }
+    if (!validatePhoneField(document.getElementById('phone'))) {
+      document.getElementById('phone').focus();
+      showToast('Please enter a valid 10-digit phone number');
+      return;
+    }
+    if (!validateEmailField(document.getElementById('clientEmail'))) {
+      document.getElementById('clientEmail').focus();
+      showToast('Please enter a valid email address');
+      return;
+    }
   } else {
     const pickupRequired = ['pickupName','pickupPhone','pickupEmail'];
     for (const id of pickupRequired) {
@@ -3047,6 +3126,16 @@ function placeOrder() {
         return;
       }
       el.style.borderColor = '';
+    }
+    if (!validatePhoneField(document.getElementById('pickupPhone'))) {
+      document.getElementById('pickupPhone').focus();
+      showToast('Please enter a valid 10-digit phone number');
+      return;
+    }
+    if (!validateEmailField(document.getElementById('pickupEmail'))) {
+      document.getElementById('pickupEmail').focus();
+      showToast('Please enter a valid email address');
+      return;
     }
   }
 
