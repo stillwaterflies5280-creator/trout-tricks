@@ -1615,6 +1615,76 @@
   .hero-cta:hover { background:var(--red-bright); }
   .social-proof { max-width:700px; margin:0 auto; padding:40px 16px 8px; }
   .social-proof-title { font-family:'Bebas Neue',Impact,sans-serif; font-size:1.1rem; letter-spacing:0.18em; color:var(--red); text-transform:uppercase; text-align:center; margin-bottom:24px; }
+
+  /* FEATURED FROM THE BLOG */
+  .blog-feature {
+    background: #0e0e0e;
+    padding: 36px 20px 40px;
+    border-top: 1px solid var(--border);
+    border-bottom: 1px solid var(--border);
+  }
+  .blog-feature-title {
+    font-family: 'Bebas Neue', Impact, sans-serif;
+    font-size: 1.4rem;
+    letter-spacing: 0.18em;
+    color: var(--red);
+    text-transform: uppercase;
+    text-align: center;
+    margin-bottom: 24px;
+  }
+  .blog-feature-grid {
+    max-width: 860px;
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 16px;
+  }
+  .blog-feature-card {
+    background: #181818;
+    border: 1px solid var(--border);
+    border-left: 4px solid var(--red);
+    border-radius: 4px;
+    padding: 20px 22px 22px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    text-decoration: none;
+    color: inherit;
+    transition: transform 0.15s, border-color 0.2s;
+  }
+  .blog-feature-card:hover {
+    transform: translateY(-2px);
+    border-color: var(--red);
+    border-left-color: var(--red-bright);
+  }
+  .blog-feature-card-title {
+    font-family: 'Bebas Neue', Impact, sans-serif;
+    font-size: 1.25rem;
+    letter-spacing: 0.05em;
+    color: #fff;
+    line-height: 1.2;
+  }
+  .blog-feature-card-excerpt {
+    font-size: 0.88rem;
+    color: #bbb;
+    line-height: 1.55;
+    flex: 1;
+  }
+  .blog-feature-read-more {
+    align-self: flex-start;
+    background: var(--red);
+    color: #fff;
+    border: 1px solid var(--red-bright);
+    border-radius: 3px;
+    padding: 8px 16px;
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 0.82rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    box-shadow: 0 0 10px rgba(192,57,43,0.35);
+  }
+  .blog-feature-card:hover .blog-feature-read-more { background: var(--red-bright); }
   .social-stats { display:flex; gap:12px; justify-content:center; margin-bottom:32px; flex-wrap:wrap; }
   .social-stat { flex:1; min-width:120px; background:#111; border:1px solid #2a2a2a; border-radius:8px; padding:20px 12px; text-align:center; }
   .social-stat-num { font-family:'Bebas Neue',Impact,sans-serif; font-size:2.4rem; color:var(--gold); letter-spacing:0.04em; line-height:1; }
@@ -1728,6 +1798,23 @@
         <div class="testimonial-quote">"Finally found patterns that actually work on 11 Mile. Ordered three packs and haven't looked back."</div>
         <div class="testimonial-attr">— Chris L., Colorado Springs</div>
       </div>
+    </div>
+  </div>
+
+  <!-- FEATURED FROM THE BLOG -->
+  <div class="blog-feature">
+    <div class="blog-feature-title">From the Blog</div>
+    <div class="blog-feature-grid">
+      <a class="blog-feature-card" href="blog/balanced-leech-stillwater-colorado.html">
+        <div class="blog-feature-card-title">Balanced Leeches for Colorado Stillwater</div>
+        <div class="blog-feature-card-excerpt">Why the balanced leech is the single most underused technique on Colorado stillwaters — and how to fish it from shore.</div>
+        <span class="blog-feature-read-more">Read More →</span>
+      </a>
+      <a class="blog-feature-card" href="blog/shore-fishing-stillwater-trout-without-boat.html">
+        <div class="blog-feature-card-title">Shore Fishing Without a Boat</div>
+        <div class="blog-feature-card-excerpt">The complete system for landing 20-inch stillwater trout from the bank — tactics, rigs, and patterns that don't require a float tube.</div>
+        <span class="blog-feature-read-more">Read More →</span>
+      </a>
     </div>
   </div>
 
@@ -2051,6 +2138,16 @@ const flies = [
     price: 21,
     pack: 5,
     badge: null
+  },
+  {
+    id: 10, img: "fly1",
+    name: "Balanced Leech",
+    desc: "The shore angler's secret weapon. Neutral buoyancy suspension under an indicator triggers strikes when nothing else will. Tied on 2x heavy wire hooks with a tungsten bead for precise depth control. A confidence pattern on Spinney, Antero and 11 Mile.",
+    sizes: ["#8","#10","#12","#14"],
+    colors: ["Olive","Black","Burnt Orange","Chartreuse"],
+    price: 21,
+    pack: 5,
+    badge: "Staff Pick"
   },
   {
     id: 8, img: "fly8",
