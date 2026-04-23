@@ -557,6 +557,20 @@
     grid-template-columns: repeat(auto-fill, minmax(290px, 1fr));
     gap: 16px;
   }
+  .catalog-group-header {
+    grid-column: 1 / -1;
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 1.4rem;
+    letter-spacing: 0.12em;
+    color: var(--white);
+    padding: 20px 4px 10px;
+    border-bottom: 2px solid var(--red);
+    margin-bottom: 4px;
+  }
+  .catalog-group-spacer {
+    grid-column: 1 / -1;
+    height: 24px;
+  }
 
   .fly-card {
     background: var(--card);
@@ -2435,7 +2449,13 @@ function addTripFlyToCart(id, sizeElId, colorElId) {
 function buildCatalog() {
   const catalog = document.getElementById("catalog");
   if (!catalog) return;
-  flies.forEach(fly => {
+
+  const chironomidIds = new Set([2, 3, 4, 5, 6, 7, 8, 9, 1]);
+  const leechIds = new Set([10, 11]);
+  const chironomids = flies.filter(f => chironomidIds.has(f.id));
+  const leeches = flies.filter(f => leechIds.has(f.id));
+
+  function renderFlyCard(fly) {
     quantities[fly.id] = 1;
     pickupFlags[fly.id] = false;
 
@@ -2479,7 +2499,12 @@ function buildCatalog() {
         </div>
       </div>
     `;
-  });
+  }
+
+  catalog.innerHTML += `<div class="catalog-group-header">Chironomids &amp; Buzzers</div>`;
+  chironomids.forEach(renderFlyCard);
+  catalog.innerHTML += `<div class="catalog-group-spacer"></div><div class="catalog-group-header">Leeches</div>`;
+  leeches.forEach(renderFlyCard);
 }
 
 function filterFlies(q) {
