@@ -468,6 +468,70 @@
     font-weight: 300;
   }
 
+  /* FLY SEARCH */
+  .fly-search-wrap {
+    max-width: 520px;
+    margin: 20px auto 0;
+    padding: 0 16px;
+  }
+  .fly-search {
+    position: relative;
+    display: flex;
+    align-items: center;
+    background: #141414;
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    transition: border-color 0.2s, box-shadow 0.2s;
+  }
+  .fly-search:focus-within {
+    border-color: var(--red);
+    box-shadow: 0 0 0 1px var(--red);
+  }
+  .fly-search-icon {
+    padding-left: 14px;
+    font-size: 0.95rem;
+    opacity: 0.55;
+    pointer-events: none;
+  }
+  .fly-search-input {
+    flex: 1;
+    background: transparent;
+    border: none;
+    outline: none;
+    color: var(--white);
+    padding: 12px 10px;
+    font-family: 'Barlow', sans-serif;
+    font-size: 0.95rem;
+    min-width: 0;
+  }
+  .fly-search-input::placeholder { color: #666; }
+  .fly-search-clear {
+    display: none;
+    background: none;
+    border: none;
+    color: #888;
+    font-size: 0.9rem;
+    cursor: pointer;
+    padding: 0 14px 0 6px;
+    height: 100%;
+    line-height: 1;
+    transition: color 0.15s;
+    -webkit-tap-highlight-color: transparent;
+  }
+  .fly-search-clear:hover { color: var(--red-bright); }
+  .fly-search.has-text .fly-search-clear { display: inline-block; }
+  .fly-search-empty {
+    display: none;
+    text-align: center;
+    color: #888;
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 0.95rem;
+    letter-spacing: 0.04em;
+    padding: 32px 16px 8px;
+  }
+  .fly-search-empty.visible { display: block; }
+  .fly-search-empty strong { color: var(--white); }
+
   /* SECTION TITLE */
   .section-title {
     font-family: 'Bebas Neue', sans-serif;
@@ -1818,7 +1882,17 @@
     </div>
   </div>
 
+  <!-- FLY SEARCH -->
+  <div class="fly-search-wrap">
+    <div class="fly-search" id="flySearch">
+      <span class="fly-search-icon">🔍</span>
+      <input type="text" id="flySearchInput" class="fly-search-input" placeholder="Search patterns..." autocomplete="off" oninput="filterFlies(this.value)">
+      <button type="button" class="fly-search-clear" onclick="clearFlySearch()" aria-label="Clear search">✕</button>
+    </div>
+  </div>
+
   <div class="section-title">THE FLIES</div>
+  <div class="fly-search-empty" id="flySearchEmpty">No patterns found for "<strong id="flySearchQuery"></strong>"</div>
   <div class="catalog" id="catalog"></div>
 
   <!-- THE FISH GALLERY -->
@@ -2364,7 +2438,7 @@ function buildCatalog() {
       : "";
 
     catalog.innerHTML += `
-      <div class="fly-card">
+      <div class="fly-card" data-search="${(fly.name + ' ' + fly.desc).toLowerCase().replace(/"/g, '&quot;')}">
         <div class="fly-img" onclick="openLightbox('${fly.img}','${fly.name}')">
           <img src="${FLY_IMAGES[fly.img]}" alt="${fly.name}" loading="lazy" style="${fly.id===9?'transform:rotate(90deg) scale(1.4);':''}" >
           ${badge}
@@ -2393,6 +2467,33 @@ function buildCatalog() {
       </div>
     `;
   });
+}
+
+function filterFlies(q) {
+  const query = q.trim().toLowerCase();
+  const wrap = document.getElementById('flySearch');
+  if (wrap) wrap.classList.toggle('has-text', query.length > 0);
+
+  const cards = document.querySelectorAll('#catalog .fly-card');
+  let visible = 0;
+  cards.forEach(card => {
+    const hay = card.dataset.search || '';
+    const match = !query || hay.includes(query);
+    card.style.display = match ? '' : 'none';
+    if (match) visible++;
+  });
+
+  const empty = document.getElementById('flySearchEmpty');
+  const queryEl = document.getElementById('flySearchQuery');
+  if (queryEl) queryEl.textContent = q.trim();
+  if (empty) empty.classList.toggle('visible', query.length > 0 && visible === 0);
+}
+
+function clearFlySearch() {
+  const input = document.getElementById('flySearchInput');
+  if (input) input.value = '';
+  filterFlies('');
+  if (input) input.focus();
 }
 
 function togglePickup(id, val) { pickupFlags[id] = val; }
