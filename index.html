@@ -2202,9 +2202,15 @@
     <p><strong style="color:var(--gold)">📍 Local Pickup Selected</strong><br><br>
     After sending payment, text <a href="sms:3039178278">303-917-8278</a> to schedule your pickup. Include your order number <strong id="pickupOrderRef" style="color:var(--red)"></strong> in your message.</p>
     <div class="address-form" style="margin-top:14px">
-      <div class="form-group required">
-        <label>Your Name</label>
-        <input type="text" id="pickupName" placeholder="John Smith">
+      <div class="form-row">
+        <div class="form-group required">
+          <label>First Name</label>
+          <input type="text" id="pickupFirstName" placeholder="John">
+        </div>
+        <div class="form-group required">
+          <label>Last Name</label>
+          <input type="text" id="pickupLastName" placeholder="Smith">
+        </div>
       </div>
       <div class="form-group required">
         <label>Phone</label>
@@ -3116,7 +3122,7 @@ function placeOrder() {
       return;
     }
   } else {
-    const pickupRequired = ['pickupName','pickupPhone','pickupEmail'];
+    const pickupRequired = ['pickupFirstName','pickupLastName','pickupPhone','pickupEmail'];
     for (const id of pickupRequired) {
       const el = document.getElementById(id);
       if (!el.value.trim()) {
@@ -3146,19 +3152,23 @@ function placeOrder() {
   msg.style.display = 'block';
 
   // Build address/contact string
-  let shippingAddr, clientEmail, customerName, customerPhone, customerEmailAddr;
+  let shippingAddr, clientEmail, customerName, customerFirstName, customerLastName, customerPhone, customerEmailAddr;
   if (!isPickup) {
     const f = id => document.getElementById(id).value.trim();
     shippingAddr = `${f('firstName')} ${f('lastName')}\n${f('address1')}${f('address2')?' '+f('address2'):''}\n${f('city')}, ${f('state')} ${f('zip')}\nPhone: ${f('phone')}\nEmail: ${f('clientEmail')}`;
     clientEmail = f('clientEmail');
-    customerName = f('firstName') + ' ' + f('lastName');
+    customerFirstName = f('firstName');
+    customerLastName = f('lastName');
+    customerName = customerFirstName + ' ' + customerLastName;
     customerPhone = f('phone');
     customerEmailAddr = f('clientEmail');
   } else {
     const pf = id => document.getElementById(id).value.trim();
-    shippingAddr = `LOCAL PICKUP\nName: ${pf('pickupName')}\nPhone: ${pf('pickupPhone')}\nEmail: ${pf('pickupEmail')}`;
+    customerFirstName = pf('pickupFirstName');
+    customerLastName = pf('pickupLastName');
+    customerName = customerFirstName + ' ' + customerLastName;
+    shippingAddr = `LOCAL PICKUP\nName: ${customerName}\nPhone: ${pf('pickupPhone')}\nEmail: ${pf('pickupEmail')}`;
     clientEmail = pf('pickupEmail');
-    customerName = pf('pickupName');
     customerPhone = pf('pickupPhone');
     customerEmailAddr = pf('pickupEmail');
   }
@@ -3169,6 +3179,9 @@ function placeOrder() {
     order_items: currentOrderSummaryText,
     shipping_address: shippingAddr,
     client_email: clientEmail,
+    customer_first_name: customerFirstName,
+    customer_last_name: customerLastName,
+    customer_name: customerName,
     to_email: 'tfrank112@gmail.com'
   };
 
@@ -3184,6 +3197,8 @@ function placeOrder() {
           order_items: currentOrderSummaryText,
           shipping_address: shippingAddr,
           client_email: clientEmail,
+          customer_first_name: customerFirstName,
+          customer_last_name: customerLastName,
           customer_name: customerName,
           customer_phone: customerPhone,
           customer_email: customerEmailAddr,
@@ -3211,6 +3226,8 @@ function placeOrder() {
           order_items: currentOrderSummaryText,
           shipping_address: shippingAddr,
           client_email: clientEmail,
+          customer_first_name: customerFirstName,
+          customer_last_name: customerLastName,
           customer_name: customerName,
           customer_phone: customerPhone,
           customer_email: customerEmailAddr,
