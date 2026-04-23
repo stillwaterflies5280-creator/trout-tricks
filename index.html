@@ -1783,9 +1783,9 @@
 <div id="page-shop" class="page active">
 <div id="shop-page">
   <div class="hero">
-    <div class="hero-tag">Stillwater · Shore-Based · No Boat Required</div>
+    <div class="hero-tag">Colorado · Stillwater · Guide Tested</div>
     <h1>TROUT <span>TRICKS</span></h1>
-    <div class="hero-sub">Colorado Stillwater Fly Patterns & Tactics</div>
+    <div class="hero-sub">Premium Stillwater Fly Patterns</div>
     <div class="hero-divider"></div>
     <a href="#catalog" class="hero-cta">🪝 Shop Flies Now</a>
   </div>
@@ -1794,7 +1794,7 @@
     <div>5-Pack · <span>$21–$25</span></div>
     <div>📦 <span>Tracked Shipping Available</span></div>
     <div>📍 <span>Free Local Pickup</span></div>
-    <div>🏞️ <span>Shore-Based Tactics</span></div>
+    <div>🎣 <span>Hand-Tied Fresh to Order</span></div>
   </div>
 
   <!-- HIGHLIGHTS SECTION -->
@@ -1812,7 +1812,7 @@
         <div class="highlight-icon">🎣</div>
         <div class="highlight-text">
           <div class="highlight-title">Guide Tested</div>
-          <div class="highlight-desc">Shore-based tactics that work without a boat</div>
+          <div class="highlight-desc">Proven on Antero, Spinney, 11 Mile, Delaney Buttes & more</div>
         </div>
       </div>
       <div class="highlight-card">
@@ -1831,6 +1831,19 @@
       </div>
     </div>
   </div>
+
+  <!-- FLY SEARCH -->
+  <div class="fly-search-wrap">
+    <div class="fly-search" id="flySearch">
+      <span class="fly-search-icon">🔍</span>
+      <input type="text" id="flySearchInput" class="fly-search-input" placeholder="Search patterns..." autocomplete="off" oninput="filterFlies(this.value)">
+      <button type="button" class="fly-search-clear" onclick="clearFlySearch()" aria-label="Clear search">✕</button>
+    </div>
+  </div>
+
+  <div class="section-title">THE FLIES</div>
+  <div class="fly-search-empty" id="flySearchEmpty">No patterns found for "<strong id="flySearchQuery"></strong>"</div>
+  <div class="catalog" id="catalog"></div>
 
   <!-- SOCIAL PROOF -->
   <div id="social-proof" class="social-proof">
@@ -1871,29 +1884,16 @@
     <div class="blog-feature-grid">
       <a class="blog-feature-card" href="blog/balanced-leech-stillwater-colorado.html">
         <div class="blog-feature-card-title">Balanced Leeches for Colorado Stillwater</div>
-        <div class="blog-feature-card-excerpt">Why the balanced leech is the single most underused technique on Colorado stillwaters — and how to fish it from shore.</div>
+        <div class="blog-feature-card-excerpt">Why the balanced leech is the single most underused technique on Colorado stillwaters — and how to fish it.</div>
         <span class="blog-feature-read-more">Read More →</span>
       </a>
-      <a class="blog-feature-card" href="blog/shore-fishing-stillwater-trout-without-boat.html">
-        <div class="blog-feature-card-title">Shore Fishing Without a Boat</div>
-        <div class="blog-feature-card-excerpt">The complete system for landing 20-inch stillwater trout from the bank — tactics, rigs, and patterns that don't require a float tube.</div>
+      <a class="blog-feature-card" href="blog/spinney-mountain-reservoir-guide.html">
+        <div class="blog-feature-card-title">Spinney Mountain Reservoir — Colorado's Best Kept Secret</div>
+        <div class="blog-feature-card-excerpt">Spinney consistently produces some of the largest trout in Colorado. Here's when to go, what to throw, and where to stand.</div>
         <span class="blog-feature-read-more">Read More →</span>
       </a>
     </div>
   </div>
-
-  <!-- FLY SEARCH -->
-  <div class="fly-search-wrap">
-    <div class="fly-search" id="flySearch">
-      <span class="fly-search-icon">🔍</span>
-      <input type="text" id="flySearchInput" class="fly-search-input" placeholder="Search patterns..." autocomplete="off" oninput="filterFlies(this.value)">
-      <button type="button" class="fly-search-clear" onclick="clearFlySearch()" aria-label="Clear search">✕</button>
-    </div>
-  </div>
-
-  <div class="section-title">THE FLIES</div>
-  <div class="fly-search-empty" id="flySearchEmpty">No patterns found for "<strong id="flySearchQuery"></strong>"</div>
-  <div class="catalog" id="catalog"></div>
 
   <!-- THE FISH GALLERY -->
   <div class="section-title">THE FISH</div>
