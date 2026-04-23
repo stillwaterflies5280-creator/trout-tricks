@@ -2665,6 +2665,7 @@ function addTripFlyToCart(id, sizeElId, colorElId) {
   const color = colorEl ? colorEl.value : null;
   cart.push({ fly, size, color, qty: 1, pickup: false, uid: Date.now() + Math.random() });
   updateCartUI();
+  gtag('event', 'add_to_cart', { currency: 'USD', value: fly.price, item_name: fly.name });
   showToast(`1 pack of ${fly.name} added!`);
   openCart();
 }
@@ -2713,6 +2714,7 @@ function addGuideChoiceToCart() {
     uid
   });
   updateCartUI();
+  gtag('event', 'add_to_cart', { currency: 'USD', value: guideChoiceFly.price, item_name: guideChoiceFly.name });
   showToast("Guide's Choice Box added!");
   openCart();
 }
@@ -2832,6 +2834,7 @@ function addToCart(id) {
   const qty = quantities[id];
   cart.push({ fly, size, color, qty, pickup: false, uid: Date.now() + Math.random() });
   updateCartUI();
+  gtag('event', 'add_to_cart', { currency: 'USD', value: fly.price * qty, item_name: fly.name });
   showToast(`${qty} pack${qty>1?"s":""} of ${fly.name} added!`);
   openCart();
 }
@@ -2981,6 +2984,7 @@ function generateOrderNumber() {
 
 let currentOrderNum = '';
 let currentOrderSummaryText = '';
+let currentOrderTotal = 0;
 
 function buildOrderSummary() {
   const flyTotal = cart.reduce((s,i)=>s+i.fly.price*i.qty, 0);
@@ -2988,6 +2992,7 @@ function buildOrderSummary() {
   const isPickup = orderFulfillment === 'pickup';
   const shippingCost = isPickup ? 0 : (cost ?? 0);
   const grandTotal = flyTotal + shippingCost;
+  currentOrderTotal = grandTotal;
 
   let lines = cart.map(item=>`
     <div class="order-line">
@@ -3037,6 +3042,7 @@ function goCheckout() {
   document.getElementById("shop-page").style.display = "none";
   document.getElementById("checkout-page").style.display = "block";
   window.scrollTo(0, 0);
+  gtag('event', 'begin_checkout');
 }
 
 function formatPhoneInput(el) {
@@ -3217,6 +3223,8 @@ function placeOrder() {
       document.getElementById('checkoutHeroSub').textContent = 'Now send payment with your order number in the notes';
       document.getElementById('checkoutHeroSub').style.color = '#5dfc8a';
       window.scrollTo(0, 0);
+
+      gtag('event', 'purchase', { transaction_id: currentOrderNum, value: currentOrderTotal, currency: 'USD' });
 
       // Clear cart after successful order
       cart = [];
