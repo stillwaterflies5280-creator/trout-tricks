@@ -2654,15 +2654,21 @@ function placeOrder() {
   msg.style.display = 'block';
 
   // Build address/contact string
-  let shippingAddr, clientEmail;
+  let shippingAddr, clientEmail, customerName, customerPhone, customerEmailAddr;
   if (!isPickup) {
     const f = id => document.getElementById(id).value.trim();
     shippingAddr = `${f('firstName')} ${f('lastName')}\n${f('address1')}${f('address2')?' '+f('address2'):''}\n${f('city')}, ${f('state')} ${f('zip')}\nPhone: ${f('phone')}\nEmail: ${f('clientEmail')}`;
     clientEmail = f('clientEmail');
+    customerName = f('firstName') + ' ' + f('lastName');
+    customerPhone = f('phone');
+    customerEmailAddr = f('clientEmail');
   } else {
     const pf = id => document.getElementById(id).value.trim();
     shippingAddr = `LOCAL PICKUP\nName: ${pf('pickupName')}\nPhone: ${pf('pickupPhone')}\nEmail: ${pf('pickupEmail')}`;
     clientEmail = pf('pickupEmail');
+    customerName = pf('pickupName');
+    customerPhone = pf('pickupPhone');
+    customerEmailAddr = pf('pickupEmail');
   }
 
   // Send via EmailJS — fire both emails simultaneously
@@ -2686,6 +2692,9 @@ function placeOrder() {
           order_items: currentOrderSummaryText,
           shipping_address: shippingAddr,
           client_email: clientEmail,
+          customer_name: customerName,
+          customer_phone: customerPhone,
+          customer_email: customerEmailAddr,
           order_date: new Date().toLocaleDateString(),
           order_time: new Date().toLocaleTimeString(),
           fulfillment: orderFulfillment
@@ -2710,6 +2719,9 @@ function placeOrder() {
           order_items: currentOrderSummaryText,
           shipping_address: shippingAddr,
           client_email: clientEmail,
+          customer_name: customerName,
+          customer_phone: customerPhone,
+          customer_email: customerEmailAddr,
           order_date: new Date().toLocaleDateString(),
           order_time: new Date().toLocaleTimeString(),
           fulfillment: orderFulfillment
