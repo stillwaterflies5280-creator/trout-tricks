@@ -63,12 +63,40 @@
         "name": "Hand-Tied Chironomid Fly Patterns",
         "description": "Premium hand-tied chironomid fly patterns tied on 2x heavy wire hooks with tungsten beads. Proven on Colorado's top stillwater fisheries. 5-pack.",
         "brand": { "@type": "Brand", "name": "Trout Tricks" },
+        "image": "https://www.trouttricks.com/og-image.jpg",
         "offers": {
           "@type": "Offer",
           "priceCurrency": "USD",
           "price": "21.00",
           "availability": "https://schema.org/InStock",
-          "url": "https://trouttricks.com"
+          "url": "https://trouttricks.com",
+          "hasMerchantReturnPolicy": {
+            "@type": "MerchantReturnPolicy",
+            "returnPolicyCategory": "https://schema.org/MerchantReturnFiniteReturnWindow",
+            "merchantReturnDays": 30,
+            "returnMethod": "https://schema.org/ReturnByMail"
+          },
+          "shippingDetails": {
+            "@type": "OfferShippingDetails",
+            "shippingRate": {
+              "@type": "MonetaryAmount",
+              "value": "5.00",
+              "currency": "USD"
+            },
+            "deliveryTime": {
+              "@type": "ShippingDeliveryTime",
+              "handlingTime": {
+                "@type": "QuantitativeValue",
+                "minValue": 1,
+                "maxValue": 3
+              },
+              "transitTime": {
+                "@type": "QuantitativeValue",
+                "minValue": 2,
+                "maxValue": 5
+              }
+            }
+          }
         }
       },
       {
