@@ -630,6 +630,49 @@
     transition: transform 0.4s ease;
   }
   .fly-card:hover .fly-img img { transform: scale(1.04); }
+  .fly-gallery-wrap { cursor: default; }
+  .fly-gallery-wrap img { cursor: zoom-in; }
+  .gallery-nav {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    background: rgba(0,0,0,0.55);
+    border: none;
+    color: #fff;
+    font-size: 1.5rem;
+    width: 32px;
+    height: 48px;
+    cursor: pointer;
+    z-index: 2;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background 0.2s;
+    padding: 0;
+  }
+  .gallery-nav:hover { background: rgba(192,57,43,0.85); }
+  .gallery-nav.prev { left: 0; border-radius: 0 3px 3px 0; }
+  .gallery-nav.next { right: 0; border-radius: 3px 0 0 3px; }
+  .fly-gallery-dots {
+    position: absolute;
+    bottom: 8px;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    gap: 6px;
+    z-index: 2;
+  }
+  .gallery-dot {
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background: rgba(255,255,255,0.35);
+    cursor: pointer;
+    transition: background 0.2s;
+    border: none;
+    padding: 0;
+  }
+  .gallery-dot.active { background: var(--red); }
 
   /* LIGHTBOX */
   .lightbox {
@@ -2170,7 +2213,11 @@ const FLY_IMAGES = {
   fly7: "images/fly7.jpg",
   fly8: "images/fly8.jpg",
   fly9: "images/fly9.jpg",
-  "balanced-leech": "balanced-leech.jpg"
+  "balanced-leech": "balanced-leech.jpg",
+  "mayers1": "mayers1.jpg",
+  "mayers2": "mayers2.jpg",
+  "mayers3": "mayers3.jpg",
+  "mayers4": "mayers4.jpg"
 };
 
 const FISH_IMAGES = {};
@@ -2270,12 +2317,13 @@ const flies = [
     badge: "Staff Pick"
   },
   {
-    id: 11, img: "fly1",
+    id: 11, img: "mayers1",
+    gallery: ["mayers1","mayers2","mayers3","mayers4"],
     name: "Mayer's Leech",
     desc: "A stillwater classic refined for Colorado's high-altitude reservoirs. Slim profile, subtle movement, and deadly in the film or just below. When trout are finicky and chironomids aren't enough, this is the pattern to tie on. A consistent producer on Spinney, Antero, and 11 Mile.",
     sizes: ["#14"],
-    colors: ["Orange Bead / Black Tail","Black Bead / Black Tail","Chartreuse Bead / Black Tail","Orange Bead / Olive Tail","Black Bead / Olive Tail","Chartreuse Bead / Olive Tail"],
-    price: 21,
+    colors: ["Orange Bead / Black Marabou Tail","Orange Bead / Olive Marabou Tail","Orange Bead / Black Leech Leather Tail","Orange Bead / Olive Leech Leather Tail","Black Bead / Black Marabou Tail","Black Bead / Olive Marabou Tail","Black Bead / Black Leech Leather Tail","Black Bead / Olive Leech Leather Tail","Chartreuse Bead / Black Marabou Tail","Chartreuse Bead / Olive Marabou Tail","Chartreuse Bead / Black Leech Leather Tail","Chartreuse Bead / Olive Leech Leather Tail"],
+    price: 25,
     pack: 5,
     badge: "Guide Tested"
   },
@@ -2475,6 +2523,31 @@ function addTripFlyToCart(id, sizeElId, colorElId) {
   openCart();
 }
 
+const galleryState = {};
+
+function cycleGallery(flyId, dir) {
+  const fly = flies.find(f => f.id === flyId);
+  if (!fly || !fly.gallery) return;
+  const cur = galleryState[flyId] || 0;
+  setGalleryImg(flyId, (cur + dir + fly.gallery.length) % fly.gallery.length);
+}
+
+function setGalleryImg(flyId, idx) {
+  const fly = flies.find(f => f.id === flyId);
+  if (!fly || !fly.gallery) return;
+  galleryState[flyId] = idx;
+  const img = document.getElementById(`gallery-img-${flyId}`);
+  if (img) img.src = FLY_IMAGES[fly.gallery[idx]];
+  document.querySelectorAll(`#gallery-wrap-${flyId} .gallery-dot`)
+    .forEach((d, i) => d.classList.toggle('active', i === idx));
+}
+
+function openGalleryLightbox(flyId) {
+  const fly = flies.find(f => f.id === flyId);
+  if (!fly || !fly.gallery) return;
+  openLightbox(fly.gallery[galleryState[flyId] || 0], fly.name);
+}
+
 function buildCatalog() {
   const catalog = document.getElementById("catalog");
   if (!catalog) return;
@@ -2499,12 +2572,24 @@ function buildCatalog() {
       ? `<div class="fly-badge${fly.badge==="Top Secret"?" gold":""}">${fly.badge}</div>`
       : "";
 
+    const imgBlock = fly.gallery
+      ? `<div class="fly-img fly-gallery-wrap" id="gallery-wrap-${fly.id}">
+           <img src="${FLY_IMAGES[fly.gallery[0]]}" alt="${fly.name}" loading="lazy" id="gallery-img-${fly.id}" onclick="openGalleryLightbox(${fly.id})">
+           <button class="gallery-nav prev" onclick="cycleGallery(${fly.id},-1)">&#8249;</button>
+           <button class="gallery-nav next" onclick="cycleGallery(${fly.id},1)">&#8250;</button>
+           <div class="fly-gallery-dots">
+             ${fly.gallery.map((k,i)=>`<button class="gallery-dot${i===0?' active':''}" onclick="setGalleryImg(${fly.id},${i})"></button>`).join('')}
+           </div>
+           ${badge}
+         </div>`
+      : `<div class="fly-img" onclick="openLightbox('${fly.img}','${fly.name}')">
+           <img src="${FLY_IMAGES[fly.img]}" alt="${fly.name}" loading="lazy" style="${fly.id===9?'transform:rotate(90deg) scale(1.4);':''}">
+           ${badge}
+         </div>`;
+
     catalog.innerHTML += `
       <div class="fly-card" data-search="${(fly.name + ' ' + fly.desc).toLowerCase().replace(/"/g, '&quot;')}">
-        <div class="fly-img" onclick="openLightbox('${fly.img}','${fly.name}')">
-          <img src="${FLY_IMAGES[fly.img]}" alt="${fly.name}" loading="lazy" style="${fly.id===9?'transform:rotate(90deg) scale(1.4);':''}" >
-          ${badge}
-        </div>
+        ${imgBlock}
         <div class="fly-info">
           <div class="fly-name">${fly.name}</div>
           <div class="fly-desc">${fly.desc}</div>
