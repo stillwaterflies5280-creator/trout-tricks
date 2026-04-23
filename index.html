@@ -2311,7 +2311,7 @@ const flies = [
     name: "Balanced Leech",
     desc: "The stillwater angler's most versatile weapon. Suspended under an indicator with neutral buoyancy, this pattern triggers strikes when chironomids aren't cutting it. Tied on 2x heavy wire jig hooks for perfect balance and natural movement.",
     sizes: ["#10"],
-    colors: ["Orange Bead / Black Marabou Tail","Orange Bead / Olive Marabou Tail","Orange Bead / Black Leech Leather Tail","Orange Bead / Olive Leech Leather Tail","Black Bead / Black Marabou Tail","Black Bead / Olive Marabou Tail","Black Bead / Black Leech Leather Tail","Black Bead / Olive Leech Leather Tail","Chartreuse Bead / Black Marabou Tail","Chartreuse Bead / Olive Marabou Tail","Chartreuse Bead / Black Leech Leather Tail","Chartreuse Bead / Olive Leech Leather Tail"],
+    colors: ["Orange Bead / Black Marabou Tail","Orange Bead / Olive Marabou Tail","Orange Bead / Black Leech Leather Tail","Orange Bead / Olive Leech Leather Tail","Black Bead / Black Marabou Tail","Black Bead / Olive Marabou Tail","Black Bead / Black Leech Leather Tail","Black Bead / Olive Leech Leather Tail","Chartreuse Bead / Black Marabou Tail","Chartreuse Bead / Olive Marabou Tail","Chartreuse Bead / Black Leech Leather Tail","Chartreuse Bead / Olive Leech Leather Tail","Gold Bead / Brown Marabou Tail","Gold Bead / Brown Leech Leather Tail"],
     price: 25,
     pack: 5,
     badge: "Staff Pick"
@@ -2322,10 +2322,20 @@ const flies = [
     name: "Mayer's Leech",
     desc: "A stillwater classic refined for Colorado's high-altitude reservoirs. Slim profile, subtle movement, and deadly in the film or just below. When trout are finicky and chironomids aren't enough, this is the pattern to tie on. A consistent producer on Spinney, Antero, and 11 Mile.",
     sizes: ["#14"],
-    colors: ["Orange Bead / Black Marabou Tail","Orange Bead / Olive Marabou Tail","Orange Bead / Black Leech Leather Tail","Orange Bead / Olive Leech Leather Tail","Black Bead / Black Marabou Tail","Black Bead / Olive Marabou Tail","Black Bead / Black Leech Leather Tail","Black Bead / Olive Leech Leather Tail","Chartreuse Bead / Black Marabou Tail","Chartreuse Bead / Olive Marabou Tail","Chartreuse Bead / Black Leech Leather Tail","Chartreuse Bead / Olive Leech Leather Tail"],
+    colors: ["Orange Bead / Black Marabou Tail","Orange Bead / Olive Marabou Tail","Orange Bead / Black Leech Leather Tail","Orange Bead / Olive Leech Leather Tail","Black Bead / Black Marabou Tail","Black Bead / Olive Marabou Tail","Black Bead / Black Leech Leather Tail","Black Bead / Olive Leech Leather Tail","Chartreuse Bead / Black Marabou Tail","Chartreuse Bead / Olive Marabou Tail","Chartreuse Bead / Black Leech Leather Tail","Chartreuse Bead / Olive Leech Leather Tail","Gold Bead / Brown Marabou Tail","Gold Bead / Brown Leech Leather Tail"],
     price: 25,
     pack: 5,
     badge: "Guide Tested"
+  },
+  {
+    id: 12, img: "fly1",
+    name: "Micro Leech",
+    desc: "When trophy trout get finicky and refuse larger presentations, downsize to the Micro Leech. Tied on a size 16 hook with the same deadly color combinations as our full-size leeches — just smaller, more subtle, and often more effective in pressured or clear water conditions.",
+    sizes: ["#16"],
+    colors: ["Orange Bead / Black Marabou Tail","Orange Bead / Olive Marabou Tail","Orange Bead / Black Leech Leather Tail","Orange Bead / Olive Leech Leather Tail","Black Bead / Black Marabou Tail","Black Bead / Olive Marabou Tail","Black Bead / Black Leech Leather Tail","Black Bead / Olive Leech Leather Tail","Chartreuse Bead / Black Marabou Tail","Chartreuse Bead / Olive Marabou Tail","Chartreuse Bead / Black Leech Leather Tail","Chartreuse Bead / Olive Leech Leather Tail","Gold Bead / Brown Marabou Tail","Gold Bead / Brown Leech Leather Tail"],
+    price: 21,
+    pack: 5,
+    badge: "New"
   },
   {
     id: 8, img: "fly8",
@@ -2553,7 +2563,7 @@ function buildCatalog() {
   if (!catalog) return;
 
   const chironomidIds = new Set([2, 3, 4, 5, 6, 7, 8, 9, 1]);
-  const leechIds = new Set([10, 11]);
+  const leechIds = new Set([10, 11, 12]);
   const chironomids = flies.filter(f => chironomidIds.has(f.id));
   const leeches = flies.filter(f => leechIds.has(f.id));
 
