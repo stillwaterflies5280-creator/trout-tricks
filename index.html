@@ -1959,7 +1959,7 @@
   <nav id="mainNav">
     <a class="nav-btn active" href="index.html">The Flies</a>
     <a class="nav-btn" href="fish.html">The Fish</a>
-    <a class="nav-btn" href="trip.html">Book a Trip</a>
+    <a class="nav-btn" href="trip.html" onclick="gtag('event', 'book_trip_click')">Book a Trip</a>
     <a class="nav-btn" href="affiliates.html">Affiliates</a>
     <a class="nav-btn" href="blog.html">Blog</a>
     <a class="nav-btn" href="about.html">About</a>
@@ -2602,7 +2602,7 @@ function buildMosaic() {
       const badge = fly.badge ? `<div class="fly-badge${fly.badge==='Top Secret'?' gold':''}">${fly.badge}</div>` : '';
       const colorSel = fly.colors ? `<div class="option-row"><span class="option-label">Color</span><select id="tcolor-${fly.id}">${fly.colors.map(c=>`<option>${c}</option>`).join('')}</select></div>` : '';
       return `
-        <div class="trip-fly-card fly-card">
+        <div class="trip-fly-card fly-card" data-fly-name="${fly.name.replace(/"/g, '&quot;')}" data-fly-price="${fly.price}">
           <div class="fly-img" onclick="openLightbox('${fly.img}','${fly.name}')">
             <img src="${FLY_IMAGES[fly.img]}" alt="${fly.name}" loading="lazy" style="${fly.id===9?'transform:rotate(90deg) scale(1.4);':''}">
             ${badge}
@@ -2665,7 +2665,7 @@ function addTripFlyToCart(id, sizeElId, colorElId) {
   const color = colorEl ? colorEl.value : null;
   cart.push({ fly, size, color, qty: 1, pickup: false, uid: Date.now() + Math.random() });
   updateCartUI();
-  gtag('event', 'add_to_cart', { currency: 'USD', value: fly.price, item_name: fly.name });
+  gtag('event', 'add_to_cart', { currency: 'USD', value: fly.price, item_name: fly.name, quantity: 1 });
   showToast(`1 pack of ${fly.name} added!`);
   openCart();
 }
@@ -2714,7 +2714,7 @@ function addGuideChoiceToCart() {
     uid
   });
   updateCartUI();
-  gtag('event', 'add_to_cart', { currency: 'USD', value: guideChoiceFly.price, item_name: guideChoiceFly.name });
+  gtag('event', 'add_to_cart', { currency: 'USD', value: guideChoiceFly.price, item_name: guideChoiceFly.name, quantity: 1 });
   showToast("Guide's Choice Box added!");
   openCart();
 }
@@ -2759,7 +2759,7 @@ function buildCatalog() {
          </div>`;
 
     catalog.innerHTML += `
-      <div class="fly-card" data-search="${(fly.name + ' ' + fly.desc).toLowerCase().replace(/"/g, '&quot;')}">
+      <div class="fly-card" data-search="${(fly.name + ' ' + fly.desc).toLowerCase().replace(/"/g, '&quot;')}" data-fly-name="${fly.name.replace(/"/g, '&quot;')}" data-fly-price="${fly.price}">
         ${imgBlock}
         <div class="fly-info">
           <div class="fly-name">${fly.name}</div>
@@ -2792,6 +2792,7 @@ function buildCatalog() {
   leeches.forEach(renderFlyCard);
 }
 
+let searchEventTimer = null;
 function filterFlies(q) {
   const query = q.trim().toLowerCase();
   const wrap = document.getElementById('flySearch');
@@ -2810,6 +2811,14 @@ function filterFlies(q) {
   const queryEl = document.getElementById('flySearchQuery');
   if (queryEl) queryEl.textContent = q.trim();
   if (empty) empty.classList.toggle('visible', query.length > 0 && visible === 0);
+
+  // Debounced search event — fire once the user stops typing
+  clearTimeout(searchEventTimer);
+  if (query.length >= 2) {
+    searchEventTimer = setTimeout(() => {
+      gtag('event', 'search', { search_term: query });
+    }, 800);
+  }
 }
 
 function clearFlySearch() {
@@ -2834,7 +2843,7 @@ function addToCart(id) {
   const qty = quantities[id];
   cart.push({ fly, size, color, qty, pickup: false, uid: Date.now() + Math.random() });
   updateCartUI();
-  gtag('event', 'add_to_cart', { currency: 'USD', value: fly.price * qty, item_name: fly.name });
+  gtag('event', 'add_to_cart', { currency: 'USD', value: fly.price * qty, item_name: fly.name, quantity: qty });
   showToast(`${qty} pack${qty>1?"s":""} of ${fly.name} added!`);
   openCart();
 }
@@ -2856,6 +2865,7 @@ function setFulfillmentFromCheckout(type) {
   // Rebuild order summary with updated shipping cost
   buildOrderSummary();
   updateCartUI();
+  gtag('event', 'set_shipping', { shipping_tier: type === 'pickup' ? 'Local Pickup' : 'Ship' });
 }
 
 function setFulfillment(type) {
@@ -2869,6 +2879,7 @@ function setFulfillment(type) {
     document.getElementById('coBtnPickup').classList.toggle('active', type === 'pickup');
   }
   updateCartUI();
+  gtag('event', 'set_shipping', { shipping_tier: type === 'pickup' ? 'Local Pickup' : 'Ship' });
 }
 
 function toggleCartItemPickup(uid, val) {
@@ -2893,6 +2904,10 @@ function updateCartColor(uid, newColor) {
 }
 
 function removeFromCart(uid) {
+  const removed = cart.find(i => i.uid === uid);
+  if (removed) {
+    gtag('event', 'remove_from_cart', { currency: 'USD', value: removed.fly.price * removed.qty, item_name: removed.fly.name });
+  }
   cart = cart.filter(i => i.uid !== uid);
   updateCartUI();
 }
@@ -2962,6 +2977,10 @@ function updateCartUI() {
 function openCart() {
   document.getElementById("overlay").classList.add("open");
   document.getElementById("cartPanel").classList.add("open");
+  const flyTotal = cart.reduce((s,i) => s + i.fly.price * i.qty, 0);
+  const { cost } = calcShipping();
+  const cartTotal = flyTotal + (orderFulfillment === 'pickup' ? 0 : (cost ?? 0));
+  gtag('event', 'view_cart', { currency: 'USD', value: cartTotal });
 }
 function closeCart() {
   document.getElementById("overlay").classList.remove("open");
@@ -2985,6 +3004,7 @@ function generateOrderNumber() {
 let currentOrderNum = '';
 let currentOrderSummaryText = '';
 let currentOrderTotal = 0;
+let currentOrderShipping = 0;
 
 function buildOrderSummary() {
   const flyTotal = cart.reduce((s,i)=>s+i.fly.price*i.qty, 0);
@@ -2993,6 +3013,7 @@ function buildOrderSummary() {
   const shippingCost = isPickup ? 0 : (cost ?? 0);
   const grandTotal = flyTotal + shippingCost;
   currentOrderTotal = grandTotal;
+  currentOrderShipping = shippingCost;
 
   let lines = cart.map(item=>`
     <div class="order-line">
@@ -3042,7 +3063,7 @@ function goCheckout() {
   document.getElementById("shop-page").style.display = "none";
   document.getElementById("checkout-page").style.display = "block";
   window.scrollTo(0, 0);
-  gtag('event', 'begin_checkout');
+  gtag('event', 'begin_checkout', { currency: 'USD', value: currentOrderTotal });
 }
 
 function formatPhoneInput(el) {
@@ -3224,7 +3245,7 @@ function placeOrder() {
       document.getElementById('checkoutHeroSub').style.color = '#5dfc8a';
       window.scrollTo(0, 0);
 
-      gtag('event', 'purchase', { transaction_id: currentOrderNum, value: currentOrderTotal, currency: 'USD' });
+      gtag('event', 'purchase', { transaction_id: currentOrderNum, value: currentOrderTotal, currency: 'USD', shipping: currentOrderShipping });
 
       // Clear cart after successful order
       cart = [];
@@ -3360,6 +3381,25 @@ function loadCart() {
 buildCatalog();
 buildMosaic();
 loadCart();
+
+// Fire view_item once per fly card when it scrolls into view
+(function observeFlyCards() {
+  if (!('IntersectionObserver' in window)) return;
+  const seen = new Set();
+  const io = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (!entry.isIntersecting) return;
+      const card = entry.target;
+      const name = card.dataset.flyName;
+      const price = parseFloat(card.dataset.flyPrice);
+      if (!name || seen.has(name)) { io.unobserve(card); return; }
+      seen.add(name);
+      gtag('event', 'view_item', { item_name: name, item_category: 'Fly Patterns', price: price });
+      io.unobserve(card);
+    });
+  }, { threshold: 0.5 });
+  document.querySelectorAll('.fly-card[data-fly-name]').forEach(c => io.observe(c));
+})();
 </script>
 </body>
 </html>
