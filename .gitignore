@@ -1,1 +1,11 @@
 .claude/settings.json
+
+# Large image originals (>50MB)
+*.psd
+*.tiff
+*.tif
+*.raw
+*.cr2
+*.nef
+*.arw
+*.dng
