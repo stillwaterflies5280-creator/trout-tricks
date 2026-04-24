@@ -3717,9 +3717,9 @@ function placeOrder() {
           order_time: new Date().toLocaleTimeString(),
           fulfillment: orderFulfillment,
           promo_code: appliedPromo ? appliedPromo.code : 'none',
-          discount_amount: currentOrderDiscount.toFixed(2),
-          discounted_total: currentOrderTotal.toFixed(2),
-          order_total: currentOrderTotal.toFixed(2)
+          discount_amount: Number(currentOrderDiscount.toFixed(2)),
+          discounted_total: Number(currentOrderTotal.toFixed(2)),
+          order_total: Number(currentOrderTotal.toFixed(2))
         })
       });
       btn.textContent = '✓ Order Confirmed!';
@@ -3763,9 +3763,9 @@ function placeOrder() {
           order_time: new Date().toLocaleTimeString(),
           fulfillment: orderFulfillment,
           promo_code: appliedPromo ? appliedPromo.code : 'none',
-          discount_amount: currentOrderDiscount.toFixed(2),
-          discounted_total: currentOrderTotal.toFixed(2),
-          order_total: currentOrderTotal.toFixed(2)
+          discount_amount: Number(currentOrderDiscount.toFixed(2)),
+          discounted_total: Number(currentOrderTotal.toFixed(2)),
+          order_total: Number(currentOrderTotal.toFixed(2))
         })
       });
       btn.textContent = '✓ Order Confirmed!';
