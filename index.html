@@ -3205,6 +3205,11 @@ function removeFromCart(uid) {
 }
 
 const PROMO_CODES = { ACE20: 20, WELCOME10: 10 };
+
+// Pro-deal codes — 30% off for industry pros.
+// Format: PRO-LASTNAME (uppercase). To add a pro: push their code here, commit, push.
+const PRO_CODES = ['PRO-TEST'];
+
 let appliedPromo = null;
 
 function onPromoInput(e) {
@@ -3215,6 +3220,7 @@ function onPromoInput(e) {
   });
   if (!raw) appliedPromo = null;
   else if (PROMO_CODES[raw]) appliedPromo = { code: raw, percent: PROMO_CODES[raw] };
+  else if (PRO_CODES.includes(raw)) appliedPromo = { code: raw, percent: 30 };
   else appliedPromo = null;
   renderPromoMsg(raw);
   updateCartUI();
