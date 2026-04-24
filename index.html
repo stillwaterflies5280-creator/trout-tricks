@@ -1949,6 +1949,184 @@
     .guide-choice-img { width: 100%; min-width: 0; height: 240px; }
     .guide-choice-body { padding: 20px; }
   }
+
+  /* PROMO CODE */
+  .promo-row { margin: 0 16px 16px; }
+  .promo-row-inner { display: flex; gap: 8px; }
+  .promo-input {
+    flex: 1;
+    background: #111;
+    border: 1.5px solid var(--red);
+    border-radius: 4px;
+    color: #fff;
+    font-size: 0.9rem;
+    padding: 10px 12px;
+    letter-spacing: 0.06em;
+    font-family: inherit;
+    text-transform: uppercase;
+  }
+  .promo-input::placeholder { text-transform: none; color: #555; letter-spacing: 0; }
+  .promo-input:focus { outline: none; border-color: var(--red-bright); }
+  .promo-apply-btn {
+    background: var(--red);
+    color: #fff;
+    border: none;
+    border-radius: 4px;
+    padding: 10px 16px;
+    font-size: 0.82rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    cursor: pointer;
+    font-family: inherit;
+    transition: background 0.2s;
+  }
+  .promo-apply-btn:hover { background: var(--red-bright); }
+  .promo-msg { font-size: 0.8rem; margin-top: 6px; letter-spacing: 0.04em; }
+  .promo-msg.valid { color: #2ecc71; }
+  .promo-msg.invalid { color: var(--red-bright); }
+
+  /* EMAIL POPUP */
+  .email-popup-overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.75);
+    z-index: 9999;
+    align-items: center;
+    justify-content: center;
+  }
+  .email-popup-overlay.open { display: flex; }
+  .email-popup {
+    background: #141414;
+    border: 1px solid #2a2a2a;
+    border-radius: 8px;
+    max-width: 420px;
+    width: calc(100% - 32px);
+    padding: 36px 28px 28px;
+    position: relative;
+    text-align: center;
+  }
+  .email-popup-close {
+    position: absolute;
+    top: 12px;
+    right: 14px;
+    background: none;
+    border: none;
+    color: #555;
+    font-size: 1.1rem;
+    cursor: pointer;
+    line-height: 1;
+    padding: 4px;
+  }
+  .email-popup-close:hover { color: #fff; }
+  .email-popup-eyebrow {
+    font-size: 0.65rem;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: var(--red);
+    margin-bottom: 12px;
+  }
+  .email-popup h3 {
+    font-family: 'Bebas Neue', Impact, sans-serif;
+    font-size: 2rem;
+    letter-spacing: 0.06em;
+    color: #fff;
+    line-height: 1.1;
+    margin: 0 0 10px;
+  }
+  .email-popup-sub {
+    font-size: 0.82rem;
+    color: #aaa;
+    line-height: 1.6;
+    margin-bottom: 20px;
+  }
+  .email-popup-input {
+    width: 100%;
+    background: #0d0d0d;
+    border: 1.5px solid #333;
+    border-radius: 4px;
+    color: #fff;
+    font-size: 0.9rem;
+    padding: 11px 14px;
+    font-family: inherit;
+    box-sizing: border-box;
+    margin-bottom: 10px;
+  }
+  .email-popup-input:focus { outline: none; border-color: var(--red); }
+  .email-popup-btn {
+    width: 100%;
+    background: var(--red);
+    color: #fff;
+    border: none;
+    border-radius: 4px;
+    padding: 13px;
+    font-size: 0.85rem;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    cursor: pointer;
+    font-family: inherit;
+    transition: background 0.2s;
+  }
+  .email-popup-btn:hover { background: var(--red-bright); }
+  .email-popup-fine {
+    font-size: 0.72rem;
+    color: #444;
+    margin-top: 10px;
+    letter-spacing: 0.04em;
+  }
+  .email-popup-success {
+    font-size: 1rem;
+    color: #2ecc71;
+    font-weight: 600;
+    padding: 20px 0;
+  }
+
+  /* FOOTER EMAIL CAPTURE */
+  .footer-email-section {
+    max-width: 900px;
+    margin: 0 auto 28px;
+    padding: 0 16px;
+    text-align: center;
+  }
+  .footer-email-title {
+    font-family: 'Bebas Neue', Impact, sans-serif;
+    font-size: 1.4rem;
+    letter-spacing: 0.1em;
+    color: #fff;
+    margin-bottom: 4px;
+  }
+  .footer-email-sub { font-size: 0.78rem; color: #555; margin-bottom: 14px; letter-spacing: 0.04em; }
+  .footer-email-row { display: flex; gap: 8px; max-width: 420px; margin: 0 auto; }
+  .footer-email-input {
+    flex: 1;
+    background: #0d0d0d;
+    border: 1px solid #2a2a2a;
+    border-radius: 4px;
+    color: #fff;
+    font-size: 0.85rem;
+    padding: 10px 12px;
+    font-family: inherit;
+  }
+  .footer-email-input:focus { outline: none; border-color: var(--red); }
+  .footer-email-btn {
+    background: var(--red);
+    color: #fff;
+    border: none;
+    border-radius: 4px;
+    padding: 10px 18px;
+    font-size: 0.8rem;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    cursor: pointer;
+    font-family: inherit;
+    transition: background 0.2s;
+    white-space: nowrap;
+  }
+  .footer-email-btn:hover { background: var(--red-bright); }
+  .footer-email-msg { font-size: 0.78rem; margin-top: 8px; color: #2ecc71; display: none; }
 </style>
 </head>
 
@@ -2252,6 +2430,14 @@
     <strong>✓ What happens next:</strong> Once your payment is received and matched to your order number, your flies will be hand-tied and shipped with tracking. You'll receive a confirmation message when they're on the way.
   </div>
 
+  <div class="promo-row">
+    <div class="promo-row-inner">
+      <input class="promo-input" id="promoInput" type="text" placeholder="Promo code (optional)" maxlength="20">
+      <button class="promo-apply-btn" onclick="applyPromo()">Apply</button>
+    </div>
+    <div class="promo-msg" id="promoMsg"></div>
+  </div>
+
   <div style="margin: 0 16px;">
     <button class="notify-btn" id="placeOrderBtn" onclick="placeOrder()">✓ Confirm Order &amp; Send Details</button>
     <div class="sending-msg" id="sendingMsg">Sending order details...</div>
@@ -2299,6 +2485,22 @@
 
 <div class="toast" id="toast"></div>
 
+<!-- EMAIL POPUP -->
+<div class="email-popup-overlay" id="emailPopupOverlay">
+  <div class="email-popup">
+    <button class="email-popup-close" onclick="closeEmailPopup()">✕</button>
+    <div class="email-popup-eyebrow">Limited Time Offer</div>
+    <h3>GET 10% OFF YOUR FIRST ORDER</h3>
+    <div class="email-popup-sub">Join the Trout Tricks community for exclusive deals and early access to new patterns</div>
+    <div id="emailPopupForm">
+      <input class="email-popup-input" id="popupEmailInput" type="email" placeholder="Your email address">
+      <button class="email-popup-btn" onclick="submitPopupEmail()">CLAIM 10% OFF</button>
+      <div class="email-popup-fine">No spam. Unsubscribe anytime.</div>
+    </div>
+    <div class="email-popup-success" id="emailPopupSuccess" style="display:none">Check your email for your 10% off code!</div>
+  </div>
+</div>
+
 <footer>
   <div class="footer-inner">
     <div class="footer-col">
@@ -2329,6 +2531,16 @@
     </div>
   </div>
   <hr class="footer-divider">
+  <div class="footer-email-section">
+    <div class="footer-email-title">JOIN THE TEAM 🎣</div>
+    <div class="footer-email-sub">Exclusive fly patterns, gear picks, and news.</div>
+    <div class="footer-email-row">
+      <input class="footer-email-input" id="footerEmailInput" type="email" placeholder="Your email address">
+      <button class="footer-email-btn" onclick="submitFooterEmail()">JOIN</button>
+    </div>
+    <div class="footer-email-msg" id="footerEmailMsg">Welcome to the team! Check your email for 10% off.</div>
+  </div>
+  <hr class="footer-divider" style="margin-top:0">
   <div style="text-align:center;margin-bottom:14px;">
     <a href="https://share.google/42thOz7q1HVWv7SqP" target="_blank" style="display:inline-flex;align-items:center;gap:8px;background:#111;border:1px solid #333;border-radius:4px;padding:8px 16px;text-decoration:none;color:#fff;font-size:0.85rem;">⭐⭐⭐⭐⭐ <span style="color:#fff;">Rated on Google · Leave a Review</span></a>
   </div>
@@ -2508,6 +2720,9 @@ const flies = [
 let cart = [];
 let quantities = {};
 let pickupFlags = {};
+
+const PROMO_CODES = { 'ACE20': 20, 'WELCOME10': 10 };
+let appliedPromo = { code: '', pct: 0 };
 
 // Carousel state
 const carousels = {};
@@ -2929,7 +3144,8 @@ function updateCartUI() {
   document.getElementById("cartCount").textContent = totalPacks;
 
   const shipping = cost ?? 0;
-  const grandTotal = flyTotal + shipping;
+  const discountedFlyTotal = appliedPromo.pct > 0 ? flyTotal * (1 - appliedPromo.pct / 100) : flyTotal;
+  const grandTotal = discountedFlyTotal + shipping;
   document.getElementById("cartTotal").textContent = `$${grandTotal.toFixed(2)}`;
   document.getElementById("shippingNote").textContent = label;
   document.getElementById("checkoutBtn").disabled = cart.length === 0;
@@ -3122,6 +3338,71 @@ function clearEmailError(el) {
   el.classList.remove('invalid');
 }
 
+// PROMO CODE
+function applyPromo() {
+  const input = document.getElementById('promoInput');
+  const msg = document.getElementById('promoMsg');
+  const code = input.value.trim().toUpperCase();
+  if (!code) { msg.textContent = ''; msg.className = 'promo-msg'; return; }
+  if (PROMO_CODES[code]) {
+    appliedPromo = { code, pct: PROMO_CODES[code] };
+    msg.textContent = `✓ ${PROMO_CODES[code]}% discount applied!`;
+    msg.className = 'promo-msg valid';
+    input.disabled = true;
+    updateCartUI();
+  } else {
+    appliedPromo = { code: '', pct: 0 };
+    msg.textContent = 'Invalid promo code';
+    msg.className = 'promo-msg invalid';
+    updateCartUI();
+  }
+}
+
+// EMAIL SIGNUP (shared)
+function submitEmailSignup(email, source) {
+  const today = new Date().toLocaleDateString();
+  return fetch('https://hooks.zapier.com/hooks/catch/27334010/ujxwp4t/', {
+    method: 'POST',
+    body: JSON.stringify({ email, source, discount_code: 'WELCOME10', signup_date: today })
+  });
+}
+
+function closeEmailPopup() {
+  document.getElementById('emailPopupOverlay').classList.remove('open');
+}
+
+function submitPopupEmail() {
+  const input = document.getElementById('popupEmailInput');
+  const email = input.value.trim();
+  if (!email || !email.includes('@')) { input.style.borderColor = 'var(--red-bright)'; return; }
+  input.style.borderColor = '';
+  submitEmailSignup(email, 'popup_signup');
+  localStorage.setItem('tt_email_captured', '1');
+  document.getElementById('emailPopupForm').style.display = 'none';
+  document.getElementById('emailPopupSuccess').style.display = 'block';
+  setTimeout(() => closeEmailPopup(), 3000);
+}
+
+function submitFooterEmail() {
+  const input = document.getElementById('footerEmailInput');
+  const msg = document.getElementById('footerEmailMsg');
+  const email = input.value.trim();
+  if (!email || !email.includes('@')) { input.style.borderColor = 'var(--red-bright)'; return; }
+  input.style.borderColor = '';
+  submitEmailSignup(email, 'footer_signup');
+  localStorage.setItem('tt_email_captured', '1');
+  input.style.display = 'none';
+  input.parentElement.querySelector('.footer-email-btn').style.display = 'none';
+  msg.style.display = 'block';
+}
+
+// EMAIL POPUP TIMER
+if (!localStorage.getItem('tt_email_captured')) {
+  setTimeout(() => {
+    document.getElementById('emailPopupOverlay').classList.add('open');
+  }, 60000);
+}
+
 function placeOrder() {
   const isPickup = orderFulfillment === 'pickup';
 
@@ -3215,6 +3496,11 @@ function placeOrder() {
   const ownerEmail = emailjs.send('service_y9wyl0c', 'template_132nwoj', templateParams);
   const customerEmail = emailjs.send('service_y9wyl0c', 'template_slq6ev8', templateParams);
 
+  const flySubtotal = cart.reduce((s,i)=>s+i.fly.price*i.qty,0);
+  const { cost: shippingCost } = calcShipping();
+  const discountedSub = appliedPromo.pct > 0 ? flySubtotal * (1 - appliedPromo.pct / 100) : flySubtotal;
+  const orderTotal = (discountedSub + (shippingCost ?? 0)).toFixed(2);
+
   Promise.all([ownerEmail, customerEmail])
     .then(() => {
       fetch('https://hooks.zapier.com/hooks/catch/27334010/ujxwp4t/', {
@@ -3231,7 +3517,9 @@ function placeOrder() {
           customer_email: customerEmailAddr,
           order_date: new Date().toLocaleDateString(),
           order_time: new Date().toLocaleTimeString(),
-          fulfillment: orderFulfillment
+          fulfillment: orderFulfillment,
+          promo_code: appliedPromo.code || 'none',
+          order_total: orderTotal
         })
       });
       btn.textContent = '✓ Order Confirmed!';
@@ -3269,7 +3557,9 @@ function placeOrder() {
           customer_email: customerEmailAddr,
           order_date: new Date().toLocaleDateString(),
           order_time: new Date().toLocaleTimeString(),
-          fulfillment: orderFulfillment
+          fulfillment: orderFulfillment,
+          promo_code: appliedPromo.code || 'none',
+          order_total: orderTotal
         })
       });
       btn.textContent = '✓ Order Confirmed!';
@@ -3298,6 +3588,12 @@ function goBackAndShop() {
   btn.style.background = '';
   btn.style.borderColor = '';
   document.getElementById('sendingMsg').style.display = 'none';
+  // Reset promo
+  appliedPromo = { code: '', pct: 0 };
+  const pi = document.getElementById('promoInput');
+  if (pi) { pi.value = ''; pi.disabled = false; }
+  const pm = document.getElementById('promoMsg');
+  if (pm) { pm.textContent = ''; pm.className = 'promo-msg'; }
   showPage('shop');
   setTimeout(() => openCart(), 300);
 }
