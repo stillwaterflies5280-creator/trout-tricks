@@ -2459,6 +2459,9 @@ buildCatalog();
 buildMosaic();
 loadCart();
 
+document.addEventListener('DOMContentLoaded', function() {
+  gtag('event', 'blog_view', { post_title: document.title });
+});
 </script>
 </body>
 </html>

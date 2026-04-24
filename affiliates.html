@@ -2484,6 +2484,15 @@ function loadCart() {
 buildCatalog();
 buildMosaic();
 loadCart();
+
+document.querySelectorAll('.affiliate-btn').forEach(function(btn) {
+  btn.addEventListener('click', function() {
+    var card = btn.closest('.affiliate-card');
+    var nameEl = card ? card.querySelector('.affiliate-card-name') : null;
+    var linkName = nameEl ? nameEl.textContent.trim() : btn.textContent.trim();
+    gtag('event', 'affiliate_click', { link_name: linkName });
+  });
+});
 </script>
 </body>
 </html>

@@ -2476,6 +2476,12 @@ function loadCart() {
 buildCatalog();
 buildMosaic();
 loadCart();
+
+document.querySelectorAll('a[href^="mailto:"]').forEach(function(a) {
+  a.addEventListener('click', function() {
+    gtag('event', 'contact_form_submit');
+  });
+});
 </script>
 </body>
 </html>
