@@ -1401,31 +1401,38 @@
     .about-mosaic .mosaic-item:nth-child(9) { grid-column: span 1; grid-row: span 1; }
   }
 
-  /* FISH GALLERY CARDS */
+  /* FISH GALLERY — mosaic columns */
   .fish-gallery-cards {
-    max-width: 800px;
+    column-count: 3;
+    column-gap: 4px;
+    max-width: 1200px;
     margin: 0 auto;
     padding: 16px 12px 8px;
   }
   .fish-card {
-    background: #111;
-    border: 1px solid #2a2a2a;
-    border-radius: 6px;
+    break-inside: avoid;
+    margin: 0 0 4px;
+    border-radius: 4px;
     overflow: hidden;
-    margin-bottom: 16px;
+    background: #111;
     cursor: zoom-in;
-    transition: border-color 0.2s;
-  }
-  .fish-card:hover { border-color: var(--red); }
-  .fish-card img {
-    width: 100%;
-    height: 450px;
-    object-fit: cover;
-    border-radius: 6px;
+    transition: box-shadow 0.2s ease;
     display: block;
   }
-  @media (max-width: 480px) {
-    .fish-card img { height: 320px; }
+  .fish-card:hover {
+    box-shadow: 0 0 0 2px var(--red), 0 0 18px rgba(192, 57, 43, 0.45);
+  }
+  .fish-card img {
+    width: 100%;
+    height: auto;
+    display: block;
+    border-radius: 4px;
+  }
+  @media (max-width: 900px) {
+    .fish-gallery-cards { column-count: 2; }
+  }
+  @media (max-width: 600px) {
+    .fish-gallery-cards { column-count: 1; }
   }
 
   .trip-fly-cards {
@@ -2104,16 +2111,44 @@ function buildMosaic() {
     }).join('');
   }
 
-  // Fish page — photo cards
+  // Fish page — mosaic gallery. Fisher-Yates shuffle (seed 42) applied once
+  // in a Python preprocessor; hardcoded below so order is fixed across visits.
+  // fish1photo is always first (hero).
+  const GALLERY_ORDER = [
+    "fish1photo", "gfish13", "fish20", "fish84", "fish53", "fish76",
+    "fish115", "gfish5", "fish32", "gfish9", "fish123", "fish74",
+    "fish71", "gfish17", "fish40", "fish85", "fish34", "fish94",
+    "fish63", "fish44", "fish88", "gfish1", "gfish20", "fish54",
+    "fish3", "fish90", "gfish6", "fish65", "fish104", "fish78",
+    "gfish10", "gfish12", "fish41", "fish114", "fish62", "fish124",
+    "fish89", "fish18", "fish96", "fish83", "fish66", "fish69",
+    "fish43", "fish119", "gfish8", "fish38", "fish111", "fish6",
+    "fish19", "fish27", "gfish2", "fish4", "fish121", "fish5",
+    "fish118", "fish51", "fish55", "fish68", "fish112", "fish16",
+    "fish80", "fish106", "fish42", "fish67", "fish73", "fish93",
+    "gfish7", "fish127", "fish33", "fish100", "fish23", "fish11",
+    "fish36", "gfish14", "fish107", "fish49", "fish120", "fish92",
+    "fish101", "fish116", "fish98", "fish108", "fish87", "fish97",
+    "fish102", "fish31", "fish86", "fish103", "gfish11", "fish26",
+    "fish75", "fish48", "fish81", "fish82", "fish39", "gfish18",
+    "fish12", "gfish3", "fish17", "fish70", "fish60", "fish95",
+    "fish7", "fish35", "fish79", "fish46", "fish47", "fish14",
+    "fish50", "fish13", "fish15", "fish117", "fish122", "fish29",
+    "fish21", "fish126", "fish45", "fish56", "fish91", "fish22",
+    "fish125", "fish99", "fish2", "fish113", "fish105", "gfish15",
+    "fish77", "gfish16", "fish58", "fish109", "fish52", "gfish19",
+    "gfish4", "fish61", "fish57", "fish25", "fish9", "fish10",
+    "fish110", "fish24", "fish28", "fish37", "fish59", "fish64",
+    "fish72", "fish8", "fish30"
+  ];
   const grid = document.getElementById('fishMasonryGrid');
   if (grid) {
-    const keys = Object.keys(GALLERY_IMAGES);
-    grid.innerHTML = keys.map((key, i) => `
+    grid.innerHTML = GALLERY_ORDER.map((key, i) => `
       <div class="fish-card" onclick="openCarouselLightbox('fishMasonryLb', ${i})">
         <img src="${GALLERY_IMAGES[key]}" alt="Colorado trout ${i+1}" loading="lazy">
       </div>
     `).join('');
-    carousels['fishMasonryLb'] = { index: 0, total: keys.length, images: GALLERY_IMAGES, keys };
+    carousels['fishMasonryLb'] = { index: 0, total: GALLERY_ORDER.length, images: GALLERY_IMAGES, keys: GALLERY_ORDER };
   }
 }
 
