@@ -2075,6 +2075,69 @@
     padding: 20px 0;
   }
 
+  /* Success state styling */
+  .email-popup-eyebrow.success {
+    color: #00e676;
+  }
+
+  .discount-code-box {
+    background: #0a0a0a;
+    border: 2px solid #c0392b;
+    border-radius: 6px;
+    padding: 20px 16px;
+    margin: 20px 0 18px;
+    text-align: center;
+  }
+
+  .discount-code-label {
+    font-size: 10px;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: #888;
+    margin-bottom: 8px;
+  }
+
+  .discount-code-value {
+    font-family: 'Bebas Neue', Impact, 'Arial Narrow', sans-serif;
+    font-size: 42px;
+    letter-spacing: 6px;
+    color: #c0392b;
+    line-height: 1;
+    margin-bottom: 14px;
+    user-select: all;
+    -webkit-user-select: all;
+  }
+
+  .discount-code-copy {
+    background: transparent;
+    border: 1px solid #c0392b;
+    color: #c0392b;
+    font-family: inherit;
+    font-size: 11px;
+    font-weight: bold;
+    letter-spacing: 2px;
+    padding: 10px 20px;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    min-width: 140px;
+  }
+
+  .discount-code-copy:hover {
+    background: #c0392b;
+    color: #fff;
+  }
+
+  .discount-code-copy.copied {
+    background: #00e676;
+    border-color: #00e676;
+    color: #000;
+  }
+
+  .shop-now-btn {
+    margin-bottom: 10px;
+  }
+
   /* FOOTER EMAIL CAPTURE */
   .footer-email-section {
     max-width: 900px;
@@ -2484,15 +2547,37 @@
 <div class="email-popup-overlay" id="emailPopupOverlay">
   <div class="email-popup">
     <button class="email-popup-close" onclick="closeEmailPopup()">✕</button>
-    <div class="email-popup-eyebrow">Limited Time Offer</div>
-    <h3>GET 10% OFF YOUR FIRST ORDER</h3>
-    <div class="email-popup-sub">Join the Trout Tricks community for exclusive deals and early access to new patterns</div>
-    <div id="emailPopupForm">
-      <input class="email-popup-input" id="popupEmailInput" type="email" placeholder="Your email address">
-      <button class="email-popup-btn" onclick="submitPopupEmail()">CLAIM 10% OFF</button>
-      <div class="email-popup-fine">No spam. Unsubscribe anytime.</div>
+
+    <!-- SIGNUP STATE -->
+    <div id="emailPopupSignupState">
+      <div class="email-popup-eyebrow">Limited Time Offer</div>
+      <h3>GET 10% OFF YOUR FIRST ORDER</h3>
+      <div class="email-popup-sub">Join the Trout Tricks community for exclusive deals and early access to new patterns</div>
+      <div id="emailPopupForm">
+        <input class="email-popup-input" id="popupEmailInput" type="email" placeholder="Your email address">
+        <button class="email-popup-btn" onclick="submitPopupEmail()">CLAIM 10% OFF</button>
+        <div class="email-popup-fine">No spam. Unsubscribe anytime.</div>
+      </div>
     </div>
-    <div class="email-popup-success" id="emailPopupSuccess" style="display:none">Check your email for your 10% off code!</div>
+
+    <!-- SUCCESS STATE -->
+    <div id="emailPopupSuccessState" style="display:none">
+      <div class="email-popup-eyebrow success">You're In</div>
+      <h3>HERE'S YOUR 10% OFF</h3>
+      <div class="email-popup-sub">Use this code at checkout. Good for 30 days.</div>
+
+      <div class="discount-code-box">
+        <div class="discount-code-label">Your Code</div>
+        <div class="discount-code-value" id="discountCodeValue">WELCOME10</div>
+        <button class="discount-code-copy" id="discountCodeCopy" onclick="copyDiscountCode()">
+          <span id="copyBtnText">COPY CODE</span>
+        </button>
+      </div>
+
+      <button class="email-popup-btn shop-now-btn" onclick="shopNowFromPopup()">SHOP NOW →</button>
+      <div class="email-popup-fine">One use per customer · 30 days</div>
+    </div>
+
   </div>
 </div>
 
@@ -3381,13 +3466,40 @@ function clearEmailError(el) {
   el.classList.remove('invalid');
 }
 
-// EMAIL SIGNUP (shared)
+// PROMO CODE
+function applyPromo() {
+  const input = document.getElementById('promoInput');
+  const msg = document.getElementById('promoMsg');
+  const code = input.value.trim().toUpperCase();
+  if (!code) { msg.textContent = ''; msg.className = 'promo-msg'; return; }
+  if (PROMO_CODES[code]) {
+    appliedPromo = { code, pct: PROMO_CODES[code] };
+    msg.textContent = `✓ ${PROMO_CODES[code]}% discount applied!`;
+    msg.className = 'promo-msg valid';
+    input.disabled = true;
+    updateCartUI();
+  } else {
+    appliedPromo = { code: '', pct: 0 };
+    msg.textContent = 'Invalid promo code';
+    msg.className = 'promo-msg invalid';
+    updateCartUI();
+  }
+}
+
+// Shared webhook submission
 function submitEmailSignup(email, source, includeDiscount) {
-  const today = new Date().toLocaleDateString();
-  const payload = { email, source, signup_date: today };
-  if (includeDiscount) payload.discount_code = 'WELCOME10';
+  const payload = {
+    email: email,
+    source: source,
+    signup_date: new Date().toISOString()
+  };
+  if (includeDiscount) {
+    payload.discount_code = 'WELCOME10';
+  }
   return fetch('https://hooks.zapier.com/hooks/catch/27334010/uvyg3wg/', {
     method: 'POST',
+    mode: 'no-cors',
+    headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify(payload)
   });
 }
@@ -3396,37 +3508,94 @@ function closeEmailPopup() {
   document.getElementById('emailPopupOverlay').classList.remove('open');
 }
 
+// Popup submit — reveals code instead of closing
 function submitPopupEmail() {
   const input = document.getElementById('popupEmailInput');
   const email = input.value.trim();
-  if (!email || !email.includes('@')) { input.style.borderColor = 'var(--red-bright)'; return; }
-  input.style.borderColor = '';
+  if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+    input.style.borderColor = '#c0392b';
+    input.focus();
+    return;
+  }
+
   submitEmailSignup(email, 'popup_signup', true);
   localStorage.setItem('tt_email_captured', '1');
-  document.getElementById('emailPopupForm').style.display = 'none';
-  document.getElementById('emailPopupSuccess').style.display = 'block';
-  setTimeout(() => closeEmailPopup(), 3000);
+
+  document.getElementById('emailPopupSignupState').style.display = 'none';
+  document.getElementById('emailPopupSuccessState').style.display = 'block';
+
+  if (typeof gtag === 'function') {
+    gtag('event', 'email_signup', {
+      event_category: 'engagement',
+      event_label: 'popup_signup'
+    });
+  }
+}
+
+function copyDiscountCode() {
+  const code = document.getElementById('discountCodeValue').textContent.trim();
+  const btn = document.getElementById('discountCodeCopy');
+  const btnText = document.getElementById('copyBtnText');
+
+  const showCopied = () => {
+    btn.classList.add('copied');
+    btnText.textContent = '✓ COPIED!';
+    setTimeout(() => {
+      btn.classList.remove('copied');
+      btnText.textContent = 'COPY CODE';
+    }, 2000);
+  };
+
+  if (navigator.clipboard && navigator.clipboard.writeText) {
+    navigator.clipboard.writeText(code).then(showCopied).catch(() => {
+      fallbackCopy(code);
+      showCopied();
+    });
+  } else {
+    fallbackCopy(code);
+    showCopied();
+  }
+}
+
+function fallbackCopy(text) {
+  const ta = document.createElement('textarea');
+  ta.value = text;
+  ta.style.position = 'fixed';
+  ta.style.opacity = '0';
+  document.body.appendChild(ta);
+  ta.select();
+  try { document.execCommand('copy'); } catch (e) {}
+  document.body.removeChild(ta);
+}
+
+function shopNowFromPopup() {
+  closeEmailPopup();
+  setTimeout(() => {
+    const target = document.getElementById('catalog');
+    if (target) {
+      target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+  }, 300);
 }
 
 function submitFooterEmail() {
   const input = document.getElementById('footerEmailInput');
-  const msg = document.getElementById('footerEmailMsg');
   const email = input.value.trim();
-  if (!email || !email.includes('@')) { input.style.borderColor = 'var(--red-bright)'; return; }
-  input.style.borderColor = '';
+  if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+    input.style.borderColor = '#c0392b';
+    input.focus();
+    return;
+  }
   submitEmailSignup(email, 'footer_signup', false);
-  localStorage.setItem('tt_email_captured', '1');
-  input.style.display = 'none';
-  input.parentElement.querySelector('.footer-email-btn').style.display = 'none';
-  msg.style.display = 'block';
+  input.value = '';
+  input.placeholder = 'Thanks! You\'re in.';
 }
 
-// EMAIL POPUP TIMER
-if (!localStorage.getItem('tt_email_captured')) {
-  setTimeout(() => {
+setTimeout(() => {
+  if (!localStorage.getItem('tt_email_captured')) {
     document.getElementById('emailPopupOverlay').classList.add('open');
-  }, 15000);
-}
+  }
+}, 15000);
 
 function placeOrder() {
   const isPickup = orderFulfillment === 'pickup';
