@@ -2212,7 +2212,7 @@
     <div class="guide-choice-body">
       <div class="guide-choice-badge">Best Value</div>
       <div class="guide-choice-name">Guide's Choice Box</div>
-      <div class="guide-choice-price">$110 <span>/ 25 flies</span></div>
+      <div class="guide-choice-price">$95 <span>/ 25 flies</span></div>
       <div class="guide-choice-desc">Let Thomas Frank pick your flies. Every Guide's Choice Box includes 4 hand-selected packs of chironomids in proven sizes and colors, plus 1 pack of leeches — all chosen based on what's actually working on Colorado's best stillwaters right now. 25 flies total. No guessing. Just fish.</div>
       <button class="add-btn" onclick="addGuideChoiceToCart()">Add to Cart</button>
     </div>
@@ -2538,7 +2538,7 @@
       <input class="footer-email-input" id="footerEmailInput" type="email" placeholder="Your email address">
       <button class="footer-email-btn" onclick="submitFooterEmail()">JOIN</button>
     </div>
-    <div class="footer-email-msg" id="footerEmailMsg">Welcome to the team! Check your email for 10% off.</div>
+    <div class="footer-email-msg" id="footerEmailMsg">Welcome to the team!</div>
   </div>
   <hr class="footer-divider" style="margin-top:0">
   <div style="text-align:center;margin-bottom:14px;">
@@ -2913,7 +2913,7 @@ function openGalleryLightbox(flyId) {
 const guideChoiceFly = {
   id: "gc",
   name: "Guide's Choice Box",
-  price: 110,
+  price: 95,
   img: "guidechoice",
   sizes: ["25 flies — Guide Selected"]
 };
@@ -3227,10 +3227,14 @@ function buildOrderSummary() {
   const { cost } = calcShipping();
   const isPickup = orderFulfillment === 'pickup';
   const shippingCost = isPickup ? 0 : (cost ?? 0);
-  const grandTotal = flyTotal + shippingCost;
+
+  const discountAmt = appliedPromo.pct > 0 ? flyTotal * (appliedPromo.pct / 100) : 0;
+  const discountedSub = flyTotal - discountAmt;
+  const grandTotal = discountedSub + shippingCost;
   currentOrderTotal = grandTotal;
   currentOrderShipping = shippingCost;
 
+  // HTML summary
   let lines = cart.map(item=>`
     <div class="order-line">
       <span>${item.qty} pack${item.qty>1?"s":""} · ${item.fly.name} (${item.size}${item.color?", "+item.color:""})</span>
@@ -3238,22 +3242,32 @@ function buildOrderSummary() {
     </div>
   `).join("");
 
+  if (appliedPromo.pct > 0) {
+    lines += `<div class="order-line"><span>Subtotal</span><span>$${flyTotal.toFixed(2)}</span></div>`;
+    lines += `<div class="order-line" style="color:#2ecc71"><span>Discount (${appliedPromo.code} −${appliedPromo.pct}%)</span><span>−$${discountAmt.toFixed(2)}</span></div>`;
+  }
+
   if (isPickup) {
     lines += `<div class="order-line shipping"><span>📍 Local Pickup</span><span class="price">FREE</span></div>`;
   } else {
-    lines += `<div class="order-line shipping"><span>Shipping · USPS Tracked</span><span class="price">$${cost.toFixed(2)}</span></div>`;
+    lines += `<div class="order-line shipping"><span>Shipping · USPS Tracked</span><span class="price">$${shippingCost.toFixed(2)}</span></div>`;
   }
 
   lines += `<div class="order-total-line"><span>Order Total</span><span>$${grandTotal.toFixed(2)}</span></div>`;
   document.getElementById("orderSummary").innerHTML = lines;
 
-  // Rebuild plain text for email
+  // Plain text for EmailJS / Zapier
   const itemLines = cart.map(item =>
     `  - ${item.qty} pack${item.qty>1?"s":""} of ${item.fly.name} (Size ${item.size}${item.color?", "+item.color:""})`
   ).join("\n");
   const fulfillmentLine = isPickup ? "\n  Fulfillment: LOCAL PICKUP" : "";
-  currentOrderSummaryText = itemLines + fulfillmentLine + "\n\n  Subtotal: $" + flyTotal.toFixed(2) +
-    (isPickup ? "\n  Shipping: FREE (pickup)" : "\n  Shipping: $" + cost.toFixed(2)) +
+  const discountLine = appliedPromo.pct > 0
+    ? `\n  Discount (${appliedPromo.code} -${appliedPromo.pct}%): -$${discountAmt.toFixed(2)}`
+    : "";
+  currentOrderSummaryText = itemLines + fulfillmentLine +
+    "\n\n  Subtotal: $" + flyTotal.toFixed(2) +
+    discountLine +
+    (isPickup ? "\n  Shipping: FREE (pickup)" : "\n  Shipping: $" + shippingCost.toFixed(2)) +
     "\n  TOTAL: $" + grandTotal.toFixed(2);
 }
 
@@ -3359,11 +3373,13 @@ function applyPromo() {
 }
 
 // EMAIL SIGNUP (shared)
-function submitEmailSignup(email, source) {
+function submitEmailSignup(email, source, includeDiscount) {
   const today = new Date().toLocaleDateString();
+  const payload = { email, source, signup_date: today };
+  if (includeDiscount) payload.discount_code = 'WELCOME10';
   return fetch('https://hooks.zapier.com/hooks/catch/27334010/ujxwp4t/', {
     method: 'POST',
-    body: JSON.stringify({ email, source, discount_code: 'WELCOME10', signup_date: today })
+    body: JSON.stringify(payload)
   });
 }
 
@@ -3376,7 +3392,7 @@ function submitPopupEmail() {
   const email = input.value.trim();
   if (!email || !email.includes('@')) { input.style.borderColor = 'var(--red-bright)'; return; }
   input.style.borderColor = '';
-  submitEmailSignup(email, 'popup_signup');
+  submitEmailSignup(email, 'popup_signup', true);
   localStorage.setItem('tt_email_captured', '1');
   document.getElementById('emailPopupForm').style.display = 'none';
   document.getElementById('emailPopupSuccess').style.display = 'block';
@@ -3389,7 +3405,7 @@ function submitFooterEmail() {
   const email = input.value.trim();
   if (!email || !email.includes('@')) { input.style.borderColor = 'var(--red-bright)'; return; }
   input.style.borderColor = '';
-  submitEmailSignup(email, 'footer_signup');
+  submitEmailSignup(email, 'footer_signup', false);
   localStorage.setItem('tt_email_captured', '1');
   input.style.display = 'none';
   input.parentElement.querySelector('.footer-email-btn').style.display = 'none';
@@ -3496,10 +3512,7 @@ function placeOrder() {
   const ownerEmail = emailjs.send('service_y9wyl0c', 'template_132nwoj', templateParams);
   const customerEmail = emailjs.send('service_y9wyl0c', 'template_slq6ev8', templateParams);
 
-  const flySubtotal = cart.reduce((s,i)=>s+i.fly.price*i.qty,0);
-  const { cost: shippingCost } = calcShipping();
-  const discountedSub = appliedPromo.pct > 0 ? flySubtotal * (1 - appliedPromo.pct / 100) : flySubtotal;
-  const orderTotal = (discountedSub + (shippingCost ?? 0)).toFixed(2);
+  const orderTotal = currentOrderTotal.toFixed(2);
 
   Promise.all([ownerEmail, customerEmail])
     .then(() => {
