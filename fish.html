@@ -1401,32 +1401,41 @@
     .about-mosaic .mosaic-item:nth-child(9) { grid-column: span 1; grid-row: span 1; }
   }
 
-  /* FISH MASONRY GRID */
-  .fish-masonry {
-    columns: 3;
-    column-gap: 6px;
-    padding: 16px 12px 32px;
+  /* FISH GALLERY CARDS */
+  .fish-gallery-cards {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 16px 12px 8px;
   }
-  .fish-masonry-item {
-    break-inside: avoid;
-    margin-bottom: 6px;
+  .fish-card {
+    background: #111;
+    border: 1px solid #2a2a2a;
+    border-radius: 6px;
     overflow: hidden;
-    border-radius: 4px;
-    border: 1px solid #222;
+    margin-bottom: 16px;
     cursor: zoom-in;
-    display: block;
-    position: relative;
+    transition: border-color 0.2s;
   }
-  .fish-masonry-item img {
+  .fish-card:hover { border-color: var(--red); }
+  .fish-card img {
     width: 100%;
-    height: auto;
+    height: 450px;
+    object-fit: cover;
+    border-radius: 6px;
     display: block;
-    transition: transform 0.3s ease;
   }
-  .fish-masonry-item:hover img { transform: scale(1.03); }
-  .fish-masonry-item:hover { border-color: var(--red); }
+  .fish-card-caption {
+    color: var(--gold);
+    font-family: 'Barlow Condensed', Impact, sans-serif;
+    font-size: 0.72rem;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    text-align: center;
+    padding: 10px 12px;
+  }
   @media (max-width: 480px) {
-    .fish-masonry { columns: 2; }
+    .fish-card img { height: 320px; }
   }
 
   .trip-fly-cards {
@@ -1640,14 +1649,12 @@
       <div class="hero-sub">Real fish. Real water. Real patterns.</div>
       <div class="hero-divider"></div>
     </div>
-    <div class="fish-masonry" id="fishMasonryGrid"></div>
+    <div class="fish-gallery-cards" id="fishMasonryGrid"></div>
 
     <div style="max-width:640px;margin:0 auto;padding:32px 16px 0;">
 
-      <!-- Gallery coming soon card -->
-      <div style="background:#111;border:2px solid #2a2a2a;border-radius:10px;padding:32px 24px;text-align:center;margin-bottom:28px;">
-        <div style="font-size:2.5rem;margin-bottom:16px;">🐟</div>
-        <p style="font-size:0.95rem;color:#ccc;line-height:1.8;margin:0 0 24px;">The gallery is loading up — fish from Antero, Spinney Mountain, 11 Mile, Delaney Buttes, Lake John and Wyoming's plains lakes are on the way. In the meantime, shop the exact flies that caught them.</p>
+      <!-- Shop CTA -->
+      <div style="text-align:center;margin-bottom:28px;">
         <a href="index.html" style="display:inline-block;background:var(--red);color:#fff;font-family:'Bebas Neue',Impact,sans-serif;font-size:1.4rem;letter-spacing:0.12em;text-decoration:none;padding:16px 36px;border-radius:4px;border:2px solid #ff6b5b;box-shadow:0 4px 20px rgba(192,57,43,0.5);">🪝 Shop the Flies That Caught These</a>
       </div>
 
@@ -2125,16 +2132,16 @@ function buildMosaic() {
     }).join('');
   }
 
-  // Fish page — masonry grid
+  // Fish page — photo cards
   const grid = document.getElementById('fishMasonryGrid');
   if (grid) {
     const keys = Object.keys(GALLERY_IMAGES);
     grid.innerHTML = keys.map((key, i) => `
-      <div class="fish-masonry-item" onclick="openCarouselLightbox('fishMasonryLb', ${i})">
+      <div class="fish-card" onclick="openCarouselLightbox('fishMasonryLb', ${i})">
         <img src="${GALLERY_IMAGES[key]}" alt="Colorado trout ${i+1}" loading="lazy">
+        <div class="fish-card-caption">Colorado Stillwater · Trout Tricks</div>
       </div>
     `).join('');
-    // Store for lightbox
     carousels['fishMasonryLb'] = { index: 0, total: keys.length, images: GALLERY_IMAGES, keys };
   }
 }
