@@ -1406,7 +1406,10 @@
     margin-bottom: 8px;
     border-radius: 4px;
     break-inside: avoid;
+    cursor: zoom-in;
+    transition: opacity 0.15s ease;
   }
+  .fish-gallery img:hover { opacity: 0.88; }
   @media (max-width: 768px) {
     .fish-gallery { column-count: 2; }
   }
@@ -2675,6 +2678,22 @@ function loadCart() {
 buildCatalog();
 buildMosaic();
 loadCart();
+
+// Wire fish gallery click-to-expand via event delegation on the container
+(function wireFishGalleryLightbox() {
+  const gallery = document.querySelector('.fish-gallery');
+  if (!gallery) return;
+  const imgs = Array.from(gallery.querySelectorAll('img'));
+  if (imgs.length === 0) return;
+  const keys = imgs.map((_, i) => 'g' + i);
+  const images = Object.fromEntries(keys.map((k, i) => [k, imgs[i].getAttribute('src')]));
+  carousels['fishMasonryLb'] = { index: 0, total: keys.length, images, keys };
+  gallery.addEventListener('click', (e) => {
+    if (e.target.tagName !== 'IMG') return;
+    const idx = imgs.indexOf(e.target);
+    if (idx >= 0) openCarouselLightbox('fishMasonryLb', idx);
+  });
+})();
 </script>
 </body>
 </html>
