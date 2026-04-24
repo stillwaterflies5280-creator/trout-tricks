@@ -1424,16 +1424,6 @@
     border-radius: 6px;
     display: block;
   }
-  .fish-card-caption {
-    color: var(--gold);
-    font-family: 'Barlow Condensed', Impact, sans-serif;
-    font-size: 0.72rem;
-    font-weight: 700;
-    letter-spacing: 0.12em;
-    text-transform: uppercase;
-    text-align: center;
-    padding: 10px 12px;
-  }
   @media (max-width: 480px) {
     .fish-card img { height: 320px; }
   }
@@ -2121,7 +2111,6 @@ function buildMosaic() {
     grid.innerHTML = keys.map((key, i) => `
       <div class="fish-card" onclick="openCarouselLightbox('fishMasonryLb', ${i})">
         <img src="${GALLERY_IMAGES[key]}" alt="Colorado trout ${i+1}" loading="lazy">
-        <div class="fish-card-caption">Colorado Stillwater · Trout Tricks</div>
       </div>
     `).join('');
     carousels['fishMasonryLb'] = { index: 0, total: keys.length, images: GALLERY_IMAGES, keys };
