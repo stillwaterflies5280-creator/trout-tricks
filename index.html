@@ -2896,7 +2896,7 @@ function buildMosaic() {
       return `
         <div class="trip-fly-card fly-card" data-fly-name="${fly.name.replace(/"/g, '&quot;')}" data-fly-price="${fly.price}">
           <div class="fly-img" onclick="openLightbox('${fly.img}','${fly.name.replace(/'/g, "\\'")}')">
-            <img src="${FLY_IMAGES[fly.img]}" alt="${fly.name}" loading="lazy" style="${fly.id===9?'transform:rotate(90deg) scale(1.4);':''}">
+            <img src="${FLY_IMAGES[fly.img]}" alt="${fly.name}" loading="lazy" style="${fly.id===9?'transform:rotate(90deg) scale(1.4);':fly.id===6?'object-fit:cover;object-position:top;':''}">
             ${badge}
           </div>
           <div class="fly-info">
@@ -3046,7 +3046,7 @@ function buildCatalog() {
            ${badge}
          </div>`
       : `<div class="fly-img" onclick="openLightbox('${fly.img}','${fly.name.replace(/'/g, "\\'")}')">
-           <img src="${FLY_IMAGES[fly.img]}" alt="${fly.name}" loading="lazy" style="${fly.id===9?'transform:rotate(90deg) scale(1.4);':''}">
+           <img src="${FLY_IMAGES[fly.img]}" alt="${fly.name}" loading="lazy" style="${fly.id===9?'transform:rotate(90deg) scale(1.4);':fly.id===6?'object-fit:cover;object-position:top;':''}">
            ${badge}
          </div>`;
 
