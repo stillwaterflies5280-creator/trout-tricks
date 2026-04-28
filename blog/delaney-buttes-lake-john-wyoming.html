@@ -1610,6 +1610,15 @@
     .footer-partners-strip img { max-height: 28px; max-width: calc(33.333% - 22px); }
   }
 
+
+  /* MFC logo — lighten because original artwork is very dark */
+  .pro-partners-strip img.partner-mfc { filter: grayscale(1) brightness(1.6); }
+  .pro-partners-strip img.partner-mfc:hover { filter: grayscale(0) brightness(1.6); }
+  .footer-partners-strip img.partner-mfc { filter: grayscale(1) brightness(1.6); }
+  .footer-partners-strip img.partner-mfc:hover { filter: grayscale(0) brightness(1.6); }
+  /* Partner links — no link styling on the wrapping <a> */
+  .pro-partners-strip a, .footer-partners-strip a { display: inline-flex; align-items: center; text-decoration: none; }
+
 </style>
 </head>
 <body>
@@ -1752,11 +1761,11 @@
   <div class="footer-partners">
     <div class="footer-partners-label">Trusted Partners</div>
     <div class="footer-partners-strip">
-      <img src="../images/partner-simms.png" alt="Simms">
-      <img src="../images/partner-orvis.png" alt="Orvis">
-      <img src="../images/partner-umpqua.png" alt="Umpqua Feather Merchants">
-      <img src="../images/partner-mfc.png" alt="Montana Fly Company">
-      <img src="../images/partner-saluda.png" alt="Saluda Beads">
+      <a href="https://www.simmsfishing.com" target="_blank" rel="noopener"><img src="../images/partner-simms.png" alt="Simms"></a>
+      <a href="https://www.orvis.com" target="_blank" rel="noopener"><img src="../images/partner-orvis.png" alt="Orvis"></a>
+      <a href="https://www.umpquafeathermerchants.com" target="_blank" rel="noopener"><img src="../images/partner-umpqua.png" alt="Umpqua Feather Merchants"></a>
+      <a href="https://montanafly.com" target="_blank" rel="noopener"><img src="../images/partner-mfc.png" alt="Montana Fly Company" class="partner-mfc"></a>
+      <a href="https://saludabeads.com" target="_blank" rel="noopener"><img src="../images/partner-saluda.png" alt="Saluda Beads"></a>
     </div>
   </div>
   <hr class="footer-divider"/>
