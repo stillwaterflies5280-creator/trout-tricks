@@ -616,16 +616,16 @@
 
   .fly-img {
     width: 100%;
-    height: 220px;
+    height: 280px;
     overflow: hidden;
-    background: #000;
+    background: #111;
     position: relative;
     cursor: zoom-in;
   }
   .fly-img img {
     width: 100%;
     height: 100%;
-    object-fit: cover;
+    object-fit: contain;
     display: block;
     transition: transform 0.4s ease;
   }
@@ -2895,7 +2895,7 @@ function buildMosaic() {
       const colorSel = fly.colors ? `<div class="option-row"><span class="option-label">Color</span><select id="tcolor-${fly.id}">${fly.colors.map(c=>`<option>${c}</option>`).join('')}</select></div>` : '';
       return `
         <div class="trip-fly-card fly-card" data-fly-name="${fly.name.replace(/"/g, '&quot;')}" data-fly-price="${fly.price}">
-          <div class="fly-img" onclick="openLightbox('${fly.img}','${fly.name}')">
+          <div class="fly-img" onclick="openLightbox('${fly.img}','${fly.name.replace(/'/g, "\\'")}')">
             <img src="${FLY_IMAGES[fly.img]}" alt="${fly.name}" loading="lazy" style="${fly.id===9?'transform:rotate(90deg) scale(1.4);':''}">
             ${badge}
           </div>
@@ -3045,7 +3045,7 @@ function buildCatalog() {
            </div>
            ${badge}
          </div>`
-      : `<div class="fly-img" onclick="openLightbox('${fly.img}','${fly.name}')">
+      : `<div class="fly-img" onclick="openLightbox('${fly.img}','${fly.name.replace(/'/g, "\\'")}')">
            <img src="${FLY_IMAGES[fly.img]}" alt="${fly.name}" loading="lazy" style="${fly.id===9?'transform:rotate(90deg) scale(1.4);':''}">
            ${badge}
          </div>`;
