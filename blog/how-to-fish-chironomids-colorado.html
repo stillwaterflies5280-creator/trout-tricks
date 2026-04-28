@@ -1575,6 +1575,46 @@
     transition: background 0.2s;
   }
   .affiliate-btn:hover { background: var(--red-bright); }
+
+  /* TRUSTED PARTNERS — global footer strip */
+  .footer-partners {
+    padding: 22px 20px 18px;
+    border-top: 1px solid #222;
+    border-bottom: 1px solid #222;
+    margin: 24px 0 24px;
+    text-align: center;
+  }
+  .footer-partners-label {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 0.7rem;
+    letter-spacing: 0.28em;
+    text-transform: uppercase;
+    color: #666;
+    margin-bottom: 14px;
+  }
+  .footer-partners-strip {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 28px;
+  }
+  .footer-partners-strip img {
+    max-height: 35px;
+    width: auto;
+    filter: grayscale(1);
+    opacity: 0.5;
+    transition: filter 0.3s ease, opacity 0.3s ease;
+  }
+  .footer-partners-strip img:hover {
+    filter: grayscale(0);
+    opacity: 1;
+  }
+  @media (max-width: 768px) {
+    .footer-partners-strip { gap: 16px 22px; }
+    .footer-partners-strip img { max-height: 28px; max-width: calc(33.333% - 22px); }
+  }
+
 </style>
 </head>
 
