@@ -560,6 +560,83 @@
   .fly-search-empty.visible { display: block; }
   .fly-search-empty strong { color: var(--white); }
 
+  /* SEARCH RESULTS — flies & articles section headers */
+  .search-section-header {
+    font-family: 'Bebas Neue', Impact, sans-serif;
+    font-size: 1rem;
+    letter-spacing: 0.18em;
+    color: #888;
+    padding: 24px 4px 10px;
+    border-bottom: 1px solid var(--border);
+    margin: 0 16px 12px;
+    max-width: 920px;
+  }
+  .search-section-header .count { color: var(--red); }
+  .article-results {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    padding: 0 16px 24px;
+    max-width: 920px;
+    margin: 0 auto;
+  }
+  .article-result-row {
+    display: block;
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 14px 18px;
+    text-decoration: none;
+    color: inherit;
+    transition: border-color 0.2s, transform 0.2s;
+  }
+  .article-result-row:hover {
+    border-color: var(--red);
+    transform: translateY(-1px);
+  }
+  .article-result-title {
+    font-family: 'Barlow Condensed', Impact, sans-serif;
+    font-size: 1rem;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    color: var(--white);
+    margin-bottom: 4px;
+    line-height: 1.25;
+  }
+  .article-result-snippet {
+    font-family: 'Barlow', sans-serif;
+    font-size: 0.85rem;
+    color: var(--light-gray);
+    line-height: 1.5;
+    margin-bottom: 6px;
+  }
+  .article-result-cta {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 0.75rem;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--red);
+  }
+  .article-result-row:hover .article-result-cta { color: var(--red-bright); }
+  .article-result-overflow {
+    display: block;
+    text-align: center;
+    padding: 12px 16px;
+    margin-top: 4px;
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 0.85rem;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--red);
+    text-decoration: none;
+    border: 1px dashed var(--border);
+    border-radius: 6px;
+    transition: border-color 0.2s, color 0.2s;
+  }
+  .article-result-overflow:hover { color: var(--red-bright); border-color: var(--red); }
+
   /* SECTION TITLE */
   .section-title {
     font-family: 'Bebas Neue', sans-serif;
@@ -2332,8 +2409,11 @@
   </div>
 
   <div class="section-title">THE FLIES</div>
-  <div class="fly-search-empty" id="flySearchEmpty">No patterns found for "<strong id="flySearchQuery"></strong>"</div>
+  <div class="fly-search-empty" id="flySearchEmpty">No flies or articles match "<strong id="flySearchQuery"></strong>"</div>
+  <div class="search-section-header" id="flyResultsHeader" style="display:none;">FLIES <span class="count">(<span id="flyResultsCount">0</span>)</span></div>
   <div class="catalog" id="catalog"></div>
+  <div class="search-section-header" id="articleResultsHeader" style="display:none;">ARTICLES <span class="count">(<span id="articleResultsCount">0</span>)</span></div>
+  <div class="article-results" id="articleResults"></div>
 
   <!-- SOCIAL PROOF -->
   <div id="social-proof" class="social-proof">
@@ -3148,25 +3228,186 @@ function buildCatalog() {
   leeches.forEach(renderFlyCard);
 }
 
+// Blog post index used by site search
+const blogIndex = [
+  {
+    title: "11 Mile Reservoir Fly Fishing — The Complete Guide for Colorado Stillwater Anglers",
+    url: "blog/11-mile-reservoir-fly-fishing.html",
+    snippet: "The complete 11 Mile Reservoir fly fishing guide — best access points, chironomid patterns, depths, seasons and regulations for Colorado's most underrated trophy water.",
+    tags: ["11 mile","eleven mile","reservoir","stillwater","colorado","chironomid","south park","trophy trout","guide"]
+  },
+  {
+    title: "Best Chironomid Patterns for Antero Reservoir — What's Working Right Now",
+    url: "blog/antero-reservoir-chironomid-patterns.html",
+    snippet: "The chironomid patterns, sizes and colors that consistently produce big trout at Antero Reservoir — tungsten beads, 2x heavy hooks, guide-tested at 8,600 feet.",
+    tags: ["antero","chironomid","patterns","tungsten","stillwater","colorado","south park","fly selection"]
+  },
+  {
+    title: "Antero Reservoir Closing May 13 — What Colorado Fly Anglers Need to Know",
+    url: "blog/antero-reservoir-closure-2026.html",
+    snippet: "Antero Reservoir closes to all recreation on May 13 2026 as Denver Water drains it for drought response. Here's what fly anglers need to know and where to fish instead.",
+    tags: ["antero","closure","drought","denver water","news","south park","spinney","eleven mile","delaney buttes"]
+  },
+  {
+    title: "Balanced Leeches for Colorado Stillwater — The Shore Angler's Secret Weapon",
+    url: "blog/balanced-leech-stillwater-colorado.html",
+    snippet: "Learn how to fish balanced leeches under an indicator for Colorado stillwater trout. Thomas Frank's go-to technique for Spinney, Antero and 11 Mile from shore.",
+    tags: ["balanced leech","leech","indicator","shore fishing","stillwater","colorado","spinney","antero","11 mile"]
+  },
+  {
+    title: "The 5 Chironomid Fly Patterns Every Colorado Stillwater Angler Needs",
+    url: "blog/best-chironomid-fly-patterns.html",
+    snippet: "You don't need 200 flies. These 5 hand-tied chironomid patterns — Chocolate Gold, Snow Cone, Muskie Buzzer, Chirono'midge, Burnt Wino — cover 95% of Colorado stillwater.",
+    tags: ["chironomid","patterns","fly selection","chocolate gold","snow cone","muskie buzzer","chironomidge","burnt wino","stillwater"]
+  },
+  {
+    title: "The #1 Mistake Stillwater Anglers Make — And How to Fix It",
+    url: "blog/biggest-mistake-stillwater-anglers.html",
+    snippet: "The biggest mistake stillwater anglers make is fishing at the wrong depth. Learn how to dial in the strike zone and stop missing fish.",
+    tags: ["depth","presentation","mistake","tactics","stillwater","indicator","chironomid"]
+  },
+  {
+    title: "Fly Fishing Carter Lake and Horsetooth Reservoir — Front Range Stillwater Guide",
+    url: "blog/carter-lake-horsetooth-fly-fishing.html",
+    snippet: "A guide to fly fishing Carter Lake and Horsetooth Reservoir in Colorado. Shore-based tactics, chironomid patterns, and what's working on Colorado's Front Range stillwaters.",
+    tags: ["carter lake","horsetooth","front range","stillwater","colorado","shore fishing","chironomid"]
+  },
+  {
+    title: "Chironomid Depth Control — The Single Most Important Stillwater Skill",
+    url: "blog/chironomid-depth-control-stillwater.html",
+    snippet: "Master chironomid depth control for Colorado stillwater trout. Learn how to dial in the exact depth that triggers strikes on Spinney, Antero and 11 Mile.",
+    tags: ["chironomid","depth","tactics","stillwater","spinney","antero","11 mile","presentation"]
+  },
+  {
+    title: "How to Fish Chironomids on Colorado's South Park Reservoirs",
+    url: "blog/chironomid-fishing-south-park.html",
+    snippet: "A guide's breakdown of chironomid fishing on Antero, Spinney Mountain and 11 Mile — depth selection, indicator setup, and the tungsten bead patterns that move trophy trout.",
+    tags: ["chironomid","south park","antero","spinney","11 mile","indicator","depth","tungsten","stillwater"]
+  },
+  {
+    title: "How to Catch Trophy Trout in Colorado — A Guide's Honest Take",
+    url: "blog/colorado-trophy-trout-guide.html",
+    snippet: "A Colorado guide's honest take on catching 20-inch+ trophy trout — where they live, the presentation that works, and the patterns that move big fish on stillwaters.",
+    tags: ["trophy trout","20 inch","colorado","stillwater","guide","presentation","tactics","patterns"]
+  },
+  {
+    title: "Delaney Buttes & Lake John — Colorado's Underrated Stillwater Gems",
+    url: "blog/delaney-buttes-lake-john-north-park.html",
+    snippet: "Skip the crowds at Antero. Delaney Buttes and Lake John deliver trophy rainbow and brown trout on chironomids with a fraction of the pressure — a complete guide.",
+    tags: ["delaney buttes","lake john","north park","colorado","stillwater","chironomid","trophy trout"]
+  },
+  {
+    title: "How to Fish Chironomids for Trophy Stillwater Trout in Colorado",
+    url: "blog/how-to-fish-chironomids-colorado.html",
+    snippet: "Chironomids are the single most important food source for Colorado stillwater trout. Here's how to fish them — indicator setup, depth control, and the patterns that produce.",
+    tags: ["chironomid","stillwater","colorado","indicator","depth","beginner","how to","tactics"]
+  },
+  {
+    title: "How to Set Up an Indicator Rig for Colorado Lakes — Leader Length, Tippet and Fly Selection",
+    url: "blog/indicator-fishing-setup-colorado-lakes.html",
+    snippet: "Complete guide to indicator fishing setup for Colorado stillwater trout. Leader length, tippet size, indicator selection and fly choice for Spinney, Antero and 11 Mile.",
+    tags: ["indicator","rigging","leader","tippet","stillwater","colorado","spinney","antero","11 mile"]
+  },
+  {
+    title: "How to Catch Stillwater Trout from Shore — No Boat Required",
+    url: "blog/shore-fishing-stillwater-trout-without-boat.html",
+    snippet: "Everything you need to know about shore-based stillwater fly fishing in Colorado. Tactics, rigs, and patterns that work without a boat on Spinney, Antero and 11 Mile.",
+    tags: ["shore fishing","no boat","stillwater","tactics","rigs","spinney","antero","11 mile","colorado"]
+  },
+  {
+    title: "The Best Fly Fishing Guide in South Park, Colorado — What to Look For",
+    url: "blog/south-park-fly-fishing-guide.html",
+    snippet: "South Park is home to Antero, Spinney Mountain, and 11 Mile — Colorado's premier stillwater reservoirs. Here's what separates a great South Park guide from the rest.",
+    tags: ["south park","guide","antero","spinney","11 mile","colorado","guided trips","stillwater"]
+  },
+  {
+    title: "Spinney Mountain Reservoir — Colorado's Best Trophy Trout Fishery",
+    url: "blog/spinney-mountain-reservoir-guide.html",
+    snippet: "A complete Spinney Mountain Reservoir fly fishing guide — when to go, where to fish, and which chironomid patterns produce trophy rainbow and cutbow trout.",
+    tags: ["spinney","spinney mountain","reservoir","south park","trophy trout","rainbow","cutbow","chironomid","colorado"]
+  }
+];
+
+const ARTICLE_HAYSTACK = blogIndex.map(p => ({
+  p,
+  hay: (p.title + ' ' + p.snippet + ' ' + (p.tags || []).join(' ')).toLowerCase()
+}));
+
+function scoreArticle(p, query) {
+  let score = 0;
+  if (p.title.toLowerCase().includes(query)) score += 100;
+  if ((p.tags || []).some(t => t.toLowerCase().includes(query))) score += 10;
+  if (p.snippet.toLowerCase().includes(query)) score += 1;
+  return score;
+}
+
+const ARTICLE_CAP = 6;
+
 let searchEventTimer = null;
 function filterFlies(q) {
   const query = q.trim().toLowerCase();
   const wrap = document.getElementById('flySearch');
   if (wrap) wrap.classList.toggle('has-text', query.length > 0);
 
+  // FLIES
   const cards = document.querySelectorAll('#catalog .fly-card');
-  let visible = 0;
+  let flyVisible = 0;
   cards.forEach(card => {
     const hay = card.dataset.search || '';
     const match = !query || hay.includes(query);
     card.style.display = match ? '' : 'none';
-    if (match) visible++;
+    if (match) flyVisible++;
   });
+
+  const flyHeader = document.getElementById('flyResultsHeader');
+  const flyCount = document.getElementById('flyResultsCount');
+  const articleHeader = document.getElementById('articleResultsHeader');
+  const articleCount = document.getElementById('articleResultsCount');
+  const articleResults = document.getElementById('articleResults');
+
+  // ARTICLES
+  let articleMatches = [];
+  if (query) {
+    articleMatches = ARTICLE_HAYSTACK
+      .filter(({ hay }) => hay.includes(query))
+      .map(({ p }) => p)
+      .sort((a, b) => scoreArticle(b, query) - scoreArticle(a, query));
+  }
+
+  if (query) {
+    flyHeader.style.display = flyVisible > 0 ? '' : 'none';
+    flyCount.textContent = flyVisible;
+
+    if (articleMatches.length > 0) {
+      articleHeader.style.display = '';
+      articleCount.textContent = articleMatches.length;
+      const shown = articleMatches.slice(0, ARTICLE_CAP);
+      let html = shown.map(p => `
+        <a class="article-result-row" href="${p.url}">
+          <div class="article-result-title">${p.title}</div>
+          <div class="article-result-snippet">${p.snippet}</div>
+          <div class="article-result-cta">Read article →</div>
+        </a>
+      `).join('');
+      if (articleMatches.length > ARTICLE_CAP) {
+        html += `<a class="article-result-overflow" href="blog.html?q=${encodeURIComponent(q.trim())}">View all ${articleMatches.length} matching articles →</a>`;
+      }
+      articleResults.innerHTML = html;
+    } else {
+      articleHeader.style.display = 'none';
+      articleResults.innerHTML = '';
+    }
+  } else {
+    flyHeader.style.display = 'none';
+    articleHeader.style.display = 'none';
+    articleResults.innerHTML = '';
+  }
 
   const empty = document.getElementById('flySearchEmpty');
   const queryEl = document.getElementById('flySearchQuery');
   if (queryEl) queryEl.textContent = q.trim();
-  if (empty) empty.classList.toggle('visible', query.length > 0 && visible === 0);
+  const noMatches = query.length > 0 && flyVisible === 0 && articleMatches.length === 0;
+  if (empty) empty.classList.toggle('visible', noMatches);
 
   // Debounced search event — fire once the user stops typing
   clearTimeout(searchEventTimer);
