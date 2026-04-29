@@ -1646,6 +1646,96 @@
   /* Partner links — no link styling on the wrapping <a> */
   .pro-partners-strip a, .footer-partners-strip a { display: inline-flex; align-items: center; text-decoration: none; }
 
+
+  /* HEADER SEARCH */
+  .header-search {
+    display: flex;
+    align-items: center;
+    position: relative;
+    margin: 0 0 0 6px;
+  }
+  .header-search-toggle {
+    display: none;
+    background: none;
+    border: none;
+    color: #aaa;
+    font-size: 1.05rem;
+    padding: 6px 10px;
+    cursor: pointer;
+    transition: color 0.2s;
+    -webkit-tap-highlight-color: transparent;
+  }
+  .header-search-toggle:hover { color: #fff; }
+  .header-search-panel {
+    display: flex;
+    align-items: center;
+    background: #141414;
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    transition: border-color 0.2s, box-shadow 0.2s;
+    width: 240px;
+  }
+  .header-search-panel:focus-within {
+    border-color: var(--red);
+    box-shadow: 0 0 0 1px var(--red);
+  }
+  .header-search-icon {
+    padding-left: 12px;
+    font-size: 0.9rem;
+    opacity: 0.55;
+    pointer-events: none;
+  }
+  .header-search-input {
+    flex: 1;
+    background: transparent;
+    border: none;
+    outline: none;
+    color: var(--white);
+    padding: 8px 8px;
+    font-family: 'Barlow', sans-serif;
+    font-size: 0.88rem;
+    min-width: 0;
+  }
+  .header-search-input::placeholder { color: #666; }
+  .header-search-clear {
+    display: none;
+    background: none;
+    border: none;
+    color: #888;
+    font-size: 0.9rem;
+    cursor: pointer;
+    padding: 0 12px 0 6px;
+    line-height: 1;
+    -webkit-tap-highlight-color: transparent;
+    transition: color 0.15s;
+  }
+  .header-search-clear:hover { color: var(--red-bright); }
+  .header-search.has-text .header-search-clear { display: inline-block; }
+
+  @media (max-width: 1024px) {
+    .header-search-panel { width: 200px; }
+  }
+  @media (max-width: 768px) {
+    .header-search-toggle { display: inline-block; }
+    .header-search-panel {
+      display: none;
+      position: fixed;
+      top: 62px;
+      left: 0;
+      right: 0;
+      width: auto;
+      z-index: 99;
+      border-radius: 0;
+      border-left: none;
+      border-right: none;
+      padding: 0;
+    }
+    .header-search.open .header-search-toggle { display: none; }
+    .header-search.open .header-search-panel { display: flex; }
+    .header-search-input { padding: 14px 12px; font-size: 1rem; }
+    .header-search-clear { display: inline-block; padding: 0 18px; font-size: 1.1rem; color: #aaa; }
+  }
+
 </style>
 </head>
 
@@ -1662,6 +1752,14 @@
     <a class="nav-btn" href="about.html">About</a>
     <a class="nav-btn" href="contact.html">Contact</a>
   </nav>
+  <form class="header-search" id="flySearch" action="index.html" method="get" onsubmit="return onHeaderSearchSubmit(event)">
+    <button type="button" class="header-search-toggle" onclick="toggleHeaderSearch()" aria-label="Search">🔍</button>
+    <div class="header-search-panel">
+      <span class="header-search-icon" aria-hidden="true">🔍</span>
+      <input type="text" name="q" id="flySearchInput" class="header-search-input" placeholder="Search flies &amp; articles…" autocomplete="off" oninput="onHeaderSearchInput(this.value)" onkeydown="onHeaderSearchKey(event)">
+      <button type="button" class="header-search-clear" onclick="clearFlySearch()" aria-label="Clear search">✕</button>
+    </div>
+  </form>
   <button class="cart-btn" onclick="openCart()">
     🪝 Cart <span class="cart-count" id="cartCount">0</span>
   </button>
@@ -2757,5 +2855,87 @@ loadCart();
   });
 })();
 </script>
+<script>
+// Header search helpers (defined after main inline script so any local clearFlySearch is overridden)
+function toggleHeaderSearch() {
+  var form = document.getElementById('flySearch');
+  if (!form) return;
+  var wasOpen = form.classList.contains('open');
+  form.classList.toggle('open');
+  if (!wasOpen) {
+    var input = document.getElementById('flySearchInput');
+    if (input) setTimeout(function(){ input.focus(); }, 50);
+  }
+}
+function onHeaderSearchInput(val) {
+  if (typeof filterFlies === 'function') {
+    filterFlies(val);
+  } else {
+    var form = document.getElementById('flySearch');
+    if (form) form.classList.toggle('has-text', val.trim().length > 0);
+  }
+}
+function onHeaderSearchKey(e) {
+  if (e.key === 'Escape') {
+    clearFlySearch();
+    var input = document.getElementById('flySearchInput');
+    if (input) input.blur();
+  }
+}
+function _searchScrollTarget() {
+  var ids = ['flyResultsHeader', 'articleResultsHeader', 'flySearchEmpty', 'catalog'];
+  for (var i = 0; i < ids.length; i++) {
+    var el = document.getElementById(ids[i]);
+    if (!el) continue;
+    if (ids[i] === 'flySearchEmpty' && !el.classList.contains('visible')) continue;
+    if ((ids[i] === 'flyResultsHeader' || ids[i] === 'articleResultsHeader') && el.style.display === 'none') continue;
+    return el;
+  }
+  return null;
+}
+function onHeaderSearchSubmit(e) {
+  var input = document.getElementById('flySearchInput');
+  var q = input ? input.value.trim() : '';
+  if (typeof filterFlies === 'function') {
+    e.preventDefault();
+    filterFlies(q);
+    if (q) {
+      var target = _searchScrollTarget();
+      if (target) target.scrollIntoView({behavior:'smooth', block:'start'});
+    }
+    var form = document.getElementById('flySearch');
+    if (form) form.classList.remove('open');
+    if (input) input.blur();
+    return false;
+  }
+  if (!q) { e.preventDefault(); return false; }
+  return true;
+}
+function clearFlySearch() {
+  var input = document.getElementById('flySearchInput');
+  var form = document.getElementById('flySearch');
+  if (input) input.value = '';
+  if (typeof filterFlies === 'function') filterFlies('');
+  if (form) form.classList.remove('open', 'has-text');
+  if (input && window.matchMedia('(min-width: 769px)').matches) input.focus();
+}
+window.addEventListener('DOMContentLoaded', function(){
+  var params = new URLSearchParams(window.location.search);
+  var q = params.get('q');
+  if (!q) return;
+  var input = document.getElementById('flySearchInput');
+  var form = document.getElementById('flySearch');
+  if (input) input.value = q;
+  if (form) form.classList.toggle('has-text', q.length > 0);
+  if (typeof filterFlies === 'function') {
+    filterFlies(q);
+    setTimeout(function(){
+      var target = _searchScrollTarget();
+      if (target) target.scrollIntoView({behavior:'smooth', block:'start'});
+    }, 120);
+  }
+});
+</script>
+
 </body>
 </html>
