@@ -2080,18 +2080,19 @@ const GALLERY_IMAGES = {};
 // PHASE 2 (TODO): replace with serverless function + cart-driven Payment Links API.
 // ---------------------------------------------------------------------------
 const SQUARE_LINKS = {
-  "muskie-buzzer":  "https://square.link/u/PLACEHOLDER_MUSKIE",
-  "chocolate-gold": "https://square.link/u/PLACEHOLDER_CHOC",
-  "ironman":        "https://square.link/u/PLACEHOLDER_IRONMAN",
-  "snow-cone":      "https://square.link/u/PLACEHOLDER_SNOW",
-  "chirono-midge":  "https://square.link/u/PLACEHOLDER_MIDGE",
-  "burnt-wino":     "https://square.link/u/PLACEHOLDER_WINO",
-  "burnt-hopper":   "https://square.link/u/PLACEHOLDER_HOPPER",
-  "winged-duck":    "https://square.link/u/PLACEHOLDER_DUCK",
-  "winged-cone":    "https://square.link/u/PLACEHOLDER_CONE",
-  "balanced-leech": "https://square.link/u/PLACEHOLDER_BALANCED",
-  "mayers-leech":   "https://square.link/u/PLACEHOLDER_MAYERS",
-  "micro-leech":    "https://square.link/u/PLACEHOLDER_MICRO"
+  "muskie-buzzer":  "https://square.link/u/oo2ZrIdA",
+  "ironman":        "https://square.link/u/V33kq9JA",
+  "winged-duck":    "https://square.link/u/s1Vz07bC",
+  "winged-cone":    "https://square.link/u/tMkodRqA",
+  "chocolate-gold": "https://square.link/u/QdSfPWSi",
+  "snow-cone":      "https://square.link/u/0pXAQhZL",
+  "chirono-midge":  "https://square.link/u/69z9KbHr",
+  "burnt-wino":     "https://square.link/u/TiQ4pL8j",
+  "burnt-hopper":   "https://square.link/u/J5EPY1bK",
+  "balanced-leech": "https://square.link/u/NJzUmqra",
+  "mayers-leech":   "https://square.link/u/BuOWe2qZ",
+  "micro-leech":    "https://square.link/u/iP4nhsKh",
+  "guide-choice":   "https://square.link/u/rdEgFRMZ"
 };
 
 const FLY_SLUGS = {
@@ -2109,31 +2110,50 @@ const FLY_SLUGS = {
   12: "micro-leech"
 };
 
-function buyNow(id) {
-  const fly = flies.find(function(f) { return f.id === id; });
-  if (!fly) return;
-  const slug = FLY_SLUGS[id];
-  const baseUrl = SQUARE_LINKS[slug];
+document.addEventListener("click", function(e) {
+  var btn = e.target.closest && e.target.closest("a.square-buy-btn[data-fly-slug]");
+  if (!btn) return;
+  var slug    = btn.dataset.flySlug;
+  var price   = parseFloat(btn.dataset.flyPrice) || 0;
+  var flyName = btn.dataset.flyName || slug;
+  var baseUrl = btn.getAttribute("href") || "";
   if (!baseUrl || baseUrl.indexOf("PLACEHOLDER") !== -1) {
-    if (typeof showToast === "function") {
-      showToast("Checkout link not yet configured for this pattern.");
-    }
+    e.preventDefault();
+    if (typeof showToast === "function") showToast("Checkout link not yet configured for this pattern.");
     return;
   }
-  const sizeEl  = document.getElementById("size-"  + id) || document.getElementById("tsize-"  + id);
-  const colorEl = document.getElementById("color-" + id) || document.getElementById("tcolor-" + id);
-  const size  = sizeEl  ? sizeEl.value  : (fly.sizes && fly.sizes[0]) || "";
-  const color = colorEl ? colorEl.value : "";
-  const noteParts = [];
-  if (size)  noteParts.push("size: " + size);
-  if (color) noteParts.push("color: " + color);
-  const note = noteParts.join(", ");
-  const url = note ? baseUrl + "?note=" + encodeURIComponent(note) : baseUrl;
-  if (typeof gtag === "function") {
-    gtag("event", "begin_checkout", { fly_name: slug, price: fly.price });
+  // Read variant selectors inside the same fly card (size + color)
+  var card = btn.closest(".fly-card");
+  var size = "", color = "";
+  if (card) {
+    card.querySelectorAll("select").forEach(function(s) {
+      if (s.id && (s.id.indexOf("size-") === 0 || s.id.indexOf("tsize-") === 0))   size  = s.value || size;
+      if (s.id && (s.id.indexOf("color-") === 0 || s.id.indexOf("tcolor-") === 0)) color = s.value || color;
+    });
   }
-  window.location.href = url;
-}
+  var noteParts = [];
+  if (size)  noteParts.push("size: "  + size);
+  if (color) noteParts.push("color: " + color);
+  var note = noteParts.join(", ");
+  var finalUrl = note
+    ? baseUrl.split("?")[0] + "?note=" + encodeURIComponent(note)
+    : baseUrl;
+  // GA4 begin_checkout (rich item-array format)
+  if (typeof gtag === "function") {
+    gtag("event", "begin_checkout", {
+      currency: "USD",
+      value: price,
+      items: [{
+        item_id: slug,
+        item_name: flyName,
+        price: price,
+        quantity: 1
+      }]
+    });
+  }
+  e.preventDefault();
+  window.location.href = finalUrl;
+});
 
 const flies = [
   {
@@ -2340,7 +2360,7 @@ function buildMosaic() {
               <select id="tsize-${fly.id}">${fly.sizes.map(s=>`<option>${s}</option>`).join('')}</select>
             </div>
             ${colorSel}
-            <button class="square-buy-btn" onclick="buyNow(${fly.id})">Buy Now · $${fly.price}</button>
+            ${(function(){var s=FLY_SLUGS[fly.id]; var u=SQUARE_LINKS[s] || "#"; var n=String(fly.name).replace(/"/g, '&quot;'); return '<a class="square-buy-btn" href="'+u+'" '+'data-fly-slug="'+s+'" data-fly-price="'+fly.price+'" data-fly-name="'+n+'">BUY NOW · $'+fly.price+'</a>';})()}
           </div>
         </div>`;
     }).join('');
