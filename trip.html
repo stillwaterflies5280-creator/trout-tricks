@@ -717,31 +717,6 @@
   .add-btn:hover { background: var(--red-bright); border-color: #ff8070; box-shadow: 0 4px 20px rgba(231,76,60,0.7); }
   .add-btn:active { transform: scale(0.98); }
 
-  .square-buy-btn {
-    display: block;
-    width: 100%;
-    padding: 14px;
-    background: var(--red);
-    color: #ffffff;
-    border: 2px solid #ff6b5b;
-    border-radius: 4px;
-    font-family: 'Barlow Condensed', Impact, sans-serif;
-    font-size: 1.1rem;
-    font-weight: 700;
-    letter-spacing: 0.12em;
-    text-transform: uppercase;
-    cursor: pointer;
-    text-align: center;
-    text-decoration: none;
-    box-sizing: border-box;
-    transition: background 0.2s, border-color 0.2s, box-shadow 0.2s;
-    margin-top: 8px;
-    box-shadow: 0 4px 14px rgba(192,57,43,0.5);
-    -webkit-tap-highlight-color: transparent;
-  }
-  .square-buy-btn:hover { background: var(--red-bright); border-color: #ff8070; box-shadow: 0 4px 20px rgba(231,76,60,0.7); }
-  .square-buy-btn:active { transform: scale(0.98); }
-
   /* PICKUP OPTION */
   .pickup-row {
     display: flex; align-items: center; gap: 8px;
@@ -2075,10 +2050,8 @@ const FISH_IMAGES = {};
 
 const GALLERY_IMAGES = {};
 
-// ---------------------------------------------------------------------------
-// SQUARE HOSTED CHECKOUT (Phase 1) — see index.html for full notes.
-// PHASE 2 (TODO): replace with serverless function + cart-driven Payment Links API.
-// ---------------------------------------------------------------------------
+// SQUARE_LINKS: Phase 1 single-item Buy Links. Not currently wired into UI.
+// Reserved for future use OR backup if Cloudflare Worker fails.
 const SQUARE_LINKS = {
   "muskie-buzzer":  "https://square.link/u/oo2ZrIdA",
   "ironman":        "https://square.link/u/V33kq9JA",
@@ -2109,51 +2082,6 @@ const FLY_SLUGS = {
   11: "mayers-leech",
   12: "micro-leech"
 };
-
-document.addEventListener("click", function(e) {
-  var btn = e.target.closest && e.target.closest("a.square-buy-btn[data-fly-slug]");
-  if (!btn) return;
-  var slug    = btn.dataset.flySlug;
-  var price   = parseFloat(btn.dataset.flyPrice) || 0;
-  var flyName = btn.dataset.flyName || slug;
-  var baseUrl = btn.getAttribute("href") || "";
-  if (!baseUrl || baseUrl.indexOf("PLACEHOLDER") !== -1) {
-    e.preventDefault();
-    if (typeof showToast === "function") showToast("Checkout link not yet configured for this pattern.");
-    return;
-  }
-  // Read variant selectors inside the same fly card (size + color)
-  var card = btn.closest(".fly-card");
-  var size = "", color = "";
-  if (card) {
-    card.querySelectorAll("select").forEach(function(s) {
-      if (s.id && (s.id.indexOf("size-") === 0 || s.id.indexOf("tsize-") === 0))   size  = s.value || size;
-      if (s.id && (s.id.indexOf("color-") === 0 || s.id.indexOf("tcolor-") === 0)) color = s.value || color;
-    });
-  }
-  var noteParts = [];
-  if (size)  noteParts.push("size: "  + size);
-  if (color) noteParts.push("color: " + color);
-  var note = noteParts.join(", ");
-  var finalUrl = note
-    ? baseUrl.split("?")[0] + "?note=" + encodeURIComponent(note)
-    : baseUrl;
-  // GA4 begin_checkout (rich item-array format)
-  if (typeof gtag === "function") {
-    gtag("event", "begin_checkout", {
-      currency: "USD",
-      value: price,
-      items: [{
-        item_id: slug,
-        item_name: flyName,
-        price: price,
-        quantity: 1
-      }]
-    });
-  }
-  e.preventDefault();
-  window.location.href = finalUrl;
-});
 
 const flies = [
   {
@@ -2360,7 +2288,7 @@ function buildMosaic() {
               <select id="tsize-${fly.id}">${fly.sizes.map(s=>`<option>${s}</option>`).join('')}</select>
             </div>
             ${colorSel}
-            ${(function(){var s=FLY_SLUGS[fly.id]; var u=SQUARE_LINKS[s] || "#"; var n=String(fly.name).replace(/"/g, '&quot;'); return '<a class="square-buy-btn" href="'+u+'" '+'data-fly-slug="'+s+'" data-fly-price="'+fly.price+'" data-fly-name="'+n+'">BUY NOW · $'+fly.price+'</a>';})()}
+            <button class="add-btn" onclick="addTripFlyToCart(${fly.id}, 'tsize-${fly.id}', 'tcolor-${fly.id}')">Add to Cart</button>
           </div>
         </div>`;
     }).join('');
