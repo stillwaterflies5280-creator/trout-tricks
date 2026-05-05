@@ -918,6 +918,43 @@
   .add-btn:hover { background: var(--red-bright); border-color: #ff8070; box-shadow: 0 4px 20px rgba(231,76,60,0.7); }
   .add-btn:active { transform: scale(0.98); }
 
+  .square-buy-btn {
+    display: block;
+    width: 100%;
+    padding: 14px;
+    background: var(--red);
+    color: #ffffff;
+    border: 2px solid #ff6b5b;
+    border-radius: 4px;
+    font-family: 'Barlow Condensed', Impact, sans-serif;
+    font-size: 1.1rem;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    cursor: pointer;
+    text-align: center;
+    text-decoration: none;
+    box-sizing: border-box;
+    transition: background 0.2s, border-color 0.2s, box-shadow 0.2s;
+    margin-top: 8px;
+    box-shadow: 0 4px 14px rgba(192,57,43,0.5);
+    -webkit-tap-highlight-color: transparent;
+  }
+  .square-buy-btn:hover { background: var(--red-bright); border-color: #ff8070; box-shadow: 0 4px 20px rgba(231,76,60,0.7); }
+  .square-buy-btn:active { transform: scale(0.98); }
+  .catalog-checkout-note {
+    text-align: center;
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 0.82rem;
+    letter-spacing: 0.04em;
+    color: #888;
+    margin: 0 auto 18px;
+    max-width: 680px;
+    line-height: 1.6;
+    padding: 0 16px;
+  }
+  .catalog-checkout-note strong { color: #aaa; font-weight: 600; }
+
   /* PICKUP OPTION */
   .pickup-row {
     display: flex; align-items: center; gap: 8px;
@@ -2507,6 +2544,10 @@
 
 
   <div class="section-title">THE FLIES</div>
+  <div class="catalog-checkout-note">
+    <strong>✓ Secure checkout powered by Square.</strong> Pay with credit card or Apple Pay.<br>
+    Multiple items? Order each separately for now — bundle checkout coming soon.
+  </div>
   <div class="fly-search-empty" id="flySearchEmpty">No flies or articles match "<strong id="flySearchQuery"></strong>"</div>
   <div class="search-section-header" id="flyResultsHeader" style="display:none;">FLIES <span class="count">(<span id="flyResultsCount">0</span>)</span></div>
   <div class="catalog" id="catalog"></div>
@@ -2918,6 +2959,81 @@ const GALLERY_IMAGES = {
   gfish20: "images/cloudy-day-cutbow.jpg",
 };
 
+// ---------------------------------------------------------------------------
+// SQUARE HOSTED CHECKOUT (Phase 1)
+// ---------------------------------------------------------------------------
+// Per-fly Square Buy Now links. Replace each PLACEHOLDER value below with the
+// real https://square.link/u/<id> URL after generating it in
+// Square Dashboard → Online → Checkout Links → Create Link.
+//
+// Variant handling: the buyNow() helper appends ?note=size:%23%2316,color:...
+// to the chosen URL based on the customer's dropdown selection. Square
+// hosted checkout will surface that note on the order. Test once with a real
+// link to confirm the param is preserved through the redirect chain.
+//
+// PHASE 2 (TODO): Replace these per-product links with a real cart-driven
+// checkout. Approach: a serverless function (Cloudflare Worker / Vercel
+// Function) that holds the Square Access Token as an env var, accepts POSTed
+// cart line items, calls Square's Payment Links API, and returns a hosted
+// checkout URL. Browser then redirects. Unlocks: multi-item carts, dynamic
+// quantities, custom shipping options, promo codes (WELCOME10).
+// ---------------------------------------------------------------------------
+const SQUARE_LINKS = {
+  "muskie-buzzer":  "https://square.link/u/PLACEHOLDER_MUSKIE",
+  "chocolate-gold": "https://square.link/u/PLACEHOLDER_CHOC",
+  "ironman":        "https://square.link/u/PLACEHOLDER_IRONMAN",
+  "snow-cone":      "https://square.link/u/PLACEHOLDER_SNOW",
+  "chirono-midge":  "https://square.link/u/PLACEHOLDER_MIDGE",
+  "burnt-wino":     "https://square.link/u/PLACEHOLDER_WINO",
+  "burnt-hopper":   "https://square.link/u/PLACEHOLDER_HOPPER",
+  "winged-duck":    "https://square.link/u/PLACEHOLDER_DUCK",
+  "winged-cone":    "https://square.link/u/PLACEHOLDER_CONE",
+  "balanced-leech": "https://square.link/u/PLACEHOLDER_BALANCED",
+  "mayers-leech":   "https://square.link/u/PLACEHOLDER_MAYERS",
+  "micro-leech":    "https://square.link/u/PLACEHOLDER_MICRO"
+};
+
+const FLY_SLUGS = {
+  1: "muskie-buzzer",
+  2: "chocolate-gold",
+  3: "ironman",
+  4: "snow-cone",
+  5: "chirono-midge",
+  6: "burnt-wino",
+  7: "burnt-hopper",
+  8: "winged-duck",
+  9: "winged-cone",
+  10: "balanced-leech",
+  11: "mayers-leech",
+  12: "micro-leech"
+};
+
+function buyNow(id) {
+  const fly = flies.find(function(f) { return f.id === id; });
+  if (!fly) return;
+  const slug = FLY_SLUGS[id];
+  const baseUrl = SQUARE_LINKS[slug];
+  if (!baseUrl || baseUrl.indexOf("PLACEHOLDER") !== -1) {
+    if (typeof showToast === "function") {
+      showToast("Checkout link not yet configured for this pattern.");
+    }
+    return;
+  }
+  const sizeEl  = document.getElementById("size-"  + id) || document.getElementById("tsize-"  + id);
+  const colorEl = document.getElementById("color-" + id) || document.getElementById("tcolor-" + id);
+  const size  = sizeEl  ? sizeEl.value  : (fly.sizes && fly.sizes[0]) || "";
+  const color = colorEl ? colorEl.value : "";
+  const noteParts = [];
+  if (size)  noteParts.push("size: " + size);
+  if (color) noteParts.push("color: " + color);
+  const note = noteParts.join(", ");
+  const url = note ? baseUrl + "?note=" + encodeURIComponent(note) : baseUrl;
+  if (typeof gtag === "function") {
+    gtag("event", "begin_checkout", { fly_name: slug, price: fly.price });
+  }
+  window.location.href = url;
+}
+
 const flies = [
   {
     id: 2, img: "fly2",
@@ -3309,15 +3425,7 @@ function buildCatalog() {
             <select id="size-${fly.id}">${fly.sizes.map(s=>`<option>${s}</option>`).join("")}</select>
           </div>
           ${colorSel}
-          <div class="option-row">
-            <span class="option-label">Packs</span>
-            <div class="qty-row">
-              <button class="qty-btn" onclick="changeQty(${fly.id},-1)">−</button>
-              <span class="qty-display" id="qty-${fly.id}">1</span>
-              <button class="qty-btn" onclick="changeQty(${fly.id},1)">+</button>
-            </div>
-          </div>
-          <button class="add-btn" onclick="addToCart(${fly.id})">Add to Cart</button>
+          <button class="square-buy-btn" onclick="buyNow(${fly.id})">Buy Now · $${fly.price}</button>
         </div>
       </div>
     `;
