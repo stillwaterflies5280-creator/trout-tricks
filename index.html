@@ -2719,7 +2719,7 @@
     </div>
   </div>
 
-  <div class="note-box green">
+  <div class="note-box green" id="whatHappensNext">
     <strong>✓ What happens next:</strong> Once your payment is received and matched to your order number, your flies will be hand-tied and shipped with tracking. You'll receive a confirmation message when they're on the way.
   </div>
 
@@ -3581,6 +3581,18 @@ function addToCart(id) {
 
 let orderFulfillment = 'ship'; // 'ship' or 'pickup'
 
+// Updates the "What happens next" green note on the legacy checkout form
+// based on the current orderFulfillment (ship vs. pickup). Called whenever
+// the form opens (goCheckoutLegacy) or the fulfillment toggle flips.
+function updateWhatHappensNext() {
+  const el = document.getElementById('whatHappensNext');
+  if (!el) return;
+  const isPickup = orderFulfillment === 'pickup';
+  el.innerHTML = isPickup
+    ? "<strong>✓ What happens next:</strong> Once your payment is received and matched to your order number, your flies will be hand-tied and ready for pickup at our Fairmount location. We'll text/email you when it's ready."
+    : "<strong>✓ What happens next:</strong> Once your payment is received and matched to your order number, your flies will be hand-tied and shipped with tracking. You'll receive a confirmation message when they're on the way.";
+}
+
 function setFulfillmentFromCheckout(type) {
   orderFulfillment = type;
   // Sync cart toggle
@@ -3596,6 +3608,7 @@ function setFulfillmentFromCheckout(type) {
   // Rebuild order summary with updated shipping cost
   buildOrderSummary();
   updateCartUI();
+  updateWhatHappensNext();
   gtag('event', 'set_shipping', { shipping_tier: type === 'pickup' ? 'Local Pickup' : 'Ship' });
 }
 
@@ -3827,13 +3840,12 @@ function buildOrderSummary() {
 }
 
 // Cart panel "CHECKOUT / REQUEST PICKUP" button entry point. Routes to:
-//   - Square Hosted Checkout (via Cloudflare Worker) for ship-only catalog orders
-//   - Legacy EmailJS/Zapier form for pickup orders OR carts containing Guide's Choice
+//   - Square Hosted Checkout (via Cloudflare Worker) for ship orders
+//   - Legacy EmailJS/Zapier form for pickup orders
 function goCheckout() {
   if (!cart || cart.length === 0) return;
-  const hasGuideChoice = cart.some(function(it) { return it.fly && it.fly.id === "gc"; });
   const isPickup = orderFulfillment === "pickup";
-  if (hasGuideChoice || isPickup) return goCheckoutLegacy();
+  if (isPickup) return goCheckoutLegacy();
   return checkoutWithSquare();
 }
 
@@ -3849,12 +3861,11 @@ function checkoutWithSquare() {
 
   const items = cart.map(function(it) {
     const fly = it.fly;
-    const pack = fly.pack || 5;
     const noteParts = [];
     if (it.size)  noteParts.push("size: "  + it.size);
     if (it.color) noteParts.push("color: " + it.color);
     return {
-      name:     fly.name + " (" + pack + "-Pack)",
+      name:     fly.pack ? fly.name + " (" + fly.pack + "-Pack)" : fly.name,
       quantity: it.qty,
       price:    fly.price,
       note:     noteParts.join(", ")
@@ -3926,6 +3937,7 @@ function goCheckoutLegacy() {
   renderPromoMsg((coPromoEl && coPromoEl.value || '').trim().toUpperCase());
 
   buildOrderSummary();
+  updateWhatHappensNext();
 
   document.getElementById("shop-page").style.display = "none";
   document.getElementById("checkout-page").style.display = "block";
