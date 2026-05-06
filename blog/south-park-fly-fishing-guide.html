@@ -2296,10 +2296,7 @@ function removeFromCart(uid) {
 function calcShipping() {
   if (cart.length === 0) return { cost: 0, label: "Add flies to see shipping cost" };
   if (orderFulfillment === 'pickup') return { cost: 0, label: "📍 Local Pickup — No shipping charge" };
-  const totalPacks = cart.reduce((s,i)=>s+i.qty, 0);
-  if (totalPacks >= 16) return { cost: 11, label: `📦 USPS Tracked Shipping · $11 (large order)` };
-  if (totalPacks >= 10) return { cost: 7, label: `📦 USPS Tracked Shipping · $7` };
-  return { cost: 5, label: `📦 USPS Tracked Shipping · $5` };
+  return { cost: 7, label: `📦 USPS Tracked Shipping · $7` };
 }
 
 function updateCartUI() {

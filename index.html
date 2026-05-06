@@ -82,7 +82,7 @@
             "@type": "OfferShippingDetails",
             "shippingRate": {
               "@type": "MonetaryAmount",
-              "value": "5.00",
+              "value": "7.00",
               "currency": "USD"
             },
             "shippingDestination": {
@@ -3693,10 +3693,7 @@ function renderPromoMsg(raw) {
 function calcShipping() {
   if (cart.length === 0) return { cost: 0, label: "Add flies to see shipping cost" };
   if (orderFulfillment === 'pickup') return { cost: 0, label: "📍 Local Pickup — No shipping charge" };
-  const totalPacks = cart.reduce((s,i)=>s+i.qty, 0);
-  if (totalPacks >= 16) return { cost: 11, label: `📦 USPS Tracked Shipping · $11 (large order)` };
-  if (totalPacks >= 10) return { cost: 7, label: `📦 USPS Tracked Shipping · $7` };
-  return { cost: 5, label: `📦 USPS Tracked Shipping · $5` };
+  return { cost: 7, label: `📦 USPS Tracked Shipping · $7` };
 }
 
 function updateCartUI() {
@@ -3884,10 +3881,17 @@ function checkoutWithSquare() {
     });
   }
 
+  const shippingCost    = (typeof calcShipping === "function") ? (calcShipping().cost || 0) : 0;
+  const fulfillmentType = (orderFulfillment === "pickup") ? "pickup" : "ship";
+
   fetch("https://trouttricks-checkout.stillwaterflies5280.workers.dev", {
     method:  "POST",
     headers: { "Content-Type": "application/json" },
-    body:    JSON.stringify({ items: items })
+    body:    JSON.stringify({
+      items: items,
+      shipping_cost: shippingCost,
+      fulfillment_type: fulfillmentType
+    })
   })
     .then(function(r) {
       if (!r.ok) throw new Error("worker " + r.status);
