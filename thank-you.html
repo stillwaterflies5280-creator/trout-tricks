@@ -1818,7 +1818,7 @@
   <div class="thank-you-page" style="max-width:640px;margin:64px auto;padding:0 20px 60px;text-align:center;">
     <div style="font-family:'Barlow Condensed',Impact,sans-serif;font-size:0.85rem;font-weight:700;letter-spacing:0.18em;text-transform:uppercase;color:#c0392b;margin-bottom:14px;">✓ Payment received</div>
     <h1 style="font-family:'Bebas Neue',Impact,sans-serif;font-size:clamp(2.2rem,8vw,3.6rem);letter-spacing:0.08em;color:#fff;margin-bottom:18px;line-height:1.05;">ORDER RECEIVED</h1>
-    <p style="font-family:'Barlow',sans-serif;font-size:1.05rem;color:#e0e0e0;line-height:1.7;margin:0 auto 14px;max-width:520px;">Thanks for the order — your flies are headed to the bench. Most orders ship within 5–7 days. You'll get an email confirmation shortly.</p>
+    <p id="thankYouBody" style="font-family:'Barlow',sans-serif;font-size:1.05rem;color:#e0e0e0;line-height:1.7;margin:0 auto 14px;max-width:520px;">Thanks for the order — your flies are headed to the bench. Most orders ship within 5–7 days. You'll get an email confirmation shortly.</p>
     <p id="thankYouOrderRef" style="font-family:'Barlow Condensed',sans-serif;font-size:0.85rem;letter-spacing:0.1em;color:#888;margin:0 auto 36px;display:none;"></p>
     <a href="/index.html#flies" style="display:inline-block;background:#c0392b;color:#fff;padding:14px 28px;font-family:'Barlow Condensed',Impact,sans-serif;font-size:1.05rem;font-weight:700;letter-spacing:0.06em;text-transform:uppercase;text-decoration:none;border-radius:4px;border:2px solid #ff6b5b;box-shadow:0 4px 14px rgba(192,57,43,0.5);transition:background 0.2s;">Continue Shopping →</a>
     <p style="font-family:'Barlow',sans-serif;font-size:0.92rem;color:#888;line-height:1.6;margin-top:36px;">Questions? Email <a href="mailto:stillwaterflies5280@gmail.com" style="color:#d4a017;text-decoration:none;">stillwaterflies5280@gmail.com</a></p>
@@ -1845,6 +1845,13 @@
           ref.textContent = 'Reference: ' + transactionId;
           ref.style.display = 'block';
         }
+      }
+      // Customize body copy if the cart stashed a pickup fulfillment before redirect.
+      var fulfillment = '';
+      try { fulfillment = localStorage.getItem('tt_last_fulfillment') || ''; } catch (e) {}
+      if (fulfillment === 'pickup') {
+        var body = document.getElementById('thankYouBody');
+        if (body) body.textContent = "Your flies will be ready for pickup at our Fairmount, CO location. We'll text you when ready.";
       }
     } catch (e) {}
   })();

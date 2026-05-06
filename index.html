@@ -1414,6 +1414,14 @@
     box-shadow: 0 4px 18px rgba(0,194,68,0.35);
   }
   .cashapp-btn:hover { box-shadow: 0 6px 24px rgba(0,194,68,0.55); }
+  .square-card-btn {
+    background: #c0392b;
+    border-color: #ff6b5b;
+    box-shadow: 0 4px 18px rgba(192,57,43,0.4);
+    cursor: pointer;
+    width: 100%;
+  }
+  .square-card-btn:hover { box-shadow: 0 6px 24px rgba(192,57,43,0.6); }
   .pay-btn-icon { font-size: 1.8rem; flex-shrink: 0; }
   .pay-btn-content { flex: 1; display: flex; flex-direction: column; }
   .pay-btn-label {
@@ -2587,14 +2595,6 @@
     <p id="checkoutHeroSub">Pay via Venmo or Cash App · Include your order number</p>
   </div>
 
-  <!-- FULFILLMENT TOGGLE ON CHECKOUT PAGE -->
-  <div class="checkout-fulfillment">
-    <div class="fulfillment-label">Fulfillment Method</div>
-    <div class="fulfillment-toggle">
-      <button class="fulfillment-btn active" id="coBtnShip" onclick="setFulfillmentFromCheckout('ship')">📦 Ship to Me</button>
-      <button class="fulfillment-btn" id="coBtnPickup" onclick="setFulfillmentFromCheckout('pickup')">📍 Local Pickup</button>
-    </div>
-  </div>
 
   <div class="order-number-box">
     <div class="label">Your Order Number</div>
@@ -2697,7 +2697,22 @@
   </div>
 
   <div class="checkout-section">
-    <div class="checkout-section-title">💸 Tap to Pay</div>
+    <div class="checkout-section-title">💳 Pay by Card</div>
+    <div class="checkout-section-body">
+      <p style="font-size:0.82rem;color:#aaa;margin:0 0 14px 0;line-height:1.5;">Pay securely with credit card or Apple Pay. We'll see your order details automatically — <strong style="color:#fff;">no order number needed</strong>.</p>
+      <button type="button" class="pay-btn square-card-btn" onclick="checkoutWithSquare(this)">
+        <span class="pay-btn-icon">💳</span>
+        <span class="pay-btn-content">
+          <span class="pay-btn-label">Pay with Card (Square)</span>
+          <span class="pay-btn-handle">Card or Apple Pay</span>
+        </span>
+        <span class="pay-btn-arrow">→</span>
+      </button>
+    </div>
+  </div>
+
+  <div class="checkout-section">
+    <div class="checkout-section-title">💸 Or Pay by App</div>
     <div class="checkout-section-body">
       <p style="font-size:0.82rem;color:#aaa;margin:0 0 14px 0;line-height:1.5;">Tap a button below to open the app. <strong style="color:#fff;">Include your order number in the notes!</strong></p>
       <a href="https://account.venmo.com/u/tfrank112" target="_blank" class="pay-btn venmo-btn">
@@ -3593,35 +3608,10 @@ function updateWhatHappensNext() {
     : "<strong>✓ What happens next:</strong> Once your payment is received and matched to your order number, your flies will be hand-tied and shipped with tracking. You'll receive a confirmation message when they're on the way.";
 }
 
-function setFulfillmentFromCheckout(type) {
-  orderFulfillment = type;
-  // Sync cart toggle
-  document.getElementById('btnShip').classList.toggle('active', type === 'ship');
-  document.getElementById('btnPickup').classList.toggle('active', type === 'pickup');
-  // Sync checkout toggle
-  document.getElementById('coBtnShip').classList.toggle('active', type === 'ship');
-  document.getElementById('coBtnPickup').classList.toggle('active', type === 'pickup');
-  // Show/hide address vs pickup
-  const isPickup = type === 'pickup';
-  document.getElementById('addressSection').style.display = isPickup ? 'none' : 'block';
-  document.getElementById('pickupSection').classList.toggle('visible', isPickup);
-  // Rebuild order summary with updated shipping cost
-  buildOrderSummary();
-  updateCartUI();
-  updateWhatHappensNext();
-  gtag('event', 'set_shipping', { shipping_tier: type === 'pickup' ? 'Local Pickup' : 'Ship' });
-}
-
 function setFulfillment(type) {
   orderFulfillment = type;
   document.getElementById('btnShip').classList.toggle('active', type === 'ship');
   document.getElementById('btnPickup').classList.toggle('active', type === 'pickup');
-  // Sync checkout toggle if it exists
-  const coShip = document.getElementById('coBtnShip');
-  if (coShip) {
-    coShip.classList.toggle('active', type === 'ship');
-    document.getElementById('coBtnPickup').classList.toggle('active', type === 'pickup');
-  }
   updateCartUI();
   gtag('event', 'set_shipping', { shipping_tier: type === 'pickup' ? 'Local Pickup' : 'Ship' });
 }
@@ -3849,8 +3839,10 @@ function goCheckout() {
 // Phase 2 — POST cart line items to the Cloudflare Worker, redirect to the
 // Square Hosted Checkout URL it returns. The Worker holds the Square Access
 // Token server-side and creates a Payment Link via Square's API.
-function checkoutWithSquare() {
-  const btn = document.getElementById("checkoutBtn");
+// btnOverride lets a different trigger button (e.g. the legacy form's "Pay
+// with Card" button) own the loading state instead of the cart panel button.
+function checkoutWithSquare(btnOverride) {
+  const btn = btnOverride || document.getElementById("checkoutBtn");
   if (!btn) return;
   const origLabel = btn.textContent;
   btn.disabled = true;
@@ -3900,6 +3892,8 @@ function checkoutWithSquare() {
     .then(function(data) {
       if (!data || !data.checkout_url) throw new Error("missing checkout_url");
       saveCart();
+      // Stash fulfillment for thank-you.html to read after Square redirect.
+      try { localStorage.setItem("tt_last_fulfillment", fulfillmentType); } catch (e) {}
       window.location.href = data.checkout_url;
     })
     .catch(function(err) {
@@ -3926,11 +3920,8 @@ function goCheckoutLegacy() {
 
   const isPickup = orderFulfillment === 'pickup';
 
-  // Sync checkout page toggle to match cart selection
-  document.getElementById('coBtnShip').classList.toggle('active', !isPickup);
-  document.getElementById('coBtnPickup').classList.toggle('active', isPickup);
-
-  // Show/hide address vs pickup section
+  // Show/hide address vs pickup section based on cart's fulfillment selection.
+  // (No fulfillment toggle on the legacy form anymore — cart panel is the only source.)
   document.getElementById("addressSection").style.display = isPickup ? "none" : "block";
   document.getElementById("pickupSection").classList.toggle("visible", isPickup);
 
