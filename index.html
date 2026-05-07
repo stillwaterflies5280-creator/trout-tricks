@@ -2814,18 +2814,10 @@
     <!-- SUCCESS STATE -->
     <div id="emailPopupSuccessState" style="display:none">
       <div class="email-popup-eyebrow success">You're In</div>
-      <h3>HERE'S YOUR 10% OFF</h3>
-      <div class="email-popup-sub">Use this code at checkout. Good for 30 days.</div>
+      <h3>THANKS — CHECK YOUR EMAIL</h3>
+      <div class="email-popup-sub">We'll email your 10% off code shortly. Use it at checkout — good for 30 days.</div>
 
-      <div class="discount-code-box">
-        <div class="discount-code-label">Your Code</div>
-        <div class="discount-code-value" id="discountCodeValue">WELCOME10</div>
-        <button class="discount-code-copy" id="discountCodeCopy" onclick="copyDiscountCode()">
-          <span id="copyBtnText">COPY CODE</span>
-        </button>
-      </div>
-
-      <button class="email-popup-btn shop-now-btn" onclick="shopNowFromPopup()">SHOP NOW →</button>
+      <button class="email-popup-btn shop-now-btn" onclick="shopNowFromPopup()">START SHOPPING →</button>
       <div class="email-popup-fine">One use per customer · 30 days</div>
     </div>
 
@@ -3655,7 +3647,7 @@ const PROMO_CODES = { ACE20: 20, WELCOME10: 10 };
 
 // Pro-deal codes — 30% off for industry pros.
 // Format: PRO-LASTNAME (uppercase). To add a pro: push their code here, commit, push.
-const PRO_CODES = ['PRO-TEST'];
+const PRO_CODES = []; // Stopgap 2026-05-06: PRO-TEST disabled until Worker honors discounts
 
 let appliedPromo = null;
 
