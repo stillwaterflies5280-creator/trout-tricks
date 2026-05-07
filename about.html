@@ -34,6 +34,7 @@
     "@graph": [
       {
         "@type": "LocalBusiness",
+        "@id": "https://www.trouttricks.com#localbusiness",
         "name": "Trout Tricks",
         "description": "Hand-tied chironomid fly patterns and guided stillwater fly fishing trips in Colorado. Specializing in Antero Reservoir, Spinney Mountain, 11 Mile Canyon, and Delaney Buttes.",
         "url": "https://www.trouttricks.com",
@@ -52,65 +53,32 @@
         },
         "openingHours": "Mo-Su 00:00-23:59",
         "priceRange": "$21-$25",
-        "servesCuisine": null,
-        "areaServed": ["Colorado", "Wyoming", "South Park CO", "Antero Reservoir", "Spinney Mountain Reservoir"],
-        "sameAs": ["https://www.facebook.com/share/g/14ZLtNGNF6W/"]
+        "areaServed": [
+          "Colorado",
+          "Wyoming",
+          "South Park CO",
+          "Antero Reservoir",
+          "Spinney Mountain Reservoir"
+        ],
+        "sameAs": [
+          "https://www.facebook.com/share/g/14ZLtNGNF6W/"
+        ]
       },
       {
-        "@type": "Product",
-        "name": "Hand-Tied Chironomid Fly Patterns",
-        "description": "Premium hand-tied chironomid fly patterns tied on 2x heavy wire hooks with tungsten beads. Proven on Colorado's top stillwater fisheries. 5-pack.",
-        "brand": { "@type": "Brand", "name": "Trout Tricks" },
-        "offers": {
-          "@type": "Offer",
-          "priceCurrency": "USD",
-          "price": "21.00",
-          "availability": "https://schema.org/InStock",
-          "url": "https://www.trouttricks.com",
-          "hasMerchantReturnPolicy": {
-            "@type": "MerchantReturnPolicy",
-            "applicableCountry": "US",
-            "returnPolicyCategory": "https://schema.org/MerchantReturnFiniteReturnWindow",
-            "merchantReturnDays": 7,
-            "returnMethod": "https://schema.org/ReturnByMail",
-            "returnFees": "https://schema.org/FreeReturn"
-          },
-          "shippingDetails": {
-            "@type": "OfferShippingDetails",
-            "shippingRate": {
-              "@type": "MonetaryAmount",
-              "value": "7.00",
-              "currency": "USD"
-            },
-            "shippingDestination": {
-              "@type": "DefinedRegion",
-              "addressCountry": "US"
-            },
-            "deliveryTime": {
-              "@type": "ShippingDeliveryTime",
-              "handlingTime": {
-                "@type": "QuantitativeValue",
-                "minValue": 1,
-                "maxValue": 7,
-                "unitCode": "DAY"
-              },
-              "transitTime": {
-                "@type": "QuantitativeValue",
-                "minValue": 3,
-                "maxValue": 7,
-                "unitCode": "DAY"
-              }
-            }
+        "@type": "AboutPage",
+        "@id": "https://www.trouttricks.com/about.html#aboutpage",
+        "name": "About Thomas Frank | Trout Tricks",
+        "url": "https://www.trouttricks.com/about.html",
+        "description": "Stillwater specialist and chironomid guide. South Park, North Park, and Wyoming's best trophy trout waters.",
+        "mainEntity": {
+          "@type": "Person",
+          "@id": "https://www.trouttricks.com/about.html#thomas-frank",
+          "name": "Thomas Frank",
+          "jobTitle": "Stillwater Fly Fishing Guide",
+          "worksFor": {
+            "@id": "https://www.trouttricks.com#localbusiness"
           }
         }
-      },
-      {
-        "@type": "Service",
-        "name": "Guided Stillwater Fly Fishing Trips Colorado",
-        "description": "Expert guided fly fishing trips on Colorado's best stillwater fisheries. Specializing in chironomid fishing with indicators at Antero, Spinney Mountain, 11 Mile, and Delaney Buttes.",
-        "provider": { "@type": "Person", "name": "Thomas Frank" },
-        "areaServed": "Colorado",
-        "serviceType": "Fly Fishing Guide Service"
       }
     ]
   }

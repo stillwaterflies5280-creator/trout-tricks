@@ -34,6 +34,7 @@
     "@graph": [
       {
         "@type": "LocalBusiness",
+        "@id": "https://www.trouttricks.com#localbusiness",
         "name": "Trout Tricks",
         "description": "Hand-tied chironomid fly patterns and guided stillwater fly fishing trips in Colorado. Specializing in Antero Reservoir, Spinney Mountain, 11 Mile Canyon, and Delaney Buttes.",
         "url": "https://www.trouttricks.com",
@@ -52,65 +53,188 @@
         },
         "openingHours": "Mo-Su 00:00-23:59",
         "priceRange": "$21-$25",
-        "servesCuisine": null,
-        "areaServed": ["Colorado", "Wyoming", "South Park CO", "Antero Reservoir", "Spinney Mountain Reservoir"],
-        "sameAs": ["https://www.facebook.com/share/g/14ZLtNGNF6W/"]
+        "areaServed": [
+          "Colorado",
+          "Wyoming",
+          "South Park CO",
+          "Antero Reservoir",
+          "Spinney Mountain Reservoir"
+        ],
+        "sameAs": [
+          "https://www.facebook.com/share/g/14ZLtNGNF6W/"
+        ]
       },
       {
-        "@type": "Product",
-        "name": "Hand-Tied Chironomid Fly Patterns",
-        "description": "Premium hand-tied chironomid fly patterns tied on 2x heavy wire hooks with tungsten beads. Proven on Colorado's top stillwater fisheries. 5-pack.",
-        "brand": { "@type": "Brand", "name": "Trout Tricks" },
-        "offers": {
-          "@type": "Offer",
-          "priceCurrency": "USD",
-          "price": "21.00",
-          "availability": "https://schema.org/InStock",
-          "url": "https://www.trouttricks.com",
-          "hasMerchantReturnPolicy": {
-            "@type": "MerchantReturnPolicy",
-            "applicableCountry": "US",
-            "returnPolicyCategory": "https://schema.org/MerchantReturnFiniteReturnWindow",
-            "merchantReturnDays": 7,
-            "returnMethod": "https://schema.org/ReturnByMail",
-            "returnFees": "https://schema.org/FreeReturn"
+        "@type": "Blog",
+        "@id": "https://www.trouttricks.com/blog.html#blog",
+        "name": "Trout Tricks Blog",
+        "url": "https://www.trouttricks.com/blog.html",
+        "description": "Stillwater tips, chironomid tactics and fishing reports from Colorado and Wyoming's best waters.",
+        "publisher": {
+          "@id": "https://www.trouttricks.com#localbusiness"
+        },
+        "blogPost": [
+          {
+            "@type": "BlogPosting",
+            "headline": "Antero Reservoir Closing May 13 — What Colorado Fly Anglers Need to Know",
+            "url": "https://www.trouttricks.com/blog/antero-reservoir-closure-2026.html",
+            "datePublished": "2026-04-27",
+            "author": {
+              "@type": "Person",
+              "name": "Thomas Frank"
+            }
           },
-          "shippingDetails": {
-            "@type": "OfferShippingDetails",
-            "shippingRate": {
-              "@type": "MonetaryAmount",
-              "value": "7.00",
-              "currency": "USD"
-            },
-            "shippingDestination": {
-              "@type": "DefinedRegion",
-              "addressCountry": "US"
-            },
-            "deliveryTime": {
-              "@type": "ShippingDeliveryTime",
-              "handlingTime": {
-                "@type": "QuantitativeValue",
-                "minValue": 1,
-                "maxValue": 7,
-                "unitCode": "DAY"
-              },
-              "transitTime": {
-                "@type": "QuantitativeValue",
-                "minValue": 3,
-                "maxValue": 7,
-                "unitCode": "DAY"
-              }
+          {
+            "@type": "BlogPosting",
+            "headline": "Chironomid Depth Control — The Single Most Important Stillwater Skill",
+            "url": "https://www.trouttricks.com/blog/chironomid-depth-control-stillwater.html",
+            "datePublished": "2026-04-27",
+            "author": {
+              "@type": "Person",
+              "name": "Thomas Frank"
+            }
+          },
+          {
+            "@type": "BlogPosting",
+            "headline": "How to Set Up an Indicator Rig for Colorado Lakes — Leader Length, Tippet and Fly Selection",
+            "url": "https://www.trouttricks.com/blog/indicator-fishing-setup-colorado-lakes.html",
+            "datePublished": "2026-04-27",
+            "author": {
+              "@type": "Person",
+              "name": "Thomas Frank"
+            }
+          },
+          {
+            "@type": "BlogPosting",
+            "headline": "Balanced Leeches for Colorado Stillwater — The Shore Angler's Secret Weapon",
+            "url": "https://www.trouttricks.com/blog/balanced-leech-stillwater-colorado.html",
+            "datePublished": "2026-04-22",
+            "author": {
+              "@type": "Person",
+              "name": "Thomas Frank"
+            }
+          },
+          {
+            "@type": "BlogPosting",
+            "headline": "How to Catch Stillwater Trout from Shore — No Boat Required",
+            "url": "https://www.trouttricks.com/blog/shore-fishing-stillwater-trout-without-boat.html",
+            "datePublished": "2026-04-22",
+            "author": {
+              "@type": "Person",
+              "name": "Thomas Frank"
+            }
+          },
+          {
+            "@type": "BlogPosting",
+            "headline": "Fly Fishing Carter Lake and Horsetooth Reservoir — Front Range Stillwater Guide",
+            "url": "https://www.trouttricks.com/blog/carter-lake-horsetooth-fly-fishing.html",
+            "datePublished": "2026-04-22",
+            "author": {
+              "@type": "Person",
+              "name": "Thomas Frank"
+            }
+          },
+          {
+            "@type": "BlogPosting",
+            "headline": "How to Fish Chironomids for Trophy Stillwater Trout in Colorado",
+            "url": "https://www.trouttricks.com/blog/how-to-fish-chironomids-colorado.html",
+            "datePublished": "2026-04-22",
+            "author": {
+              "@type": "Person",
+              "name": "Thomas Frank"
+            }
+          },
+          {
+            "@type": "BlogPosting",
+            "headline": "The #1 Mistake Stillwater Anglers Make — And How to Fix It",
+            "url": "https://www.trouttricks.com/blog/biggest-mistake-stillwater-anglers.html",
+            "datePublished": "2026-04-22",
+            "author": {
+              "@type": "Person",
+              "name": "Thomas Frank"
+            }
+          },
+          {
+            "@type": "BlogPosting",
+            "headline": "Best Chironomid Patterns for Antero Reservoir — What's Working Right Now",
+            "url": "https://www.trouttricks.com/blog/antero-reservoir-chironomid-patterns.html",
+            "datePublished": "2026-04-22",
+            "author": {
+              "@type": "Person",
+              "name": "Thomas Frank"
+            }
+          },
+          {
+            "@type": "BlogPosting",
+            "headline": "The Best Fly Fishing Guide in South Park, Colorado — What to Look For",
+            "url": "https://www.trouttricks.com/blog/south-park-fly-fishing-guide.html",
+            "datePublished": "2026-04-22",
+            "author": {
+              "@type": "Person",
+              "name": "Thomas Frank"
+            }
+          },
+          {
+            "@type": "BlogPosting",
+            "headline": "How to Catch Trophy Trout in Colorado — A Guide's Honest Take",
+            "url": "https://www.trouttricks.com/blog/colorado-trophy-trout-guide.html",
+            "datePublished": "2026-04-22",
+            "author": {
+              "@type": "Person",
+              "name": "Thomas Frank"
+            }
+          },
+          {
+            "@type": "BlogPosting",
+            "headline": "Delaney Buttes & Lake John — Colorado's Underrated Stillwater Gems",
+            "url": "https://www.trouttricks.com/blog/delaney-buttes-lake-john-north-park.html",
+            "datePublished": "2026-04-22",
+            "author": {
+              "@type": "Person",
+              "name": "Thomas Frank"
+            }
+          },
+          {
+            "@type": "BlogPosting",
+            "headline": "The 5 Chironomid Fly Patterns Every Colorado Stillwater Angler Needs",
+            "url": "https://www.trouttricks.com/blog/best-chironomid-fly-patterns.html",
+            "datePublished": "2026-04-22",
+            "author": {
+              "@type": "Person",
+              "name": "Thomas Frank"
+            }
+          },
+          {
+            "@type": "BlogPosting",
+            "headline": "Spinney Mountain Reservoir — Colorado's Best Trophy Trout Fishery",
+            "url": "https://www.trouttricks.com/blog/spinney-mountain-reservoir-guide.html",
+            "datePublished": "2026-04-22",
+            "author": {
+              "@type": "Person",
+              "name": "Thomas Frank"
+            }
+          },
+          {
+            "@type": "BlogPosting",
+            "headline": "11 Mile Reservoir Fly Fishing — The Complete Guide for Colorado Stillwater Anglers",
+            "url": "https://www.trouttricks.com/blog/11-mile-reservoir-fly-fishing.html",
+            "datePublished": "2026-04-22",
+            "author": {
+              "@type": "Person",
+              "name": "Thomas Frank"
+            }
+          },
+          {
+            "@type": "BlogPosting",
+            "headline": "How to Fish Chironomids on Colorado's South Park Reservoirs",
+            "url": "https://www.trouttricks.com/blog/chironomid-fishing-south-park.html",
+            "datePublished": "2026-04-22",
+            "author": {
+              "@type": "Person",
+              "name": "Thomas Frank"
             }
           }
-        }
-      },
-      {
-        "@type": "Service",
-        "name": "Guided Stillwater Fly Fishing Trips Colorado",
-        "description": "Expert guided fly fishing trips on Colorado's best stillwater fisheries. Specializing in chironomid fishing with indicators at Antero, Spinney Mountain, 11 Mile, and Delaney Buttes.",
-        "provider": { "@type": "Person", "name": "Thomas Frank" },
-        "areaServed": "Colorado",
-        "serviceType": "Fly Fishing Guide Service"
+        ]
       }
     ]
   }
