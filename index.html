@@ -4015,19 +4015,51 @@ function applyPromo() {
   }
 }
 
-// Shared webhook submission
+// Email signups (popup + footer) post to Klaviyo's client subscriptions API.
+// Klaviyo is the source of truth; the previous Zapier webhook is no longer used.
+// Discount delivery (WELCOME10) is handled inside Klaviyo via flows — the popup
+// still reveals the code on screen for immediate use.
 function submitEmailSignup(email, source) {
-  const payload = {
-    email: email,
-    source: source,
-    signup_date: new Date().toISOString()
+  const customSource = source === 'popup_signup'  ? 'Website Popup'
+                     : source === 'footer_signup' ? 'Website Footer'
+                     : (source || 'Website');
+  const body = {
+    data: {
+      type: 'subscription',
+      attributes: {
+        custom_source: customSource,
+        profile: {
+          data: {
+            type: 'profile',
+            attributes: { email: email }
+          }
+        }
+      },
+      relationships: {
+        list: {
+          data: { type: 'list', id: 'SUpRkF' }
+        }
+      }
+    }
   };
-  return fetch('https://hooks.zapier.com/hooks/catch/27334010/uvyg3wg/', {
+  return fetch('https://a.klaviyo.com/client/subscriptions/?company_id=RyxZFj', {
     method: 'POST',
-    mode: 'no-cors',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify(payload)
-  });
+    headers: {
+      'Content-Type': 'application/json',
+      'revision': '2024-10-15'
+    },
+    body: JSON.stringify(body)
+  })
+    .then(function(r) {
+      if (!r.ok) {
+        return r.text().catch(function() { return ''; }).then(function(text) {
+          console.error('[Klaviyo signup] HTTP', r.status, text);
+        });
+      }
+    })
+    .catch(function(err) {
+      console.error('[Klaviyo signup] network error', err);
+    });
 }
 
 function closeEmailPopup() {
