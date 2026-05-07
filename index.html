@@ -1174,6 +1174,22 @@
   }
   .note-box.green strong { color: #5dfc8a; }
 
+  /* 2-step pickup checkout: indicator + collapsible "Pay another way" panel */
+  .checkout-steps { display: flex; align-items: center; justify-content: center; gap: 8px; margin: 0 auto 24px; max-width: 420px; padding: 0 20px; }
+  .checkout-step { display: flex; align-items: center; gap: 10px; opacity: 0.45; transition: opacity 0.2s; }
+  .checkout-step.active, .checkout-step.complete { opacity: 1; }
+  .checkout-step .step-num { display: flex; align-items: center; justify-content: center; width: 28px; height: 28px; border-radius: 50%; background: #2a2a2a; color: #888; font-family: 'Bebas Neue', Impact, sans-serif; font-size: 1rem; }
+  .checkout-step.active .step-num { background: var(--red); color: #fff; }
+  .checkout-step.complete .step-num { background: var(--gold); color: #000; }
+  .checkout-step .step-label { font-family: 'Barlow Condensed', sans-serif; font-size: 0.85rem; letter-spacing: 0.06em; text-transform: uppercase; color: #aaa; white-space: nowrap; }
+  .step-divider { flex: 1; height: 2px; background: #2a2a2a; max-width: 60px; }
+  .pay-another-way-toggle { display: block; width: calc(100% - 32px); margin: 14px 16px 0; background: none; border: 1px dashed #333; border-radius: 4px; color: #aaa; font-family: 'Barlow Condensed', sans-serif; font-size: 0.92rem; letter-spacing: 0.08em; text-transform: uppercase; padding: 14px; cursor: pointer; text-align: center; transition: color 0.2s, border-color 0.2s; }
+  .pay-another-way-toggle:hover { color: #fff; border-color: #555; }
+  .pay-another-way-panel { display: none; }
+  .pay-another-way-panel.open { display: block; }
+  .checkout-back-link { display: block; width: 100%; background: none; border: none; color: #888; font-family: 'Barlow Condensed', sans-serif; font-size: 0.85rem; letter-spacing: 0.06em; padding: 16px; cursor: pointer; text-align: center; margin-top: 8px; }
+  .checkout-back-link:hover { color: #fff; }
+
   .checkout-section {
     margin: 16px 16px 0;
     background: var(--card);
@@ -2615,152 +2631,182 @@
     <p id="checkoutHeroSub">Pay via Venmo or Cash App · Include your order number</p>
   </div>
 
-
-  <div class="order-number-box">
-    <div class="label">Your Order Number</div>
-    <div class="num" id="orderNum">—</div>
-  </div>
-
-  <div class="note-box">
-    <strong>⚠️ REQUIRED:</strong> You MUST include your order number in the Venmo or Cash App payment note. This is how we match your payment to your order and get your flies out fast.
-  </div>
-
-  <div class="checkout-section">
-    <div class="checkout-section-title">📋 Order Summary</div>
-    <div class="checkout-section-body">
-      <div id="orderSummaryLines"></div>
-      <div class="promo-row" style="margin-top:10px">
-        <input type="text" id="checkoutPromo" class="promo-input" placeholder="Promo code (optional)" oninput="onPromoInput(event)" autocomplete="off" autocapitalize="characters" spellcheck="false">
-        <div class="promo-msg" id="checkoutPromoMsg"></div>
-      </div>
-      <div id="orderSummaryTotal"></div>
+  <!-- 2-step indicator (pickup-only — only path that reaches checkout-page) -->
+  <div class="checkout-steps">
+    <div class="checkout-step active" id="step1Indicator">
+      <span class="step-num">1</span><span class="step-label">Pickup Details</span>
+    </div>
+    <div class="step-divider"></div>
+    <div class="checkout-step" id="step2Indicator">
+      <span class="step-num">2</span><span class="step-label">Payment</span>
     </div>
   </div>
 
-  <!-- SHIPPING ADDRESS (shown for non-pickup orders) -->
-  <div class="checkout-section" id="addressSection">
-    <div class="checkout-section-title">📦 Shipping Address</div>
-    <div class="checkout-section-body">
-      <div class="address-form">
+  <!-- STEP 1: Pickup Details -->
+  <div id="checkoutStep1">
+
+    <!-- SHIPPING ADDRESS (legacy — never shown on pickup-only checkout-page; kept for back-compat) -->
+    <div class="checkout-section" id="addressSection">
+      <div class="checkout-section-title">📦 Shipping Address</div>
+      <div class="checkout-section-body">
+        <div class="address-form">
+          <div class="form-row">
+            <div class="form-group required">
+              <label>First Name</label>
+              <input type="text" id="firstName" placeholder="John">
+            </div>
+            <div class="form-group required">
+              <label>Last Name</label>
+              <input type="text" id="lastName" placeholder="Smith">
+            </div>
+          </div>
+          <div class="form-group required">
+            <label>Street Address</label>
+            <input type="text" id="address1" placeholder="123 Main St">
+          </div>
+          <div class="form-group">
+            <label>Apt / Suite (optional)</label>
+            <input type="text" id="address2" placeholder="Apt 4B">
+          </div>
+          <div class="form-row">
+            <div class="form-group required">
+              <label>City</label>
+              <input type="text" id="city" placeholder="Denver">
+            </div>
+            <div class="form-group required" style="max-width:80px">
+              <label>State</label>
+              <input type="text" id="state" placeholder="CO" maxlength="2">
+            </div>
+            <div class="form-group required" style="max-width:100px">
+              <label>ZIP</label>
+              <input type="text" id="zip" placeholder="80202" maxlength="10">
+            </div>
+          </div>
+          <div class="form-group required">
+            <label>Phone / Contact</label>
+            <input type="tel" id="phone" placeholder="(303) 555-0100" maxlength="14" oninput="formatPhoneInput(this)" onblur="validatePhoneField(this)">
+            <span class="field-error" id="phoneError">Please enter a valid 10-digit phone number</span>
+          </div>
+          <div class="form-group required">
+            <label>Email Address</label>
+            <input type="email" id="clientEmail" placeholder="you@email.com" oninput="clearEmailError(this)" onblur="validateEmailField(this)">
+            <span class="field-error" id="clientEmailError">Please enter a valid email address</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- LOCAL PICKUP INFO -->
+    <div class="pickup-section" id="pickupSection">
+      <p><strong style="color:var(--gold)">📍 Local Pickup Selected</strong><br><br>
+      After sending payment, text <a href="sms:3039178278">303-917-8278</a> to schedule your pickup. Include your order number <strong id="pickupOrderRef" style="color:var(--red)"></strong> in your message.</p>
+      <div class="address-form" style="margin-top:14px">
         <div class="form-row">
           <div class="form-group required">
             <label>First Name</label>
-            <input type="text" id="firstName" placeholder="John">
+            <input type="text" id="pickupFirstName" placeholder="John">
           </div>
           <div class="form-group required">
             <label>Last Name</label>
-            <input type="text" id="lastName" placeholder="Smith">
+            <input type="text" id="pickupLastName" placeholder="Smith">
           </div>
         </div>
         <div class="form-group required">
-          <label>Street Address</label>
-          <input type="text" id="address1" placeholder="123 Main St">
-        </div>
-        <div class="form-group">
-          <label>Apt / Suite (optional)</label>
-          <input type="text" id="address2" placeholder="Apt 4B">
-        </div>
-        <div class="form-row">
-          <div class="form-group required">
-            <label>City</label>
-            <input type="text" id="city" placeholder="Denver">
-          </div>
-          <div class="form-group required" style="max-width:80px">
-            <label>State</label>
-            <input type="text" id="state" placeholder="CO" maxlength="2">
-          </div>
-          <div class="form-group required" style="max-width:100px">
-            <label>ZIP</label>
-            <input type="text" id="zip" placeholder="80202" maxlength="10">
-          </div>
-        </div>
-        <div class="form-group required">
-          <label>Phone / Contact</label>
-          <input type="tel" id="phone" placeholder="(303) 555-0100" maxlength="14" oninput="formatPhoneInput(this)" onblur="validatePhoneField(this)">
-          <span class="field-error" id="phoneError">Please enter a valid 10-digit phone number</span>
+          <label>Phone</label>
+          <input type="tel" id="pickupPhone" placeholder="(303) 555-0100" maxlength="14" oninput="formatPhoneInput(this)" onblur="validatePhoneField(this)">
+          <span class="field-error" id="pickupPhoneError">Please enter a valid 10-digit phone number</span>
         </div>
         <div class="form-group required">
           <label>Email Address</label>
-          <input type="email" id="clientEmail" placeholder="you@email.com" oninput="clearEmailError(this)" onblur="validateEmailField(this)">
-          <span class="field-error" id="clientEmailError">Please enter a valid email address</span>
+          <input type="email" id="pickupEmail" placeholder="you@email.com" oninput="clearEmailError(this)" onblur="validateEmailField(this)">
+          <span class="field-error" id="pickupEmailError">Please enter a valid email address</span>
         </div>
       </div>
     </div>
+
+    <div style="margin: 18px 16px 0;">
+      <button class="checkout-btn" onclick="advanceToStep2()" style="width:100%">CONTINUE TO PAYMENT →</button>
+    </div>
   </div>
 
-  <!-- LOCAL PICKUP INFO (shown instead of address for pickup orders) -->
-  <div class="pickup-section" id="pickupSection">
-    <p><strong style="color:var(--gold)">📍 Local Pickup Selected</strong><br><br>
-    After sending payment, text <a href="sms:3039178278">303-917-8278</a> to schedule your pickup. Include your order number <strong id="pickupOrderRef" style="color:var(--red)"></strong> in your message.</p>
-    <div class="address-form" style="margin-top:14px">
-      <div class="form-row">
-        <div class="form-group required">
-          <label>First Name</label>
-          <input type="text" id="pickupFirstName" placeholder="John">
+  <!-- STEP 2: Payment -->
+  <div id="checkoutStep2" style="display:none">
+
+    <div class="order-number-box">
+      <div class="label">Your Order Number</div>
+      <div class="num" id="orderNum">—</div>
+    </div>
+
+    <div class="checkout-section">
+      <div class="checkout-section-title">📋 Order Summary</div>
+      <div class="checkout-section-body">
+        <div id="orderSummaryLines"></div>
+        <div class="promo-row" style="margin-top:10px">
+          <input type="text" id="checkoutPromo" class="promo-input" placeholder="Promo code (optional)" oninput="onPromoInput(event)" autocomplete="off" autocapitalize="characters" spellcheck="false">
+          <div class="promo-msg" id="checkoutPromoMsg"></div>
         </div>
-        <div class="form-group required">
-          <label>Last Name</label>
-          <input type="text" id="pickupLastName" placeholder="Smith">
+        <div id="orderSummaryTotal"></div>
+      </div>
+    </div>
+
+    <!-- 💳 Pay by Card (PRIMARY) — pickup card path: captures Klaviyo+sheet row, then redirects to Square -->
+    <div class="checkout-section">
+      <div class="checkout-section-title">💳 Pay by Card</div>
+      <div class="checkout-section-body">
+        <p style="font-size:0.82rem;color:#aaa;margin:0 0 14px 0;line-height:1.5;">Pay securely with credit card or Apple Pay. We'll see your order details automatically — <strong style="color:#fff;">no order number needed</strong>.</p>
+        <button type="button" class="pay-btn square-card-btn" onclick="pickupCardCheckout(this)">
+          <span class="pay-btn-icon">💳</span>
+          <span class="pay-btn-content">
+            <span class="pay-btn-label">Pay with Card (Square)</span>
+            <span class="pay-btn-handle">Card or Apple Pay</span>
+          </span>
+          <span class="pay-btn-arrow">→</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- Pay another way: secondary collapsible holding Venmo/Cash App + legacy Confirm Order flow -->
+    <button type="button" class="pay-another-way-toggle" id="payAnotherWayToggle" onclick="togglePayAnotherWay()">▼ Pay another way</button>
+
+    <div class="pay-another-way-panel" id="payAnotherWayPanel">
+      <div class="note-box">
+        <strong>⚠️ REQUIRED:</strong> You MUST include your order number in the Venmo or Cash App payment note. This is how we match your payment to your order and get your flies out fast.
+      </div>
+
+      <div class="checkout-section">
+        <div class="checkout-section-title">💸 Or Pay by App</div>
+        <div class="checkout-section-body">
+          <p style="font-size:0.82rem;color:#aaa;margin:0 0 14px 0;line-height:1.5;">Tap a button below to open the app. <strong style="color:#fff;">Include your order number in the notes!</strong></p>
+          <a href="https://account.venmo.com/u/tfrank112" target="_blank" class="pay-btn venmo-btn">
+            <span class="pay-btn-icon">💙</span>
+            <span class="pay-btn-content">
+              <span class="pay-btn-label">Pay with Venmo</span>
+              <span class="pay-btn-handle">@tfrank112</span>
+            </span>
+            <span class="pay-btn-arrow">→</span>
+          </a>
+          <a href="https://cash.app/$tfrank112" target="_blank" class="pay-btn cashapp-btn">
+            <span class="pay-btn-icon">💚</span>
+            <span class="pay-btn-content">
+              <span class="pay-btn-label">Pay with Cash App</span>
+              <span class="pay-btn-handle">$tfrank112</span>
+            </span>
+            <span class="pay-btn-arrow">→</span>
+          </a>
         </div>
       </div>
-      <div class="form-group required">
-        <label>Phone</label>
-        <input type="tel" id="pickupPhone" placeholder="(303) 555-0100" maxlength="14" oninput="formatPhoneInput(this)" onblur="validatePhoneField(this)">
-        <span class="field-error" id="pickupPhoneError">Please enter a valid 10-digit phone number</span>
+
+      <div class="note-box green" id="whatHappensNext">
+        <strong>✓ What happens next:</strong> Once your payment is received and matched to your order number, your flies will be hand-tied and shipped with tracking. You'll receive a confirmation message when they're on the way.
       </div>
-      <div class="form-group required">
-        <label>Email Address</label>
-        <input type="email" id="pickupEmail" placeholder="you@email.com" oninput="clearEmailError(this)" onblur="validateEmailField(this)">
-        <span class="field-error" id="pickupEmailError">Please enter a valid email address</span>
+
+      <div style="margin: 0 16px;">
+        <button class="notify-btn" id="placeOrderBtn" onclick="placeOrder()">✓ Confirm Order &amp; Send Details</button>
+        <div class="sending-msg" id="sendingMsg">Sending order details...</div>
       </div>
     </div>
-  </div>
 
-  <div class="checkout-section">
-    <div class="checkout-section-title">💳 Pay by Card</div>
-    <div class="checkout-section-body">
-      <p style="font-size:0.82rem;color:#aaa;margin:0 0 14px 0;line-height:1.5;">Pay securely with credit card or Apple Pay. We'll see your order details automatically — <strong style="color:#fff;">no order number needed</strong>.</p>
-      <button type="button" class="pay-btn square-card-btn" onclick="checkoutWithSquare(this)">
-        <span class="pay-btn-icon">💳</span>
-        <span class="pay-btn-content">
-          <span class="pay-btn-label">Pay with Card (Square)</span>
-          <span class="pay-btn-handle">Card or Apple Pay</span>
-        </span>
-        <span class="pay-btn-arrow">→</span>
-      </button>
-    </div>
-  </div>
-
-  <div class="checkout-section">
-    <div class="checkout-section-title">💸 Or Pay by App</div>
-    <div class="checkout-section-body">
-      <p style="font-size:0.82rem;color:#aaa;margin:0 0 14px 0;line-height:1.5;">Tap a button below to open the app. <strong style="color:#fff;">Include your order number in the notes!</strong></p>
-      <a href="https://account.venmo.com/u/tfrank112" target="_blank" class="pay-btn venmo-btn">
-        <span class="pay-btn-icon">💙</span>
-        <span class="pay-btn-content">
-          <span class="pay-btn-label">Pay with Venmo</span>
-          <span class="pay-btn-handle">@tfrank112</span>
-        </span>
-        <span class="pay-btn-arrow">→</span>
-      </a>
-      <a href="https://cash.app/$tfrank112" target="_blank" class="pay-btn cashapp-btn">
-        <span class="pay-btn-icon">💚</span>
-        <span class="pay-btn-content">
-          <span class="pay-btn-label">Pay with Cash App</span>
-          <span class="pay-btn-handle">$tfrank112</span>
-        </span>
-        <span class="pay-btn-arrow">→</span>
-      </a>
-    </div>
-  </div>
-
-  <div class="note-box green" id="whatHappensNext">
-    <strong>✓ What happens next:</strong> Once your payment is received and matched to your order number, your flies will be hand-tied and shipped with tracking. You'll receive a confirmation message when they're on the way.
-  </div>
-
-  <div style="margin: 0 16px;">
-    <button class="notify-btn" id="placeOrderBtn" onclick="placeOrder()">✓ Confirm Order &amp; Send Details</button>
-    <div class="sending-msg" id="sendingMsg">Sending order details...</div>
+    <button type="button" class="checkout-back-link" onclick="backToStep1()">← Back to Details</button>
   </div>
 
   <button class="continue-shopping-btn" onclick="goBackAndShop()">+ Add More Flies</button>
@@ -3919,6 +3965,102 @@ function checkoutWithSquare(btnOverride) {
       }
       console.error("[checkoutWithSquare]", err);
     });
+}
+
+// ---------------------------------------------------------------------------
+// 2-step pickup checkout helpers
+// ---------------------------------------------------------------------------
+
+// Step 1 → Step 2 navigation. Validates pickup details before transition.
+function advanceToStep2() {
+  const required = ['pickupFirstName', 'pickupLastName', 'pickupPhone', 'pickupEmail'];
+  for (const id of required) {
+    const el = document.getElementById(id);
+    if (!el.value.trim()) {
+      el.focus();
+      el.style.borderColor = 'var(--red-bright)';
+      showToast('Please fill in your contact info');
+      return;
+    }
+    el.style.borderColor = '';
+  }
+  if (!validatePhoneField(document.getElementById('pickupPhone'))) {
+    document.getElementById('pickupPhone').focus();
+    showToast('Please enter a valid 10-digit phone number');
+    return;
+  }
+  if (!validateEmailField(document.getElementById('pickupEmail'))) {
+    document.getElementById('pickupEmail').focus();
+    showToast('Please enter a valid email address');
+    return;
+  }
+  document.getElementById('checkoutStep1').style.display = 'none';
+  document.getElementById('checkoutStep2').style.display = 'block';
+  document.getElementById('step1Indicator').classList.remove('active');
+  document.getElementById('step1Indicator').classList.add('complete');
+  document.getElementById('step2Indicator').classList.add('active');
+  window.scrollTo(0, 0);
+}
+
+function backToStep1() {
+  document.getElementById('checkoutStep1').style.display = 'block';
+  document.getElementById('checkoutStep2').style.display = 'none';
+  document.getElementById('step1Indicator').classList.add('active');
+  document.getElementById('step1Indicator').classList.remove('complete');
+  document.getElementById('step2Indicator').classList.remove('active');
+  window.scrollTo(0, 0);
+}
+
+function togglePayAnotherWay() {
+  const panel = document.getElementById('payAnotherWayPanel');
+  const toggle = document.getElementById('payAnotherWayToggle');
+  const isOpen = panel.classList.toggle('open');
+  toggle.textContent = isOpen ? '▲ Hide other payment options' : '▼ Pay another way';
+}
+
+// Pickup card path: capture customer data (Klaviyo + Apps Script row with
+// payment_method='square_pending') BEFORE redirecting to Square. Klaviyo and
+// Apps Script POSTs are fire-and-forget so neither blocks the Square redirect.
+function pickupCardCheckout(btn) {
+  const f = id => document.getElementById(id).value.trim();
+  const firstName = f('pickupFirstName');
+  const lastName  = f('pickupLastName');
+  const phone     = f('pickupPhone');
+  const email     = f('pickupEmail');
+  const fullName  = firstName + ' ' + lastName;
+
+  // 1. Klaviyo signup (fire-and-forget — submitEmailSignup catches its own errors)
+  submitEmailSignup(email, 'Pickup Order');
+
+  // 2. Apps Script row with pre-payment marker. No Content-Type header so the
+  //    request stays "simple" and bypasses CORS preflight (Apps Script doesn't
+  //    support OPTIONS). Fire-and-forget; Square redirect happens regardless.
+  fetch('https://script.google.com/macros/s/AKfycbwc5JR5yo76y8-H81D3Dh4e-pc6kqha8rLO2Yu90ZtFV_s-3Hm__YI52WoaW54zXOqBdw/exec', {
+    method: 'POST',
+    body: JSON.stringify({
+      order_number:        currentOrderNum,
+      order_items:         currentOrderSummaryText,
+      shipping_address:    'LOCAL PICKUP\nName: ' + fullName + '\nPhone: ' + phone + '\nEmail: ' + email,
+      client_email:        email,
+      customer_first_name: firstName,
+      customer_last_name:  lastName,
+      customer_name:       fullName,
+      customer_phone:      phone,
+      customer_email:      email,
+      order_date:          new Date().toLocaleDateString(),
+      order_time:          new Date().toLocaleTimeString(),
+      fulfillment:         'pickup',
+      payment_method:      'square_pending',
+      promo_code:          appliedPromo ? appliedPromo.code : 'none',
+      discount_amount:     Number(currentOrderDiscount.toFixed(2)),
+      discounted_total:    Number(currentOrderTotal.toFixed(2)),
+      order_total:         Number(currentOrderTotal.toFixed(2))
+    })
+  }).catch(function(err) { console.error('[pickupCardCheckout apps script]', err); });
+
+  // 3. Hand off to the existing Square redirect (builds line items from cart,
+  //    POSTs to Worker, redirects to Square Hosted Checkout).
+  checkoutWithSquare(btn);
 }
 
 // LEGACY: kept for Guide's Choice contact flow + pickup orders.
