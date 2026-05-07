@@ -4231,6 +4231,10 @@ function placeOrder() {
       showToast('Please enter a valid email address');
       return;
     }
+    // Fire-and-forget Klaviyo signup for pickup customer (additive — the
+    // existing Zapier order POST + EmailJS notifications below still run
+    // regardless; submitEmailSignup catches its own fetch errors and logs).
+    submitEmailSignup(document.getElementById('pickupEmail').value.trim(), 'Pickup Order');
   }
 
   const btn = document.getElementById('placeOrderBtn');
