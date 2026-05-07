@@ -2795,7 +2795,7 @@
 <div class="toast" id="toast"></div>
 
 <!-- EMAIL POPUP -->
-<div class="email-popup-overlay" id="emailPopupOverlay">
+<div class="email-popup-overlay" id="emailPopupOverlay" onclick="if(event.target===this)closeEmailPopup()">
   <div class="email-popup">
     <button class="email-popup-close" onclick="closeEmailPopup()">✕</button>
 
@@ -4041,6 +4041,11 @@ function submitEmailSignup(email, source, includeDiscount) {
 
 function closeEmailPopup() {
   document.getElementById('emailPopupOverlay').classList.remove('open');
+  // Mark dismissed only if user did NOT complete signup — keeps the 30-day
+  // re-prompt window honest for non-converters.
+  if (!localStorage.getItem('tt_email_signup_complete')) {
+    localStorage.setItem('tt_email_signup_dismissed', new Date().toISOString());
+  }
 }
 
 // Popup submit — reveals code instead of closing
@@ -4054,7 +4059,7 @@ function submitPopupEmail() {
   }
 
   submitEmailSignup(email, 'popup_signup', true);
-  localStorage.setItem('tt_email_captured', '1');
+  localStorage.setItem('tt_email_signup_complete', new Date().toISOString());
 
   document.getElementById('emailPopupSignupState').style.display = 'none';
   document.getElementById('emailPopupSuccessState').style.display = 'block';
@@ -4127,9 +4132,15 @@ function submitFooterEmail() {
 }
 
 setTimeout(() => {
-  if (!localStorage.getItem('tt_email_captured')) {
-    document.getElementById('emailPopupOverlay').classList.add('open');
+  // Never show if user already completed signup (current key OR legacy back-compat key).
+  if (localStorage.getItem('tt_email_signup_complete') || localStorage.getItem('tt_email_captured')) return;
+  // Don't show if user dismissed within last 30 days.
+  const dismissed = localStorage.getItem('tt_email_signup_dismissed');
+  if (dismissed) {
+    const daysSince = (Date.now() - new Date(dismissed).getTime()) / 86400000;
+    if (daysSince < 30) return;
   }
+  document.getElementById('emailPopupOverlay').classList.add('open');
 }, 15000);
 
 // LEGACY: kept for Guide's Choice contact flow + pickup orders.
