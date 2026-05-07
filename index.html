@@ -2838,6 +2838,7 @@
         <a href="fish.html">The Fish</a>
         <a href="/trip.html">Book a Trip</a>
         <a href="blog.html">Blog</a>
+        <a href="community.html">Community</a>
         <a href="affiliates.html">Affiliates</a>
         <a href="contact.html">Contact</a>
         <a href="/permits.html">License/Permit Disclosure</a>
@@ -3529,15 +3530,15 @@ function filterFlies(q) {
       articleHeader.style.display = '';
       articleCount.textContent = articleMatches.length;
       const shown = articleMatches.slice(0, ARTICLE_CAP);
-      let html = shown.map(p => `
-        <a class="article-result-row" href="${p.url}">
-          <div class="article-result-title">${p.title}</div>
-          <div class="article-result-snippet">${p.snippet}</div>
-          <div class="article-result-cta">Read article →</div>
-        </a>
-      `).join('');
+      let html = shown.map(p =>
+        '<a class="article-result-row" href="' + p.url + '">' +
+          '<div class="article-result-title">' + p.title + '</div>' +
+          '<div class="article-result-snippet">' + p.snippet + '</div>' +
+          '<div class="article-result-cta">Read article →</div>' +
+        '</a>'
+      ).join('');
       if (articleMatches.length > ARTICLE_CAP) {
-        html += `<a class="article-result-overflow" href="blog.html?q=${encodeURIComponent(q.trim())}">View all ${articleMatches.length} matching articles →</a>`;
+        html += '<a class="article-result-overflow" href="blog.html?q=' + encodeURIComponent(q.trim()) + '">View all ' + articleMatches.length + ' matching articles →</a>';
       }
       articleResults.innerHTML = html;
     } else {
