@@ -2801,12 +2801,12 @@
 
     <!-- SIGNUP STATE -->
     <div id="emailPopupSignupState">
-      <div class="email-popup-eyebrow">Limited Time Offer</div>
-      <h3>GET 10% OFF YOUR FIRST ORDER</h3>
-      <div class="email-popup-sub">Join the Trout Tricks community for exclusive deals and early access to new patterns</div>
+      <div class="email-popup-eyebrow">Join the Crew</div>
+      <h3>STILLWATER NEWS, STRAIGHT FROM THE BENCH</h3>
+      <div class="email-popup-sub">New patterns, fishing reports from Colorado's best stillwaters, and early access to limited drops.</div>
       <div id="emailPopupForm">
         <input class="email-popup-input" id="popupEmailInput" type="email" placeholder="Your email address">
-        <button class="email-popup-btn" onclick="submitPopupEmail()">CLAIM 10% OFF</button>
+        <button class="email-popup-btn" onclick="submitPopupEmail()">JOIN THE LIST</button>
         <div class="email-popup-fine">No spam. Unsubscribe anytime.</div>
       </div>
     </div>
@@ -2814,11 +2814,10 @@
     <!-- SUCCESS STATE -->
     <div id="emailPopupSuccessState" style="display:none">
       <div class="email-popup-eyebrow success">You're In</div>
-      <h3>THANKS — CHECK YOUR EMAIL</h3>
-      <div class="email-popup-sub">We'll email your 10% off code shortly. Use it at checkout — good for 30 days.</div>
+      <h3>WELCOME TO THE CREW</h3>
+      <div class="email-popup-sub">We'll be in touch with the patterns, reports, and tactics that actually move fish.</div>
 
       <button class="email-popup-btn shop-now-btn" onclick="shopNowFromPopup()">START SHOPPING →</button>
-      <div class="email-popup-fine">One use per customer · 30 days</div>
     </div>
 
   </div>
@@ -3643,7 +3642,7 @@ function removeFromCart(uid) {
   updateCartUI();
 }
 
-const PROMO_CODES = { ACE20: 20, WELCOME10: 10 };
+const PROMO_CODES = {}; // Stopgap 2026-05-06: all codes disabled until Worker honors discounts at Square
 
 // Pro-deal codes — 30% off for industry pros.
 // Format: PRO-LASTNAME (uppercase). To add a pro: push their code here, commit, push.
@@ -4014,15 +4013,12 @@ function applyPromo() {
 }
 
 // Shared webhook submission
-function submitEmailSignup(email, source, includeDiscount) {
+function submitEmailSignup(email, source) {
   const payload = {
     email: email,
     source: source,
     signup_date: new Date().toISOString()
   };
-  if (includeDiscount) {
-    payload.discount_code = 'WELCOME10';
-  }
   return fetch('https://hooks.zapier.com/hooks/catch/27334010/uvyg3wg/', {
     method: 'POST',
     mode: 'no-cors',
@@ -4050,7 +4046,7 @@ function submitPopupEmail() {
     return;
   }
 
-  submitEmailSignup(email, 'popup_signup', true);
+  submitEmailSignup(email, 'popup_signup');
   localStorage.setItem('tt_email_signup_complete', new Date().toISOString());
 
   document.getElementById('emailPopupSignupState').style.display = 'none';
@@ -4118,7 +4114,7 @@ function submitFooterEmail() {
     input.focus();
     return;
   }
-  submitEmailSignup(email, 'footer_signup', false);
+  submitEmailSignup(email, 'footer_signup');
   input.value = '';
   input.placeholder = 'Thanks! You\'re in.';
 }
