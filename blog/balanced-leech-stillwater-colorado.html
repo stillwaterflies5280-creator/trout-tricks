@@ -690,7 +690,7 @@
     padding: 16px 20px;
     display: flex; align-items: center; justify-content: space-between;
   }
-  .cart-header h2 {
+  .cart-header .cart-title {
     font-family: 'Bebas Neue', sans-serif;
     font-size: 1.5rem;
     letter-spacing: 0.08em;
@@ -1815,7 +1815,7 @@
 <div class="overlay" id="overlay" onclick="closeCart()"></div>
 <div class="cart-panel" id="cartPanel">
 <div class="cart-header">
-<h2>🪝 Your Cart</h2>
+<div class="cart-title" aria-label="Your Cart">🪝 Your Cart</div>
 <button class="close-btn" onclick="closeCart()">✕</button>
 </div>
 <div class="cart-fulfillment">
