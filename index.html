@@ -2550,6 +2550,10 @@
   </div>
 
 
+  <h2 class="section-title">STICKERS</h2>
+  <div class="catalog" id="merchCatalog"></div>
+
+
   <h2 class="section-title">THE FLIES</h2>
   <div class="fly-search-empty" id="flySearchEmpty">No flies or articles match "<strong id="flySearchQuery"></strong>"</div>
   <div class="search-section-header" id="flyResultsHeader" style="display:none;">FLIES <span class="count">(<span id="flyResultsCount">0</span>)</span></div>
@@ -2837,7 +2841,7 @@
     <p class="cart-empty">Your cart is empty.</p>
   </div>
   <div class="cart-footer">
-    <div class="shipping-note" id="shippingNote">Add flies to see shipping cost</div>
+    <div class="shipping-note" id="shippingNote">Add items to see shipping cost</div>
     <div class="promo-row">
       <input type="text" id="cartPromo" class="promo-input" placeholder="Promo code (optional)" oninput="onPromoInput(event)" autocomplete="off" autocapitalize="characters" spellcheck="false">
       <div class="promo-msg" id="cartPromoMsg"></div>
@@ -2969,7 +2973,9 @@ const FLY_IMAGES = {
   "mayers3": "mayers3.jpg",
   "mayers4": "mayers4.jpg",
   micro1: "micro1.jpg",
-  micro2: "micro2.jpg"
+  micro2: "micro2.jpg",
+  sticker1: "images/sticker1.jpg",
+  sticker2: "images/sticker2.jpg"
 };
 
 const FISH_IMAGES = {};
@@ -3151,6 +3157,28 @@ const flies = [
     price: 21,
     pack: 5,
     badge: "New"
+  },
+  {
+    id: 13, img: "sticker1",
+    name: "Trout Tricks Wordmark Sticker",
+    desc: "3.25\" × 1.2\" weatherproof vinyl. Slap it on your boat, vise, or Yeti.",
+    sizes: null,
+    colors: null,
+    price: 5,
+    pack: null,
+    badge: null,
+    category: "sticker"
+  },
+  {
+    id: 14, img: "sticker2",
+    name: "Trout Tricks Square Sticker",
+    desc: "3\" × 3\" weatherproof vinyl. Slap it on your boat, vise, or Yeti.",
+    sizes: null,
+    colors: null,
+    price: 5,
+    pack: null,
+    badge: null,
+    category: "sticker"
   }
 ];
 
@@ -3246,7 +3274,7 @@ function buildMosaic() {
   // Trip page — 3 random shoppable fly cards
   const tripCards = document.getElementById('tripFlyCards');
   if (tripCards) {
-    const shuffled = [...flies].sort(() => Math.random() - 0.5).slice(0, 3);
+    const shuffled = [...flies].filter(f => f.category !== 'sticker').sort(() => Math.random() - 0.5).slice(0, 3);
     tripCards.innerHTML = shuffled.map(fly => {
       const badge = fly.badge ? `<div class="fly-badge${fly.badge==='Top Secret'?' gold':''}">${fly.badge}</div>` : '';
       const colorSel = fly.colors ? `<div class="option-row"><span class="option-label">Color</span><select id="tcolor-${fly.id}">${fly.colors.map(c=>`<option>${c}</option>`).join('')}</select></div>` : '';
@@ -3373,16 +3401,26 @@ function addGuideChoiceToCart() {
 
 function buildCatalog() {
   const catalog = document.getElementById("catalog");
-  if (!catalog) return;
+  const merchCatalog = document.getElementById("merchCatalog");
 
   const chironomidIds = new Set([2, 3, 4, 5, 6, 7, 8, 9, 1]);
   const leechIds = new Set([10, 11, 12]);
   const chironomids = flies.filter(f => chironomidIds.has(f.id));
   const leeches = flies.filter(f => leechIds.has(f.id));
+  const stickers = flies.filter(f => f.category === "sticker");
 
-  function renderFlyCard(fly) {
+  function renderFlyCard(fly, target) {
     quantities[fly.id] = 1;
     pickupFlags[fly.id] = false;
+
+    const isSticker = fly.category === "sticker";
+
+    const sizeSel = fly.sizes
+      ? `<div class="option-row">
+           <span class="option-label">Size</span>
+           <select id="size-${fly.id}">${fly.sizes.map(s=>`<option>${s}</option>`).join("")}</select>
+         </div>`
+      : "";
 
     const colorSel = fly.colors
       ? `<div class="option-row">
@@ -3394,6 +3432,9 @@ function buildCatalog() {
     const badge = fly.badge
       ? `<div class="fly-badge${fly.badge==="Top Secret"?" gold":""}">${fly.badge}</div>`
       : "";
+
+    const priceSuffix = fly.pack ? `<span class="per">/ ${fly.pack}-pack</span>` : '';
+    const qtyLabel = isSticker ? "Qty" : "Packs";
 
     const imgBlock = fly.gallery
       ? `<div class="fly-img fly-gallery-wrap" id="gallery-wrap-${fly.id}">
@@ -3410,22 +3451,19 @@ function buildCatalog() {
            ${badge}
          </div>`;
 
-    catalog.innerHTML += `
+    target.innerHTML += `
       <div class="fly-card" data-search="${(fly.name + ' ' + fly.desc).toLowerCase().replace(/"/g, '&quot;')}" data-fly-name="${fly.name.replace(/"/g, '&quot;')}" data-fly-price="${fly.price}">
         ${imgBlock}
         <div class="fly-info">
           <div class="fly-name">${fly.name}</div>
           <div class="fly-desc">${fly.desc}</div>
-          <div class="fly-price">$${fly.price} <span class="per">/ 5-pack</span></div>
+          <div class="fly-price">$${fly.price} ${priceSuffix}</div>
         </div>
         <div class="fly-options">
-          <div class="option-row">
-            <span class="option-label">Size</span>
-            <select id="size-${fly.id}">${fly.sizes.map(s=>`<option>${s}</option>`).join("")}</select>
-          </div>
+          ${sizeSel}
           ${colorSel}
           <div class="option-row">
-            <span class="option-label">Packs</span>
+            <span class="option-label">${qtyLabel}</span>
             <div class="qty-row">
               <button class="qty-btn" onclick="changeQty(${fly.id},-1)">−</button>
               <span class="qty-display" id="qty-${fly.id}">1</span>
@@ -3438,10 +3476,18 @@ function buildCatalog() {
     `;
   }
 
-  catalog.innerHTML += `<h3 class="catalog-group-header">Chironomids &amp; Buzzers</h3>`;
-  chironomids.forEach(renderFlyCard);
-  catalog.innerHTML += `<div class="catalog-group-spacer"></div><h3 class="catalog-group-header">Leeches</h3>`;
-  leeches.forEach(renderFlyCard);
+  // Stickers section (Merch)
+  if (merchCatalog) {
+    stickers.forEach(s => renderFlyCard(s, merchCatalog));
+  }
+
+  // Flies catalog
+  if (catalog) {
+    catalog.innerHTML += `<h3 class="catalog-group-header">Chironomids &amp; Buzzers</h3>`;
+    chironomids.forEach(f => renderFlyCard(f, catalog));
+    catalog.innerHTML += `<div class="catalog-group-spacer"></div><h3 class="catalog-group-header">Leeches</h3>`;
+    leeches.forEach(f => renderFlyCard(f, catalog));
+  }
 }
 
 // Blog post index used by site search
@@ -3650,14 +3696,17 @@ function changeQty(id, delta) {
 
 function addToCart(id) {
   const fly = flies.find(f => f.id === id);
-  const size = document.getElementById(`size-${id}`).value;
+  const sizeEl = document.getElementById(`size-${id}`);
+  const size = sizeEl ? sizeEl.value : null;
   const colorEl = document.getElementById(`color-${id}`);
   const color = colorEl ? colorEl.value : null;
   const qty = quantities[id];
   cart.push({ fly, size, color, qty, pickup: false, uid: Date.now() + Math.random() });
   updateCartUI();
   gtag('event', 'add_to_cart', { currency: 'USD', value: fly.price * qty, item_name: fly.name, quantity: qty });
-  showToast(`${qty} pack${qty>1?"s":""} of ${fly.name} added!`);
+  const isSticker = fly.category === 'sticker';
+  const unit = isSticker ? (qty>1 ? "stickers" : "sticker") : `pack${qty>1?"s":""}`;
+  showToast(isSticker ? `${qty} ${unit} added!` : `${qty} ${unit} of ${fly.name} added!`);
   openCart();
 }
 
@@ -3754,8 +3803,12 @@ function renderPromoMsg(raw) {
 }
 
 function calcShipping() {
-  if (cart.length === 0) return { cost: 0, label: "Add flies to see shipping cost" };
+  if (cart.length === 0) return { cost: 0, label: "Add items to see shipping cost" };
   if (orderFulfillment === 'pickup') return { cost: 0, label: "📍 Local Pickup — No shipping charge" };
+  // Sticker-only orders ship in a #10 envelope, not a tracked padded mailer.
+  // Mixed orders (sticker + fly) always use the $7 tracked rate since the fly box requires it.
+  const allStickers = cart.every(i => i.fly.category === 'sticker');
+  if (allStickers) return { cost: 1.5, label: `✉️ USPS First-Class Envelope · $1.50` };
   return { cost: 7, label: `📦 USPS Tracked Shipping · $7` };
 }
 
@@ -3786,12 +3839,13 @@ function updateCartUI() {
       <div class="cart-item-info">
         <div class="cart-item-name">${item.fly.name}</div>
         <div class="cart-item-controls">
+          ${item.fly.sizes ? `
           <div class="cart-size-row">
             <span class="cart-ctrl-label">Size</span>
             <select class="cart-size-select" onchange="updateCartSize(${item.uid}, this.value)">
               ${item.fly.sizes.map(s=>`<option${s===item.size?" selected":""}>${s}</option>`).join("")}
             </select>
-          </div>
+          </div>` : ''}
           ${item.fly.colors ? `
           <div class="cart-size-row">
             <span class="cart-ctrl-label">Color</span>
@@ -3800,7 +3854,7 @@ function updateCartUI() {
             </select>
           </div>` : ''}
           <div class="cart-qty-row">
-            <span class="cart-ctrl-label">Packs</span>
+            <span class="cart-ctrl-label">${item.fly.category === 'sticker' ? 'Qty' : 'Packs'}</span>
             <div class="cart-qty-controls">
               <button class="cart-qty-btn" onclick="updateCartQty(${item.uid}, -1)">−</button>
               <span class="cart-qty-num">${item.qty}</span>
@@ -3854,7 +3908,7 @@ function buildOrderSummary() {
   const flyTotal = cart.reduce((s,i)=>s+i.fly.price*i.qty, 0);
   const discount = appliedPromo ? flyTotal * (appliedPromo.percent / 100) : 0;
   const discountedSubtotal = flyTotal - discount;
-  const { cost } = calcShipping();
+  const { cost, label } = calcShipping();
   const isPickup = orderFulfillment === 'pickup';
   const shippingCost = isPickup ? 0 : (cost ?? 0);
   const grandTotal = discountedSubtotal + shippingCost;
@@ -3864,12 +3918,20 @@ function buildOrderSummary() {
   currentOrderShipping = shippingCost;
 
   // HTML summary
-  let lines = cart.map(item=>`
+  let lines = cart.map(item=>{
+    const isSticker = item.fly.category === 'sticker';
+    const unit = isSticker ? (item.qty>1 ? 'stickers' : 'sticker') : `pack${item.qty>1?"s":""}`;
+    const variantBits = [];
+    if (item.size)  variantBits.push(item.size);
+    if (item.color) variantBits.push(item.color);
+    const variantStr = variantBits.length ? ` (${variantBits.join(', ')})` : '';
+    return `
     <div class="order-line">
-      <span>${item.qty} pack${item.qty>1?"s":""} · ${item.fly.name} (${item.size}${item.color?", "+item.color:""})</span>
+      <span>${item.qty} ${unit} · ${item.fly.name}${variantStr}</span>
       <span>$${(item.fly.price*item.qty).toFixed(2)}</span>
     </div>
-  `).join("");
+  `;
+  }).join("");
 
   if (appliedPromo) {
     lines += `<div class="order-line promo"><span>Promo ${appliedPromo.code} (${appliedPromo.percent}% off)</span><span class="price">-$${discount.toFixed(2)}</span></div>`;
@@ -3878,7 +3940,10 @@ function buildOrderSummary() {
   if (isPickup) {
     lines += `<div class="order-line shipping"><span>📍 Local Pickup</span><span class="price">FREE</span></div>`;
   } else {
-    lines += `<div class="order-line shipping"><span>Shipping · USPS Tracked</span><span class="price">$${shippingCost.toFixed(2)}</span></div>`;
+    // Use the dynamic label from calcShipping. Strip the trailing " · $X.XX"
+    // since the price renders separately in the line.
+    const stripped = label.replace(/\s*·\s*\$.*$/, '');
+    lines += `<div class="order-line shipping"><span>${stripped}</span><span class="price">$${shippingCost.toFixed(2)}</span></div>`;
   }
 
   const totalHtml = `<div class="order-total-line"><span>Order Total</span><span>$${grandTotal.toFixed(2)}</span></div>`;
@@ -3886,9 +3951,14 @@ function buildOrderSummary() {
   document.getElementById("orderSummaryTotal").innerHTML = totalHtml;
 
   // Plain text for EmailJS / Zapier
-  const itemLines = cart.map(item =>
-    `  - ${item.qty} pack${item.qty>1?"s":""} of ${item.fly.name} (Size ${item.size}${item.color?", "+item.color:""})`
-  ).join("\n");
+  const itemLines = cart.map(item => {
+    const isSticker = item.fly.category === 'sticker';
+    const unit = isSticker ? (item.qty>1 ? 'stickers' : 'sticker') : `pack${item.qty>1?"s":""}`;
+    if (isSticker) {
+      return `  - ${item.qty} ${unit} · ${item.fly.name}`;
+    }
+    return `  - ${item.qty} ${unit} of ${item.fly.name} (Size ${item.size}${item.color?", "+item.color:""})`;
+  }).join("\n");
   const fulfillmentLine = isPickup ? "\n  Fulfillment: LOCAL PICKUP" : "";
   const promoLine = appliedPromo
     ? `\n  Promo ${appliedPromo.code}: -$${discount.toFixed(2)} (${appliedPromo.percent}% off)`
