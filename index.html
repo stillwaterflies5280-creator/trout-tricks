@@ -2985,7 +2985,8 @@ const FLY_IMAGES = {
   micro1: "micro1.jpg",
   micro2: "micro2.jpg",
   sticker1: "images/sticker1.png",
-  sticker2: "images/sticker2.png"
+  sticker2: "images/sticker2.png",
+  wordmarkreal: "images/wordmarkreal.jpg"
 };
 
 const FISH_IMAGES = {};
@@ -3169,7 +3170,7 @@ const flies = [
     badge: "New"
   },
   {
-    id: 13, img: "sticker1",
+    id: 13, img: "sticker1", gallery: ["sticker1", "wordmarkreal"],
     name: "Trout Tricks Wordmark Sticker",
     desc: "Die-cut 3.25\" × 1.2\" weatherproof vinyl. Slap it on your boat, vise, or Yeti.",
     sizes: null,
@@ -3447,7 +3448,7 @@ function buildCatalog() {
     const qtyLabel = isSticker ? "Qty" : "Packs";
 
     const imgBlock = fly.gallery
-      ? `<div class="fly-img fly-gallery-wrap" id="gallery-wrap-${fly.id}">
+      ? `<div class="fly-img fly-gallery-wrap${isSticker ? ' sticker-img' : ''}" id="gallery-wrap-${fly.id}">
            <img src="${FLY_IMAGES[fly.gallery[0]]}" alt="${fly.name}" loading="lazy" id="gallery-img-${fly.id}" onclick="openGalleryLightbox(${fly.id})">
            <button class="gallery-nav prev" onclick="cycleGallery(${fly.id},-1)">&#8249;</button>
            <button class="gallery-nav next" onclick="cycleGallery(${fly.id},1)">&#8250;</button>
