@@ -27,15 +27,24 @@
 
   <link rel="canonical" href="https://www.trouttricks.com/affiliates.html">
 
-  <!-- Schema Markup: Local Business + Product -->
+  <!-- Schema Markup: WebPage with ItemList of partner-recommended products -->
   <script type="application/ld+json">
   {
     "@context": "https://schema.org",
     "@graph": [
       {
+        "@type": "WebPage",
+        "@id": "https://www.trouttricks.com/affiliates.html#webpage",
+        "url": "https://www.trouttricks.com/affiliates.html",
+        "name": "Affiliates — Gear We Use",
+        "description": "Products Thomas Frank uses daily on the water and at the vise. Personally tested and endorsed.",
+        "publisher": { "@id": "https://www.trouttricks.com/#localbusiness" },
+        "mainEntity": { "@id": "https://www.trouttricks.com/affiliates.html#item-list" }
+      },
+      {
         "@type": "LocalBusiness",
+        "@id": "https://www.trouttricks.com/#localbusiness",
         "name": "Trout Tricks",
-        "description": "Hand-tied chironomid fly patterns and guided stillwater fly fishing trips in Colorado. Specializing in Antero Reservoir, Spinney Mountain, 11 Mile Canyon, and Delaney Buttes.",
         "url": "https://www.trouttricks.com",
         "telephone": "+13039178278",
         "email": "stillwaterflies5280@gmail.com",
@@ -49,68 +58,68 @@
           "@type": "GeoCoordinates",
           "latitude": 39.8366,
           "longitude": -105.0372
-        },
-        "openingHours": "Mo-Su 00:00-23:59",
-        "priceRange": "$21-$25",
-        "servesCuisine": null,
-        "areaServed": ["Colorado", "Wyoming", "South Park CO", "Antero Reservoir", "Spinney Mountain Reservoir"],
-        "sameAs": ["https://www.facebook.com/share/g/14ZLtNGNF6W/"]
-      },
-      {
-        "@type": "Product",
-        "name": "Hand-Tied Chironomid Fly Patterns",
-        "description": "Premium hand-tied chironomid fly patterns tied on 2x heavy wire hooks with tungsten beads. Proven on Colorado's top stillwater fisheries. 5-pack.",
-        "brand": { "@type": "Brand", "name": "Trout Tricks" },
-        "offers": {
-          "@type": "Offer",
-          "priceCurrency": "USD",
-          "price": "21.00",
-          "availability": "https://schema.org/InStock",
-          "url": "https://www.trouttricks.com",
-          "hasMerchantReturnPolicy": {
-            "@type": "MerchantReturnPolicy",
-            "applicableCountry": "US",
-            "returnPolicyCategory": "https://schema.org/MerchantReturnFiniteReturnWindow",
-            "merchantReturnDays": 7,
-            "returnMethod": "https://schema.org/ReturnByMail",
-            "returnFees": "https://schema.org/FreeReturn"
-          },
-          "shippingDetails": {
-            "@type": "OfferShippingDetails",
-            "shippingRate": {
-              "@type": "MonetaryAmount",
-              "value": "7.00",
-              "currency": "USD"
-            },
-            "shippingDestination": {
-              "@type": "DefinedRegion",
-              "addressCountry": "US"
-            },
-            "deliveryTime": {
-              "@type": "ShippingDeliveryTime",
-              "handlingTime": {
-                "@type": "QuantitativeValue",
-                "minValue": 1,
-                "maxValue": 7,
-                "unitCode": "DAY"
-              },
-              "transitTime": {
-                "@type": "QuantitativeValue",
-                "minValue": 3,
-                "maxValue": 7,
-                "unitCode": "DAY"
-              }
-            }
-          }
         }
       },
       {
-        "@type": "Service",
-        "name": "Guided Stillwater Fly Fishing Trips Colorado",
-        "description": "Expert guided fly fishing trips on Colorado's best stillwater fisheries. Specializing in chironomid fishing with indicators at Antero, Spinney Mountain, 11 Mile, and Delaney Buttes.",
-        "provider": { "@type": "Person", "name": "Thomas Frank" },
-        "areaServed": "Colorado",
-        "serviceType": "Fly Fishing Guide Service"
+        "@type": "ItemList",
+        "@id": "https://www.trouttricks.com/affiliates.html#item-list",
+        "name": "Stillwater Fly Fishing Gear Recommendations",
+        "description": "Hand-picked fly tying and stillwater fly fishing gear used and endorsed by Thomas Frank. Affiliate links — purchases help support Trout Tricks.",
+        "numberOfItems": 4,
+        "itemListOrder": "https://schema.org/ItemListOrderAscending",
+        "itemListElement": [
+          {
+            "@type": "ListItem",
+            "position": 1,
+            "item": {
+              "@type": "Product",
+              "name": "Bloop Beads — Tungsten Fly Tying Beads",
+              "description": "High-quality tungsten beads for fly tying — the exact beads used to tie Trout Tricks chironomids.",
+              "brand": { "@type": "Brand", "name": "Bloop Beads" },
+              "url": "https://www.bloopbeadco.com/referral/rPsFB0Ch9L48?utm_source=referral_program",
+              "image": "https://www.trouttricks.com/bloop-beads.png",
+              "category": "Fly Tying Beads"
+            }
+          },
+          {
+            "@type": "ListItem",
+            "position": 2,
+            "item": {
+              "@type": "Product",
+              "name": "Trout Throat Pump",
+              "description": "Stomach pump for stillwater anglers — verify what trout are eating at depth.",
+              "url": "https://amzn.to/3QsBqe2",
+              "image": "https://www.trouttricks.com/pump.jpg",
+              "category": "Fly Fishing Tool"
+            }
+          },
+          {
+            "@type": "ListItem",
+            "position": 3,
+            "item": {
+              "@type": "Product",
+              "name": "Gutta Cutta Cautery Tool",
+              "description": "Cautery tool for finishing flies — burns loose fibers and cleans hook eyes.",
+              "brand": { "@type": "Brand", "name": "Gutta Cutta" },
+              "url": "https://amzn.to/4e3Id7M",
+              "image": "https://www.trouttricks.com/tool.jpg",
+              "category": "Fly Tying Tool"
+            }
+          },
+          {
+            "@type": "ListItem",
+            "position": 4,
+            "item": {
+              "@type": "Product",
+              "name": "SA Amplitude Anadro Stillwater Indicator Line",
+              "description": "Overweighted weight-forward floating line designed for stillwater indicator fishing with heavy chironomid rigs.",
+              "brand": { "@type": "Brand", "name": "Scientific Anglers" },
+              "url": "https://amzn.to/4e8Xjcl",
+              "image": "https://www.trouttricks.com/sa.jpg",
+              "category": "Fly Fishing Line"
+            }
+          }
+        ]
       }
     ]
   }
@@ -1879,6 +1888,8 @@
       </div>
 
     </div>
+
+    <p style="max-width:720px;margin:32px auto 0;padding:0 16px;font-size:0.92rem;color:#bbb;line-height:1.7;text-align:center;">Why these tools? Read the rigging deep-dives: <a href="blog/indicator-fishing-setup-colorado-lakes.html" style="color:#e74c3c;">how the SA Anadro line fits into a stillwater indicator rig</a>, and <a href="blog/best-chironomid-fly-patterns.html" style="color:#e74c3c;">the chironomids these Bloop Beads end up in</a>.</p>
   </div>
 </div>
 
