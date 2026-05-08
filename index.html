@@ -723,14 +723,13 @@
   }
   .fly-card:hover .fly-img img { transform: scale(1.04); }
 
-  /* STICKER PRODUCTS — rounded corners to read as die-cut, shorter
-     container so the strip-style sticker doesn't float in a tall box. */
+  /* STICKER PRODUCTS — transparent PNG with the die-cut shape baked in.
+     Container is shape-agnostic: no dark bg, no border-radius, just height
+     + drop-shadow so the sticker pops off the card background. */
   .fly-img.sticker-img {
-    height: 200px;
-    border-radius: 14px;
-  }
-  .fly-img.sticker-img img {
-    border-radius: 14px;
+    height: 240px;
+    background: transparent;
+    filter: drop-shadow(0 2px 6px rgba(0,0,0,0.15));
   }
 
   .fly-gallery-wrap { cursor: default; }
@@ -2985,8 +2984,8 @@ const FLY_IMAGES = {
   "mayers4": "mayers4.jpg",
   micro1: "micro1.jpg",
   micro2: "micro2.jpg",
-  sticker1: "images/sticker1.jpg",
-  sticker2: "images/sticker2.jpg"
+  sticker1: "images/sticker1.png",
+  sticker2: "images/sticker2.png"
 };
 
 const FISH_IMAGES = {};
