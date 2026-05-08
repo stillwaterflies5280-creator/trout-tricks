@@ -722,6 +722,17 @@
     transition: transform 0.4s ease;
   }
   .fly-card:hover .fly-img img { transform: scale(1.04); }
+
+  /* STICKER PRODUCTS — rounded corners to read as die-cut, shorter
+     container so the strip-style sticker doesn't float in a tall box. */
+  .fly-img.sticker-img {
+    height: 200px;
+    border-radius: 14px;
+  }
+  .fly-img.sticker-img img {
+    border-radius: 14px;
+  }
+
   .fly-gallery-wrap { cursor: default; }
   .fly-gallery-wrap img { cursor: zoom-in; }
   .gallery-nav {
@@ -3161,7 +3172,7 @@ const flies = [
   {
     id: 13, img: "sticker1",
     name: "Trout Tricks Wordmark Sticker",
-    desc: "3.25\" × 1.2\" weatherproof vinyl. Slap it on your boat, vise, or Yeti.",
+    desc: "Die-cut 3.25\" × 1.2\" weatherproof vinyl. Slap it on your boat, vise, or Yeti.",
     sizes: null,
     colors: null,
     price: 5,
@@ -3172,7 +3183,7 @@ const flies = [
   {
     id: 14, img: "sticker2",
     name: "Trout Tricks Square Sticker",
-    desc: "3\" × 3\" weatherproof vinyl. Slap it on your boat, vise, or Yeti.",
+    desc: "Die-cut 3\" × 3\" weatherproof vinyl. Slap it on your boat, vise, or Yeti.",
     sizes: null,
     colors: null,
     price: 5,
@@ -3446,7 +3457,7 @@ function buildCatalog() {
            </div>
            ${badge}
          </div>`
-      : `<div class="fly-img" onclick="openLightbox('${fly.img}','${fly.name.replace(/'/g, "\\'")}')">
+      : `<div class="fly-img${isSticker ? ' sticker-img' : ''}" onclick="openLightbox('${fly.img}','${fly.name.replace(/'/g, "\\'")}')">
            <img src="${FLY_IMAGES[fly.img]}" alt="${fly.name}" loading="lazy" style="${fly.id===9?'transform:rotate(90deg) scale(1.4);':fly.id===6?'object-fit:cover;object-position:top;':fly.id===5?'object-fit:cover;object-position:right;':''}">
            ${badge}
          </div>`;
