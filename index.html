@@ -3714,7 +3714,7 @@ function removeFromCart(uid) {
   updateCartUI();
 }
 
-const PROMO_CODES = {}; // Stopgap 2026-05-06: all codes disabled until Worker honors discounts at Square
+const PROMO_CODES = { WELCOME10: 10 };
 
 // Pro-deal codes — 30% off for industry pros.
 // Format: PRO-LASTNAME (uppercase). To add a pro: push their code here, commit, push.
@@ -3929,9 +3929,11 @@ function checkoutWithSquare(btnOverride) {
     };
   });
 
-  const flyTotal    = cart.reduce(function(s, it) { return s + it.fly.price * it.qty; }, 0);
-  const shippingNow = (typeof calcShipping === "function" ? (calcShipping().cost || 0) : 0);
-  const grandTotal  = flyTotal + shippingNow;
+  const flyTotal           = cart.reduce(function(s, it) { return s + it.fly.price * it.qty; }, 0);
+  const shippingNow        = (typeof calcShipping === "function" ? (calcShipping().cost || 0) : 0);
+  const discountAmount     = appliedPromo ? flyTotal * (appliedPromo.percent / 100) : 0;
+  const discountedSubtotal = flyTotal - discountAmount;
+  const grandTotal         = discountedSubtotal + shippingNow;
 
   if (typeof gtag === "function") {
     gtag("event", "begin_checkout", {
@@ -3950,7 +3952,10 @@ function checkoutWithSquare(btnOverride) {
     body:    JSON.stringify({
       items: items,
       shipping_cost: shippingCost,
-      fulfillment_type: fulfillmentType
+      fulfillment_type: fulfillmentType,
+      promo_code: appliedPromo ? appliedPromo.code : null,
+      discount_amount: discountAmount,
+      discounted_subtotal: discountedSubtotal
     })
   })
     .then(function(r) {
@@ -4158,26 +4163,6 @@ function clearEmailError(el) {
   const err = document.getElementById(el.id + 'Error');
   if (err) err.classList.remove('show');
   el.classList.remove('invalid');
-}
-
-// PROMO CODE
-function applyPromo() {
-  const input = document.getElementById('promoInput');
-  const msg = document.getElementById('promoMsg');
-  const code = input.value.trim().toUpperCase();
-  if (!code) { msg.textContent = ''; msg.className = 'promo-msg'; return; }
-  if (PROMO_CODES[code]) {
-    appliedPromo = { code, pct: PROMO_CODES[code] };
-    msg.textContent = `✓ ${PROMO_CODES[code]}% discount applied!`;
-    msg.className = 'promo-msg valid';
-    input.disabled = true;
-    updateCartUI();
-  } else {
-    appliedPromo = { code: '', pct: 0 };
-    msg.textContent = 'Invalid promo code';
-    msg.className = 'promo-msg invalid';
-    updateCartUI();
-  }
 }
 
 // Email signups (popup + footer) post to Klaviyo's client subscriptions API.
