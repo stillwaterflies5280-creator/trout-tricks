@@ -1090,6 +1090,108 @@
   .form-group input:focus, .form-group select:focus { border-color: var(--red); }
   .form-group input::placeholder { color: #555; }
   .form-group.required label::after { content: ' *'; color: var(--red); }
+
+  /* CONTACT FORM */
+  .contact-form-section {
+    margin: 24px 0 32px;
+    padding: 24px 22px;
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+  }
+  .contact-form-title {
+    font-family: 'Bebas Neue', Impact, sans-serif;
+    font-size: 1.6rem;
+    letter-spacing: 0.04em;
+    color: var(--white);
+    margin: 0 0 6px;
+  }
+  .contact-form-subtitle {
+    color: var(--light-gray);
+    font-size: 0.92rem;
+    margin: 0 0 20px;
+    line-height: 1.5;
+  }
+  .contact-form .form-row { margin-bottom: 14px; }
+  .contact-form .form-group { margin-bottom: 14px; }
+  /* 16px font on inputs prevents iOS Safari focus zoom. */
+  .contact-form input,
+  .contact-form select,
+  .contact-form textarea {
+    background: #1e1e1e;
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    color: var(--white);
+    font-family: 'Barlow', sans-serif;
+    font-size: 16px;
+    padding: 11px 12px;
+    outline: none;
+    transition: border-color 0.2s;
+    width: 100%;
+    box-sizing: border-box;
+  }
+  .contact-form textarea { resize: vertical; min-height: 120px; line-height: 1.5; }
+  .contact-form input:focus,
+  .contact-form select:focus,
+  .contact-form textarea:focus { border-color: var(--red); }
+  .contact-form .form-group label { color: var(--gray); }
+  .contact-form .form-group.field-error input,
+  .contact-form .form-group.field-error select,
+  .contact-form .form-group.field-error textarea { border-color: var(--red); }
+  .cf-honeypot {
+    position: absolute;
+    left: -9999px;
+    width: 1px; height: 1px;
+    overflow: hidden;
+  }
+  .cf-checkbox-row {
+    display: flex; gap: 10px; align-items: flex-start;
+    margin: 8px 0 16px;
+  }
+  .cf-checkbox-row input {
+    width: 18px; height: 18px; flex-shrink: 0; margin-top: 2px;
+    accent-color: var(--red);
+  }
+  .cf-checkbox-row label {
+    font-size: 0.92rem; color: var(--light-gray); line-height: 1.4; cursor: pointer;
+  }
+  .cf-error, .cf-success {
+    display: none;
+    padding: 12px 14px;
+    border-radius: 4px;
+    font-size: 0.92rem;
+    margin: 10px 0;
+    line-height: 1.4;
+  }
+  .cf-error {
+    color: #ff8b7a;
+    background: rgba(192,57,43,0.12);
+    border: 1px solid rgba(192,57,43,0.4);
+  }
+  .cf-success {
+    color: #6ee7b7;
+    background: rgba(16,185,129,0.1);
+    border: 1px solid rgba(16,185,129,0.4);
+  }
+  .cf-error.visible, .cf-success.visible { display: block; }
+  .cf-privacy {
+    font-size: 0.78rem;
+    color: var(--gray);
+    line-height: 1.5;
+    margin: 14px 0 0;
+  }
+  #cfSubmit:disabled,
+  #cfSubmit:disabled:hover {
+    background: #333;
+    border-color: #444;
+    color: #777;
+    cursor: not-allowed;
+    box-shadow: none;
+  }
+  @media (max-width: 600px) {
+    .contact-form .form-row { flex-direction: column; gap: 14px; }
+  }
+
   .pickup-section {
     margin: 14px 16px 0;
     background: var(--card);
@@ -1800,6 +1902,79 @@
   <div class="contact-page">
     <h1>Contact Us</h1>
     <p class="subtitle">Questions about an order? Want a custom pattern? Reach out anytime.</p>
+
+    <section class="contact-form-section" aria-labelledby="contactFormTitle">
+      <h2 id="contactFormTitle" class="contact-form-title">Send a Message</h2>
+      <p class="contact-form-subtitle">Questions, custom orders, wholesale, guide trips &mdash; drop a line and Thomas replies within 24 hours.</p>
+
+      <form id="contactForm" class="contact-form" novalidate onsubmit="return submitContactForm(event)">
+        <div class="form-row">
+          <div class="form-group required">
+            <label for="cf_first_name">First Name</label>
+            <input id="cf_first_name" name="first_name" type="text" autocomplete="given-name" required aria-required="true" maxlength="60">
+          </div>
+          <div class="form-group">
+            <label for="cf_last_name">Last Name</label>
+            <input id="cf_last_name" name="last_name" type="text" autocomplete="family-name" maxlength="60">
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group required">
+            <label for="cf_email">Email</label>
+            <input id="cf_email" name="email" type="email" autocomplete="email" required aria-required="true" maxlength="120">
+          </div>
+          <div class="form-group">
+            <label for="cf_phone">Phone</label>
+            <input id="cf_phone" name="phone" type="tel" autocomplete="tel" placeholder="303-555-1234" maxlength="20">
+          </div>
+        </div>
+
+        <div class="form-group required">
+          <label for="cf_reason">Reason for Contact</label>
+          <select id="cf_reason" name="reason" required aria-required="true">
+            <option value="">Choose one&hellip;</option>
+            <option value="General question">General question</option>
+            <option value="Custom fly order">Custom fly order</option>
+            <option value="Guide trip inquiry">Guide trip inquiry</option>
+            <option value="Wholesale inquiry">Wholesale inquiry</option>
+            <option value="Pro deal inquiry">Pro deal inquiry</option>
+            <option value="Other">Other</option>
+          </select>
+        </div>
+
+        <div class="form-group required">
+          <label for="cf_message">Message</label>
+          <textarea id="cf_message" name="message" rows="5" required aria-required="true" maxlength="2000"></textarea>
+        </div>
+
+        <!-- Newsletter opt-in: explicit consent. Klaviyo only fires when checked. -->
+        <div class="cf-checkbox-row">
+          <input id="cf_newsletter" name="newsletter_optin" type="checkbox">
+          <label for="cf_newsletter">Subscribe me to the Trout Tricks newsletter (occasional emails about new patterns, trip reports, and discounts).</label>
+        </div>
+
+        <!-- Honeypot: hidden from humans; bots fill it. Apps Script must drop rows where website != "". -->
+        <div class="cf-honeypot" aria-hidden="true">
+          <label for="cf_website">Website</label>
+          <input id="cf_website" name="website" type="text" tabindex="-1" autocomplete="off">
+        </div>
+
+        <div class="cf-checkbox-row">
+          <input id="cf_human" name="i_am_human" type="checkbox" required aria-required="true">
+          <label for="cf_human">I'm a real angler, not a bot.</label>
+        </div>
+
+        <div class="cf-error" id="cfError" role="alert" aria-live="polite"></div>
+        <div class="cf-success" id="cfSuccess" role="status" aria-live="polite"></div>
+
+        <button type="submit" id="cfSubmit" class="add-btn">Send Message</button>
+
+        <p class="cf-privacy">
+          We won't add you to any email list unless you check the newsletter box above. We don't share your info. Unsubscribe anytime.
+        </p>
+      </form>
+    </section>
 
     <div class="contact-card">
       <div class="contact-card-header">Tyer</div>
@@ -2658,6 +2833,155 @@ document.querySelectorAll('a[href^="mailto:"]').forEach(function(a) {
     gtag('event', 'contact_form_submit');
   });
 });
+
+// === CONTACT FORM ===
+function submitContactForm(e) {
+  e.preventDefault();
+  const form = document.getElementById('contactForm');
+  const errBox = document.getElementById('cfError');
+  const okBox = document.getElementById('cfSuccess');
+  const btn = document.getElementById('cfSubmit');
+  errBox.classList.remove('visible');
+  okBox.classList.remove('visible');
+  form.querySelectorAll('.form-group').forEach(g => g.classList.remove('field-error'));
+
+  const RATE_KEY = 'tt_contact_last_submit';
+  const RATE_MS = 5 * 60 * 1000;
+  const last = Number(localStorage.getItem(RATE_KEY) || 0);
+  if (last && (Date.now() - last) < RATE_MS) {
+    const wait = Math.ceil((RATE_MS - (Date.now() - last)) / 1000 / 60);
+    return showCFError('You just sent a message. Please wait about ' + wait + ' minute' + (wait === 1 ? '' : 's') + ' before sending another.');
+  }
+
+  const get = id => (document.getElementById(id).value || '').trim();
+  const firstName = get('cf_first_name');
+  const lastName  = get('cf_last_name');
+  const email     = get('cf_email');
+  const phoneRaw  = get('cf_phone');
+  const phone     = phoneRaw.replace(/\D+/g, '');
+  const reason    = get('cf_reason');
+  const message   = get('cf_message');
+  const honeypot  = get('cf_website');
+  const isHuman   = document.getElementById('cf_human').checked;
+  const newsletterOptIn = document.getElementById('cf_newsletter').checked;
+
+  // Honeypot — silently "succeed" so bots don't retry. Server must also drop these.
+  if (honeypot) {
+    okBox.textContent = "Thanks — I'll get back to you within 24 hours.";
+    okBox.classList.add('visible');
+    form.style.display = 'none';
+    return false;
+  }
+
+  const errors = [];
+  if (!firstName) { errors.push('First name is required.'); markCFError('cf_first_name'); }
+  if (!email) { errors.push('Email is required.'); markCFError('cf_email'); }
+  else if (!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(email)) { errors.push('Please enter a valid email address.'); markCFError('cf_email'); }
+  if (phoneRaw && phone.length < 7) { errors.push('Phone number looks too short. Use a format like 303-555-1234.'); markCFError('cf_phone'); }
+  if (!reason) { errors.push('Please choose a reason for contact.'); markCFError('cf_reason'); }
+  if (!message) { errors.push('Message is required.'); markCFError('cf_message'); }
+  else if (message.length < 5) { errors.push('Please write a bit more in your message.'); markCFError('cf_message'); }
+  if (!isHuman) { errors.push("Please confirm you're a real angler."); }
+
+  if (errors.length) return showCFError(errors.join(' '));
+
+  btn.disabled = true;
+  btn.textContent = 'Sending…';
+
+  const payload = { firstName, lastName, email, phone, reason, message, newsletterOptIn };
+  // Operational channels (Apps Script + EmailJS) always fire. Klaviyo only fires
+  // when the user explicitly opts in to the newsletter — implicit-opt-in via
+  // contact submission is not GDPR/CCPA-clean.
+  const channels = [
+    sendContactToAppsScript(payload),
+    sendContactToEmailJS(payload)
+  ];
+  if (newsletterOptIn) channels.push(sendContactToKlaviyo(payload));
+
+  Promise.allSettled(channels).then(results => {
+    if (results.every(r => r.status === 'rejected')) {
+      btn.disabled = false;
+      btn.textContent = 'Send Message';
+      results.forEach((r, i) => console.error('[contact] channel', i, r.reason));
+      return showCFError("Something went wrong on our end. Please email thomas@trouttricks.com directly.");
+    }
+    localStorage.setItem(RATE_KEY, String(Date.now()));
+    if (typeof gtag === 'function') gtag('event', 'contact_form_submit', { reason: reason });
+    okBox.textContent = "Thanks — I'll get back to you within 24 hours.";
+    okBox.classList.add('visible');
+    form.style.display = 'none';
+    okBox.scrollIntoView({ behavior: 'smooth', block: 'center' });
+  });
+
+  return false;
+}
+function markCFError(id) {
+  const grp = document.getElementById(id).closest('.form-group');
+  if (grp) grp.classList.add('field-error');
+}
+function showCFError(msg) {
+  const errBox = document.getElementById('cfError');
+  errBox.textContent = msg;
+  errBox.classList.add('visible');
+  errBox.scrollIntoView({ behavior: 'smooth', block: 'center' });
+  return false;
+}
+function sendContactToKlaviyo({ email, firstName, lastName, phone, reason, message }) {
+  const profileAttrs = { email: email };
+  if (firstName) profileAttrs.first_name = firstName;
+  if (lastName) profileAttrs.last_name = lastName;
+  if (phone) profileAttrs.phone_number = '+1' + phone;
+  profileAttrs.properties = {
+    contact_form_submission: true,
+    contact_reason: reason,
+    last_contact_message: message,
+    last_contact_at: new Date().toISOString()
+  };
+  const body = {
+    data: {
+      type: 'subscription',
+      attributes: {
+        custom_source: 'Contact Form',
+        profile: { data: { type: 'profile', attributes: profileAttrs } }
+      },
+      relationships: { list: { data: { type: 'list', id: 'SUpRkF' } } }
+    }
+  };
+  return fetch('https://a.klaviyo.com/client/subscriptions/?company_id=RyxZFj', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', 'revision': '2024-10-15' },
+    body: JSON.stringify(body)
+  }).then(r => { if (!r.ok) throw new Error('klaviyo ' + r.status); });
+}
+function sendContactToAppsScript({ firstName, lastName, email, phone, reason, message, newsletterOptIn }) {
+  return fetch('https://script.google.com/macros/s/AKfycbwc5JR5yo76y8-H81D3Dh4e-pc6kqha8rLO2Yu90ZtFV_s-3Hm__YI52WoaW54zXOqBdw/exec', {
+    method: 'POST',
+    body: JSON.stringify({
+      submission_type:     'contact_form',
+      customer_first_name: firstName,
+      customer_last_name:  lastName,
+      customer_name:       (firstName + ' ' + lastName).trim(),
+      customer_email:      email,
+      customer_phone:      phone,
+      contact_reason:      reason,
+      contact_message:     message,
+      newsletter_optin:    newsletterOptIn ? 'Yes' : 'No',
+      submitted_date:      new Date().toLocaleDateString(),
+      submitted_time:      new Date().toLocaleTimeString()
+    })
+  }).then(r => { if (!r.ok) throw new Error('sheet ' + r.status); });
+}
+function sendContactToEmailJS({ firstName, lastName, email, phone, reason, message }) {
+  if (typeof emailjs === 'undefined') return Promise.reject(new Error('emailjs unavailable'));
+  return emailjs.send('service_y9wyl0c', 'template_7wna2ba', {
+    name:    (firstName + ' ' + lastName).trim() || firstName,
+    email:   email,
+    phone:   phone || 'Not provided',
+    reason:  reason,
+    message: message,
+    time:    new Date().toLocaleString('en-US', { timeZone: 'America/Denver', dateStyle: 'medium', timeStyle: 'short' })
+  });
+}
 </script>
 <script>
 // Header search helpers (defined after main inline script so any local clearFlySearch is overridden)
