@@ -3639,40 +3639,40 @@ function filterFlies(q) {
   const wrap = document.getElementById('flySearch');
   if (wrap) wrap.classList.toggle('has-text', query.length > 0);
 
-  // FLIES
+  // FLIES — filter only if this section has at least one match; otherwise leave
+  // every fly visible so customers can keep browsing during cross-section searches.
   const cards = document.querySelectorAll('#catalog .fly-card');
+  const flyMatchCount = !query ? cards.length : Array.prototype.reduce.call(cards, (n, c) => n + ((c.dataset.search || '').includes(query) ? 1 : 0), 0);
+  const filterFlyCards = !!query && flyMatchCount > 0;
   let flyVisible = 0;
   cards.forEach(card => {
     const hay = card.dataset.search || '';
-    const match = !query || hay.includes(query);
-    card.style.display = match ? '' : 'none';
-    if (match) flyVisible++;
+    const show = !filterFlyCards || hay.includes(query);
+    card.style.display = show ? '' : 'none';
+    if (show) flyVisible++;
   });
-  // Hide decorative group headers ("Chironomids & Buzzers", "Leeches") during search;
-  // the FLIES (count) header takes over the orientation role.
+  // Hide decorative group headers ("Chironomids & Buzzers", "Leeches") only while
+  // we're actively filtering — when showing all flies, restore them.
   document.querySelectorAll('#catalog .catalog-group-header, #catalog .catalog-group-spacer').forEach(el => {
-    el.style.display = query ? 'none' : '';
+    el.style.display = filterFlyCards ? 'none' : '';
   });
-  // Hide the static "THE FLIES" section title when a search yields no fly matches,
-  // otherwise the title sits above an empty grid.
+  // The static "THE FLIES" title stays visible always — flies are always shown.
   const fliesSectionTitle = document.getElementById('fliesSectionTitle');
-  if (fliesSectionTitle) {
-    fliesSectionTitle.style.display = (query && flyVisible === 0) ? 'none' : '';
-  }
+  if (fliesSectionTitle) fliesSectionTitle.style.display = '';
 
-  // MERCH (stickers)
+  // MERCH (stickers) — same rule: filter only if the section has matches.
   const merchCards = document.querySelectorAll('#merchCatalog .fly-card');
+  const merchMatchCount = !query ? merchCards.length : Array.prototype.reduce.call(merchCards, (n, c) => n + ((c.dataset.search || '').includes(query) ? 1 : 0), 0);
+  const filterMerchCards = !!query && merchMatchCount > 0;
   let merchVisible = 0;
   merchCards.forEach(card => {
     const hay = card.dataset.search || '';
-    const match = !query || hay.includes(query);
-    card.style.display = match ? '' : 'none';
-    if (match) merchVisible++;
+    const show = !filterMerchCards || hay.includes(query);
+    card.style.display = show ? '' : 'none';
+    if (show) merchVisible++;
   });
   const stickersSection = document.getElementById('stickers');
-  if (stickersSection) {
-    stickersSection.style.display = (query && merchVisible === 0) ? 'none' : '';
-  }
+  if (stickersSection) stickersSection.style.display = '';
 
   const flyHeader = document.getElementById('flyResultsHeader');
   const flyCount = document.getElementById('flyResultsCount');
@@ -3690,8 +3690,11 @@ function filterFlies(q) {
   }
 
   if (query) {
-    flyHeader.style.display = flyVisible > 0 ? '' : 'none';
-    flyCount.textContent = flyVisible;
+    // Only show the FLIES (count) results header when we actually filtered the
+    // catalog. When showing all flies (no match), the static "THE FLIES" title
+    // covers the section.
+    flyHeader.style.display = filterFlyCards ? '' : 'none';
+    flyCount.textContent = flyMatchCount;
 
     if (articleMatches.length > 0) {
       articleHeader.style.display = '';
@@ -3721,7 +3724,7 @@ function filterFlies(q) {
   const empty = document.getElementById('flySearchEmpty');
   const queryEl = document.getElementById('flySearchQuery');
   if (queryEl) queryEl.textContent = q.trim();
-  const noMatches = query.length > 0 && flyVisible === 0 && articleMatches.length === 0 && merchVisible === 0;
+  const noMatches = query.length > 0 && flyMatchCount === 0 && merchMatchCount === 0 && articleMatches.length === 0;
   if (empty) empty.classList.toggle('visible', noMatches);
 
   // Debounced search event — fire once the user stops typing
@@ -4781,13 +4784,15 @@ function onHeaderSearchKey(e) {
   }
 }
 function _searchScrollTarget() {
+  var input = document.getElementById('flySearchInput');
+  var q = input ? input.value.trim().toLowerCase() : '';
   var stickers = document.getElementById('stickers');
-  if (stickers && stickers.style.display !== 'none') {
-    var visibleMerch = Array.prototype.some.call(
+  if (q && stickers) {
+    var merchMatch = Array.prototype.some.call(
       document.querySelectorAll('#merchCatalog .fly-card'),
-      function(c){ return c.style.display !== 'none'; }
+      function(c){ return (c.dataset.search || '').includes(q); }
     );
-    if (visibleMerch) return stickers;
+    if (merchMatch) return stickers;
   }
   var ids = ['flyResultsHeader', 'articleResultsHeader', 'flySearchEmpty', 'catalog'];
   for (var i = 0; i < ids.length; i++) {
