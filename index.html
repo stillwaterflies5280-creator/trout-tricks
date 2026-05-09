@@ -2567,7 +2567,7 @@
 
 
   <h2 class="section-title">THE FLIES</h2>
-  <div class="fly-search-empty" id="flySearchEmpty">No flies or articles match "<strong id="flySearchQuery"></strong>"</div>
+  <div class="fly-search-empty" id="flySearchEmpty">No flies, merch, or articles match "<strong id="flySearchQuery"></strong>"</div>
   <div class="search-section-header" id="flyResultsHeader" style="display:none;">FLIES <span class="count">(<span id="flyResultsCount">0</span>)</span></div>
   <div class="catalog" id="catalog"></div>
   <div class="search-section-header" id="articleResultsHeader" style="display:none;">ARTICLES <span class="count">(<span id="articleResultsCount">0</span>)</span></div>
@@ -3634,6 +3634,20 @@ function filterFlies(q) {
     if (match) flyVisible++;
   });
 
+  // MERCH (stickers)
+  const merchCards = document.querySelectorAll('#merchCatalog .fly-card');
+  let merchVisible = 0;
+  merchCards.forEach(card => {
+    const hay = card.dataset.search || '';
+    const match = !query || hay.includes(query);
+    card.style.display = match ? '' : 'none';
+    if (match) merchVisible++;
+  });
+  const stickersSection = document.getElementById('stickers');
+  if (stickersSection) {
+    stickersSection.style.display = (query && merchVisible === 0) ? 'none' : '';
+  }
+
   const flyHeader = document.getElementById('flyResultsHeader');
   const flyCount = document.getElementById('flyResultsCount');
   const articleHeader = document.getElementById('articleResultsHeader');
@@ -3681,7 +3695,7 @@ function filterFlies(q) {
   const empty = document.getElementById('flySearchEmpty');
   const queryEl = document.getElementById('flySearchQuery');
   if (queryEl) queryEl.textContent = q.trim();
-  const noMatches = query.length > 0 && flyVisible === 0 && articleMatches.length === 0;
+  const noMatches = query.length > 0 && flyVisible === 0 && articleMatches.length === 0 && merchVisible === 0;
   if (empty) empty.classList.toggle('visible', noMatches);
 
   // Debounced search event — fire once the user stops typing
