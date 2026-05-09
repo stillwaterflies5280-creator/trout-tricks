@@ -2581,7 +2581,7 @@
   </section>
 
 
-  <h2 class="section-title">THE FLIES</h2>
+  <h2 class="section-title" id="fliesSectionTitle">THE FLIES</h2>
   <div class="fly-search-empty" id="flySearchEmpty">No flies, merch, or articles match "<strong id="flySearchQuery"></strong>"</div>
   <div class="search-section-header" id="flyResultsHeader" style="display:none;">FLIES <span class="count">(<span id="flyResultsCount">0</span>)</span></div>
   <div class="catalog" id="catalog"></div>
@@ -3653,6 +3653,12 @@ function filterFlies(q) {
   document.querySelectorAll('#catalog .catalog-group-header, #catalog .catalog-group-spacer').forEach(el => {
     el.style.display = query ? 'none' : '';
   });
+  // Hide the static "THE FLIES" section title when a search yields no fly matches,
+  // otherwise the title sits above an empty grid.
+  const fliesSectionTitle = document.getElementById('fliesSectionTitle');
+  if (fliesSectionTitle) {
+    fliesSectionTitle.style.display = (query && flyVisible === 0) ? 'none' : '';
+  }
 
   // MERCH (stickers)
   const merchCards = document.querySelectorAll('#merchCatalog .fly-card');
