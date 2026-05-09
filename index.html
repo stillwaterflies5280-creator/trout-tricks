@@ -3648,6 +3648,11 @@ function filterFlies(q) {
     card.style.display = match ? '' : 'none';
     if (match) flyVisible++;
   });
+  // Hide decorative group headers ("Chironomids & Buzzers", "Leeches") during search;
+  // the FLIES (count) header takes over the orientation role.
+  document.querySelectorAll('#catalog .catalog-group-header, #catalog .catalog-group-spacer').forEach(el => {
+    el.style.display = query ? 'none' : '';
+  });
 
   // MERCH (stickers)
   const merchCards = document.querySelectorAll('#merchCatalog .fly-card');
@@ -4770,6 +4775,14 @@ function onHeaderSearchKey(e) {
   }
 }
 function _searchScrollTarget() {
+  var stickers = document.getElementById('stickers');
+  if (stickers && stickers.style.display !== 'none') {
+    var visibleMerch = Array.prototype.some.call(
+      document.querySelectorAll('#merchCatalog .fly-card'),
+      function(c){ return c.style.display !== 'none'; }
+    );
+    if (visibleMerch) return stickers;
+  }
   var ids = ['flyResultsHeader', 'articleResultsHeader', 'flySearchEmpty', 'catalog'];
   for (var i = 0; i < ids.length; i++) {
     var el = document.getElementById(ids[i]);
