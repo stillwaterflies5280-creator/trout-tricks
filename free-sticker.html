@@ -2220,7 +2220,6 @@
         </div>
 
         <div class="cf-error" id="stickerError" role="alert" aria-live="polite"></div>
-        <div class="cf-success" id="stickerSuccess" role="status" aria-live="polite"></div>
 
         <button type="submit" id="sfSubmit" class="add-btn">CLAIM MY STICKER →</button>
 
@@ -2228,6 +2227,9 @@
           I won't share your address. Sticker ships in 5 business days. Address is used for shipping only.
         </p>
       </form>
+      <!-- Success banner sits OUTSIDE the form so hiding the form on submit
+           (form.style.display='none') doesn't also hide this banner. -->
+      <div class="cf-success" id="stickerSuccess" role="status" aria-live="polite"></div>
     </section>
   </div>
 

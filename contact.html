@@ -1976,7 +1976,6 @@
         </div>
 
         <div class="cf-error" id="cfError" role="alert" aria-live="polite"></div>
-        <div class="cf-success" id="cfSuccess" role="status" aria-live="polite"></div>
 
         <button type="submit" id="cfSubmit" class="add-btn">Send Message</button>
 
@@ -1984,6 +1983,9 @@
           We won't add you to any email list unless you check the newsletter box above. We don't share your info. Unsubscribe anytime.
         </p>
       </form>
+      <!-- Success banner sits OUTSIDE the form so hiding the form on submit
+           (form.style.display='none') doesn't also hide this banner. -->
+      <div class="cf-success" id="cfSuccess" role="status" aria-live="polite"></div>
     </section>
 
     <div class="contact-card">
