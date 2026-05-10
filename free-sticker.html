@@ -2054,17 +2054,19 @@
     <a class="nav-btn" href="index.html">The Flies</a>
     <a class="nav-btn" href="fish.html">The Fish</a>
     <a class="nav-btn" href="trip.html">Book a Trip</a>
+    <a class="nav-btn nav-overflow active" href="free-sticker.html">Free Sticker</a>
     <a class="nav-btn nav-overflow" href="affiliates.html">Affiliates</a>
     <a class="nav-btn nav-overflow" href="blog.html">Blog</a>
     <a class="nav-btn nav-overflow" href="about.html">About</a>
-    <a class="nav-btn nav-overflow active" href="contact.html">Contact</a>
+    <a class="nav-btn nav-overflow" href="contact.html">Contact</a>
     <div class="nav-more">
       <a class="nav-btn nav-more-btn active" href="#" onclick="toggleNavMore(event)" aria-haspopup="true" aria-expanded="false">More &#9662;</a>
       <div class="nav-more-dropdown" id="navMoreDropdown">
+        <a class="nav-more-item active" href="free-sticker.html">Free Sticker</a>
         <a class="nav-more-item" href="affiliates.html">Affiliates</a>
         <a class="nav-more-item" href="blog.html">Blog</a>
         <a class="nav-more-item" href="about.html">About</a>
-        <a class="nav-more-item active" href="contact.html">Contact</a>
+        <a class="nav-more-item" href="contact.html">Contact</a>
       </div>
     </div>
   </nav>
@@ -3115,7 +3117,7 @@ function submitStickerForm(e) {
 
   // Honeypot — silently "succeed" so bots don't retry. Server also drops these.
   if (honeypot) {
-    okBox.textContent = "You're in! Sticker ships within 5 business days.";
+    okBox.textContent = "Thanks! We'll notify you when your sticker ships.";
     okBox.classList.add('visible');
     form.style.display = 'none';
     return false;
@@ -3158,7 +3160,7 @@ function submitStickerForm(e) {
     }
     localStorage.setItem(RATE_KEY, String(Date.now()));
     if (typeof gtag === 'function') gtag('event', 'sticker_campaign_signup');
-    okBox.textContent = "You're in! Sticker ships within 5 business days. Bonus: post a pic + tag @trouttricks + #TroutTricksStickers to win a free 5-pack of flies.";
+    okBox.textContent = "Thanks! We'll notify you when your sticker ships.";
     okBox.classList.add('visible');
     form.style.display = 'none';
     okBox.scrollIntoView({ behavior: 'smooth', block: 'center' });
