@@ -681,15 +681,10 @@
   .catalog {
     padding: 4px 16px 40px;
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(290px, 1fr));
-    gap: 16px;
-  }
-
-  /* Merch (stickers) section uses auto-fit so empty tracks collapse, and
-     justify-content: center so the remaining cards sit in the middle of
-     the row instead of being left-aligned with empty space on the right. */
-  #merchCatalog {
+    /* auto-fit collapses empty tracks; max 360px caps card width;
+       justify-content centers partial rows (orphan card on row 3, etc.). */
     grid-template-columns: repeat(auto-fit, minmax(290px, 360px));
+    gap: 16px;
     justify-content: center;
   }
   .catalog-group-header {
