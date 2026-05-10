@@ -1215,6 +1215,17 @@
     color: #fff;
     box-shadow: 0 4px 18px rgba(192,57,43,0.4);
   }
+  /* Closed-state badge — same shape, muted gray with strikethrough text.
+     Reads instantly as "the live counter is now retired." */
+  .sticker-counter-badge.closed {
+    background: #1a1a1a;
+    border-color: #444;
+    color: #999;
+    box-shadow: none;
+    text-decoration: line-through;
+    text-decoration-color: var(--red);
+    text-decoration-thickness: 2px;
+  }
   /* Sticker photo hero — two transparent PNGs side by side, drop-shadowed */
   .sticker-photo-hero {
     max-width: 720px;
@@ -1342,41 +1353,57 @@
     letter-spacing: 0.04em;
     white-space: nowrap;
   }
-  /* Closed-state — replaces the form when count >= 15 */
+  /* Closed-state card — replaces the form when count >= 15. Sticker photos
+     stay above so visitors see what they missed, this card sits where the
+     form used to be. Bigger / louder than before so it owns the space. */
   .sticker-closed {
     max-width: 640px;
-    margin: 28px auto;
-    padding: 32px 22px;
+    margin: 0 auto 28px;
+    padding: 40px 28px;
     background: var(--card);
-    border: 1px solid var(--border);
-    border-radius: 6px;
+    border: 2px solid var(--red);
+    border-radius: 8px;
     text-align: center;
+    box-shadow: 0 4px 24px rgba(192,57,43,0.18);
+  }
+  .sticker-closed-eyebrow {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 0.82rem;
+    font-weight: 700;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: var(--red);
+    margin-bottom: 10px;
   }
   .sticker-closed-title {
     font-family: 'Bebas Neue', Impact, sans-serif;
-    font-size: 1.8rem;
+    font-size: 2.4rem;
     letter-spacing: 0.06em;
     color: var(--white);
-    margin: 0 0 12px;
+    margin: 0 0 14px;
+    line-height: 1.1;
   }
   .sticker-closed p {
     color: var(--light-gray);
-    font-size: 0.95rem;
+    font-size: 1rem;
     line-height: 1.6;
-    margin: 0 0 18px;
+    margin: 0 auto 22px;
+    max-width: 480px;
   }
   .sticker-closed .secondary-cta {
     display: inline-block;
-    padding: 12px 22px;
+    padding: 14px 28px;
     background: var(--red);
     color: #fff;
     font-family: 'Barlow Condensed', sans-serif;
-    font-size: 1rem;
+    font-size: 1.1rem;
     font-weight: 700;
     letter-spacing: 0.06em;
     text-transform: uppercase;
     text-decoration: none;
     border-radius: 4px;
+    border: 2px solid #ff6b5b;
+    box-shadow: 0 2px 12px rgba(192,57,43,0.4);
     transition: background 0.2s;
   }
   .sticker-closed .secondary-cta:hover { background: var(--red-bright); }
@@ -2215,9 +2242,10 @@
 
   <!-- CLOSED STATE (hidden by default; revealed by JS when count >= 15) -->
   <div class="sticker-closed" id="stickerClosed" style="display:none;">
-    <div class="sticker-closed-title">🎣 The Free Sticker Campaign Is Officially Full</div>
-    <p>Thank you to everyone who signed up.</p>
-    <a href="/" class="secondary-cta">Join the newsletter for the next round →</a>
+    <div class="sticker-closed-eyebrow">🎣 Campaign Closed</div>
+    <div class="sticker-closed-title">All 15 stickers claimed.</div>
+    <p>Thanks to everyone who signed up. Want a heads-up next time we run a giveaway? Join the newsletter — we'll let you know first.</p>
+    <a href="/" class="secondary-cta">Join the newsletter →</a>
   </div>
 
 </div>
@@ -3064,6 +3092,10 @@ function showStickerCounter(available, max) {
   badge.style.display = 'inline-block';
 }
 
+// Option B closed state: keep the marketing visuals (sticker photos + hero),
+// retire the live counter badge into a strikethrough "GIVEAWAY OVER" pill,
+// hide the form/disclaimer/bonus, and reveal a beefy closed-state card
+// in place of the form so the page still feels alive instead of dead.
 function showStickerCampaignClosed() {
   var formWrap   = document.getElementById('stickerFormWrap');
   var bonus      = document.getElementById('stickerBonus');
@@ -3071,14 +3103,24 @@ function showStickerCampaignClosed() {
   var closed     = document.getElementById('stickerClosed');
   var disclaimer = document.getElementById('stickerDisclaimer');
   var badge      = document.getElementById('stickerCounterBadge');
-  var photoHero  = document.getElementById('stickerPhotoHero');
+
+  // Hide the entry surfaces — form, disclaimer, bonus tier + its arrows.
   if (formWrap)   formWrap.style.display   = 'none';
   if (bonus)      bonus.style.display      = 'none';
   if (pointers)   pointers.style.display   = 'none';
   if (disclaimer) disclaimer.style.display = 'none';
-  if (badge)      badge.style.display      = 'none';
-  if (photoHero)  photoHero.style.display  = 'none';
-  if (closed)     closed.style.display     = 'block';
+
+  // Repurpose the live counter into a "GIVEAWAY OVER" stamp — same shape,
+  // muted gray with red strikethrough so visitors clearly read "this is dead."
+  if (badge) {
+    badge.textContent = 'GIVEAWAY OVER';
+    badge.classList.add('closed');
+    badge.style.display = 'inline-block';
+  }
+
+  // Sticker photos + hero stay visible (the marketing). Closed card replaces
+  // the form area with a louder "all 15 claimed" pitch + newsletter CTA.
+  if (closed) closed.style.display = 'block';
 }
 
 function submitStickerForm(e) {
@@ -3105,8 +3147,11 @@ function submitStickerForm(e) {
   var firstName = get('sf_first_name');
   var lastName  = get('sf_last_name');
   var email     = get('sf_email');
-  var phoneRaw  = get('sf_phone');
-  var phone     = phoneRaw.replace(/\D+/g, '');
+  var phoneRaw    = get('sf_phone');
+  var phoneDigits = phoneRaw.replace(/\D+/g, '');
+  var phoneFormatted = phoneDigits.length === 10
+    ? phoneDigits.slice(0,3) + '-' + phoneDigits.slice(3,6) + '-' + phoneDigits.slice(6)
+    : phoneDigits;
   var addr1     = get('sf_addr1');
   var addr2     = get('sf_addr2');
   var city      = get('sf_city');
@@ -3127,7 +3172,7 @@ function submitStickerForm(e) {
   if (!firstName) { errors.push('First name is required.'); markStickerError('sf_first_name'); }
   if (!email) { errors.push('Email is required.'); markStickerError('sf_email'); }
   else if (!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(email)) { errors.push('Please enter a valid email address.'); markStickerError('sf_email'); }
-  if (phoneRaw && phone.length < 7) { errors.push('Phone number looks too short. Use a format like 303-555-1234.'); markStickerError('sf_phone'); }
+  if (phoneRaw && phoneDigits.length < 7) { errors.push('Phone number looks too short. Use a format like 303-555-1234.'); markStickerError('sf_phone'); }
   if (!addr1) { errors.push('Shipping address is required.'); markStickerError('sf_addr1'); }
   if (!city) { errors.push('City is required.'); markStickerError('sf_city'); }
   if (!state) { errors.push('State is required.'); markStickerError('sf_state'); }
@@ -3140,7 +3185,7 @@ function submitStickerForm(e) {
   btn.disabled = true;
   btn.textContent = 'Submitting…';
 
-  var payload = { firstName: firstName, lastName: lastName, email: email, phone: phone,
+  var payload = { firstName: firstName, lastName: lastName, email: email, phone: phoneFormatted,
                   addr1: addr1, addr2: addr2, city: city, state: state, zip: zip };
 
   // All 3 channels fire in parallel. Klaviyo + Apps Script + EmailJS alert.
@@ -3183,7 +3228,7 @@ function sendStickerToKlaviyo(p) {
   var profileAttrs = { email: p.email };
   if (p.firstName) profileAttrs.first_name = p.firstName;
   if (p.lastName)  profileAttrs.last_name  = p.lastName;
-  if (p.phone)     profileAttrs.phone_number = '+1' + p.phone;
+  if (p.phone)     profileAttrs.phone_number = '+1' + p.phone.replace(/\D+/g, '');
   profileAttrs.location = {
     address1: p.addr1,
     address2: p.addr2 || '',

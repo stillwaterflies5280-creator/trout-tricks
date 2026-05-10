@@ -2867,8 +2867,11 @@ function submitContactForm(e) {
   const firstName = get('cf_first_name');
   const lastName  = get('cf_last_name');
   const email     = get('cf_email');
-  const phoneRaw  = get('cf_phone');
-  const phone     = phoneRaw.replace(/\D+/g, '');
+  const phoneRaw    = get('cf_phone');
+  const phoneDigits = phoneRaw.replace(/\D+/g, '');
+  const phoneFormatted = phoneDigits.length === 10
+    ? phoneDigits.slice(0,3) + '-' + phoneDigits.slice(3,6) + '-' + phoneDigits.slice(6)
+    : phoneDigits;
   const reason    = get('cf_reason');
   const message   = get('cf_message');
   const honeypot  = get('cf_website');
@@ -2887,7 +2890,7 @@ function submitContactForm(e) {
   if (!firstName) { errors.push('First name is required.'); markCFError('cf_first_name'); }
   if (!email) { errors.push('Email is required.'); markCFError('cf_email'); }
   else if (!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(email)) { errors.push('Please enter a valid email address.'); markCFError('cf_email'); }
-  if (phoneRaw && phone.length < 7) { errors.push('Phone number looks too short. Use a format like 303-555-1234.'); markCFError('cf_phone'); }
+  if (phoneRaw && phoneDigits.length < 7) { errors.push('Phone number looks too short. Use a format like 303-555-1234.'); markCFError('cf_phone'); }
   if (!reason) { errors.push('Please choose a reason for contact.'); markCFError('cf_reason'); }
   if (!message) { errors.push('Message is required.'); markCFError('cf_message'); }
   else if (message.length < 5) { errors.push('Please write a bit more in your message.'); markCFError('cf_message'); }
@@ -2898,7 +2901,7 @@ function submitContactForm(e) {
   btn.disabled = true;
   btn.textContent = 'Sending…';
 
-  const payload = { firstName, lastName, email, phone, reason, message, newsletterOptIn };
+  const payload = { firstName, lastName, email, phone: phoneFormatted, reason, message, newsletterOptIn };
   // Operational channels (Apps Script + EmailJS) always fire. Klaviyo only fires
   // when the user explicitly opts in to the newsletter — implicit-opt-in via
   // contact submission is not GDPR/CCPA-clean.
@@ -2940,7 +2943,7 @@ function sendContactToKlaviyo({ email, firstName, lastName, phone, reason, messa
   const profileAttrs = { email: email };
   if (firstName) profileAttrs.first_name = firstName;
   if (lastName) profileAttrs.last_name = lastName;
-  if (phone) profileAttrs.phone_number = '+1' + phone;
+  if (phone) profileAttrs.phone_number = '+1' + phone.replace(/\D+/g, '');
   profileAttrs.properties = {
     contact_form_submission: true,
     contact_reason: reason,
