@@ -3,9 +3,9 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Trout Tricks | Community – Colorado & Wyoming Stillwater Fly Fishing</title>
-  <meta name="description" content="Join the Trout Tricks stillwater fishing community.">
-  <meta name="keywords" content="chironomid flies Colorado, stillwater fly fishing Colorado, buy chironomids online, Colorado fly fishing guide, Antero Reservoir fly fishing, Spinney Mountain fly fishing, 11 Mile Reservoir trout, Delaney Buttes fly fishing, Lake John Colorado fly fishing, stillwater chironomid patterns, hand tied flies Colorado, fly fishing Fairmount CO, chironomid guide Colorado, rainbow trout flies, trophy trout Colorado, midge patterns Colorado, balanced chironomid, tungsten bead chironomid, indicator fly fishing Colorado, chironomids for sale, stillwater guide South Park Colorado">
+<title>Join the Community | Trout Tricks</title>
+  <meta name="description" content="Join the Trout Tricks fly fishing community. Two free Facebook groups for Colorado stillwater anglers — statewide patterns and North Park lakes.">
+  <meta name="keywords" content="Colorado stillwater fly fishing community, Colorado fly fishing Facebook group, Lake John Facebook group, Delaney Buttes Facebook group, North Park Colorado fly fishing, chironomid hatch Colorado, stillwater anglers community">
   <meta name="author" content="Thomas Frank - Trout Tricks">
   <meta name="robots" content="index, follow">
   <meta name="geo.region" content="US-CO">
@@ -14,8 +14,8 @@
   <!-- Open Graph -->
   <meta property="og:type" content="website">
   <meta property="og:site_name" content="Trout Tricks">
-  <meta property="og:title" content="Community | Trout Tricks">
-  <meta property="og:description" content="Join the Trout Tricks stillwater fishing community.">
+  <meta property="og:title" content="Join the Community | Trout Tricks">
+  <meta property="og:description" content="Join the Trout Tricks fly fishing community. Two free Facebook groups for Colorado stillwater anglers — statewide patterns and North Park lakes.">
   <meta property="og:url" content="https://www.trouttricks.com/community.html">
   <meta property="og:image" content="https://www.trouttricks.com/og-image.jpg">
   <meta property="og:image:width" content="1200">
@@ -67,9 +67,9 @@
       {
         "@type": "WebPage",
         "@id": "https://www.trouttricks.com/community.html#webpage",
-        "name": "Trout Tricks Community",
+        "name": "Join the Trout Tricks Community",
         "url": "https://www.trouttricks.com/community.html",
-        "description": "Join the Trout Tricks stillwater fishing community.",
+        "description": "Two free Facebook communities for Colorado stillwater anglers — a statewide hub plus a hyper-local North Park (Lake John / Delaney Buttes) group.",
         "isPartOf": {
           "@id": "https://www.trouttricks.com#localbusiness"
         }
@@ -1772,6 +1772,7 @@
     <a class="nav-btn" href="free-sticker.html">Free Sticker</a>
     <a class="nav-btn" href="affiliates.html">Affiliates</a>
     <a class="nav-btn" href="blog.html">Blog</a>
+    <a class="nav-btn active" href="community.html">Community</a>
     <a class="nav-btn" href="about.html">About</a>
     <a class="nav-btn" href="contact.html">Contact</a>
   </nav>
@@ -1790,65 +1791,372 @@
 <div class="nav-overlay" id="navOverlay"></div>
 
 <!-- COMMUNITY PAGE -->
+<style>
+  /* Community page-specific layout */
+  .cp-hero { padding: 56px 20px 32px; text-align: center; }
+  .cp-hero h1 {
+    font-family: 'Bebas Neue', Impact, sans-serif;
+    font-size: clamp(2.6rem, 9vw, 5.2rem);
+    letter-spacing: 0.06em;
+    color: #fff;
+    line-height: 1;
+    display: inline-block;
+    border-bottom: 4px solid var(--red);
+    padding-bottom: 8px;
+  }
+  .cp-hero-sub {
+    font-family: 'Barlow Condensed', Impact, sans-serif;
+    font-size: clamp(1rem, 2.4vw, 1.25rem);
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--gold);
+    margin-top: 18px;
+  }
+  .cp-hero-intro {
+    max-width: 680px;
+    margin: 18px auto 0;
+    font-size: 1.05rem;
+    line-height: 1.6;
+    color: var(--light-gray);
+    padding: 0 8px;
+  }
+
+  .cp-cards {
+    max-width: 1080px;
+    margin: 36px auto 0;
+    padding: 0 20px;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 24px;
+  }
+  .cp-card {
+    background: #181818;
+    border: 1px solid #2a2a2a;
+    border-radius: 10px;
+    padding: 28px 24px 26px;
+    display: flex;
+    flex-direction: column;
+    transition: border-color 0.2s, transform 0.2s, box-shadow 0.2s;
+  }
+  .cp-card:hover {
+    border-color: var(--gold);
+    transform: translateY(-2px);
+    box-shadow: 0 8px 26px rgba(0,0,0,0.5);
+  }
+  .cp-card-eyebrow {
+    font-family: 'Barlow Condensed', Impact, sans-serif;
+    font-size: 0.78rem;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--gold);
+    margin-bottom: 10px;
+  }
+  .cp-card-title {
+    font-family: 'Bebas Neue', Impact, sans-serif;
+    font-size: 1.7rem;
+    letter-spacing: 0.04em;
+    color: #fff;
+    line-height: 1.1;
+    margin-bottom: 14px;
+  }
+  .cp-card-desc {
+    font-size: 0.98rem;
+    line-height: 1.55;
+    color: var(--light-gray);
+    margin-bottom: 22px;
+    flex: 1;
+  }
+  .cp-card-cta {
+    display: block;
+    width: 100%;
+    padding: 16px 18px;
+    background: var(--red);
+    border: none;
+    border-radius: 6px;
+    color: #fff;
+    font-family: 'Barlow Condensed', Impact, sans-serif;
+    font-size: 1.05rem;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    text-align: center;
+    text-decoration: none;
+    cursor: pointer;
+    transition: background 0.2s, transform 0.1s;
+  }
+  .cp-card-cta:hover { background: var(--red-bright); }
+  .cp-card-cta:active { transform: translateY(1px); }
+
+  .cp-divider {
+    max-width: 1080px;
+    margin: 64px auto 0;
+    padding: 0 20px;
+  }
+  .cp-divider hr {
+    border: none;
+    border-top: 1px solid #2a2a2a;
+  }
+
+  .cp-newsletter {
+    max-width: 720px;
+    margin: 0 auto;
+    padding: 56px 20px 80px;
+    text-align: center;
+  }
+  .cp-newsletter h2 {
+    font-family: 'Bebas Neue', Impact, sans-serif;
+    font-size: clamp(1.8rem, 5vw, 2.6rem);
+    letter-spacing: 0.05em;
+    color: #fff;
+    margin-bottom: 12px;
+  }
+  .cp-newsletter p {
+    font-size: 1.02rem;
+    line-height: 1.55;
+    color: var(--light-gray);
+    margin-bottom: 26px;
+  }
+  .cp-newsletter-form {
+    display: flex;
+    gap: 10px;
+    max-width: 520px;
+    margin: 0 auto;
+    flex-wrap: wrap;
+  }
+  .cp-newsletter-input {
+    flex: 1 1 220px;
+    min-width: 0;
+    padding: 14px 16px;
+    background: #111;
+    border: 1px solid #2a2a2a;
+    border-radius: 6px;
+    color: #fff;
+    font-family: 'Barlow', sans-serif;
+    font-size: 1rem;
+    outline: none;
+    transition: border-color 0.2s;
+  }
+  .cp-newsletter-input:focus { border-color: var(--gold); }
+  .cp-newsletter-btn {
+    padding: 14px 22px;
+    background: var(--red);
+    border: none;
+    border-radius: 6px;
+    color: #fff;
+    font-family: 'Barlow Condensed', Impact, sans-serif;
+    font-size: 1rem;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: background 0.2s;
+    white-space: nowrap;
+  }
+  .cp-newsletter-btn:hover { background: var(--red-bright); }
+  .cp-newsletter-btn:disabled { opacity: 0.6; cursor: not-allowed; }
+  .cp-newsletter-msg {
+    margin-top: 16px;
+    font-size: 0.95rem;
+    min-height: 1.2em;
+  }
+  .cp-newsletter-msg.ok { color: #6ec46e; }
+  .cp-newsletter-msg.err { color: var(--red-bright); }
+
+  /* Honeypot — hidden from users, visible to dumb bots */
+  .cp-hp {
+    position: absolute;
+    left: -9999px;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+  }
+
+  @media (max-width: 600px) {
+    .cp-cards {
+      grid-template-columns: 1fr;
+      gap: 18px;
+      margin-top: 28px;
+    }
+    .cp-card { padding: 24px 20px; }
+    .cp-newsletter { padding: 48px 20px 64px; }
+    .cp-newsletter-form { flex-direction: column; }
+    .cp-newsletter-btn { width: 100%; }
+  }
+</style>
+
 <div id="page-community" class="page active">
-  <div class="hero" style="padding:36px 20px 28px;">
-    <div class="hero-tag">Stillwater Fly Fishing · Colorado & Wyoming</div>
-    <h1 style="font-size:clamp(2rem,8vw,4.5rem);">THE <span>COMMUNITY</span></h1>
-    <div class="hero-sub">Join the Stillwater Conversation</div>
-    <div class="hero-divider"></div>
-  </div>
+  <section class="cp-hero">
+    <h1>JOIN THE COMMUNITY</h1>
+    <div class="cp-hero-sub">Talk stillwater. Share fish. Learn what's hatching.</div>
+    <p class="cp-hero-intro">Two free Facebook communities for Colorado stillwater anglers. Whether you're chasing chironomid hatches statewide or specifically obsessed with the Delaney/Lake John triangle, there's a spot for you.</p>
+  </section>
 
-  <div style="max-width:600px;margin:0 auto;padding:28px 16px 60px;">
+  <section class="cp-cards">
+    <article class="cp-card">
+      <div class="cp-card-eyebrow">Statewide Hub</div>
+      <h2 class="cp-card-title">Colorado Stillwater Flies &amp; Techniques</h2>
+      <p class="cp-card-desc">The main hub. Stillwater patterns, lake reports, hatch updates, and conversation about fly fishing Colorado's lakes and reservoirs.</p>
+      <a class="cp-card-cta"
+         href="https://www.facebook.com/share/g/1GW8wCdgMh/?mibextid=wwXIfr"
+         target="_blank"
+         rel="noopener noreferrer"
+         onclick="if(typeof gtag==='function')gtag('event','community_fb_join',{group:'statewide'});">
+        Join on Facebook →
+      </a>
+    </article>
 
-    <div class="contact-card" style="margin-bottom:20px;">
-      <div class="contact-card-header">📘 Facebook Group</div>
-      <div class="contact-card-body" style="flex-direction:column;align-items:flex-start;gap:12px;">
-        <div style="display:flex;align-items:center;gap:14px;">
-          <div class="contact-icon">🎣</div>
-          <div>
-            <div class="contact-value" style="font-size:1rem;">Stillwater Fly Fishing — CO & WY</div>
-            <div class="contact-note">A community built around chironomids, indicators, and trophy stillwater trout</div>
-          </div>
-        </div>
-        <a href="https://www.facebook.com/share/g/14ZLtNGNF6W/?mibextid=wwXIfr"
-           target="_blank"
-           style="display:block;width:100%;padding:14px;background:#1877F2;border:2px solid #4a9ff5;border-radius:6px;text-decoration:none;text-align:center;font-family:'Barlow Condensed',Impact,sans-serif;font-size:1.1rem;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:#fff;box-shadow:0 4px 14px rgba(24,119,242,0.4);">
-          📘 Join the Facebook Group →
-        </a>
-      </div>
-    </div>
+    <article class="cp-card">
+      <div class="cp-card-eyebrow">North Park · Hyper-Local</div>
+      <h2 class="cp-card-title">Lake John / North Delaney / South Delaney</h2>
+      <p class="cp-card-desc">Hyper-local community for North Park anglers. Daily reports, fly recommendations, and tactical chatter for these three lakes.</p>
+      <a class="cp-card-cta"
+         href="https://www.facebook.com/share/g/1HFtn9t9vE/?mibextid=wwXIfr"
+         target="_blank"
+         rel="noopener noreferrer"
+         onclick="if(typeof gtag==='function')gtag('event','community_fb_join',{group:'north_park'});">
+        Join on Facebook →
+      </a>
+    </article>
+  </section>
 
-    <div class="note-box green" style="margin:0 0 24px;">
-      <strong>✓ What's inside:</strong> Trip reports, hatch discussions, fly tying tips, gear recommendations, and a crew of serious stillwater anglers dialing in Colorado and Wyoming waters year-round.
-    </div>
+  <div class="cp-divider"><hr></div>
 
-    <div class="contact-card" style="margin-bottom:20px;">
-      <div class="contact-card-header">📍 Waters We Cover</div>
-      <div class="contact-card-body">
-        <div class="contact-icon">🏔️</div>
-        <div>
-          <div class="contact-value" style="font-size:0.9rem;line-height:1.8;">
-            Antero · Spinney Mountain · 11 Mile · Delaney Buttes · Lake John · Tarryall · Eleven Mile · Wyoming Plains Lakes
-          </div>
-          <div class="contact-note">South Park · Southeast Wyoming</div>
-        </div>
-      </div>
-    </div>
-
-    <div class="contact-card" style="margin-bottom:28px;">
-      <div class="contact-card-header">💬 Have Questions?</div>
-      <div class="contact-card-body">
-        <div class="contact-icon">📱</div>
-        <div>
-          <div class="contact-value"><a href="tel:3039178278">(303) 917-8278</a></div>
-          <div class="contact-note">Text Thomas directly — always happy to talk stillwater</div>
-        </div>
-      </div>
-    </div>
-
-    <button class="continue-shopping-btn" onclick="showPage('shop')">🪝 Shop the Flies We Use</button>
-  </div>
+  <section class="cp-newsletter">
+    <h2>Want flies in your inbox too?</h2>
+    <p>Get my weekly tying tips, hatch reports, and free patterns. Plus 10% off your first order.</p>
+    <form class="cp-newsletter-form" id="cpNewsletterForm" onsubmit="return submitCommunityNewsletter(event)" novalidate>
+      <input type="email"
+             class="cp-newsletter-input"
+             id="cpNewsletterEmail"
+             name="email"
+             placeholder="Your email address"
+             autocomplete="email"
+             required>
+      <input type="text" class="cp-hp" id="cpNewsletterHp" name="company" tabindex="-1" autocomplete="off" aria-hidden="true">
+      <button type="submit" class="cp-newsletter-btn" id="cpNewsletterBtn">Join the Newsletter →</button>
+    </form>
+    <div class="cp-newsletter-msg" id="cpNewsletterMsg" role="status" aria-live="polite"></div>
+  </section>
 </div>
+
+<script>
+// === COMMUNITY-PAGE NEWSLETTER SIGNUP ===
+// Mirrors the contact-form pattern: Apps Script + Klaviyo fan-out, 5-min
+// localStorage rate-limit, honeypot. Klaviyo is the source of truth for the
+// list — Apps Script is the operational ledger.
+(function() {
+  var KLAVIYO_URL    = 'https://a.klaviyo.com/client/subscriptions/?company_id=RyxZFj';
+  var KLAVIYO_LIST   = 'SUpRkF';
+  var APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwc5JR5yo76y8-H81D3Dh4e-pc6kqha8rLO2Yu90ZtFV_s-3Hm__YI52WoaW54zXOqBdw/exec';
+  var RATE_KEY = 'tt_community_last_submit';
+  var RATE_MS  = 5 * 60 * 1000;
+
+  function showMsg(text, kind) {
+    var el = document.getElementById('cpNewsletterMsg');
+    el.textContent = text;
+    el.classList.remove('ok', 'err');
+    if (kind) el.classList.add(kind);
+  }
+
+  function isValidEmail(v) {
+    return /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(v);
+  }
+
+  function sendToKlaviyo(email) {
+    var body = {
+      data: {
+        type: 'subscription',
+        attributes: {
+          custom_source: 'Community Page',
+          profile: {
+            data: {
+              type: 'profile',
+              attributes: {
+                email: email,
+                properties: {
+                  acquisition_source: 'community_page',
+                  community_page_signup: true,
+                  community_signup_date: new Date().toISOString()
+                }
+              }
+            }
+          }
+        },
+        relationships: { list: { data: { type: 'list', id: KLAVIYO_LIST } } }
+      }
+    };
+    return fetch(KLAVIYO_URL, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'revision': '2024-10-15' },
+      body: JSON.stringify(body)
+    }).then(function(r) { if (!r.ok) throw new Error('klaviyo ' + r.status); });
+  }
+
+  function sendToAppsScript(email) {
+    return fetch(APPS_SCRIPT_URL, {
+      method: 'POST',
+      body: JSON.stringify({
+        submission_type:    'newsletter_signup_community',
+        customer_email:     email,
+        acquisition_source: 'community_page',
+        submitted_date:     new Date().toLocaleDateString(),
+        submitted_time:     new Date().toLocaleTimeString()
+      })
+    }).then(function(r) { if (!r.ok) throw new Error('sheet ' + r.status); });
+  }
+
+  window.submitCommunityNewsletter = function(e) {
+    e.preventDefault();
+    var input = document.getElementById('cpNewsletterEmail');
+    var btn   = document.getElementById('cpNewsletterBtn');
+    var hp    = document.getElementById('cpNewsletterHp');
+    var form  = document.getElementById('cpNewsletterForm');
+    var email = (input.value || '').trim();
+
+    // Honeypot: silently "succeed" so bots don't retry.
+    if (hp && hp.value) {
+      form.style.display = 'none';
+      showMsg("Thanks for joining! Check your inbox for the welcome email.", 'ok');
+      return false;
+    }
+
+    if (!isValidEmail(email)) {
+      showMsg('Please enter a valid email address.', 'err');
+      input.focus();
+      return false;
+    }
+
+    var last = Number(localStorage.getItem(RATE_KEY) || 0);
+    if (last && (Date.now() - last) < RATE_MS) {
+      var wait = Math.ceil((RATE_MS - (Date.now() - last)) / 1000 / 60);
+      showMsg('You just signed up. Please wait about ' + wait + ' minute' + (wait === 1 ? '' : 's') + '.', 'err');
+      return false;
+    }
+
+    btn.disabled = true;
+    btn.textContent = 'Joining…';
+    showMsg('', null);
+
+    Promise.allSettled([sendToAppsScript(email), sendToKlaviyo(email)]).then(function(results) {
+      if (results.every(function(r) { return r.status === 'rejected'; })) {
+        btn.disabled = false;
+        btn.textContent = 'Join the Newsletter →';
+        results.forEach(function(r, i) { console.error('[community newsletter] channel', i, r.reason); });
+        showMsg("Something went wrong on our end. Please try again or email thomas@trouttricks.com.", 'err');
+        return;
+      }
+      localStorage.setItem(RATE_KEY, String(Date.now()));
+      if (typeof gtag === 'function') {
+        gtag('event', 'email_signup', { event_category: 'engagement', event_label: 'community_page' });
+      }
+      form.style.display = 'none';
+      showMsg("Thanks for joining! Check your inbox for the welcome email.", 'ok');
+    });
+
+    return false;
+  };
+})();
+</script>
 
 <!-- CART OVERLAY + PANEL -->
 <div class="overlay" id="overlay" onclick="closeCart()"></div>
