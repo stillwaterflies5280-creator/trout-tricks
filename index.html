@@ -684,6 +684,14 @@
     grid-template-columns: repeat(auto-fill, minmax(290px, 1fr));
     gap: 16px;
   }
+
+  /* Merch (stickers) section uses auto-fit so empty tracks collapse, and
+     justify-content: center so the remaining cards sit in the middle of
+     the row instead of being left-aligned with empty space on the right. */
+  #merchCatalog {
+    grid-template-columns: repeat(auto-fit, minmax(290px, 360px));
+    justify-content: center;
+  }
   .catalog-group-header {
     grid-column: 1 / -1;
     font-family: 'Bebas Neue', sans-serif;
