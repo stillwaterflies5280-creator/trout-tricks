@@ -3066,23 +3066,48 @@ document.querySelectorAll('a[href^="mailto:"]').forEach(function(a) {
 const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwc5JR5yo76y8-H81D3Dh4e-pc6kqha8rLO2Yu90ZtFV_s-3Hm__YI52WoaW54zXOqBdw/exec';
 const STICKER_MAX = 15;
 
-// Page load: fetch current sticker signup count from Apps Script and either
-// reveal the form (with a "X of 15 left" badge) or swap to the closed state.
-// Fail-open: if the count fetch errors out, leave the form visible — better
-// to over-allow a sticker than block a legit signup over a transient outage.
+// Page load: render cached count instantly (if fresh), then refresh in background.
+// Apps Script cold starts are 2-5s — without the cache, returning visitors
+// stare at an empty badge for the entire cold-start window. Cache is busted on
+// successful submission so the next view reflects the new count.
+const STICKER_COUNT_CACHE_KEY = 'tt_sticker_count_cache';
+const STICKER_COUNT_CACHE_TTL_MS = 5 * 60 * 1000;
+
+function applyStickerCount(data) {
+  var available = (typeof data.available === 'number')
+    ? data.available
+    : Math.max(0, (data.max || STICKER_MAX) - (data.count || 0));
+  var max = data.max || STICKER_MAX;
+  if (available <= 0) {
+    showStickerCampaignClosed();
+  } else {
+    showStickerCounter(available, max);
+  }
+}
+
 window.addEventListener('DOMContentLoaded', function() {
+  // Instant render from cache if fresh.
+  try {
+    var cached = JSON.parse(localStorage.getItem(STICKER_COUNT_CACHE_KEY) || 'null');
+    if (cached && cached.ts && (Date.now() - cached.ts) < STICKER_COUNT_CACHE_TTL_MS) {
+      applyStickerCount(cached);
+    }
+  } catch (e) { /* ignore parse errors, fall through to fetch */ }
+
+  // Always refresh in background so cached value can't drift.
   fetch(APPS_SCRIPT_URL + '?action=stickerCount')
     .then(function(r) { return r.json(); })
     .then(function(data) {
-      var available = (typeof data.available === 'number')
-        ? data.available
-        : Math.max(0, (data.max || STICKER_MAX) - (data.count || 0));
-      var max = data.max || STICKER_MAX;
-      if (available <= 0) {
-        showStickerCampaignClosed();
-      } else {
-        showStickerCounter(available, max);
-      }
+      try {
+        var max = data.max || STICKER_MAX;
+        var available = (typeof data.available === 'number')
+          ? data.available
+          : Math.max(0, max - (data.count || 0));
+        localStorage.setItem(STICKER_COUNT_CACHE_KEY, JSON.stringify({
+          available: available, max: max, count: data.count, ts: Date.now()
+        }));
+      } catch (e) { /* ignore quota errors */ }
+      applyStickerCount(data);
     })
     .catch(function(err) {
       console.warn('[sticker count] fetch failed, defaulting to open form:', err);
@@ -3208,6 +3233,10 @@ function submitStickerForm(e) {
       return showStickerError("Something went wrong on our end. Please email thomas@trouttricks.com directly.");
     }
     localStorage.setItem(RATE_KEY, String(Date.now()));
+    // Bust the count cache so next page view fetches fresh — otherwise this
+    // visitor (or anyone on the same browser) sees a stale "X of 15 left" badge
+    // for up to 5 min after their own submission.
+    try { localStorage.removeItem(STICKER_COUNT_CACHE_KEY); } catch (e) {}
     if (typeof gtag === 'function') gtag('event', 'sticker_campaign_signup');
     okBox.textContent = "Thanks! We'll notify you when your sticker ships.";
     okBox.classList.add('visible');
