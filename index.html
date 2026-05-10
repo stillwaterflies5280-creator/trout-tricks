@@ -2473,10 +2473,82 @@
     .header-search-clear { display: inline-block; padding: 0 18px; font-size: 1.1rem; color: #aaa; }
   }
 
+  /* === Free sticker promo bar (top of page, above header) ===
+     Static in document flow — hidden by default, revealed via JS once the
+     stickerCount fetch returns. If campaign is full (available <= 0) the bar
+     stays hidden. If the fetch errors out we fail-open and show the bar
+     without the count number rather than dropping a conversion surface. */
+  .sticker-promo-bar {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    min-height: 56px;
+    padding: 10px 16px;
+    background: #C0392B;
+    border-bottom: 2px solid #E74C3C;
+    color: #fff;
+    text-decoration: none;
+    text-align: center;
+    box-sizing: border-box;
+    transition: background 0.2s;
+  }
+  .sticker-promo-bar:hover { background: #A93221; }
+  .sticker-promo-bar.is-hidden { display: none; }
+  /* Pulse the inner span, not the bar. Scaling the full-width bar would
+     paint outside the viewport and risk a horizontal scrollbar; pulsing
+     the inline-block content gives the same visual without the layout risk. */
+  .sticker-promo-inner {
+    display: inline-block;
+    font-family: 'Bebas Neue', Impact, sans-serif;
+    font-size: 1.15rem;
+    letter-spacing: 0.06em;
+    line-height: 1.2;
+    transform-origin: center center;
+    animation: stickerPromoPulse 2s ease-in-out infinite;
+  }
+  @keyframes stickerPromoPulse {
+    0%, 100% { transform: scale(1); }
+    50%      { transform: scale(1.02); }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .sticker-promo-inner { animation: none; }
+  }
+  @media (max-width: 640px) {
+    .sticker-promo-bar { min-height: 50px; padding: 8px 12px; }
+    .sticker-promo-inner { font-size: 1rem; letter-spacing: 0.04em; }
+    .sticker-promo-count { display: none; }
+  }
 </style>
 </head>
 
 <body>
+
+<a class="sticker-promo-bar is-hidden" id="stickerPromoBar" href="free-sticker.html">
+  <span class="sticker-promo-inner">🎣 FREE STICKER GIVEAWAY<span class="sticker-promo-count" id="stickerPromoCount"></span> → CLAIM YOURS</span>
+</a>
+<script>
+  (function(){
+    var bar = document.getElementById('stickerPromoBar');
+    var countEl = document.getElementById('stickerPromoCount');
+    fetch('https://script.google.com/macros/s/AKfycbwc5JR5yo76y8-H81D3Dh4e-pc6kqha8rLO2Yu90ZtFV_s-3Hm__YI52WoaW54zXOqBdw/exec?action=stickerCount')
+      .then(function(r){ return r.json(); })
+      .then(function(data){
+        var max = data.max || 15;
+        var available = (typeof data.available === 'number')
+          ? data.available
+          : Math.max(0, max - (data.count || 0));
+        if (available <= 0) return;  // campaign full — leave bar hidden
+        countEl.textContent = ' — ' + available + ' of ' + max + ' left';
+        bar.classList.remove('is-hidden');
+      })
+      .catch(function(){
+        // Fail-open: reveal bar without count so we don't lose a conversion
+        // surface over a transient Apps Script outage.
+        bar.classList.remove('is-hidden');
+      });
+  })();
+</script>
 
 <header>
   <a class="logo" href="index.html">TROUT <span>TRICKS</span></a>
