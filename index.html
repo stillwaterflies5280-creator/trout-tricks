@@ -753,6 +753,31 @@
     filter: drop-shadow(0 2px 6px rgba(0,0,0,0.15));
   }
 
+  /* STICKER BUNDLES — 3-column thumbnail grid showing all included designs.
+     3-item bundles fill 1 row; 6-item bundles wrap to 2 rows. Avoids the
+     duplication-with-single-cards problem caused by reusing one child image
+     as the bundle's main img. */
+  .fly-img.sticker-bundle-img {
+    height: 240px;
+    background: transparent;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 8px;
+    padding: 16px;
+    align-items: center;
+    justify-items: center;
+    cursor: default;
+  }
+  .fly-img.sticker-bundle-img img {
+    width: auto;
+    height: auto;
+    max-width: 100%;
+    max-height: 90px;
+    object-fit: contain;
+    filter: drop-shadow(0 1px 3px rgba(0,0,0,0.22));
+  }
+  .fly-card:hover .fly-img.sticker-bundle-img img { transform: none; }
+
   .fly-gallery-wrap { cursor: default; }
   .fly-gallery-wrap img { cursor: zoom-in; }
   .gallery-nav {
@@ -2703,19 +2728,19 @@
   </div>
 
 
-  <section id="stickers">
-    <h2 class="section-title">STICKERS</h2>
-    <p style="text-align:center;font-size:0.9rem;margin:0 0 18px;"><a href="stickers.html" style="color:var(--light-gray);text-decoration:underline;">See the full collection in one place →</a></p>
-    <div class="catalog" id="merchCatalog"></div>
-  </section>
-
-
   <h2 class="section-title" id="fliesSectionTitle">THE FLIES</h2>
   <div class="fly-search-empty" id="flySearchEmpty">No flies, merch, or articles match "<strong id="flySearchQuery"></strong>"</div>
   <div class="search-section-header" id="flyResultsHeader" style="display:none;">FLIES <span class="count">(<span id="flyResultsCount">0</span>)</span></div>
   <div class="catalog" id="catalog"></div>
   <div class="search-section-header" id="articleResultsHeader" style="display:none;">ARTICLES <span class="count">(<span id="articleResultsCount">0</span>)</span></div>
   <div class="article-results" id="articleResults"></div>
+
+
+  <section id="stickers">
+    <h2 class="section-title">STICKERS</h2>
+    <p style="text-align:center;font-size:0.9rem;margin:0 0 18px;"><a href="stickers.html" style="color:var(--light-gray);text-decoration:underline;">See the full collection in one place →</a></p>
+    <div class="catalog" id="merchCatalog"></div>
+  </section>
 
   <!-- SOCIAL PROOF -->
   <div id="social-proof" class="social-proof">
@@ -3667,7 +3692,18 @@ function buildCatalog() {
     const priceSuffix = fly.pack ? `<span class="per">/ ${fly.pack}-pack</span>` : '';
     const qtyLabel = isSticker ? "Qty" : "Packs";
 
-    const imgBlock = fly.gallery
+    // Bundle cards render a thumbnail grid of their included children
+    // (resolved via fly.bundle_includes IDs → flies[]). Skips the single-image
+    // lightbox onclick — bundle previews aren't meant to lightbox-zoom.
+    const imgBlock = fly.bundle
+      ? `<div class="fly-img sticker-bundle-img">
+           ${fly.bundle_includes.map(function(childId) {
+             var child = flies.find(function(f) { return f.id === childId; });
+             return child ? `<img src="${FLY_IMAGES[child.img]}" alt="${child.name}" loading="lazy">` : '';
+           }).join('')}
+           ${badge}
+         </div>`
+      : fly.gallery
       ? `<div class="fly-img fly-gallery-wrap${isSticker ? ' sticker-img' : ''}" id="gallery-wrap-${fly.id}">
            <img src="${FLY_IMAGES[fly.gallery[0]]}" alt="${fly.name}" loading="lazy" id="gallery-img-${fly.id}" onclick="openGalleryLightbox(${fly.id})">
            <button class="gallery-nav prev" onclick="cycleGallery(${fly.id},-1)">&#8249;</button>
