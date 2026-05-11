@@ -1408,6 +1408,10 @@
   }
   .sticker-closed .secondary-cta:hover { background: var(--red-bright); }
 
+  /* Waitlist form inside the closed-state card. Closed card centers text;
+     form labels and inputs need to flow left like the open form. */
+  .sticker-closed .waitlist-form { text-align: left; margin-top: 22px; }
+
   .pickup-section {
     margin: 14px 16px 0;
     background: var(--card);
@@ -2248,8 +2252,30 @@
   <div class="sticker-closed" id="stickerClosed" style="display:none;">
     <div class="sticker-closed-eyebrow">🎣 Campaign Closed</div>
     <div class="sticker-closed-title">All 15 stickers claimed.</div>
-    <p>Thanks to everyone who signed up. Want a heads-up next time we run a giveaway? Join the newsletter — we'll let you know first.</p>
-    <a href="/" class="secondary-cta">Join the newsletter →</a>
+    <p>We'll let you know when we run this again.</p>
+
+    <form id="waitlistForm" class="contact-form waitlist-form" novalidate onsubmit="return submitWaitlistForm(event)">
+      <div class="form-row">
+        <div class="form-group required">
+          <label for="wf_first_name">First Name</label>
+          <input id="wf_first_name" name="first_name" type="text" autocomplete="given-name" required aria-required="true" maxlength="60">
+        </div>
+        <div class="form-group required">
+          <label for="wf_email">Email</label>
+          <input id="wf_email" name="email" type="email" autocomplete="email" required aria-required="true" maxlength="120">
+        </div>
+      </div>
+
+      <div class="cf-honeypot" aria-hidden="true">
+        <label for="wf_website">Website</label>
+        <input id="wf_website" name="website" type="text" tabindex="-1" autocomplete="off">
+      </div>
+
+      <div class="cf-error" id="waitlistError" role="alert" aria-live="polite"></div>
+
+      <button type="submit" id="waitlistSubmit" class="notify-btn">Notify Me Next Time →</button>
+    </form>
+    <div class="cf-success" id="waitlistSuccess" role="status" aria-live="polite"></div>
   </div>
 
 </div>
@@ -3340,6 +3366,135 @@ function sendStickerToEmailJS(p) {
     phone:   phoneDisplay,
     reason:  '🎣 FREE STICKER SHIPMENT',
     message: message,
+    time:    new Date().toLocaleString('en-US', { timeZone: 'America/Denver', dateStyle: 'medium', timeStyle: 'short' })
+  });
+}
+
+// ============================================================
+// CLOSED-STATE WAITLIST FORM
+// Lightweight signup (first name + email) shown when the campaign hits
+// 15/15. Same triple-channel fan-out as the main sticker form, but tagged
+// acquisition_source = sticker_waitlist_round1 so the Klaviyo Welcome flow
+// can skip these (mirrors the free_sticker_campaign skip).
+// Apps Script needs a doPost case for submission_type='sticker_waitlist'.
+// ============================================================
+function submitWaitlistForm(e) {
+  if (e && e.preventDefault) e.preventDefault();
+  var form   = document.getElementById('waitlistForm');
+  var errBox = document.getElementById('waitlistError');
+  var okBox  = document.getElementById('waitlistSuccess');
+  var btn    = document.getElementById('waitlistSubmit');
+  if (!form || !btn) return false;
+
+  errBox.textContent = '';
+  errBox.classList.remove('visible');
+  form.querySelectorAll('.form-group.field-error').forEach(function(g) { g.classList.remove('field-error'); });
+
+  function get(id) { var el = document.getElementById(id); return el ? el.value.trim() : ''; }
+
+  // Honeypot — silently succeed so bots don't learn they were caught.
+  if (get('wf_website')) {
+    form.style.display = 'none';
+    okBox.textContent = "Thanks! We'll be in touch.";
+    okBox.classList.add('visible');
+    return false;
+  }
+
+  var firstName = get('wf_first_name');
+  var email     = get('wf_email');
+
+  var errors = [];
+  if (!firstName) { errors.push('First name is required.'); markWaitlistError('wf_first_name'); }
+  if (!email) { errors.push('Email is required.'); markWaitlistError('wf_email'); }
+  else if (!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(email)) { errors.push('Please enter a valid email.'); markWaitlistError('wf_email'); }
+
+  if (errors.length) {
+    errBox.textContent = errors.join(' ');
+    errBox.classList.add('visible');
+    return false;
+  }
+
+  btn.disabled = true;
+  btn.textContent = 'Submitting…';
+
+  var payload = { firstName: firstName, email: email };
+
+  var channels = [
+    sendWaitlistToAppsScript(payload),
+    sendWaitlistToEmailJS(payload),
+    sendWaitlistToKlaviyo(payload)
+  ];
+
+  Promise.allSettled(channels).then(function(results) {
+    if (results.every(function(r) { return r.status === 'rejected'; })) {
+      btn.disabled = false;
+      btn.textContent = 'Notify Me Next Time →';
+      results.forEach(function(r, i) { console.error('[waitlist] channel', i, r.reason); });
+      errBox.textContent = "Something went wrong. Please email thomas@trouttricks.com directly.";
+      errBox.classList.add('visible');
+      return;
+    }
+    if (typeof gtag === 'function') gtag('event', 'sticker_waitlist_signup');
+    form.style.display = 'none';
+    okBox.textContent = "Thanks! We'll let you know when we run this again.";
+    okBox.classList.add('visible');
+    okBox.scrollIntoView({ behavior: 'smooth', block: 'center' });
+  });
+
+  return false;
+}
+function markWaitlistError(id) {
+  var el = document.getElementById(id);
+  if (!el) return;
+  var grp = el.closest('.form-group');
+  if (grp) grp.classList.add('field-error');
+}
+function sendWaitlistToKlaviyo(p) {
+  var profileAttrs = { email: p.email };
+  if (p.firstName) profileAttrs.first_name = p.firstName;
+  profileAttrs.properties = {
+    acquisition_source:      'sticker_waitlist_round1',
+    sticker_waitlist_signup: true,
+    waitlist_signup_date:    new Date().toISOString()
+  };
+  var body = {
+    data: {
+      type: 'subscription',
+      attributes: {
+        custom_source: 'Sticker Waitlist Round 1',
+        profile: { data: { type: 'profile', attributes: profileAttrs } }
+      },
+      relationships: { list: { data: { type: 'list', id: 'SUpRkF' } } }
+    }
+  };
+  return fetch('https://a.klaviyo.com/client/subscriptions/?company_id=RyxZFj', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', 'revision': '2024-10-15' },
+    body: JSON.stringify(body)
+  }).then(function(r) { if (!r.ok) throw new Error('klaviyo ' + r.status); });
+}
+function sendWaitlistToAppsScript(p) {
+  return fetch(APPS_SCRIPT_URL, {
+    method: 'POST',
+    body: JSON.stringify({
+      submission_type:     'sticker_waitlist',
+      customer_first_name: p.firstName,
+      customer_email:      p.email,
+      submitted_date:      new Date().toLocaleDateString(),
+      submitted_time:      new Date().toLocaleTimeString()
+    })
+  }).then(function(r) {
+    if (!r.ok) throw new Error('sheet ' + r.status);
+  });
+}
+function sendWaitlistToEmailJS(p) {
+  if (typeof emailjs === 'undefined') return Promise.reject(new Error('emailjs unavailable'));
+  return emailjs.send('service_y9wyl0c', 'template_7wna2ba', {
+    name:    p.firstName,
+    email:   p.email,
+    phone:   'Not provided',
+    reason:  '🎣 STICKER WAITLIST SIGNUP (Round 1)',
+    message: 'Waitlist signup for next sticker giveaway.\nFirst name: ' + p.firstName + '\nEmail: ' + p.email,
     time:    new Date().toLocaleString('en-US', { timeZone: 'America/Denver', dateStyle: 'medium', timeStyle: 'short' })
   });
 }
