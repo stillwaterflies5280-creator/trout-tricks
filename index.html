@@ -891,6 +891,21 @@
   /* Best Value badge — brand-red, used on bundle SKUs to mark the high-savings option */
   .fly-badge.best-value { background: #C0392B; color: #fff; border: 1px solid #E74C3C; }
 
+  /* Best Value RIBBON — full-width banner across the top of a bundle card.
+     Replaces the absolute-positioned .fly-badge.best-value circle, which got
+     clipped by .fly-card's overflow:hidden. Renders as a natural first-child
+     flex item, so it spans the card edge-to-edge with no negative positioning. */
+  .best-value-ribbon {
+    background: #C0392B;
+    color: #fff;
+    font-family: 'Bebas Neue', Impact, sans-serif;
+    font-size: 1rem;
+    letter-spacing: 0.18em;
+    text-align: center;
+    padding: 8px 12px;
+    border-bottom: 1px solid #E74C3C;
+  }
+
   .fly-info { padding: 14px 16px 0; flex: 1; }
   .fly-name {
     font-family: 'Bebas Neue', sans-serif;
@@ -3713,8 +3728,16 @@ function buildCatalog() {
          </div>`
       : "";
 
-    const badge = fly.badge
-      ? `<div class="fly-badge${fly.badge==="Top Secret"?" gold":""}${fly.badge==="Best Value"?" best-value":""}">${fly.badge}</div>`
+    // Best Value bundles render the badge as a full-width ribbon at the top
+    // of the card (first child of .fly-card), NOT as the standard fly-badge
+    // circle inside .fly-img. The circle gets clipped by .fly-card's
+    // overflow:hidden when positioned with negative offsets.
+    const isBestValueBundle = !!fly.bundle && fly.badge === "Best Value";
+    const ribbon = isBestValueBundle
+      ? `<div class="best-value-ribbon">${fly.badge.toUpperCase()}</div>`
+      : "";
+    const badge = (fly.badge && !isBestValueBundle)
+      ? `<div class="fly-badge${fly.badge==="Top Secret"?" gold":""}">${fly.badge}</div>`
       : "";
 
     const priceSuffix = fly.pack ? `<span class="per">/ ${fly.pack}-pack</span>` : '';
@@ -3748,6 +3771,7 @@ function buildCatalog() {
 
     target.innerHTML += `
       <div class="fly-card" data-search="${(fly.name + ' ' + fly.desc).toLowerCase().replace(/"/g, '&quot;')}" data-fly-name="${fly.name.replace(/"/g, '&quot;')}" data-fly-price="${fly.price}">
+        ${ribbon}
         ${imgBlock}
         <div class="fly-info">
           <div class="fly-name">${fly.name}</div>

@@ -727,6 +727,21 @@
   }
   .fly-badge.gold { background: var(--gold-dim); color: #000; }
 
+  /* Best Value RIBBON — full-width banner across the top of a bundle card.
+     Mirror of index.html. Renders as a natural first-child flex item, so it
+     spans the card edge-to-edge. Negative margins escape inline card padding
+     on the static bundle markup (article has padding:24px). */
+  .best-value-ribbon {
+    background: #C0392B;
+    color: #fff;
+    font-family: 'Bebas Neue', Impact, sans-serif;
+    font-size: 1rem;
+    letter-spacing: 0.18em;
+    text-align: center;
+    padding: 8px 12px;
+    border-bottom: 1px solid #E74C3C;
+  }
+
   .fly-info { padding: 14px 16px 0; flex: 1; }
   .fly-name {
     font-family: 'Bebas Neue', sans-serif;
@@ -2234,9 +2249,9 @@
           </div>
         </article>
 
-        <article class="fly-card" style="padding:24px;text-align:center;position:relative;border:2px solid var(--red);">
-          <div class="fly-badge best-value" style="position:absolute;top:-12px;left:50%;transform:translateX(-50%);">Best Value</div>
-          <h3 class="fly-name" style="margin-top:8px;">The Complete Collection</h3>
+        <article class="fly-card" style="padding:24px;text-align:center;border:2px solid var(--red);">
+          <div class="best-value-ribbon" style="margin:-24px -24px 18px;">BEST VALUE</div>
+          <h3 class="fly-name" style="margin-top:0;">The Complete Collection</h3>
           <p style="color:var(--gray);font-size:0.85rem;letter-spacing:0.06em;text-transform:uppercase;margin:6px 0 16px;">All 6 designs</p>
           <div class="fly-img sticker-bundle-img" style="height:auto;margin-bottom:18px;">
             <div class="bundle-thumb"><img src="images/sticker-fish-on.png" alt="Fish On" loading="lazy"></div>
