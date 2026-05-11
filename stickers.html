@@ -2027,49 +2027,127 @@
     <section style="margin-bottom:60px;">
       <h2 class="section-title" style="text-align:center;">Singles</h2>
       <p style="text-align:center;color:var(--light-gray);margin:0 0 28px;font-size:0.95rem;">Pick one. Each design printed on weatherproof die-cut vinyl.</p>
-      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:20px;">
+      <div class="catalog" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:20px;">
 
-        <article class="fly-card">
+        <div class="fly-card">
           <div class="fly-img sticker-img"><img src="images/sticker-fish-on.png" alt="Fish On Sticker" loading="lazy"></div>
-          <h3 class="fly-name">Fish On Sticker</h3>
-          <p class="fly-desc">The look when the indicator drops and your eight-weight loads up.</p>
-          <div class="fly-price">$5</div>
-        </article>
+          <div class="fly-info">
+            <div class="fly-name">Fish On Sticker</div>
+            <div class="fly-desc">The look when the indicator drops and your eight-weight loads up.</div>
+            <div class="fly-price">$5</div>
+          </div>
+          <div class="fly-options">
+            <div class="option-row">
+              <span class="option-label">Qty</span>
+              <div class="qty-row">
+                <button class="qty-btn" onclick="changeQty(15,-1)">−</button>
+                <span class="qty-display" id="qty-15">1</span>
+                <button class="qty-btn" onclick="changeQty(15,1)">+</button>
+              </div>
+            </div>
+            <button class="add-btn" onclick="addToCart(15)">Add to Cart</button>
+          </div>
+        </div>
 
-        <article class="fly-card">
+        <div class="fly-card">
           <div class="fly-img sticker-img"><img src="images/sticker-dont-judge-me.png" alt="Don't Judge Me Sticker" loading="lazy"></div>
-          <h3 class="fly-name">Don't Judge Me Sticker</h3>
-          <p class="fly-desc">For the day you fish three flies on a 7x leader.</p>
-          <div class="fly-price">$5</div>
-        </article>
+          <div class="fly-info">
+            <div class="fly-name">Don't Judge Me Sticker</div>
+            <div class="fly-desc">For the day you fish three flies on a 7x leader.</div>
+            <div class="fly-price">$5</div>
+          </div>
+          <div class="fly-options">
+            <div class="option-row">
+              <span class="option-label">Qty</span>
+              <div class="qty-row">
+                <button class="qty-btn" onclick="changeQty(16,-1)">−</button>
+                <span class="qty-display" id="qty-16">1</span>
+                <button class="qty-btn" onclick="changeQty(16,1)">+</button>
+              </div>
+            </div>
+            <button class="add-btn" onclick="addToCart(16)">Add to Cart</button>
+          </div>
+        </div>
 
-        <article class="fly-card">
+        <div class="fly-card">
           <div class="fly-img sticker-img"><img src="images/sticker-buffet-mode.png" alt="Buffet Mode Sticker" loading="lazy"></div>
-          <h3 class="fly-name">Buffet Mode Sticker</h3>
-          <p class="fly-desc">When the trout are eating chironomids, callibaetis, and midges in the same pass.</p>
-          <div class="fly-price">$5</div>
-        </article>
+          <div class="fly-info">
+            <div class="fly-name">Buffet Mode Sticker</div>
+            <div class="fly-desc">When the trout are eating chironomids, callibaetis, and midges in the same pass.</div>
+            <div class="fly-price">$5</div>
+          </div>
+          <div class="fly-options">
+            <div class="option-row">
+              <span class="option-label">Qty</span>
+              <div class="qty-row">
+                <button class="qty-btn" onclick="changeQty(17,-1)">−</button>
+                <span class="qty-display" id="qty-17">1</span>
+                <button class="qty-btn" onclick="changeQty(17,1)">+</button>
+              </div>
+            </div>
+            <button class="add-btn" onclick="addToCart(17)">Add to Cart</button>
+          </div>
+        </div>
 
-        <article class="fly-card">
+        <div class="fly-card">
           <div class="fly-img sticker-img"><img src="images/sticker-got-buzzers.png" alt="Got Buzzers? Sticker" loading="lazy"></div>
-          <h3 class="fly-name">Got Buzzers? Sticker</h3>
-          <p class="fly-desc">UK tying slang for chironomids — if you tie them, you know.</p>
-          <div class="fly-price">$3</div>
-        </article>
+          <div class="fly-info">
+            <div class="fly-name">Got Buzzers? Sticker</div>
+            <div class="fly-desc">UK tying slang for chironomids — if you tie them, you know.</div>
+            <div class="fly-price">$3</div>
+          </div>
+          <div class="fly-options">
+            <div class="option-row">
+              <span class="option-label">Qty</span>
+              <div class="qty-row">
+                <button class="qty-btn" onclick="changeQty(18,-1)">−</button>
+                <span class="qty-display" id="qty-18">1</span>
+                <button class="qty-btn" onclick="changeQty(18,1)">+</button>
+              </div>
+            </div>
+            <button class="add-btn" onclick="addToCart(18)">Add to Cart</button>
+          </div>
+        </div>
 
-        <article class="fly-card">
+        <div class="fly-card">
           <div class="fly-img sticker-img"><img src="images/sticker1.png" alt="Trout Tricks Wordmark Sticker" loading="lazy"></div>
-          <h3 class="fly-name">Trout Tricks Wordmark Sticker</h3>
-          <p class="fly-desc">Die-cut 3.25" × 1.2" weatherproof vinyl.</p>
-          <div class="fly-price">$3</div>
-        </article>
+          <div class="fly-info">
+            <div class="fly-name">Trout Tricks Wordmark Sticker</div>
+            <div class="fly-desc">Die-cut 3.25" × 1.2" weatherproof vinyl.</div>
+            <div class="fly-price">$3</div>
+          </div>
+          <div class="fly-options">
+            <div class="option-row">
+              <span class="option-label">Qty</span>
+              <div class="qty-row">
+                <button class="qty-btn" onclick="changeQty(13,-1)">−</button>
+                <span class="qty-display" id="qty-13">1</span>
+                <button class="qty-btn" onclick="changeQty(13,1)">+</button>
+              </div>
+            </div>
+            <button class="add-btn" onclick="addToCart(13)">Add to Cart</button>
+          </div>
+        </div>
 
-        <article class="fly-card">
+        <div class="fly-card">
           <div class="fly-img sticker-img"><img src="images/sticker2.png" alt="Trout Tricks Square Sticker" loading="lazy"></div>
-          <h3 class="fly-name">Trout Tricks Square Sticker</h3>
-          <p class="fly-desc">Die-cut 3" × 3" weatherproof vinyl.</p>
-          <div class="fly-price">$5</div>
-        </article>
+          <div class="fly-info">
+            <div class="fly-name">Trout Tricks Square Sticker</div>
+            <div class="fly-desc">Die-cut 3" × 3" weatherproof vinyl.</div>
+            <div class="fly-price">$5</div>
+          </div>
+          <div class="fly-options">
+            <div class="option-row">
+              <span class="option-label">Qty</span>
+              <div class="qty-row">
+                <button class="qty-btn" onclick="changeQty(14,-1)">−</button>
+                <span class="qty-display" id="qty-14">1</span>
+                <button class="qty-btn" onclick="changeQty(14,1)">+</button>
+              </div>
+            </div>
+            <button class="add-btn" onclick="addToCart(14)">Add to Cart</button>
+          </div>
+        </div>
 
       </div>
     </section>
@@ -2093,7 +2171,18 @@
             <span style="color:var(--gray);text-decoration:line-through;font-size:1rem;">$15</span>
             <span class="fly-price" style="margin:0;font-size:1.6rem;">$12</span>
           </div>
-          <div style="color:#6ee7b7;font-family:'Barlow Condensed',sans-serif;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;font-size:0.85rem;">Save $3</div>
+          <div style="color:#6ee7b7;font-family:'Barlow Condensed',sans-serif;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;font-size:0.85rem;margin-bottom:14px;">Save $3</div>
+          <div class="fly-options">
+            <div class="option-row" style="justify-content:center;">
+              <span class="option-label">Qty</span>
+              <div class="qty-row">
+                <button class="qty-btn" onclick="changeQty(19,-1)">−</button>
+                <span class="qty-display" id="qty-19">1</span>
+                <button class="qty-btn" onclick="changeQty(19,1)">+</button>
+              </div>
+            </div>
+            <button class="add-btn" onclick="addToCart(19)">Add to Cart</button>
+          </div>
         </article>
 
         <article class="fly-card" style="padding:24px;text-align:center;position:relative;border:2px solid var(--red);">
@@ -2113,7 +2202,18 @@
             <span style="color:var(--gray);text-decoration:line-through;font-size:1rem;">$26</span>
             <span class="fly-price" style="margin:0;font-size:1.6rem;">$20</span>
           </div>
-          <div style="color:#6ee7b7;font-family:'Barlow Condensed',sans-serif;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;font-size:0.85rem;">Save $6</div>
+          <div style="color:#6ee7b7;font-family:'Barlow Condensed',sans-serif;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;font-size:0.85rem;margin-bottom:14px;">Save $6</div>
+          <div class="fly-options">
+            <div class="option-row" style="justify-content:center;">
+              <span class="option-label">Qty</span>
+              <div class="qty-row">
+                <button class="qty-btn" onclick="changeQty(20,-1)">−</button>
+                <span class="qty-display" id="qty-20">1</span>
+                <button class="qty-btn" onclick="changeQty(20,1)">+</button>
+              </div>
+            </div>
+            <button class="add-btn" onclick="addToCart(20)">Add to Cart</button>
+          </div>
         </article>
 
       </div>
@@ -2127,6 +2227,17 @@
 
   </div>
 </div>
+
+<script>
+  // Initialize the quantities map for static sticker cards. On index.html
+  // this happens inside renderFlyCard, but our cards here are server-rendered
+  // (static HTML) so the cart's changeQty/addToCart wouldn't find a starting
+  // value without this seed. Wrapped in DOMContentLoaded so it fires AFTER
+  // the main script block has declared `quantities` further down the page.
+  document.addEventListener('DOMContentLoaded', function() {
+    [13, 14, 15, 16, 17, 18, 19, 20].forEach(function(id) { quantities[id] = 1; });
+  });
+</script>
 
 <!-- CART OVERLAY + PANEL -->
 <div class="overlay" id="overlay" onclick="closeCart()"></div>
@@ -2214,12 +2325,25 @@
 </footer>
 
 <script>
-const FLY_IMAGES = {};
+// Sticker image paths — mirrors the sticker subset of index.html FLY_IMAGES.
+// Other entries are intentionally omitted (this page doesn't render flies).
+const FLY_IMAGES = {
+  sticker1: "images/sticker1.png",
+  sticker2: "images/sticker2.png",
+  stickerFishOn: "images/sticker-fish-on.png",
+  stickerDontJudge: "images/sticker-dont-judge-me.png",
+  stickerBuffet: "images/sticker-buffet-mode.png",
+  stickerBuzzers: "images/sticker-got-buzzers.png",
+  wordmarkreal: "images/wordmarkreal.jpg"
+};
 
 const FISH_IMAGES = {};
 
 const GALLERY_IMAGES = {};
 
+// MIRRORED with index.html flies[] — keep id 13–20 (sticker + bundle SKUs) in sync
+// on price or bundle composition changes. Other entries on this page (id 1–9) are
+// a legacy subset inherited from contact.html and are not actively rendered here.
 const flies = [
   {
     id: 2, img: "fly2",
@@ -2310,6 +2434,99 @@ const flies = [
     price: 25,
     pack: 5,
     badge: "Top Secret"
+  },
+  // === STICKER + BUNDLE SKUs — mirrored from index.html flies[] ===
+  {
+    id: 13, img: "sticker1", gallery: ["sticker1", "wordmarkreal"],
+    name: "Trout Tricks Wordmark Sticker",
+    desc: "Die-cut 3.25\" × 1.2\" weatherproof vinyl. Slap it on your boat, vise, or Yeti.",
+    sizes: null,
+    colors: null,
+    price: 3,
+    pack: null,
+    badge: null,
+    category: "sticker"
+  },
+  {
+    id: 14, img: "sticker2",
+    name: "Trout Tricks Square Sticker",
+    desc: "Die-cut 3\" × 3\" weatherproof vinyl. Slap it on your boat, vise, or Yeti.",
+    sizes: null,
+    colors: null,
+    price: 5,
+    pack: null,
+    badge: null,
+    category: "sticker"
+  },
+  {
+    id: 15, img: "stickerFishOn",
+    name: "Fish On Sticker",
+    desc: "Die-cut weatherproof vinyl. The look when the indicator drops and your eight-weight loads up. Slap it on your vise, boat, or Yeti.",
+    sizes: null,
+    colors: null,
+    price: 5,
+    pack: null,
+    badge: null,
+    category: "sticker"
+  },
+  {
+    id: 16, img: "stickerDontJudge",
+    name: "Don't Judge Me Sticker",
+    desc: "Die-cut weatherproof vinyl. For the day you fish three flies on a 7x leader. Slap it on your vise, boat, or Yeti.",
+    sizes: null,
+    colors: null,
+    price: 5,
+    pack: null,
+    badge: null,
+    category: "sticker"
+  },
+  {
+    id: 17, img: "stickerBuffet",
+    name: "Buffet Mode Sticker",
+    desc: "Die-cut weatherproof vinyl. When the trout are eating chironomids, callibaetis, and midges in the same pass. Slap it on your vise, boat, or Yeti.",
+    sizes: null,
+    colors: null,
+    price: 5,
+    pack: null,
+    badge: null,
+    category: "sticker"
+  },
+  {
+    id: 18, img: "stickerBuzzers",
+    name: "Got Buzzers? Sticker",
+    desc: "Die-cut weatherproof vinyl. UK tying slang for chironomids — if you tie them, you know. Slap it on your vise, boat, or Yeti.",
+    sizes: null,
+    colors: null,
+    price: 3,
+    pack: null,
+    badge: null,
+    category: "sticker"
+  },
+  {
+    id: 19, img: "stickerFishOn",
+    name: "The Greedy Trout Pack",
+    desc: "Includes: Fish On + Don't Judge Me + Buffet Mode. The trout-cinematic-universe set, $3 off retail ($15 → $12).",
+    sizes: null,
+    colors: null,
+    price: 12,
+    pack: null,
+    badge: null,
+    category: "sticker",
+    bundle: true,
+    bundle_includes: [15, 16, 17]
+  },
+  {
+    id: 20, img: "sticker1",
+    name: "The Complete Collection",
+    desc: "Includes: Fish On, Don't Judge Me, Buffet Mode, Got Buzzers?, Wordmark, and Square. Every Trout Tricks sticker — $6 off retail ($26 → $20).",
+    sizes: null,
+    colors: null,
+    price: 20,
+    pack: null,
+    badge: "Best Value",
+    category: "sticker",
+    bundle: true,
+    bundle_includes: [13, 14, 15, 16, 17, 18]
   }
 ];
 
@@ -2536,13 +2753,19 @@ function changeQty(id, delta) {
 
 function addToCart(id) {
   const fly = flies.find(f => f.id === id);
-  const size = document.getElementById(`size-${id}`).value;
+  // sizeEl/colorEl null-checks — stickers and bundles have no size/color selectors,
+  // so document.getElementById(...).value would crash. Mirror of index.html's addToCart.
+  const sizeEl = document.getElementById(`size-${id}`);
+  const size = sizeEl ? sizeEl.value : null;
   const colorEl = document.getElementById(`color-${id}`);
   const color = colorEl ? colorEl.value : null;
   const qty = quantities[id];
   cart.push({ fly, size, color, qty, pickup: false, uid: Date.now() + Math.random() });
   updateCartUI();
-  showToast(`${qty} pack${qty>1?"s":""} of ${fly.name} added!`);
+  if (typeof gtag === 'function') gtag('event', 'add_to_cart', { currency: 'USD', value: fly.price * qty, item_name: fly.name, quantity: qty });
+  const isSticker = fly.category === 'sticker';
+  const unit = isSticker ? (qty>1 ? "stickers" : "sticker") : `pack${qty>1?"s":""}`;
+  showToast(isSticker ? `${qty} ${unit} added!` : `${qty} ${unit} of ${fly.name} added!`);
   openCart();
 }
 
@@ -2605,8 +2828,12 @@ function removeFromCart(uid) {
 }
 
 function calcShipping() {
-  if (cart.length === 0) return { cost: 0, label: "Add flies to see shipping cost" };
+  if (cart.length === 0) return { cost: 0, label: "Add items to see shipping cost" };
   if (orderFulfillment === 'pickup') return { cost: 0, label: "📍 Local Pickup — No shipping charge" };
+  // Sticker-only orders ship in a #10 envelope, not a tracked padded mailer.
+  // Mixed orders (sticker + fly) always use the $7 tracked rate since the fly box requires it.
+  const allStickers = cart.every(i => i.fly.category === 'sticker');
+  if (allStickers) return { cost: 1.5, label: `✉️ USPS First-Class Envelope · $1.50` };
   return { cost: 7, label: `📦 USPS Tracked Shipping · $7` };
 }
 
@@ -2633,12 +2860,13 @@ function updateCartUI() {
       <div class="cart-item-info">
         <div class="cart-item-name">${item.fly.name}</div>
         <div class="cart-item-controls">
+          ${item.fly.sizes ? `
           <div class="cart-size-row">
             <span class="cart-ctrl-label">Size</span>
             <select class="cart-size-select" onchange="updateCartSize(${item.uid}, this.value)">
               ${item.fly.sizes.map(s=>`<option${s===item.size?" selected":""}>${s}</option>`).join("")}
             </select>
-          </div>
+          </div>` : ''}
           ${item.fly.colors ? `
           <div class="cart-size-row">
             <span class="cart-ctrl-label">Color</span>
@@ -2647,7 +2875,7 @@ function updateCartUI() {
             </select>
           </div>` : ''}
           <div class="cart-qty-row">
-            <span class="cart-ctrl-label">Packs</span>
+            <span class="cart-ctrl-label">${item.fly.category === 'sticker' ? 'Qty' : 'Packs'}</span>
             <div class="cart-qty-controls">
               <button class="cart-qty-btn" onclick="updateCartQty(${item.uid}, -1)">−</button>
               <span class="cart-qty-num">${item.qty}</span>
