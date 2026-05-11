@@ -848,6 +848,8 @@
     border-radius: 2px;
   }
   .fly-badge.gold { background: var(--gold-dim); color: #000; }
+  /* Best Value badge — brand-red, used on bundle SKUs to mark the high-savings option */
+  .fly-badge.best-value { background: #C0392B; color: #fff; border: 1px solid #E74C3C; }
 
   .fly-info { padding: 14px 16px 0; flex: 1; }
   .fly-name {
@@ -2703,6 +2705,7 @@
 
   <section id="stickers">
     <h2 class="section-title">STICKERS</h2>
+    <p style="text-align:center;font-size:0.9rem;margin:0 0 18px;"><a href="stickers.html" style="color:var(--light-gray);text-decoration:underline;">See the full collection in one place →</a></p>
     <div class="catalog" id="merchCatalog"></div>
   </section>
 
@@ -3129,6 +3132,10 @@ const FLY_IMAGES = {
   micro2: "micro2.jpg",
   sticker1: "images/sticker1.png",
   sticker2: "images/sticker2.png",
+  stickerFishOn: "images/sticker-fish-on.png",
+  stickerDontJudge: "images/sticker-dont-judge-me.png",
+  stickerBuffet: "images/sticker-buffet-mode.png",
+  stickerBuzzers: "images/sticker-got-buzzers.png",
   wordmarkreal: "images/wordmarkreal.jpg"
 };
 
@@ -3333,6 +3340,76 @@ const flies = [
     pack: null,
     badge: null,
     category: "sticker"
+  },
+  {
+    id: 15, img: "stickerFishOn",
+    name: "Fish On Sticker",
+    desc: "Die-cut weatherproof vinyl. The look when the indicator drops and your eight-weight loads up. Slap it on your vise, boat, or Yeti.",
+    sizes: null,
+    colors: null,
+    price: 5,
+    pack: null,
+    badge: null,
+    category: "sticker"
+  },
+  {
+    id: 16, img: "stickerDontJudge",
+    name: "Don't Judge Me Sticker",
+    desc: "Die-cut weatherproof vinyl. For the day you fish three flies on a 7x leader. Slap it on your vise, boat, or Yeti.",
+    sizes: null,
+    colors: null,
+    price: 5,
+    pack: null,
+    badge: null,
+    category: "sticker"
+  },
+  {
+    id: 17, img: "stickerBuffet",
+    name: "Buffet Mode Sticker",
+    desc: "Die-cut weatherproof vinyl. When the trout are eating chironomids, callibaetis, and midges in the same pass. Slap it on your vise, boat, or Yeti.",
+    sizes: null,
+    colors: null,
+    price: 5,
+    pack: null,
+    badge: null,
+    category: "sticker"
+  },
+  {
+    id: 18, img: "stickerBuzzers",
+    name: "Got Buzzers? Sticker",
+    desc: "Die-cut weatherproof vinyl. UK tying slang for chironomids — if you tie them, you know. Slap it on your vise, boat, or Yeti.",
+    sizes: null,
+    colors: null,
+    price: 3,
+    pack: null,
+    badge: null,
+    category: "sticker"
+  },
+  {
+    id: 19, img: "stickerFishOn",
+    name: "The Greedy Trout Pack",
+    desc: "Includes: Fish On + Don't Judge Me + Buffet Mode. The trout-cinematic-universe set, $3 off retail ($15 → $12).",
+    sizes: null,
+    colors: null,
+    price: 12,
+    pack: null,
+    badge: null,
+    category: "sticker",
+    bundle: true,
+    bundle_includes: [15, 16, 17]
+  },
+  {
+    id: 20, img: "sticker1",
+    name: "The Complete Collection",
+    desc: "Includes: Fish On, Don't Judge Me, Buffet Mode, Got Buzzers?, Wordmark, and Square. Every Trout Tricks sticker — $6 off retail ($26 → $20).",
+    sizes: null,
+    colors: null,
+    price: 20,
+    pack: null,
+    badge: "Best Value",
+    category: "sticker",
+    bundle: true,
+    bundle_includes: [13, 14, 15, 16, 17, 18]
   }
 ];
 
@@ -3430,7 +3507,7 @@ function buildMosaic() {
   if (tripCards) {
     const shuffled = [...flies].filter(f => f.category !== 'sticker').sort(() => Math.random() - 0.5).slice(0, 3);
     tripCards.innerHTML = shuffled.map(fly => {
-      const badge = fly.badge ? `<div class="fly-badge${fly.badge==='Top Secret'?' gold':''}">${fly.badge}</div>` : '';
+      const badge = fly.badge ? `<div class="fly-badge${fly.badge==='Top Secret'?' gold':''}${fly.badge==='Best Value'?' best-value':''}">${fly.badge}</div>` : '';
       const colorSel = fly.colors ? `<div class="option-row"><span class="option-label">Color</span><select id="tcolor-${fly.id}">${fly.colors.map(c=>`<option>${c}</option>`).join('')}</select></div>` : '';
       return `
         <div class="trip-fly-card fly-card" data-fly-name="${fly.name.replace(/"/g, '&quot;')}" data-fly-price="${fly.price}">
@@ -3584,7 +3661,7 @@ function buildCatalog() {
       : "";
 
     const badge = fly.badge
-      ? `<div class="fly-badge${fly.badge==="Top Secret"?" gold":""}">${fly.badge}</div>`
+      ? `<div class="fly-badge${fly.badge==="Top Secret"?" gold":""}${fly.badge==="Best Value"?" best-value":""}">${fly.badge}</div>`
       : "";
 
     const priceSuffix = fly.pack ? `<span class="per">/ ${fly.pack}-pack</span>` : '';
