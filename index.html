@@ -2598,66 +2598,9 @@
 
 <body>
 
-<!-- Sticker Drop promo bar — fresh marketing push for /stickers.html.
-     Sits ABOVE the Free Sticker giveaway bar so both are visible without
-     overlap. Reuses .sticker-promo-bar styling/pulse animation. Always
-     visible (no count fetch, no is-hidden gate). Homepage only. -->
-<a class="sticker-promo-bar" href="stickers.html">
+<a class="sticker-promo-bar" href="/the-drop.html">
   <span class="sticker-promo-inner" style="animation-delay:-1s;">these stickers slap. literally on your boat or box. lol → SEE THE DROP</span>
 </a>
-
-<a class="sticker-promo-bar is-hidden" id="stickerPromoBar" href="free-sticker.html">
-  <span class="sticker-promo-inner">🎣 FREE STICKER GIVEAWAY<span class="sticker-promo-count" id="stickerPromoCount"></span> → CLAIM YOURS</span>
-</a>
-<script>
-  (function(){
-    var bar = document.getElementById('stickerPromoBar');
-    var countEl = document.getElementById('stickerPromoCount');
-    var CACHE_KEY = 'tt_sticker_count_cache';
-    var CACHE_TTL_MS = 5 * 60 * 1000;
-    var URL = 'https://script.google.com/macros/s/AKfycbwc5JR5yo76y8-H81D3Dh4e-pc6kqha8rLO2Yu90ZtFV_s-3Hm__YI52WoaW54zXOqBdw/exec?action=stickerCount';
-
-    function applyToBar(data) {
-      var max = data.max || 15;
-      var available = (typeof data.available === 'number')
-        ? data.available
-        : Math.max(0, max - (data.count || 0));
-      if (available <= 0) return;  // campaign full — leave bar hidden
-      countEl.textContent = ' — ' + available + ' of ' + max + ' left';
-      bar.classList.remove('is-hidden');
-    }
-
-    // Instant render from cache if fresh — eliminates the 2-5s Apps Script
-    // cold-start window for returning visitors. Cache is shared with
-    // free-sticker.html, busted there on successful submission.
-    try {
-      var cached = JSON.parse(localStorage.getItem(CACHE_KEY) || 'null');
-      if (cached && cached.ts && (Date.now() - cached.ts) < CACHE_TTL_MS) {
-        applyToBar(cached);
-      }
-    } catch (e) { /* fall through to fetch */ }
-
-    fetch(URL)
-      .then(function(r){ return r.json(); })
-      .then(function(data){
-        try {
-          var max = data.max || 15;
-          var available = (typeof data.available === 'number')
-            ? data.available
-            : Math.max(0, max - (data.count || 0));
-          localStorage.setItem(CACHE_KEY, JSON.stringify({
-            available: available, max: max, count: data.count, ts: Date.now()
-          }));
-        } catch (e) { /* ignore quota */ }
-        applyToBar(data);
-      })
-      .catch(function(){
-        // Fail-open: reveal bar without count so we don't lose a conversion
-        // surface over a transient Apps Script outage.
-        bar.classList.remove('is-hidden');
-      });
-  })();
-</script>
 
 <header>
   <a class="logo" href="/">TROUT <span>TRICKS</span></a>
