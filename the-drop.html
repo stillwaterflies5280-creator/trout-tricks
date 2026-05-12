@@ -177,6 +177,13 @@
   }
   .nav-btn:hover { color: #fff; background: #2a2a2a; }
   .nav-btn.active { color: var(--red); }
+  .nav-more { position: relative; display: none; }
+  .nav-more-btn { text-decoration: none; }
+  .nav-more-dropdown { display: none; position: absolute; top: calc(100% + 6px); right: 0; background: #1a1a1a; border: 1px solid #333; border-radius: 4px; z-index: 150; min-width: 140px; box-shadow: 0 4px 16px rgba(0,0,0,0.5); }
+  .nav-more-dropdown.open { display: block; }
+  .nav-more-item { display: block; width: 100%; padding: 10px 16px; color: #aaa; text-decoration: none; font-family: 'Barlow Condensed', Impact, sans-serif; font-size: 0.82rem; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; white-space: nowrap; box-sizing: border-box; }
+  .nav-more-item:hover { color: #fff; background: #2a2a2a; }
+  .nav-more-item.active { color: var(--red); }
 
   .cart-btn {
     background: var(--red);
@@ -332,6 +339,84 @@
   }
   .founding-strip-main .price { color: var(--red-bright); font-weight: 700; }
   .founding-strip-main .crossed { color: #888; text-decoration: line-through; margin-left: 6px; }
+
+  /* PROSE (long-form body copy) */
+  .prose { max-width: 760px; margin: 0 auto; text-align: left; }
+  .prose p { color: var(--light-gray); font-size: 1.02rem; line-height: 1.7; margin-bottom: 18px; }
+  .prose p strong { color: #fff; }
+  .prose p:last-child { margin-bottom: 0; }
+
+  /* STEPS ROW (How It Works) */
+  .steps-row {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: 18px;
+  }
+  .step-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 26px 22px;
+    text-align: left;
+    position: relative;
+    transition: border-color 0.2s, transform 0.2s;
+  }
+  .step-card:hover { border-color: #3a3a3a; transform: translateY(-2px); }
+  .step-num {
+    font-family: 'Bebas Neue', Impact, sans-serif;
+    font-size: 2.4rem;
+    color: var(--red-bright);
+    line-height: 1;
+    margin-bottom: 10px;
+  }
+  .step-title {
+    font-family: 'Barlow Condensed', Impact, sans-serif;
+    font-size: 1.05rem;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: #fff;
+    margin-bottom: 10px;
+  }
+  .step-detail { color: var(--light-gray); font-size: 0.95rem; line-height: 1.55; }
+
+  /* FOOTER PARTNERS STRIP */
+  .footer-partners {
+    padding: 22px 20px 18px;
+    border-top: 1px solid #222;
+    border-bottom: 1px solid #222;
+    margin: 24px 0 24px;
+    text-align: center;
+  }
+  .footer-partners-label {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 0.7rem;
+    letter-spacing: 0.28em;
+    text-transform: uppercase;
+    color: #666;
+    margin-bottom: 14px;
+  }
+  .footer-partners-strip {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 28px;
+  }
+  .footer-partners-strip img {
+    max-height: 32px;
+    width: auto;
+    filter: grayscale(1);
+    opacity: 0.5;
+    transition: filter 0.3s ease, opacity 0.3s ease;
+  }
+  .footer-partners-strip img:hover { filter: grayscale(0); opacity: 1; }
+  .footer-partners-strip img.partner-mfc { filter: grayscale(1) brightness(1.6); }
+  .footer-partners-strip img.partner-mfc:hover { filter: grayscale(0) brightness(1.6); }
+  .footer-partners-strip a { display: inline-flex; align-items: center; text-decoration: none; }
+  @media (max-width: 768px) {
+    .footer-partners-strip { gap: 12px 18px; }
+    .footer-partners-strip img { max-height: 26px; max-width: calc(25% - 14px); }
+  }
 
   /* GENERIC SECTION */
   section {
@@ -838,7 +923,9 @@
     section { padding: 48px 16px; }
     .waitlist { padding: 48px 16px; }
     .cart-btn { padding: 6px 12px; font-size: 0.85rem; }
-    nav { display: none; }
+    .nav-btn { font-size: 0.68rem; padding: 4px 5px; }
+    .nav-btn.nav-overflow { display: none; }
+    .nav-more { display: inline-block; }
     .logo { font-size: 1.5rem; }
   }
 </style>
@@ -847,18 +934,37 @@
 <body>
 
 <header>
-  <a class="logo" href="index.html">TROUT <span>TRICKS</span></a>
+  <a class="logo" href="/">TROUT <span>TRICKS</span></a>
   <nav id="mainNav">
-    <a class="nav-btn" href="index.html">The Flies</a>
+    <a class="nav-btn" href="/">The Flies</a>
+    <a class="nav-btn" href="stickers.html">The Stickers</a>
     <a class="nav-btn" href="fish.html">The Fish</a>
     <a class="nav-btn" href="trip.html">Book a Trip</a>
-    <a class="nav-btn" href="affiliates.html">Affiliates</a>
-    <a class="nav-btn" href="blog.html">Blog</a>
-    <a class="nav-btn" href="about.html">About</a>
-    <a class="nav-btn" href="contact.html">Contact</a>
+    <a class="nav-btn active" href="the-drop.html">The Drop</a>
+    <a class="nav-btn nav-overflow" href="free-sticker.html">Free Sticker</a>
+    <a class="nav-btn nav-overflow" href="affiliates.html">Affiliates</a>
+    <a class="nav-btn nav-overflow" href="blog.html">Blog</a>
+    <a class="nav-btn nav-overflow" href="community.html">Community</a>
+    <a class="nav-btn nav-overflow" href="about.html">About</a>
+    <a class="nav-btn nav-overflow" href="contact.html">Contact</a>
+    <div class="nav-more">
+      <a class="nav-btn nav-more-btn" href="#" onclick="toggleNavMore(event)" aria-haspopup="true" aria-expanded="false">More &#9662;</a>
+      <div class="nav-more-dropdown" id="navMoreDropdown">
+        <a class="nav-more-item" href="free-sticker.html">Free Sticker</a>
+        <a class="nav-more-item" href="affiliates.html">Affiliates</a>
+        <a class="nav-more-item" href="blog.html">Blog</a>
+        <a class="nav-more-item" href="community.html">Community</a>
+        <a class="nav-more-item" href="about.html">About</a>
+        <a class="nav-more-item" href="contact.html">Contact</a>
+      </div>
+    </div>
   </nav>
-  <a class="cart-btn" href="index.html#shop">🪝 Shop</a>
+  <a class="cart-btn" href="/#shop">🪝 Shop</a>
 </header>
+<script>
+  function toggleNavMore(e){e.preventDefault();e.stopPropagation();var d=document.getElementById('navMoreDropdown');var b=e.currentTarget;var open=d.classList.toggle('open');b.setAttribute('aria-expanded',open?'true':'false');}
+  document.addEventListener('click',function(e){var d=document.getElementById('navMoreDropdown');if(d&&d.classList.contains('open')&&!e.target.closest('.nav-more')){d.classList.remove('open');var b=document.querySelector('.nav-more-btn');if(b)b.setAttribute('aria-expanded','false');}});
+</script>
 
 <!-- HERO -->
 <section class="hero" style="max-width:none;padding:64px 20px 56px;">
@@ -883,6 +989,18 @@
     &nbsp;·&nbsp; After 10, founding rate closes forever.
   </div>
 </div>
+
+<!-- WHAT IS THE DROP -->
+<section id="what-is">
+  <div class="eyebrow">Introducing</div>
+  <h2 class="section-title">Real lake reports. <span class="accent">No BS.</span></h2>
+  <div class="divider"></div>
+  <div class="prose">
+    <p><strong>The Drop</strong> is a paid monthly membership for serious Colorado stillwater anglers. Two live calls a month, a private member group, member-only fly patterns, real lake reports, and 20% off everything in the shop — all built around what's actually working on Antero, Spinney, 11 Mile, Delaney, and the rest of the rotation right now.</p>
+    <p><strong>Why now?</strong> The Colorado stillwater scene is underserved. Generic YouTube tells you how to tie a chironomid in 8 minutes. It doesn't tell you what's hitting at 17 feet on the south side of Antero this Tuesday because the water hit 52°F on Sunday. That gap — between general knowledge and right-now knowledge — is what The Drop fills.</p>
+    <p><strong>Who it's for:</strong> intermediate-to-advanced anglers who fish CO stillwaters five or more times a year, already run indicators and balanced flies, and want a real edge. Not a beginner's class. Not a magazine. A working group of people serious enough to put time and money behind dialing their game in.</p>
+  </div>
+</section>
 
 <!-- VALUE PROPS -->
 <section id="what-you-get">
@@ -1032,6 +1150,31 @@
   </div>
 </section>
 
+<!-- HOW IT WORKS -->
+<section>
+  <div class="eyebrow">What Happens Next</div>
+  <h2 class="section-title">Three <span class="accent">steps</span>.</h2>
+  <div class="divider"></div>
+
+  <div class="steps-row">
+    <div class="step-card">
+      <div class="step-num">1</div>
+      <div class="step-title">Join the waitlist</div>
+      <div class="step-detail">Drop your email below. No spam — one email when membership opens, and that's it.</div>
+    </div>
+    <div class="step-card">
+      <div class="step-num">2</div>
+      <div class="step-title">Founding 10 opens</div>
+      <div class="step-detail">When the waitlist hits 25 signups, the founding 10 ($20/mo locked for life) opens to waitlist members first.</div>
+    </div>
+    <div class="step-card">
+      <div class="step-num">3</div>
+      <div class="step-title">First call goes live</div>
+      <div class="step-detail">Within two weeks of the founding 10 filling, the first live call goes out. You're in.</div>
+    </div>
+  </div>
+</section>
+
 <!-- WAITLIST -->
 <section class="waitlist" id="waitlist">
   <div class="waitlist-inner">
@@ -1043,8 +1186,8 @@
     <div class="form-card" id="formCard">
       <form id="dropForm" onsubmit="return submitDropWaitlist(event)">
         <div class="form-field">
-          <label for="dropName">First Name</label>
-          <input type="text" id="dropName" name="name" required autocomplete="given-name" placeholder="Thomas">
+          <label for="dropName">First Name <span style="color:var(--gray);font-weight:400;text-transform:none;letter-spacing:0;">(optional)</span></label>
+          <input type="text" id="dropName" name="name" autocomplete="given-name" placeholder="Thomas">
         </div>
         <div class="form-field">
           <label for="dropEmail">Email</label>
@@ -1064,7 +1207,7 @@
     </div>
 
     <div class="form-success" id="formSuccess">
-      <h3>You're on the list 🎣</h3>
+      <h3>You're on the list 🪝</h3>
       <p>We'll email you the moment founding spots open. If you flagged founding interest, you'll get first access.</p>
       <p style="color:var(--gray);font-size:0.88rem;">In the meantime, check out the free Crew newsletter sign-up on the <a href="index.html" style="color:var(--gold);">main page</a>.</p>
     </div>
@@ -1088,6 +1231,12 @@
       <summary>How is this different from the free newsletter?</summary>
       <div class="faq-body">
         The Crew newsletter is broad — patterns, blog posts, general tips, occasional product drops. The Drop is real-time and tactical: what's actually happening on Antero, Spinney, 11 Mile, Delaney, and the rest of the rotation right now. Live calls. Live Q&amp;A. A community of members talking shop.
+      </div>
+    </details>
+    <details class="faq">
+      <summary>How is this different from YouTube, Instagram, and the forums?</summary>
+      <div class="faq-body">
+        YouTube and IG are general and evergreen — they don't know your lake hit 52°F on Sunday. Forums are noisy and mostly anonymous; you're guessing whether the poster has actually fished the water. The Drop is small, current, and accountable: real names, real recent trips, a tyer/guide running the call, and a member community that compares notes in real time. It's the difference between watching a tutorial and standing next to someone on the water.
       </div>
     </details>
     <details class="faq">
@@ -1127,6 +1276,12 @@
       </div>
     </details>
     <details class="faq">
+      <summary>Do I need to live in Colorado?</summary>
+      <div class="faq-body">
+        No. The content is Colorado-focused — Antero, Spinney, 11 Mile, Delaney, Lake John, and the rest of the rotation — so it lands best for anglers fishing those waters. If you're in Wyoming, Utah, New Mexico, or visiting CO from out of state, plenty of the technique deep-dives (depth tuning, retrieve, balanced rigs, hatch timing) translate. The lake reports won't.
+      </div>
+    </details>
+    <details class="faq">
       <summary>When does the first call happen?</summary>
       <div class="faq-body">
         The first call date locks in once the founding 10 fills (or we hit a critical mass on the waitlist). Waitlist members get the call date in their first email.
@@ -1135,19 +1290,31 @@
   </div>
 </section>
 
+<!-- FINAL CTA -->
+<section style="text-align:center;">
+  <div class="eyebrow">One More Thing</div>
+  <h2 class="section-title">Founding 10 spots <span class="accent">will go fast</span>.</h2>
+  <div class="divider"></div>
+  <p class="section-sub">The waitlist gets first access when founding 10 opens. If you're thinking about it — get on the list.</p>
+  <a class="btn-primary" href="#waitlist" style="margin-top:8px;">Join the Waitlist →</a>
+</section>
+
 <!-- FOOTER -->
 <footer>
   <div class="footer-inner">
     <div>
       <div class="footer-logo">TROUT <span>TRICKS</span></div>
-      <div class="footer-tagline">Hand-tied in Colorado. Guide tested on the best stillwaters in the West.</div>
+      <div class="footer-tagline">Hand-tied in Colorado. Built for anglers who actually land them.</div>
     </div>
     <div>
       <div class="footer-col-title">Quick Links</div>
       <div class="footer-links">
-        <a href="index.html">The Flies</a>
+        <a href="/">The Flies</a>
+        <a href="stickers.html">The Stickers</a>
         <a href="fish.html">The Fish</a>
         <a href="trip.html">Book a Trip</a>
+        <a href="the-drop.html">The Drop</a>
+        <a href="free-sticker.html">Free Sticker</a>
         <a href="blog.html">Blog</a>
         <a href="community.html">Community</a>
         <a href="affiliates.html">Affiliates</a>
@@ -1165,8 +1332,21 @@
       </div>
     </div>
   </div>
+
+  <div class="footer-partners">
+    <div class="footer-partners-label">Trusted Partners</div>
+    <div class="footer-partners-strip">
+      <a href="https://www.simmsfishing.com" target="_blank" rel="noopener"><img src="images/partner-simms.png" alt="Simms"></a>
+      <a href="https://www.orvis.com" target="_blank" rel="noopener"><img src="images/partner-orvis.png" alt="Orvis"></a>
+      <a href="https://www.lamsonflyfishing.com" target="_blank" rel="noopener"><img src="images/partner-lamson.png" alt="Lamson"></a>
+      <a href="https://www.umpqua.com" target="_blank" rel="noopener"><img src="images/partner-umpqua.png" alt="Umpqua Feather Merchants"></a>
+      <a href="https://montanafly.com" target="_blank" rel="noopener"><img src="images/partner-mfc.png" alt="Montana Fly Company" class="partner-mfc"></a>
+      <a href="https://maxxonfly.com" target="_blank" rel="noopener"><img src="images/partner-maxxon.png" alt="Maxxon Outfitters"></a>
+      <a href="https://saludabeads.com" target="_blank" rel="noopener"><img src="images/partner-saluda.png" alt="Saluda Beads"></a>
+    </div>
+  </div>
   <hr class="footer-divider">
-  <div class="footer-copy">&copy; 2026 Trout Tricks &middot; Hand-tied in the USA &middot; All patterns tied to order</div>
+  <div class="footer-copy">&copy; 2026 Trout Tricks &middot; Hand-tied in the USA &middot; All patterns tied to order &middot; <span style="color:#fff;">These flies slap.</span></div>
 </footer>
 
 <script>
