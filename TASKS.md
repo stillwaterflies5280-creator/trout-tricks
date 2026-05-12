@@ -15,7 +15,6 @@ Persistent source of truth for active, blocked, and closed work. All adds/closes
 - **#33** PATH A — extract `flies[]` + cart functions to shared `/js/catalog.js`
 - **#35** Verify GBP listing reflects tier positioning (Manufacturer + remove charters / clothing / fishing store) — may be blocked until video verification; pending backend check
 - **#38** Free sticker with fly order — gift-with-purchase mechanic
-- **#42** Fish gallery perf — resize source JPGs to ~600px wide. 111 imgs currently shipped at 1200–1600px source res = ~46 MB total. Display masonry columns are ~300–400px wide so 600px = 2x retina headroom. Use `sips --resampleWidth 600 v2fish<N>.jpg --out v2fish<N>.jpg` in a sweep. Target: ~16 MB total (3× lighter). Highest ROI of the 3 perf follow-ups, simplest to ship.
 - **#43** Fish gallery pagination — initial render shows first 30 imgs; rest behind a "Show more" button (or IntersectionObserver-driven infinite scroll). Reduces initial gallery payload + DOM size further after #42 lands. Medium effort.
 - **#44** Fish gallery WebP variants — convert v2fish*.jpg to WebP (50–70% smaller than JPEG at equivalent quality), serve via `<picture>` with `<source type="image/webp">` and JPG fallback. Largest refactor of the 3; do AFTER #42 + #43 ship. Tooling: `cwebp` (needs install) or online batch converter.
 - **#40** Stillwater money-keyword SEO sprint — keyword domination on Antero / Spinney / Eleven Mile / Delaney+Lake John posts
@@ -38,5 +37,6 @@ Persistent source of truth for active, blocked, and closed work. All adds/closes
 
 ## Closed (running log)
 
+- **#42** Fish gallery — resize all 111 v2fish JPGs from source res (1200–1600px) to 600px wide via sips; updated width/height attrs in fish.html accordingly — *closed 2026-05-12* (46 MB → 12 MB total, ~4× lighter)
 - **#41** Sticker campaign Apps Script field-name fix — *closed 2026-05-11* (free-sticker.html: `address_line_1` / `address_line_2` → `address_line1` / `address_line2` to match what `handleStickerCampaign()` reads. Round 1 lost addresses due to underscore-before-digit mismatch. **Manual TODO for Thomas:** retype "Address Line 1" header into column F of the Sticker Campaign tab in the Master sheet — header was missing on the sheet side, separate from the payload bug.)
 - **#12** GBP photos + video upload — *closed 2026-05-11* (photos uploaded; more added incrementally as available)
