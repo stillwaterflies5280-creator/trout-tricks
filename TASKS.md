@@ -35,9 +35,6 @@ Persistent source of truth for active, blocked, and closed work. All adds/closes
 - **#23** Homepage popup copy — lead with cheat sheet
 - **#24** Reusable lead-magnet CTA block at end of blog posts
 
-**Office visit required (McIntyre St, Golden CO):**
-- **#39** Verify GBP listing via Google video walkthrough — required before public listing goes live
-
 **Release when #45 hits 25+ waitlist signups:**
 - **#46** The Drop — Square Subscriptions setup + soft launch. Create founding ($20/mo, no end) + standard ($35/mo, no end) plans in Square Dashboard (test with $1/mo plan first). Generate checkout links. Replace waitlist form on `/the-drop.html` with two CTAs ("Claim founding spot — $20" / "Join standard — $35"); add manual spot counter ("X of 10 founding spots remaining"); disable founding CTA when 10 sold. Create Square discount code `DROP` 20% off, no expiry, members-only.
 - **#47** The Drop — Apps Script handler updates: branch on `submission_type === 'drop_waitlist'` → "Drop Waitlist" tab (cols: timestamp, email, name, source, founding_interest, notes); extend `writeToMasterCustomers` to accept `source = "The Drop Waitlist"` and `"The Drop"`; new "Drop Members" tab (cols: timestamp_joined, name, email, plan_type, square_subscription_id, status, zoom_added, discord_added, founding_lock_date, last_status_change, notes); handle Square webhook events `subscription.created` / `subscription.canceled` / `invoice.payment_failed` (email Thomas on each for manual Zoom/group invites). After deploy: flip `ENABLE_DROP_APPSSCRIPT = true` in `the-drop.html`.
@@ -48,6 +45,7 @@ Persistent source of truth for active, blocked, and closed work. All adds/closes
 
 ## Closed (running log)
 
+- **#39** GBP video walkthrough verification — *in process 2026-05-12* (submitted for Google review; tracking moved off queue)
 - **#44** Fish gallery WebP variants — converted 111 v2fish JPGs to WebP @ q=80 via cwebp; wrapped each `<img>` in `<picture>` with WebP source + JPG fallback. WebP-capable browsers (95%+ market) get ~5.7 MB total instead of 12 MB; legacy browsers fall back to JPG. Combined with #42 (resize) + #43 (pagination), initial gallery load is ~30 imgs × ~50 KB WebP avg = ~1.5 MB. Down from original 46 MB unpaginated. — *closed 2026-05-12*
 - **#43** Fish gallery pagination — initial 30 imgs render; rest carry `hidden` attr until "Show more" button reveals next batch of 30. Combined with lazy-loading, initial gallery page-weight drops to just the visible 30 imgs (~3 MB) instead of all 111 (~12 MB) — *closed 2026-05-12*
 - **#42** Fish gallery — resize all 111 v2fish JPGs from source res (1200–1600px) to 600px wide via sips; updated width/height attrs in fish.html accordingly — *closed 2026-05-12* (46 MB → 12 MB total, ~4× lighter)
