@@ -3767,17 +3767,24 @@ function buildCatalog() {
     // Bundle cards render a thumbnail grid of their included children
     // (resolved via fly.bundle_includes IDs → flies[]). Skips the single-image
     // lightbox onclick — bundle previews aren't meant to lightbox-zoom.
+    // Explicit width/height attrs on every <img> below — reserves the
+    // aspect-ratio slot before the image bytes arrive, eliminating CLS
+    // (cumulative layout shift) on initial card render. Values mirror the
+    // CSS-rendered slot size: 280×280 for fly cards (.fly-img height:280),
+    // 240×240 for sticker cards (.fly-img.sticker-img height:240), 92×92
+    // for bundle thumbnail cells.
+    const imgDim = isSticker ? 240 : 280;
     const imgBlock = fly.bundle
       ? `<div class="fly-img sticker-bundle-img">
            ${fly.bundle_includes.map(function(childId) {
              var child = flies.find(function(f) { return f.id === childId; });
-             return child ? `<div class="bundle-thumb"><img src="${FLY_IMAGES[child.img]}" alt="${child.name}" loading="lazy"></div>` : '';
+             return child ? `<div class="bundle-thumb"><img src="${FLY_IMAGES[child.img]}" alt="${child.name}" loading="lazy" width="92" height="92"></div>` : '';
            }).join('')}
            ${badge}
          </div>`
       : fly.gallery
       ? `<div class="fly-img fly-gallery-wrap${isSticker ? ' sticker-img' : ''}" id="gallery-wrap-${fly.id}">
-           <img src="${FLY_IMAGES[fly.gallery[0]]}" alt="${fly.name}" loading="lazy" id="gallery-img-${fly.id}" onclick="openGalleryLightbox(${fly.id})">
+           <img src="${FLY_IMAGES[fly.gallery[0]]}" alt="${fly.name}" loading="lazy" width="${imgDim}" height="${imgDim}" id="gallery-img-${fly.id}" onclick="openGalleryLightbox(${fly.id})">
            <button class="gallery-nav prev" onclick="cycleGallery(${fly.id},-1)">&#8249;</button>
            <button class="gallery-nav next" onclick="cycleGallery(${fly.id},1)">&#8250;</button>
            <div class="fly-gallery-dots">
@@ -3786,7 +3793,7 @@ function buildCatalog() {
            ${badge}
          </div>`
       : `<div class="fly-img${isSticker ? ' sticker-img' : ''}" onclick="openLightbox('${fly.img}','${fly.name.replace(/'/g, "\\'")}')">
-           <img src="${FLY_IMAGES[fly.img]}" alt="${fly.name}" loading="lazy" style="${fly.id===9?'transform:rotate(90deg) scale(1.4);':fly.id===6?'object-fit:cover;object-position:top;':fly.id===5?'object-fit:cover;object-position:right;':''}">
+           <img src="${FLY_IMAGES[fly.img]}" alt="${fly.name}" loading="lazy" width="${imgDim}" height="${imgDim}" style="${fly.id===9?'transform:rotate(90deg) scale(1.4);':fly.id===6?'object-fit:cover;object-position:top;':fly.id===5?'object-fit:cover;object-position:right;':''}">
            ${badge}
          </div>`;
 
