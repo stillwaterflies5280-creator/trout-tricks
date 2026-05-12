@@ -1352,7 +1352,7 @@
 <script>
 // =====================================================================
 // THE DROP — Waitlist submit
-// Klaviyo: live (uses existing client subscriptions API, list SUpRkF).
+// Klaviyo: live (client subscriptions API, dedicated Drop Waitlist list S5XAFW, single opt-in).
 // Apps Script: gated behind feature flag until handler is updated to
 //              recognize submission_type='drop_waitlist' (see TASKS.md #43).
 // =====================================================================
@@ -1361,7 +1361,7 @@
 const ENABLE_DROP_APPSSCRIPT = true;
 
 const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwc5JR5yo76y8-H81D3Dh4e-pc6kqha8rLO2Yu90ZtFV_s-3Hm__YI52WoaW54zXOqBdw/exec';
-const KLAVIYO_LIST_ID = 'SUpRkF';
+const KLAVIYO_LIST_ID = 'S5XAFW';
 const KLAVIYO_COMPANY_ID = 'RyxZFj';
 
 function isValidEmail(v) { return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test((v||'').trim()); }
