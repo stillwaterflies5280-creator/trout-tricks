@@ -1796,7 +1796,6 @@
     </div>
     <h2 style="font-family:'Bebas Neue',Impact,sans-serif;font-size:1.4rem;letter-spacing:0.12em;color:#fff;text-transform:uppercase;text-align:center;margin:0 0 16px;font-weight:normal;">Trophy Trout from Colorado's Stillwaters</h2>
     <div class="fish-gallery">
-      <picture><source srcset="v2fish1.webp" type="image/webp"><img src="v2fish1.jpg" alt="Colorado trout 1" loading="lazy" width="600" height="450"></picture>
       <picture><source srcset="v2fish2.webp" type="image/webp"><img src="v2fish2.jpg" alt="Colorado trout 2" loading="lazy" width="600" height="800"></picture>
       <picture><source srcset="v2fish3.webp" type="image/webp"><img src="v2fish3.jpg" alt="Colorado trout 3" loading="lazy" width="600" height="819"></picture>
       <picture><source srcset="v2fish4.webp" type="image/webp"><img src="v2fish4.jpg" alt="Colorado trout 4" loading="lazy" width="450" height="600"></picture>
@@ -1854,7 +1853,6 @@
       <picture><source srcset="v2fish56.webp" type="image/webp"><img src="v2fish56.jpg" alt="Colorado trout 56" loading="lazy" width="450" height="600" hidden></picture>
       <picture><source srcset="v2fish57.webp" type="image/webp"><img src="v2fish57.jpg" alt="Colorado trout 57" loading="lazy" width="450" height="600" hidden></picture>
       <picture><source srcset="v2fish58.webp" type="image/webp"><img src="v2fish58.jpg" alt="Colorado trout 58" loading="lazy" width="600" height="450" hidden></picture>
-      <picture><source srcset="v2fish60.webp" type="image/webp"><img src="v2fish60.jpg" alt="Colorado trout 59" loading="lazy" width="600" height="450" hidden></picture>
       <picture><source srcset="v2fish61.webp" type="image/webp"><img src="v2fish61.jpg" alt="Colorado trout 60" loading="lazy" width="450" height="600" hidden></picture>
       <picture><source srcset="v2fish62.webp" type="image/webp"><img src="v2fish62.jpg" alt="Colorado trout 61" loading="lazy" width="600" height="800" hidden></picture>
       <picture><source srcset="v2fish63.webp" type="image/webp"><img src="v2fish63.jpg" alt="Colorado trout 62" loading="lazy" width="600" height="800" hidden></picture>
@@ -1871,11 +1869,8 @@
       <picture><source srcset="v2fish74.webp" type="image/webp"><img src="v2fish74.jpg" alt="Colorado trout 73" loading="lazy" width="600" height="791" hidden></picture>
       <picture><source srcset="v2fish75.webp" type="image/webp"><img src="v2fish75.jpg" alt="Colorado trout 74" loading="lazy" width="450" height="600" hidden></picture>
       <picture><source srcset="v2fish76.webp" type="image/webp"><img src="v2fish76.jpg" alt="Colorado trout 75" loading="lazy" width="450" height="600" hidden></picture>
-      <picture><source srcset="v2fish77.webp" type="image/webp"><img src="v2fish77.jpg" alt="Colorado trout 76" loading="lazy" width="450" height="600" hidden></picture>
-      <picture><source srcset="v2fish78.webp" type="image/webp"><img src="v2fish78.jpg" alt="Colorado trout 77" loading="lazy" width="450" height="600" hidden></picture>
       <picture><source srcset="v2fish79.webp" type="image/webp"><img src="v2fish79.jpg" alt="Colorado trout 78" loading="lazy" width="450" height="600" hidden></picture>
       <picture><source srcset="v2fish80.webp" type="image/webp"><img src="v2fish80.jpg" alt="Colorado trout 79" loading="lazy" width="450" height="600" hidden></picture>
-      <picture><source srcset="v2fish81.webp" type="image/webp"><img src="v2fish81.jpg" alt="Colorado trout 80" loading="lazy" width="600" height="1066" hidden></picture>
       <picture><source srcset="v2fish82.webp" type="image/webp"><img src="v2fish82.jpg" alt="Colorado trout 81" loading="lazy" width="450" height="600" hidden></picture>
       <picture><source srcset="v2fish83.webp" type="image/webp"><img src="v2fish83.jpg" alt="Colorado trout 82" loading="lazy" width="600" height="800" hidden></picture>
       <picture><source srcset="v2fish84.webp" type="image/webp"><img src="v2fish84.jpg" alt="Colorado trout 83" loading="lazy" width="600" height="800" hidden></picture>
@@ -1913,7 +1908,7 @@
          user clicks Show more. JS reveals batches of 30 per click, removes the
          button when no more remain. -->
     <div style="text-align:center;margin:24px auto 0;max-width:640px;">
-      <button id="galleryShowMoreBtn" class="gallery-show-more" style="display:inline-block;background:transparent;color:var(--red);border:1px solid var(--red);font-family:'Barlow Condensed',sans-serif;font-size:0.95rem;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;padding:14px 32px;cursor:pointer;border-radius:4px;transition:background 0.2s,color 0.2s;">Show more (81 remaining)</button>
+      <button id="galleryShowMoreBtn" class="gallery-show-more" style="display:inline-block;background:transparent;color:var(--red);border:1px solid var(--red);font-family:'Barlow Condensed',sans-serif;font-size:0.95rem;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;padding:14px 32px;cursor:pointer;border-radius:4px;transition:background 0.2s,color 0.2s;">Show more</button>
     </div>
     <script>
       (function(){
@@ -1921,6 +1916,10 @@
         var btn = document.getElementById('galleryShowMoreBtn');
         var gallery = document.querySelector('.fish-gallery');
         if (!btn || !gallery) return;
+        // Set initial count from actual DOM — robust to img additions/removals.
+        var initialHidden = gallery.querySelectorAll('img[hidden]').length;
+        if (initialHidden === 0) { btn.parentElement.remove(); return; }
+        btn.textContent = 'Show more (' + initialHidden + ' remaining)';
         btn.addEventListener('mouseenter', function(){ btn.style.background = 'var(--red)'; btn.style.color = '#fff'; });
         btn.addEventListener('mouseleave', function(){ btn.style.background = 'transparent'; btn.style.color = 'var(--red)'; });
         btn.addEventListener('click', function(){
