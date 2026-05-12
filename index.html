@@ -1292,10 +1292,7 @@
   .checkout-step.complete .step-num { background: var(--gold); color: #000; }
   .checkout-step .step-label { font-family: 'Barlow Condensed', sans-serif; font-size: 0.85rem; letter-spacing: 0.06em; text-transform: uppercase; color: #aaa; white-space: nowrap; }
   .step-divider { flex: 1; height: 2px; background: #2a2a2a; max-width: 60px; }
-  .pay-another-way-toggle { display: block; width: calc(100% - 32px); margin: 14px 16px 0; background: none; border: 1px dashed #333; border-radius: 4px; color: #aaa; font-family: 'Barlow Condensed', sans-serif; font-size: 0.92rem; letter-spacing: 0.08em; text-transform: uppercase; padding: 14px; cursor: pointer; text-align: center; transition: color 0.2s, border-color 0.2s; }
-  .pay-another-way-toggle:hover { color: #fff; border-color: #555; }
   .pay-another-way-panel { display: none; }
-  .pay-another-way-panel.open { display: block; }
   .checkout-back-link { display: block; width: 100%; background: none; border: none; color: #888; font-family: 'Barlow Condensed', sans-serif; font-size: 0.85rem; letter-spacing: 0.06em; padding: 16px; cursor: pointer; text-align: center; margin-top: 8px; }
   .checkout-back-link:hover { color: #fff; }
 
@@ -1534,18 +1531,6 @@
   }
   .pay-btn:last-child { margin-bottom: 0; }
   .pay-btn:active { transform: scale(0.97); }
-  .venmo-btn {
-    background: #008CFF;
-    border-color: #3aaeff;
-    box-shadow: 0 4px 18px rgba(0,140,255,0.35);
-  }
-  .venmo-btn:hover { box-shadow: 0 6px 24px rgba(0,140,255,0.55); }
-  .cashapp-btn {
-    background: #00C244;
-    border-color: #00e050;
-    box-shadow: 0 4px 18px rgba(0,194,68,0.35);
-  }
-  .cashapp-btn:hover { box-shadow: 0 6px 24px rgba(0,194,68,0.55); }
   .square-card-btn {
     background: #c0392b;
     border-color: #ff6b5b;
@@ -2879,7 +2864,6 @@
 <div id="checkout-page">
   <div class="checkout-hero" id="checkoutHero">
     <h2 id="checkoutHeroTitle">Complete Your Order</h2>
-    <p id="checkoutHeroSub">Pay via Venmo or Cash App · Include your order number</p>
   </div>
 
   <!-- 2-step indicator (pickup-only — only path that reaches checkout-page) -->
@@ -3016,37 +3000,12 @@
       </div>
     </div>
 
-    <!-- Pay another way: secondary collapsible holding Venmo/Cash App + legacy Confirm Order flow -->
-    <button type="button" class="pay-another-way-toggle" id="payAnotherWayToggle" onclick="togglePayAnotherWay()">▼ Pay another way</button>
-
+    <!-- Legacy Confirm Order panel — orphaned after 2026-05-11 Venmo/Cash App removal.
+         Panel stays hidden (.pay-another-way-panel display:none) since the toggle button
+         that opened it has been deleted. placeOrder() function and related JS still exist
+         but are unreachable. Queue a future cleanup task to remove the orphaned legacy
+         multi-step pickup flow entirely (#33 PATH A refactor is the natural place). -->
     <div class="pay-another-way-panel" id="payAnotherWayPanel">
-      <div class="note-box">
-        <strong>⚠️ REQUIRED:</strong> You MUST include your order number in the Venmo or Cash App payment note. This is how we match your payment to your order and get your flies out fast.
-      </div>
-
-      <div class="checkout-section">
-        <div class="checkout-section-title">💸 Or Pay by App</div>
-        <div class="checkout-section-body">
-          <p style="font-size:0.82rem;color:#aaa;margin:0 0 14px 0;line-height:1.5;">Tap a button below to open the app. <strong style="color:#fff;">Include your order number in the notes!</strong></p>
-          <a href="https://account.venmo.com/u/tfrank112" target="_blank" class="pay-btn venmo-btn">
-            <span class="pay-btn-icon">💙</span>
-            <span class="pay-btn-content">
-              <span class="pay-btn-label">Pay with Venmo</span>
-              <span class="pay-btn-handle">@tfrank112</span>
-            </span>
-            <span class="pay-btn-arrow">→</span>
-          </a>
-          <a href="https://cash.app/$tfrank112" target="_blank" class="pay-btn cashapp-btn">
-            <span class="pay-btn-icon">💚</span>
-            <span class="pay-btn-content">
-              <span class="pay-btn-label">Pay with Cash App</span>
-              <span class="pay-btn-handle">$tfrank112</span>
-            </span>
-            <span class="pay-btn-arrow">→</span>
-          </a>
-        </div>
-      </div>
-
       <div class="note-box green" id="whatHappensNext">
         <strong>✓ What happens next:</strong> Once your payment is received and matched to your order number, your flies will be hand-tied and shipped with tracking. You'll receive a confirmation message when they're on the way.
       </div>
@@ -4487,13 +4446,6 @@ function backToStep1() {
   window.scrollTo(0, 0);
 }
 
-function togglePayAnotherWay() {
-  const panel = document.getElementById('payAnotherWayPanel');
-  const toggle = document.getElementById('payAnotherWayToggle');
-  const isOpen = panel.classList.toggle('open');
-  toggle.textContent = isOpen ? '▲ Hide other payment options' : '▼ Pay another way';
-}
-
 // Pickup card path: capture customer data (Klaviyo + Apps Script row with
 // payment_method='square_pending') BEFORE redirecting to Square. Klaviyo and
 // Apps Script POSTs are fire-and-forget so neither blocks the Square redirect.
@@ -4913,8 +4865,6 @@ function placeOrder() {
       msg.style.color = '#2ecc71';
       document.getElementById('checkoutHero').classList.add('confirmed');
       document.getElementById('checkoutHeroTitle').textContent = '✓ Order Confirmed!';
-      document.getElementById('checkoutHeroSub').textContent = 'Now send payment with your order number in the notes';
-      document.getElementById('checkoutHeroSub').style.color = '#5dfc8a';
       window.scrollTo(0, 0);
 
       gtag('event', 'purchase', { transaction_id: currentOrderNum, value: currentOrderTotal, currency: 'USD', shipping: currentOrderShipping });
@@ -4960,8 +4910,6 @@ function placeOrder() {
       msg.style.color = '#2ecc71';
       document.getElementById('checkoutHero').classList.add('confirmed');
       document.getElementById('checkoutHeroTitle').textContent = '✓ Order Confirmed!';
-      document.getElementById('checkoutHeroSub').textContent = 'Now send payment with your order number in the notes';
-      document.getElementById('checkoutHeroSub').style.color = '#5dfc8a';
       window.scrollTo(0, 0);
     });
 }
@@ -4971,8 +4919,6 @@ function goBackAndShop() {
   document.getElementById("shop-page").style.display = "block";
   document.getElementById('checkoutHero').classList.remove('confirmed');
   document.getElementById('checkoutHeroTitle').textContent = 'Complete Your Order';
-  document.getElementById('checkoutHeroSub').textContent = 'Pay via Venmo or Cash App · Include your order number';
-  document.getElementById('checkoutHeroSub').style.color = '';
   const btn = document.getElementById('placeOrderBtn');
   btn.disabled = false;
   btn.textContent = '✓ Confirm Order & Send Details';
@@ -4994,8 +4940,6 @@ function goBack() {
   // Reset confirmed state
   document.getElementById('checkoutHero').classList.remove('confirmed');
   document.getElementById('checkoutHeroTitle').textContent = 'Complete Your Order';
-  document.getElementById('checkoutHeroSub').textContent = 'Pay via Venmo or Cash App · Include your order number';
-  document.getElementById('checkoutHeroSub').style.color = '';
   const btn = document.getElementById('placeOrderBtn');
   btn.disabled = false;
   btn.textContent = '✓ Confirm Order & Send Details';

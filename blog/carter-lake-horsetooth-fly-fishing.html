@@ -1102,18 +1102,6 @@
   }
   .pay-btn:last-child { margin-bottom: 0; }
   .pay-btn:active { transform: scale(0.97); }
-  .venmo-btn {
-    background: #008CFF;
-    border-color: #3aaeff;
-    box-shadow: 0 4px 18px rgba(0,140,255,0.35);
-  }
-  .venmo-btn:hover { box-shadow: 0 6px 24px rgba(0,140,255,0.55); }
-  .cashapp-btn {
-    background: #00C244;
-    border-color: #00e050;
-    box-shadow: 0 4px 18px rgba(0,194,68,0.35);
-  }
-  .cashapp-btn:hover { box-shadow: 0 6px 24px rgba(0,194,68,0.55); }
   .pay-btn-icon { font-size: 1.8rem; flex-shrink: 0; }
   .pay-btn-content { flex: 1; display: flex; flex-direction: column; }
   .pay-btn-label {
@@ -2536,8 +2524,6 @@ function placeOrder() {
       msg.style.color = '#2ecc71';
       document.getElementById('checkoutHero').classList.add('confirmed');
       document.getElementById('checkoutHeroTitle').textContent = '✓ Order Confirmed!';
-      document.getElementById('checkoutHeroSub').textContent = 'Now send payment with your order number in the notes';
-      document.getElementById('checkoutHeroSub').style.color = '#5dfc8a';
       window.scrollTo(0, 0);
     })
     .catch(() => {
@@ -2548,8 +2534,6 @@ function placeOrder() {
       msg.style.color = '#2ecc71';
       document.getElementById('checkoutHero').classList.add('confirmed');
       document.getElementById('checkoutHeroTitle').textContent = '✓ Order Confirmed!';
-      document.getElementById('checkoutHeroSub').textContent = 'Now send payment with your order number in the notes';
-      document.getElementById('checkoutHeroSub').style.color = '#5dfc8a';
       window.scrollTo(0, 0);
     });
 }
@@ -2559,8 +2543,6 @@ function goBackAndShop() {
   document.getElementById("shop-page").style.display = "block";
   document.getElementById('checkoutHero').classList.remove('confirmed');
   document.getElementById('checkoutHeroTitle').textContent = 'Complete Your Order';
-  document.getElementById('checkoutHeroSub').textContent = 'Pay via Venmo or Cash App · Include your order number';
-  document.getElementById('checkoutHeroSub').style.color = '';
   const btn = document.getElementById('placeOrderBtn');
   btn.disabled = false;
   btn.textContent = '✓ Confirm Order & Send Details';
@@ -2577,8 +2559,6 @@ function goBack() {
   // Reset confirmed state
   document.getElementById('checkoutHero').classList.remove('confirmed');
   document.getElementById('checkoutHeroTitle').textContent = 'Complete Your Order';
-  document.getElementById('checkoutHeroSub').textContent = 'Pay via Venmo or Cash App · Include your order number';
-  document.getElementById('checkoutHeroSub').style.color = '';
   const btn = document.getElementById('placeOrderBtn');
   btn.disabled = false;
   btn.textContent = '✓ Confirm Order & Send Details';
