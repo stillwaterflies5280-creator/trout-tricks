@@ -16,7 +16,7 @@ Persistent source of truth for active, blocked, and closed work. All adds/closes
 - **#35** Verify GBP listing reflects tier positioning (Manufacturer + remove charters / clothing / fishing store) — may be blocked until video verification; pending backend check
 - **#38** Free sticker with fly order — gift-with-purchase mechanic
 - **#40** Stillwater money-keyword SEO sprint — keyword domination on Antero / Spinney / Eleven Mile / Delaney+Lake John posts
-  - **Wave 1** (surgical fixes): leech links on Delaney/Lake John; title + H1 rewrites on Spinney/Delaney/Eleven Mile; Eleven Mile dual-spelling fix
+  - ~~**Wave 1** (surgical fixes): leech links on Delaney/Lake John; title + H1 rewrites on Spinney/Delaney/Eleven Mile; Eleven Mile dual-spelling fix~~ ✓ *shipped 2026-05-11 (b86b614)*
   - **Wave 2** (structural depth): expand thin posts to 1,200–1,500w; add per-fly anchor IDs in `index.html` + deep-link blog product anchors; reciprocal lake-to-lake internal linking
   - **Wave 3** (schema + media): add FAQPage + BreadcrumbList JSON-LD to all 4 posts; add inline pattern images with lake-specific alt text
 
