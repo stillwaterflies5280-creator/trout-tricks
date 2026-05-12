@@ -15,7 +15,6 @@ Persistent source of truth for active, blocked, and closed work. All adds/closes
 - **#33** PATH A — extract `flies[]` + cart functions to shared `/js/catalog.js`
 - **#35** Verify GBP listing reflects tier positioning (Manufacturer + remove charters / clothing / fishing store) — may be blocked until video verification; pending backend check
 - **#38** Free sticker with fly order — gift-with-purchase mechanic
-- **#44** Fish gallery WebP variants — convert v2fish*.jpg to WebP (50–70% smaller than JPEG at equivalent quality), serve via `<picture>` with `<source type="image/webp">` and JPG fallback. Largest refactor of the 3; do AFTER #42 + #43 ship. Tooling: `cwebp` (needs install) or online batch converter.
 - **#40** Stillwater money-keyword SEO sprint — keyword domination on Antero / Spinney / Eleven Mile / Delaney+Lake John posts
   - ~~**Wave 1** (surgical fixes): leech links on Delaney/Lake John; title + H1 rewrites on Spinney/Delaney/Eleven Mile; Eleven Mile dual-spelling fix~~ ✓ *shipped 2026-05-11 (b86b614)*
   - **Wave 2A** (deep anchors — mechanical, ~5 commits): add `id="fly-N"` to catalog render in `index.html`; add post-render hash-scroll fallback if needed; rewrite all `../index.html#catalog` anchors across 4 lake posts + balanced-leech post + chironomid-patterns post to deep-link per fly. Target ship: ~2026-05-16
@@ -36,6 +35,7 @@ Persistent source of truth for active, blocked, and closed work. All adds/closes
 
 ## Closed (running log)
 
+- **#44** Fish gallery WebP variants — converted 111 v2fish JPGs to WebP @ q=80 via cwebp; wrapped each `<img>` in `<picture>` with WebP source + JPG fallback. WebP-capable browsers (95%+ market) get ~5.7 MB total instead of 12 MB; legacy browsers fall back to JPG. Combined with #42 (resize) + #43 (pagination), initial gallery load is ~30 imgs × ~50 KB WebP avg = ~1.5 MB. Down from original 46 MB unpaginated. — *closed 2026-05-12*
 - **#43** Fish gallery pagination — initial 30 imgs render; rest carry `hidden` attr until "Show more" button reveals next batch of 30. Combined with lazy-loading, initial gallery page-weight drops to just the visible 30 imgs (~3 MB) instead of all 111 (~12 MB) — *closed 2026-05-12*
 - **#42** Fish gallery — resize all 111 v2fish JPGs from source res (1200–1600px) to 600px wide via sips; updated width/height attrs in fish.html accordingly — *closed 2026-05-12* (46 MB → 12 MB total, ~4× lighter)
 - **#41** Sticker campaign Apps Script field-name fix — *closed 2026-05-11* (free-sticker.html: `address_line_1` / `address_line_2` → `address_line1` / `address_line2` to match what `handleStickerCampaign()` reads. Round 1 lost addresses due to underscore-before-digit mismatch. **Manual TODO for Thomas:** retype "Address Line 1" header into column F of the Sticker Campaign tab in the Master sheet — header was missing on the sheet side, separate from the payload bug.)
