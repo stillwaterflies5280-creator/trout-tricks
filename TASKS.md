@@ -21,6 +21,11 @@ Persistent source of truth for active, blocked, and closed work. All adds/closes
   - **Wave 2B** (content expansion — skeleton + tactical fill, 1 commit per post): Antero (~458w → ~1,300w) + Spinney (~593w → ~1,400w) + Delaney/Lake John (~450w → ~1,300w). Eleven Mile already 1,339w, no expansion. Target ship: by 2026-05-25 to stay inside Wave 1 GSC attribution window
   - **Wave 2C** (cross-linking + comparison H2 — 1 commit): inline lake-to-lake links across all 4 posts with money-keyword anchors; `Related Stillwaters` section per post; new `Eleven Mile vs Spinney vs Antero — Which to Pick` H2 in Eleven Mile post; link Antero news posts → Antero chironomid-patterns post; link balanced-leech blog post wherever leeches mentioned. Ship after 2B
   - **Wave 3** (schema + media): add FAQPage + BreadcrumbList JSON-LD to all 4 posts; add inline pattern images with lake-specific alt text
+- **#45** The Drop — Phase 1 landing + waitlist validation (Square Subscriptions path, premium tier above free Crew newsletter)
+  - `/the-drop.html` shipped 2026-05-12 with Klaviyo client-subscription wiring (list `SUpRkF`, custom_source `"The Drop Waitlist"`, profile property `drop_founding_interest`). Apps Script POST gated behind `ENABLE_DROP_APPSSCRIPT` flag in `the-drop.html` — flip to `true` after #47 ships.
+  - **GATE to #46:** 25+ waitlist signups. If 4 weeks pass without 25 (≈ 2026-06-09), rethink positioning/pricing rather than lowering the gate.
+  - **Drive traffic:** email blast to Crew list; FB group soft-posts (Colorado Stillwater Anglers / Front Range Fly Fishing / Colorado Fly Fishing) framed as "thinking about starting this, who'd join?" not a hard pitch; Round 2 sticker shipping email P.S.; short IG/TikTok clips with "join the waitlist" CTA.
+  - **Locked decisions (2026-05-12):** founding $20/mo cap 10 lifetime / standard $35/mo / member discount 20% (code `DROP`) / bi-weekly Wed 7:00–8:30 PM MT / member chat tentatively Facebook (was Discord) / video platform TBD (Zoom or Meet) / ethics framing = spawn TIMING + closures + conditions, NOT locations.
 
 ## Blocked
 
@@ -32,6 +37,14 @@ Persistent source of truth for active, blocked, and closed work. All adds/closes
 
 **Office visit required (McIntyre St, Golden CO):**
 - **#39** Verify GBP listing via Google video walkthrough — required before public listing goes live
+
+**Release when #45 hits 25+ waitlist signups:**
+- **#46** The Drop — Square Subscriptions setup + soft launch. Create founding ($20/mo, no end) + standard ($35/mo, no end) plans in Square Dashboard (test with $1/mo plan first). Generate checkout links. Replace waitlist form on `/the-drop.html` with two CTAs ("Claim founding spot — $20" / "Join standard — $35"); add manual spot counter ("X of 10 founding spots remaining"); disable founding CTA when 10 sold. Create Square discount code `DROP` 20% off, no expiry, members-only.
+- **#47** The Drop — Apps Script handler updates: branch on `submission_type === 'drop_waitlist'` → "Drop Waitlist" tab (cols: timestamp, email, name, source, founding_interest, notes); extend `writeToMasterCustomers` to accept `source = "The Drop Waitlist"` and `"The Drop"`; new "Drop Members" tab (cols: timestamp_joined, name, email, plan_type, square_subscription_id, status, zoom_added, discord_added, founding_lock_date, last_status_change, notes); handle Square webhook events `subscription.created` / `subscription.canceled` / `invoice.payment_failed` (email Thomas on each for manual Zoom/group invites). After deploy: flip `ENABLE_DROP_APPSSCRIPT = true` in `the-drop.html`.
+- **#48** The Drop — member onboarding workflow + chat platform setup. Chat platform: Facebook private group (current lean per 2026-05-12); fallback Discord. Video platform decision Zoom vs Meet. Recurring bi-weekly Wednesday 7:00 PM MT meeting with cloud recording → member-only Google Drive folder. Welcome email template (next call date, archive link, discount code `DROP`, group invite, expectations). Cancellation workflow (remove from recurring invite + group).
+
+**Klaviyo hosted-zone provisioning required:**
+- **#49** Klaviyo sender swap to `thomas@trouttricks.com` — blocked on Klaviyo provisioning `send.trouttricks.com` hosted zone. DNS diagnostic 2026-05-08: Namecheap delegates correctly to `ns1-ns4.klaviyo.com`; Klaviyo NS servers return REFUSED. Open Klaviyo support ticket. After auth verifies: set Klaviyo default sender → `thomas@trouttricks.com`, update Welcome flow sender, test From: header. Verify with `dig @ns1.klaviyo.com send.trouttricks.com SOA` returning NOERROR + SOA.
 
 ## Closed (running log)
 
