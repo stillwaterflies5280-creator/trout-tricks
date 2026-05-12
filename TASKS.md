@@ -17,7 +17,9 @@ Persistent source of truth for active, blocked, and closed work. All adds/closes
 - **#38** Free sticker with fly order — gift-with-purchase mechanic
 - **#40** Stillwater money-keyword SEO sprint — keyword domination on Antero / Spinney / Eleven Mile / Delaney+Lake John posts
   - ~~**Wave 1** (surgical fixes): leech links on Delaney/Lake John; title + H1 rewrites on Spinney/Delaney/Eleven Mile; Eleven Mile dual-spelling fix~~ ✓ *shipped 2026-05-11 (b86b614)*
-  - **Wave 2** (structural depth): expand thin posts to 1,200–1,500w; add per-fly anchor IDs in `index.html` + deep-link blog product anchors; reciprocal lake-to-lake internal linking
+  - **Wave 2A** (deep anchors — mechanical, ~5 commits): add `id="fly-N"` to catalog render in `index.html`; add post-render hash-scroll fallback if needed; rewrite all `../index.html#catalog` anchors across 4 lake posts + balanced-leech post + chironomid-patterns post to deep-link per fly. Target ship: ~2026-05-16
+  - **Wave 2B** (content expansion — skeleton + tactical fill, 1 commit per post): Antero (~458w → ~1,300w) + Spinney (~593w → ~1,400w) + Delaney/Lake John (~450w → ~1,300w). Eleven Mile already 1,339w, no expansion. Target ship: by 2026-05-25 to stay inside Wave 1 GSC attribution window
+  - **Wave 2C** (cross-linking + comparison H2 — 1 commit): inline lake-to-lake links across all 4 posts with money-keyword anchors; `Related Stillwaters` section per post; new `Eleven Mile vs Spinney vs Antero — Which to Pick` H2 in Eleven Mile post; link Antero news posts → Antero chironomid-patterns post; link balanced-leech blog post wherever leeches mentioned. Ship after 2B
   - **Wave 3** (schema + media): add FAQPage + BreadcrumbList JSON-LD to all 4 posts; add inline pattern images with lake-specific alt text
 
 ## Blocked
