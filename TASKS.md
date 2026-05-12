@@ -35,4 +35,5 @@ Persistent source of truth for active, blocked, and closed work. All adds/closes
 
 ## Closed (running log)
 
+- **#41** Sticker campaign Apps Script field-name fix — *closed 2026-05-11* (free-sticker.html: `address_line_1` / `address_line_2` → `address_line1` / `address_line2` to match what `handleStickerCampaign()` reads. Round 1 lost addresses due to underscore-before-digit mismatch. **Manual TODO for Thomas:** retype "Address Line 1" header into column F of the Sticker Campaign tab in the Master sheet — header was missing on the sheet side, separate from the payload bug.)
 - **#12** GBP photos + video upload — *closed 2026-05-11* (photos uploaded; more added incrementally as available)
