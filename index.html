@@ -927,6 +927,86 @@
     border-bottom: 1px solid #E74C3C;
   }
 
+  /* Per-fly share button (top-left of .fly-img) + page-level share modal */
+  .fly-share-btn {
+    position: absolute; top: 8px; left: 8px;
+    background: rgba(0,0,0,0.55);
+    border: 1px solid rgba(255,255,255,0.25);
+    color: #fff;
+    width: 32px; height: 32px;
+    border-radius: 50%;
+    cursor: pointer;
+    z-index: 5;
+    font-size: 0.95rem;
+    line-height: 1;
+    display: flex; align-items: center; justify-content: center;
+    transition: background 0.2s, transform 0.2s;
+    padding: 0;
+  }
+  .fly-share-btn:hover { background: var(--red); transform: scale(1.08); }
+  .fly-card-highlight {
+    box-shadow: 0 0 30px var(--red), 0 0 12px var(--red);
+    transition: box-shadow 0.4s;
+  }
+  .share-modal {
+    display: none;
+    position: fixed; inset: 0;
+    background: rgba(0,0,0,0.82);
+    z-index: 2000;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+  }
+  .share-modal.open { display: flex; }
+  .share-modal-card {
+    background: #1a1a1a;
+    border: 1px solid #333;
+    border-radius: 8px;
+    padding: 24px;
+    max-width: 400px;
+    width: 100%;
+    box-shadow: 0 8px 40px rgba(0,0,0,0.9);
+    position: relative;
+  }
+  .share-modal-title {
+    font-family: 'Bebas Neue', Impact, sans-serif;
+    font-size: 1.3rem; letter-spacing: 0.1em;
+    color: #fff;
+    margin: 0 0 6px;
+    text-transform: uppercase;
+  }
+  .share-modal-name {
+    font-size: 0.9rem; color: var(--red);
+    margin: 0 0 18px;
+  }
+  .share-modal-close {
+    position: absolute; top: 10px; right: 10px;
+    background: transparent; border: none;
+    color: #888; font-size: 1.4rem;
+    cursor: pointer;
+    padding: 4px 8px;
+  }
+  .share-modal-close:hover { color: #fff; }
+  .share-modal-opts {
+    display: flex; flex-direction: column; gap: 8px;
+  }
+  .share-modal-opt {
+    background: transparent;
+    border: 1px solid #333;
+    color: #fff;
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 0.95rem; letter-spacing: 0.08em;
+    text-transform: uppercase;
+    padding: 10px 14px;
+    text-decoration: none;
+    text-align: left;
+    cursor: pointer;
+    border-radius: 4px;
+    display: block;
+  }
+  .share-modal-opt:hover { background: #222; }
+  .share-modal-opt.copied { background: var(--red); border-color: var(--red); }
+
   .fly-info { padding: 14px 16px 0; flex: 1; }
   .fly-name {
     font-family: 'Bebas Neue', sans-serif;
@@ -3623,6 +3703,92 @@ function addGuideChoiceToCart() {
   openCart();
 }
 
+// ---- SHARE INFRASTRUCTURE (fly cards) ----
+function slugifyFlyName(name) {
+  return name.toLowerCase()
+    .replace(/['']/g, '')
+    .replace(/[^a-z0-9]+/g, '-')
+    .replace(/^-+|-+$/g, '');
+}
+
+let _flyShareTarget = null;
+
+function openFlyShare(flyId, ev) {
+  if (ev) { ev.stopPropagation(); ev.preventDefault(); }
+  const fly = flies.find(f => f.id === flyId);
+  if (!fly) return;
+  const slug = slugifyFlyName(fly.name);
+  const url = location.origin + location.pathname + '#fly-' + slug;
+  const text = 'Check out ' + fly.name + ' — a Trout Tricks fly pattern.';
+  _flyShareTarget = { id: flyId, name: fly.name, slug, url, text };
+
+  if (navigator.share && /Mobi|Android|iPhone|iPad/i.test(navigator.userAgent)) {
+    navigator.share({ title: fly.name + ' — Trout Tricks', text, url }).catch(() => {});
+    return;
+  }
+
+  document.getElementById('shareModalName').textContent = fly.name;
+  document.getElementById('shareModalTwitter').href = 'https://twitter.com/intent/tweet?text=' + encodeURIComponent(text) + '&url=' + encodeURIComponent(url);
+  document.getElementById('shareModalFacebook').href = 'https://www.facebook.com/sharer/sharer.php?u=' + encodeURIComponent(url);
+  document.getElementById('shareModalPinterest').href = 'https://pinterest.com/pin/create/button/?url=' + encodeURIComponent(url) + '&description=' + encodeURIComponent(text);
+  document.getElementById('shareModalSms').href = 'sms:?&body=' + encodeURIComponent(text + ' ' + url);
+  document.getElementById('shareModal').classList.add('open');
+  document.body.style.overflow = 'hidden';
+}
+
+function closeShareModal(ev) {
+  if (ev && ev.target.closest && ev.target.closest('.share-modal-card')) return;
+  document.getElementById('shareModal').classList.remove('open');
+  document.body.style.overflow = '';
+}
+
+function shareFlyCopy() {
+  if (!_flyShareTarget) return;
+  const url = _flyShareTarget.url;
+  const btn = document.getElementById('shareModalCopy');
+  const done = () => {
+    const orig = btn.textContent;
+    btn.textContent = '✓ Copied!';
+    btn.classList.add('copied');
+    setTimeout(() => { btn.textContent = orig; btn.classList.remove('copied'); }, 1500);
+  };
+  if (navigator.clipboard && navigator.clipboard.writeText) {
+    navigator.clipboard.writeText(url).then(done).catch(() => {
+      const ta = document.createElement('textarea');
+      ta.value = url; document.body.appendChild(ta); ta.select();
+      try { document.execCommand('copy'); done(); } catch(e) {}
+      document.body.removeChild(ta);
+    });
+  } else {
+    const ta = document.createElement('textarea');
+    ta.value = url; document.body.appendChild(ta); ta.select();
+    try { document.execCommand('copy'); done(); } catch(e) {}
+    document.body.removeChild(ta);
+  }
+}
+
+document.addEventListener('keydown', e => {
+  if (e.key === 'Escape') {
+    const m = document.getElementById('shareModal');
+    if (m && m.classList.contains('open')) closeShareModal();
+  }
+});
+
+function scrollToFlyFromHash() {
+  const m = location.hash.match(/^#fly-([a-z0-9-]+)$/);
+  if (!m) return;
+  const slug = m[1];
+  requestAnimationFrame(() => {
+    requestAnimationFrame(() => {
+      const target = document.getElementById('fly-' + slug);
+      if (!target) return;
+      target.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      target.classList.add('fly-card-highlight');
+      setTimeout(() => target.classList.remove('fly-card-highlight'), 3500);
+    });
+  });
+}
+
 function buildCatalog() {
   const catalog = document.getElementById("catalog");
   const merchCatalog = document.getElementById("merchCatalog");
@@ -3678,8 +3844,11 @@ function buildCatalog() {
     // 240×240 for sticker cards (.fly-img.sticker-img height:240), 92×92
     // for bundle thumbnail cells.
     const imgDim = isSticker ? 240 : 280;
+    const flySlug = slugifyFlyName(fly.name);
+    const shareBtn = `<button class="fly-share-btn" onclick="event.stopPropagation();openFlyShare(${fly.id},event)" aria-label="Share ${fly.name.replace(/"/g, '&quot;')}" title="Share">📤</button>`;
     const imgBlock = fly.bundle
       ? `<div class="fly-img sticker-bundle-img">
+           ${shareBtn}
            ${fly.bundle_includes.map(function(childId) {
              var child = flies.find(function(f) { return f.id === childId; });
              return child ? `<div class="bundle-thumb"><img src="${FLY_IMAGES[child.img]}" alt="${child.name}" loading="lazy" width="92" height="92"></div>` : '';
@@ -3688,6 +3857,7 @@ function buildCatalog() {
          </div>`
       : fly.gallery
       ? `<div class="fly-img fly-gallery-wrap${isSticker ? ' sticker-img' : ''}" id="gallery-wrap-${fly.id}">
+           ${shareBtn}
            <img src="${FLY_IMAGES[fly.gallery[0]]}" alt="${fly.name}" loading="lazy" width="${imgDim}" height="${imgDim}" id="gallery-img-${fly.id}" onclick="openGalleryLightbox(${fly.id})">
            <button class="gallery-nav prev" onclick="cycleGallery(${fly.id},-1)">&#8249;</button>
            <button class="gallery-nav next" onclick="cycleGallery(${fly.id},1)">&#8250;</button>
@@ -3697,12 +3867,13 @@ function buildCatalog() {
            ${badge}
          </div>`
       : `<div class="fly-img${isSticker ? ' sticker-img' : ''}" onclick="openLightbox('${fly.img}','${fly.name.replace(/'/g, "\\'")}')">
+           ${shareBtn}
            <img src="${FLY_IMAGES[fly.img]}" alt="${fly.name}" loading="lazy" width="${imgDim}" height="${imgDim}" style="${fly.id===9?'transform:rotate(90deg) scale(1.4);':fly.id===6?'object-fit:cover;object-position:top;':fly.id===5?'object-fit:cover;object-position:right;':''}">
            ${badge}
          </div>`;
 
     target.innerHTML += `
-      <div class="fly-card" data-search="${(fly.name + ' ' + fly.desc).toLowerCase().replace(/"/g, '&quot;')}" data-fly-name="${fly.name.replace(/"/g, '&quot;')}" data-fly-price="${fly.price}">
+      <div class="fly-card" id="fly-${flySlug}" data-fly-slug="${flySlug}" data-search="${(fly.name + ' ' + fly.desc).toLowerCase().replace(/"/g, '&quot;')}" data-fly-name="${fly.name.replace(/"/g, '&quot;')}" data-fly-price="${fly.price}">
         ${ribbon}
         ${imgBlock}
         <div class="fly-info">
@@ -4957,6 +5128,10 @@ buildCatalog();
 buildMosaic();
 loadCart();
 
+// Deep-link to a specific fly via #fly-{slug} after the catalog renders
+scrollToFlyFromHash();
+window.addEventListener('hashchange', scrollToFlyFromHash);
+
 // Fire view_item once per fly card when it scrolls into view
 (function observeFlyCards() {
   if (!('IntersectionObserver' in window)) return;
@@ -5067,6 +5242,22 @@ window.addEventListener('DOMContentLoaded', function(){
   }
 });
 </script>
+
+<!-- SHARE MODAL (per-fly) -->
+<div class="share-modal" id="shareModal" onclick="closeShareModal(event)">
+  <div class="share-modal-card" onclick="event.stopPropagation()">
+    <button class="share-modal-close" onclick="closeShareModal()" aria-label="Close">✕</button>
+    <h3 class="share-modal-title">Share This Fly</h3>
+    <div class="share-modal-name" id="shareModalName">—</div>
+    <div class="share-modal-opts">
+      <button class="share-modal-opt" id="shareModalCopy" type="button" onclick="shareFlyCopy()">📋 Copy Link</button>
+      <a class="share-modal-opt" id="shareModalTwitter" href="#" target="_blank" rel="noopener">𝕏 Share to X</a>
+      <a class="share-modal-opt" id="shareModalFacebook" href="#" target="_blank" rel="noopener">📘 Share to Facebook</a>
+      <a class="share-modal-opt" id="shareModalPinterest" href="#" target="_blank" rel="noopener">📌 Pin to Pinterest</a>
+      <a class="share-modal-opt" id="shareModalSms" href="#">💬 Send via SMS</a>
+    </div>
+  </div>
+</div>
 
 </body>
 </html>

@@ -570,6 +570,55 @@
     font-size: 1.2rem; letter-spacing: 0.1em;
     color: #fff; pointer-events: none;
   }
+  .lightbox-share-btn {
+    position: absolute; top: 16px; right: 70px;
+    background: rgba(255,255,255,0.1);
+    border: 1px solid rgba(255,255,255,0.35);
+    color: #fff;
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 0.85rem; font-weight: 700; letter-spacing: 0.12em;
+    text-transform: uppercase;
+    padding: 8px 14px;
+    border-radius: 4px;
+    cursor: pointer;
+    z-index: 1001;
+  }
+  .lightbox-share-btn:hover { background: rgba(255,255,255,0.2); }
+  .share-popover {
+    position: absolute; top: 64px; right: 16px;
+    background: #1a1a1a;
+    border: 1px solid #333;
+    border-radius: 6px;
+    padding: 10px;
+    display: none;
+    flex-direction: column;
+    gap: 6px;
+    z-index: 1002;
+    min-width: 200px;
+    box-shadow: 0 4px 24px rgba(0,0,0,0.7);
+  }
+  .share-popover.open { display: flex; }
+  .share-opt {
+    background: transparent;
+    border: 1px solid #333;
+    color: #fff;
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 0.9rem; letter-spacing: 0.08em;
+    text-transform: uppercase;
+    padding: 8px 12px;
+    text-decoration: none;
+    text-align: left;
+    cursor: pointer;
+    border-radius: 4px;
+    display: block;
+  }
+  .share-opt:hover { background: #222; }
+  .share-opt.copied { background: var(--red); color: #fff; border-color: var(--red); }
+  @media (max-width: 480px) {
+    .lightbox-share-btn { right: 60px; padding: 6px 10px; font-size: 0.78rem; }
+    .lightbox-close { width: 36px; height: 36px; font-size: 1.2rem; }
+    .share-popover { right: 12px; left: 12px; min-width: 0; }
+  }
 
   .fly-badge {
     position: absolute;
@@ -2007,7 +2056,15 @@
 
 <!-- LIGHTBOX -->
 <div class="lightbox" id="lightbox" onclick="closeLightbox()">
-  <button class="lightbox-close" onclick="closeLightbox()">✕</button>
+  <button class="lightbox-close" onclick="event.stopPropagation();closeLightbox()" aria-label="Close">✕</button>
+  <button class="lightbox-share-btn" id="lightboxShareBtn" onclick="event.stopPropagation();openSharePopover()">📤 Share</button>
+  <div class="share-popover" id="sharePopover" onclick="event.stopPropagation()">
+    <button class="share-opt" id="shareCopyBtn" onclick="copyShareLink()" type="button">📋 Copy Link</button>
+    <a class="share-opt" id="shareTwitter" href="#" target="_blank" rel="noopener">𝕏 Share to X</a>
+    <a class="share-opt" id="shareFacebook" href="#" target="_blank" rel="noopener">📘 Share to Facebook</a>
+    <a class="share-opt" id="sharePinterest" href="#" target="_blank" rel="noopener">📌 Pin to Pinterest</a>
+    <a class="share-opt" id="shareSms" href="#">💬 Send via SMS</a>
+  </div>
   <img id="lightboxImg" src="" alt="">
   <div class="lightbox-name" id="lightboxName"></div>
 </div>
@@ -2367,6 +2424,8 @@ function carouselRender(id) {
 function openCarouselLightbox(carouselId, index) {
   const c = carousels[carouselId];
   if (!c) return;
+  // Default: hide share button. The fish-gallery wrapper sets a share target right after this call.
+  if (typeof setShareTarget === 'function') setShareTarget(null);
   const lb = document.getElementById('lightbox');
   const img = document.getElementById('lightboxImg');
   const nm = document.getElementById('lightboxName');
@@ -2837,6 +2896,7 @@ function showToast(msg) {
 }
 
 function openLightbox(imgKey, name) {
+  if (typeof setShareTarget === 'function') setShareTarget(null);
   const lb = document.getElementById('lightbox');
   const img = document.getElementById('lightboxImg');
   const nm = document.getElementById('lightboxName');
@@ -2850,11 +2910,81 @@ function openLightbox(imgKey, name) {
 
 function closeLightbox() {
   document.getElementById('lightbox').classList.remove('open');
+  const pop = document.getElementById('sharePopover');
+  if (pop) pop.classList.remove('open');
   document.body.style.overflow = '';
+  // Clear #fish-N hash if present (without scroll jump)
+  if (location.hash && /^#fish-\d+$/.test(location.hash)) {
+    history.replaceState(null, '', location.pathname + location.search);
+  }
 }
 
 // Close lightbox on Escape key
 document.addEventListener('keydown', e => { if(e.key === 'Escape') closeLightbox(); });
+
+// ---- SHARE INFRASTRUCTURE (used by fish lightbox) ----
+let _currentShare = null;
+
+function setShareTarget(target) {
+  _currentShare = target;
+  const btn = document.getElementById('lightboxShareBtn');
+  if (btn) btn.style.display = target ? '' : 'none';
+}
+
+function openSharePopover() {
+  if (!_currentShare) return;
+  // Native share on mobile when available
+  if (navigator.share && /Mobi|Android|iPhone|iPad/i.test(navigator.userAgent)) {
+    navigator.share({
+      title: _currentShare.title,
+      text: _currentShare.text,
+      url: _currentShare.url
+    }).catch(() => {});
+    return;
+  }
+  const url = _currentShare.url;
+  const text = _currentShare.text;
+  const media = _currentShare.media || '';
+  document.getElementById('shareTwitter').href = 'https://twitter.com/intent/tweet?text=' + encodeURIComponent(text) + '&url=' + encodeURIComponent(url);
+  document.getElementById('shareFacebook').href = 'https://www.facebook.com/sharer/sharer.php?u=' + encodeURIComponent(url);
+  document.getElementById('sharePinterest').href = 'https://pinterest.com/pin/create/button/?url=' + encodeURIComponent(url) + '&media=' + encodeURIComponent(media) + '&description=' + encodeURIComponent(text);
+  document.getElementById('shareSms').href = 'sms:?&body=' + encodeURIComponent(text + ' ' + url);
+  document.getElementById('sharePopover').classList.add('open');
+}
+
+function copyShareLink() {
+  if (!_currentShare) return;
+  const url = _currentShare.url;
+  const btn = document.getElementById('shareCopyBtn');
+  const done = () => {
+    const orig = btn.textContent;
+    btn.textContent = '✓ Copied!';
+    btn.classList.add('copied');
+    setTimeout(() => { btn.textContent = orig; btn.classList.remove('copied'); }, 1500);
+  };
+  if (navigator.clipboard && navigator.clipboard.writeText) {
+    navigator.clipboard.writeText(url).then(done).catch(() => {
+      // Fallback: ancient textarea trick
+      const ta = document.createElement('textarea');
+      ta.value = url; document.body.appendChild(ta); ta.select();
+      try { document.execCommand('copy'); done(); } catch(e) {}
+      document.body.removeChild(ta);
+    });
+  } else {
+    const ta = document.createElement('textarea');
+    ta.value = url; document.body.appendChild(ta); ta.select();
+    try { document.execCommand('copy'); done(); } catch(e) {}
+    document.body.removeChild(ta);
+  }
+}
+
+// Close share popover when clicking outside it (while lightbox is open)
+document.addEventListener('click', (e) => {
+  const pop = document.getElementById('sharePopover');
+  if (pop && pop.classList.contains('open') && !e.target.closest('#sharePopover') && !e.target.closest('#lightboxShareBtn')) {
+    pop.classList.remove('open');
+  }
+});
 
 function saveCart() {
   try {
@@ -2901,10 +3031,49 @@ loadCart();
   const keys = imgs.map((_, i) => 'g' + i);
   const images = Object.fromEntries(keys.map((k, i) => [k, imgs[i].getAttribute('src')]));
   carousels['fishMasonryLb'] = { index: 0, total: keys.length, images, keys };
+
+  function openFishAt(idx, opts) {
+    opts = opts || {};
+    if (idx < 0 || idx >= imgs.length) return;
+    // Reveal the img if it's still in the hidden pagination batch
+    if (imgs[idx].hasAttribute('hidden')) imgs[idx].removeAttribute('hidden');
+    openCarouselLightbox('fishMasonryLb', idx);
+    const n = idx + 1;
+    const absUrl = location.origin + location.pathname + '#fish-' + n;
+    const absMedia = new URL(imgs[idx].getAttribute('src'), location.href).href;
+    setShareTarget({
+      title: 'Trout Tricks — Trout #' + n,
+      text: 'Trophy trout from Colorado stillwater — caught on Trout Tricks flies.',
+      url: absUrl,
+      media: absMedia
+    });
+    if (opts.updateHash !== false) {
+      history.replaceState(null, '', '#fish-' + n);
+    }
+  }
+
   gallery.addEventListener('click', (e) => {
     if (e.target.tagName !== 'IMG') return;
     const idx = imgs.indexOf(e.target);
-    if (idx >= 0) openCarouselLightbox('fishMasonryLb', idx);
+    if (idx >= 0) openFishAt(idx);
+  });
+
+  // Auto-open lightbox if URL has #fish-N
+  function applyHash() {
+    const m = location.hash.match(/^#fish-(\d+)$/);
+    if (!m) return;
+    const idx = parseInt(m[1], 10) - 1;
+    if (idx < 0 || idx >= imgs.length) return;
+    openFishAt(idx, { updateHash: false });
+  }
+  applyHash();
+  window.addEventListener('hashchange', () => {
+    if (/^#fish-\d+$/.test(location.hash)) applyHash();
+    else {
+      // Hash cleared — close lightbox
+      const lb = document.getElementById('lightbox');
+      if (lb && lb.classList.contains('open')) closeLightbox();
+    }
   });
 })();
 </script>
