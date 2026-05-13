@@ -968,6 +968,19 @@
   }
   .fly-share-btn:hover { background: var(--red); color: #fff; }
   .fly-share-btn-icon { font-size: 0.95rem; line-height: 1; }
+  .fly-details-link {
+    display: inline-block;
+    margin-top: 8px;
+    color: var(--red);
+    text-decoration: none;
+    font-size: 0.82rem;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    border-bottom: 1px solid transparent;
+    padding-bottom: 1px;
+    transition: border-color 0.2s;
+  }
+  .fly-details-link:hover { border-bottom-color: var(--red); }
   .fly-card-highlight {
     box-shadow: 0 0 30px var(--red), 0 0 12px var(--red);
     transition: box-shadow 0.4s;
@@ -3493,7 +3506,9 @@ function openFlyShare(flyId, ev) {
   const fly = flies.find(f => f.id === flyId);
   if (!fly) return;
   const slug = slugifyFlyName(fly.name);
-  const url = location.origin + location.pathname + '#fly-' + slug;
+  // Share the per-fly page (real OG card on FB/X/iMessage) instead of the
+  // homepage hash. The catalog hash still works for in-page deep-link.
+  const url = location.origin + '/flies/' + slug + '.html';
   const text = 'Check out ' + fly.name + ' — a Trout Tricks fly pattern.';
   _flyShareTarget = { id: flyId, name: fly.name, slug, url, text };
 
@@ -3653,6 +3668,7 @@ function buildCatalog() {
           <div class="fly-name">${fly.name}</div>
           <div class="fly-desc">${fly.desc}</div>
           <div class="fly-price">$${fly.price} ${priceSuffix}</div>
+          <a class="fly-details-link" href="/flies/${flySlug}.html">View Details &rarr;</a>
         </div>
         <div class="fly-options">
           ${sizeSel}
