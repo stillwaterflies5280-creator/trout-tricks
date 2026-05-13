@@ -4928,6 +4928,16 @@ loadCart();
 scrollToFlyFromHash();
 window.addEventListener('hashchange', scrollToFlyFromHash);
 
+// Open the cart panel when arriving with #cart (e.g., "View Full Cart" from a per-fly page)
+function openCartFromHash() {
+  if (location.hash === '#cart') {
+    history.replaceState(null, '', location.pathname + location.search);
+    setTimeout(function() { if (typeof openCart === 'function') openCart(); }, 50);
+  }
+}
+openCartFromHash();
+window.addEventListener('hashchange', openCartFromHash);
+
 // Fire view_item once per fly card when it scrolls into view
 (function observeFlyCards() {
   if (!('IntersectionObserver' in window)) return;

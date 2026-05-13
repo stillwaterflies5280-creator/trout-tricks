@@ -492,7 +492,7 @@ footer a {{ color: var(--red); text-decoration: none; }}
     <a href="/blog.html">Blog</a>
     <a href="/about.html">About</a>
   </nav>
-  <a class="cart-pill" href="/#shop" aria-label="View cart">
+  <a class="cart-pill" href="/#cart" aria-label="View cart">
     🪝 Cart <span class="cart-pill-count" id="cart-pill-count">0</span>
   </a>
 </header>
@@ -534,7 +534,7 @@ footer a {{ color: var(--red); text-decoration: none; }}
   <div class="bottom-cta">
     <h3>Ready to fish it?</h3>
     <p>Hand-tied to order in Colorado. Add it to your cart above &mdash; we&rsquo;ll ship it out.</p>
-    <a class="btn-primary" href="/#shop">View Full Cart &amp; Checkout &rarr;</a>
+    <a class="btn-primary" href="/#cart">View Full Cart &amp; Checkout &rarr;</a>
   </div>
 </main>
 
@@ -651,7 +651,7 @@ def build_quick_add(fly, cat):
         # Bundles use a single "Add Bundle" button (no size/color selection)
         return f'''<div class="quick-add">
         <button class="btn-primary qa-add" onclick="quickAdd({fly['id']})">🪝 Add Bundle to Cart</button>
-        <a class="btn-ghost" href="/#shop">View Full Cart &rarr;</a>
+        <a class="btn-ghost" href="/#cart">View Full Cart &rarr;</a>
       </div>'''
 
     size_sel = ''
@@ -688,7 +688,7 @@ def build_quick_add(fly, cat):
         </div>
       </div>
       <button class="btn-primary qa-add" onclick="quickAdd({fly['id']})">🪝 Add to Cart</button>
-      <a class="btn-ghost" href="/#shop">View Full Cart &rarr;</a>
+      <a class="btn-ghost" href="/#cart">View Full Cart &rarr;</a>
     </div>'''
 
 
