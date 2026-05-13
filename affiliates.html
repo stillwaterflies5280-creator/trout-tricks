@@ -1831,7 +1831,7 @@
     function toggleNavMore(e){e.preventDefault();e.stopPropagation();var d=document.getElementById('navMoreDropdown');var b=e.currentTarget;var open=d.classList.toggle('open');b.setAttribute('aria-expanded',open?'true':'false');}
     document.addEventListener('click',function(e){var d=document.getElementById('navMoreDropdown');if(d&&d.classList.contains('open')&&!e.target.closest('.nav-more')){d.classList.remove('open');var b=document.querySelector('.nav-more-btn');if(b)b.setAttribute('aria-expanded','false');}});
   </script>
-  <form class="header-search" id="flySearch" action="index.html" method="get" onsubmit="return onHeaderSearchSubmit(event)">
+  <form class="header-search" id="flySearch" action="/" method="get" onsubmit="return onHeaderSearchSubmit(event)">
     <button type="button" class="header-search-toggle" onclick="toggleHeaderSearch()" aria-label="Search">🔍</button>
     <div class="header-search-panel">
       <span class="header-search-icon" aria-hidden="true">🔍</span>

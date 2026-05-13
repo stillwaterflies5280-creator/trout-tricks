@@ -1743,7 +1743,7 @@
     function toggleNavMore(e){e.preventDefault();e.stopPropagation();var d=document.getElementById('navMoreDropdown');var b=e.currentTarget;var open=d.classList.toggle('open');b.setAttribute('aria-expanded',open?'true':'false');}
     document.addEventListener('click',function(e){var d=document.getElementById('navMoreDropdown');if(d&&d.classList.contains('open')&&!e.target.closest('.nav-more')){d.classList.remove('open');var b=document.querySelector('.nav-more-btn');if(b)b.setAttribute('aria-expanded','false');}});
   </script>
-  <form class="header-search" id="flySearch" action="index.html" method="get" onsubmit="return onHeaderSearchSubmit(event)">
+  <form class="header-search" id="flySearch" action="/" method="get" onsubmit="return onHeaderSearchSubmit(event)">
     <button type="button" class="header-search-toggle" onclick="toggleHeaderSearch()" aria-label="Search">🔍</button>
     <div class="header-search-panel">
       <span class="header-search-icon" aria-hidden="true">🔍</span>
@@ -1812,7 +1812,7 @@
           <li><strong style="color:#f0f0f0;">Guide's Choice Box</strong> — $95 · the full South Park kit</li>
         </ul>
         <div style="display:flex;gap:12px;flex-wrap:wrap;align-items:center;">
-          <a href="../index.html#catalog" style="display:inline-block;background:#c0392b;color:#fff;padding:16px 28px;font-family:'Barlow Condensed',Impact,sans-serif;font-size:1.15rem;font-weight:700;letter-spacing:0.06em;text-transform:uppercase;text-decoration:none;border-radius:4px;box-shadow:0 2px 12px rgba(192,57,43,0.4);">🪝 Browse the Patterns</a>
+          <a href="/#catalog" style="display:inline-block;background:#c0392b;color:#fff;padding:16px 28px;font-family:'Barlow Condensed',Impact,sans-serif;font-size:1.15rem;font-weight:700;letter-spacing:0.06em;text-transform:uppercase;text-decoration:none;border-radius:4px;box-shadow:0 2px 12px rgba(192,57,43,0.4);">🪝 Browse the Patterns</a>
           <a href="/trip.html" style="display:inline-block;background:#2a2a2a;color:#ccc;padding:12px 22px;font-family:'Barlow Condensed',Impact,sans-serif;font-size:0.95rem;font-weight:600;letter-spacing:0.06em;text-transform:uppercase;text-decoration:none;border-radius:4px;border:1px solid #444;">🎣 Book a Guided Trip</a>
         </div>
       </div>
