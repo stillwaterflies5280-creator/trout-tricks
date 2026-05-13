@@ -433,6 +433,87 @@
   .founding-strip-main .price { color: var(--red-bright); font-weight: 700; }
   .founding-strip-main .crossed { color: #888; text-decoration: line-through; margin-left: 6px; }
 
+  /* CRO-1: Founding scarcity counter (rendered in 3 spots: hero, founding strip, waitlist form) */
+  .founding-counter {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: rgba(192,57,43,0.15);
+    border: 1px solid var(--red);
+    border-radius: 999px;
+    padding: 6px 14px;
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 0.88rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: #fff;
+    margin: 14px auto 0;
+  }
+  .founding-counter .flame { font-size: 0.95rem; }
+  .founding-counter strong { color: var(--gold); font-weight: 700; }
+  .founding-counter .sep { opacity: 0.4; }
+  .founding-counter .left { color: var(--red-bright); }
+
+  /* CRO-2: Mobile sticky CTA bar */
+  .mobile-sticky-cta {
+    display: none;
+    position: fixed;
+    bottom: 0; left: 0; right: 0;
+    z-index: 200;
+    background: rgba(15,15,17,0.95);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border-top: 1px solid var(--red);
+    padding: 10px 14px;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+    box-shadow: 0 -4px 20px rgba(0,0,0,0.6);
+    transform: translateY(110%);
+    transition: transform 0.3s ease;
+  }
+  .mobile-sticky-cta.visible { transform: translateY(0); }
+  .mobile-sticky-cta .msc-text {
+    color: #fff;
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 0.85rem;
+    line-height: 1.3;
+    flex: 1;
+  }
+  .mobile-sticky-cta .msc-text strong { color: var(--gold); }
+  .mobile-sticky-cta .msc-text .left { color: var(--red-bright); }
+  .mobile-sticky-cta .msc-btn {
+    background: var(--red);
+    color: #fff;
+    border: 2px solid var(--red-bright);
+    border-radius: 4px;
+    padding: 10px 18px;
+    font-family: 'Bebas Neue', Impact, sans-serif;
+    font-size: 1rem;
+    letter-spacing: 0.08em;
+    text-decoration: none;
+    text-transform: uppercase;
+    white-space: nowrap;
+  }
+  @media (max-width: 720px) {
+    .mobile-sticky-cta { display: flex; }
+    body { padding-bottom: 72px; }
+  }
+
+  /* CRO-5: Replace checkbox friction with a reassuring note */
+  .form-founding-note {
+    background: rgba(212,160,23,0.08);
+    border: 1px solid rgba(212,160,23,0.3);
+    border-radius: 6px;
+    padding: 12px 14px;
+    margin: 6px 0 14px;
+    font-size: 0.85rem;
+    color: #ccc;
+    line-height: 1.55;
+  }
+  .form-founding-note strong { color: var(--gold); }
+
   /* PROSE (long-form body copy) */
   .prose { max-width: 760px; margin: 0 auto; text-align: left; }
   .prose p { color: var(--light-gray); font-size: 1.02rem; line-height: 1.7; margin-bottom: 18px; }
@@ -1063,13 +1144,17 @@
 <section class="hero" style="max-width:none;padding:64px 20px 56px;">
   <div class="hero-inner">
     <img src="the-drop-logo.png" alt="The Drop — Trout Tricks" class="hero-logo">
-    <div class="hero-tag">A Trout Tricks Membership</div>
     <h1>Real-time intel for serious<br><span class="accent">Colorado stillwater</span> anglers.</h1>
-    <p class="hero-sub">A <strong>mastermind</strong> for Colorado stillwater. Bi-weekly live calls where every member brings intel — conditions, food sources, locations, patterns — and we work it together.</p>
+    <p class="hero-sub">A mastermind for Colorado stillwater. <strong>Bi-weekly live calls. Real intel. Real anglers.</strong></p>
     <div class="hero-tier">Premium tier · <strong>Founding 10 — $20/mo locked for life</strong></div>
-    <div class="hero-cta-row">
+    <div class="founding-counter">
+      <span class="flame">🔥</span>
+      <span><strong data-founding-claimed>0</strong> of <strong>10</strong> founding spots claimed</span>
+      <span class="sep">·</span>
+      <span class="left"><strong data-founding-left>10</strong> left at $20/mo</span>
+    </div>
+    <div class="hero-cta-row" style="margin-top:18px;">
       <a class="btn-primary" href="#waitlist">Join the Waitlist</a>
-      <a class="btn-ghost" href="#what-you-get">What You Get</a>
     </div>
   </div>
 </section>
@@ -1080,6 +1165,12 @@
   <div class="founding-strip-main">
     First 10 members lock in <span class="price">$20/mo</span> for life <span class="crossed">$35/mo</span>
     &nbsp;·&nbsp; After 10, founding rate closes forever.
+  </div>
+  <div class="founding-counter">
+    <span class="flame">🔥</span>
+    <span><strong data-founding-claimed>0</strong> of <strong>10</strong> claimed</span>
+    <span class="sep">·</span>
+    <span class="left"><strong data-founding-left>10</strong> spots remaining</span>
   </div>
 </div>
 
@@ -1278,12 +1369,45 @@
 </section>
 
 <!-- WAITLIST -->
+<!-- CRO-3: Before-You-Sign-Up mini-FAQ (3 objection-killers, full FAQ still lives below) -->
+<section style="padding-bottom:0;">
+  <div class="eyebrow">Before You Sign Up</div>
+  <h2 class="section-title">The <span class="accent">3 questions</span> people ask first.</h2>
+  <div class="divider"></div>
+  <div class="faq-list" style="max-width:760px;margin:0 auto;">
+    <details class="faq">
+      <summary>Can I cancel anytime?</summary>
+      <div class="faq-body">
+        Yes. Cancel anytime, no questions, no exit fees. The one catch: if you're a founding member and you cancel, the founding rate is gone — re-joining later means joining at standard pricing.
+      </div>
+    </details>
+    <details class="faq">
+      <summary>What if I can't make a live call?</summary>
+      <div class="faq-body">
+        No problem. Every call is recorded and posted to the member archive within 24 hours. You can also drop questions into the member group ahead of time and Thomas will cover them on the call — you'll get the answer in the recording.
+      </div>
+    </details>
+    <details class="faq">
+      <summary>Why $20 for founding members?</summary>
+      <div class="faq-body">
+        The first 10 are taking a bet on a new thing. The founding rate is locked for life as a thank-you. Once those 10 fill, the founding tier closes forever and new members join at $35/mo — full price.
+      </div>
+    </details>
+  </div>
+</section>
+
 <section class="waitlist" id="waitlist">
   <div class="waitlist-inner">
     <div class="eyebrow">Reserve Your Spot</div>
     <h2 class="section-title">Join the <span class="accent">Drop Waitlist</span>.</h2>
     <div class="divider"></div>
     <p class="section-sub">No commitment yet. Get notified when membership opens and claim a founding spot before they fill.</p>
+    <div class="founding-counter">
+      <span class="flame">🔥</span>
+      <span><strong data-founding-claimed>0</strong> of <strong>10</strong> founding spots claimed</span>
+      <span class="sep">·</span>
+      <span class="left"><strong data-founding-left>10</strong> left</span>
+    </div>
 
     <div class="form-card" id="formCard">
       <form id="dropForm" onsubmit="return submitDropWaitlist(event)">
@@ -1296,13 +1420,10 @@
           <input type="email" id="dropEmail" name="email" required autocomplete="email" placeholder="you@email.com" oninput="clearErr('dropEmail')">
           <div class="form-error" id="dropEmailError">Please enter a valid email.</div>
         </div>
-        <label class="form-check">
-          <input type="checkbox" id="dropFounding" name="founding_interest" checked>
-          <span class="form-check-label">
-            <strong>I want a founding spot</strong> — interested in the $20/mo founding rate (10 spots only).
-            Uncheck if you'd rather wait for standard pricing.
-          </span>
-        </label>
+        <input type="hidden" id="dropFounding" name="founding_interest" value="true">
+        <p class="form-founding-note">
+          You'll get <strong>first access</strong> to the 10 founding spots ($20/mo locked for life) the moment membership opens.
+        </p>
         <button type="submit" class="form-submit" id="dropSubmit">Add Me to the Waitlist</button>
         <p class="form-fine">No spam. You'll get one email when membership opens.</p>
       </form>
@@ -1557,6 +1678,64 @@ function submitDropWaitlist(ev) {
 
   return false;
 }
+</script>
+
+<!-- CRO-2: Mobile sticky CTA -->
+<div class="mobile-sticky-cta" id="mobileStickyCta">
+  <div class="msc-text">
+    <strong>Founding 10</strong> · <span class="left"><strong data-founding-left>10</strong> spots</span> at $20/mo
+  </div>
+  <a class="msc-btn" href="#waitlist">Join →</a>
+</div>
+
+<script>
+// ============================================================
+// CRO-1: Founding scarcity counter
+// Update FOUNDING_CLAIMED as signups come in. All three
+// counter renderings + the mobile sticky CTA read from this.
+// ============================================================
+(function() {
+  var FOUNDING_CLAIMED = 0;
+  var FOUNDING_CAP = 10;
+  var left = Math.max(0, FOUNDING_CAP - FOUNDING_CLAIMED);
+  document.querySelectorAll('[data-founding-claimed]').forEach(function(el) {
+    el.textContent = FOUNDING_CLAIMED;
+  });
+  document.querySelectorAll('[data-founding-left]').forEach(function(el) {
+    el.textContent = left;
+  });
+  // If all founding spots are claimed, swap the urgency framing
+  if (left === 0) {
+    document.querySelectorAll('.founding-counter, .mobile-sticky-cta .msc-text').forEach(function(el) {
+      el.style.opacity = '0.7';
+    });
+  }
+})();
+
+// CRO-2: Reveal mobile sticky CTA after 20% scroll, hide near waitlist form
+(function() {
+  var el = document.getElementById('mobileStickyCta');
+  if (!el) return;
+  var waitlist = document.getElementById('waitlist');
+  function onScroll() {
+    var y = window.scrollY || window.pageYOffset;
+    var docH = (document.documentElement.scrollHeight - window.innerHeight) || 1;
+    var pct = y / docH;
+    // Hide once waitlist form is on screen (no point doubling the CTA)
+    var nearForm = false;
+    if (waitlist) {
+      var rect = waitlist.getBoundingClientRect();
+      nearForm = rect.top < window.innerHeight * 0.6 && rect.bottom > 0;
+    }
+    if (pct >= 0.2 && !nearForm) {
+      el.classList.add('visible');
+    } else {
+      el.classList.remove('visible');
+    }
+  }
+  window.addEventListener('scroll', onScroll, { passive: true });
+  onScroll();
+})();
 </script>
 
 </body>
