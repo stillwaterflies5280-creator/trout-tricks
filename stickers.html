@@ -2008,6 +2008,7 @@
   }
 
 </style>
+<script src="/js/catalog.js"></script>
 </head>
 
 <body>
@@ -2372,16 +2373,6 @@
 <script>
 // Sticker image paths — mirrors the sticker subset of index.html FLY_IMAGES.
 // Other entries are intentionally omitted (this page doesn't render flies).
-const FLY_IMAGES = {
-  sticker1: "images/sticker1.png",
-  sticker2: "images/sticker2.png",
-  stickerFishOn: "images/sticker-fish-on.png",
-  stickerDontJudge: "images/sticker-dont-judge-me.png",
-  stickerBuffet: "images/sticker-buffet-mode.png",
-  stickerBuzzers: "images/sticker-got-buzzers.png",
-  wordmarkreal: "images/wordmarkreal.jpg"
-};
-
 const FISH_IMAGES = {};
 
 const GALLERY_IMAGES = {};
@@ -2389,192 +2380,6 @@ const GALLERY_IMAGES = {};
 // MIRRORED with index.html flies[] — keep id 13–20 (sticker + bundle SKUs) in sync
 // on price or bundle composition changes. Other entries on this page (id 1–9) are
 // a legacy subset inherited from contact.html and are not actively rendered here.
-const flies = [
-  {
-    id: 2, img: "fly2",
-    name: "Chocolate Gold",
-    desc: "Sleek, flashy, and tungsten-loaded. A proven guide pattern that sinks fast and triggers strikes when nothing else will. The go-to when fish are deep.",
-    sizes: ["#12","#14","#16","#18"],
-    colors: null,
-    price: 21,
-    pack: 5,
-    badge: "Guide Pattern"
-  },
-  {
-    id: 3, img: "fly3",
-    name: "Top Secret Ironman",
-    desc: "Built tough for pressured water. The Ironman is a durable, high-contrast chironomid that holds up through dozens of strikes. A staple in any stillwater box.",
-    sizes: ["#8","#10","#12","#14"],
-    colors: null,
-    price: 25,
-    pack: 5,
-    badge: "Top Secret"
-  },
-  {
-    id: 4, img: "fly4",
-    name: "Snow Cone (Frank\'s Red Hot Ronnie)",
-    desc: "Black thread, red wire, white bead — a classic combination that trout simply cannot refuse. One of the most recognizable and productive chironomid patterns on the water.",
-    sizes: ["#12","#14","#16","#18"],
-    colors: null,
-    price: 21,
-    pack: 5,
-    badge: null
-  },
-  {
-    id: 5, img: "fly5",
-    name: "Chirono\'midge\'",
-    desc: "An absolute killer searching pattern that works everywhere — lakes, tailwaters, slow runs. Tungsten bead on 2x heavy wire hooks. When you don\'t know what they\'re eating, tie this on.",
-    sizes: ["#12","#14","#16","#18"],
-    colors: null,
-    price: 21,
-    pack: 5,
-    badge: "Searching Pattern"
-  },
-  {
-    id: 6, img: "fly6",
-    name: "Burnt Wino",
-    desc: "A fire-kissed variation of the legendary Wino pattern, inspired by tier Kyle Glass. Tungsten bead on 2x heavy wire hooks. Deep color and earthy tones that big fish recognize.",
-    sizes: ["#12","#14","#16","#18"],
-    colors: null,
-    price: 21,
-    pack: 5,
-    badge: null
-  },
-  {
-    id: 7, img: "fly7",
-    name: "Burnt Hopper",
-    desc: "Absolutely stunning colors that trout cannot ignore. Tungsten bead on 2x heavy wire hooks. This pattern turns heads both in the box and in the water.",
-    sizes: ["#12","#14","#16","#18"],
-    colors: null,
-    price: 21,
-    pack: 5,
-    badge: null
-  },
-  {
-    id: 8, img: "fly8",
-    name: "Top Secret Winged Duck",
-    desc: "No description necessary.",
-    sizes: ["#12","#14","#16","#18"],
-    colors: null,
-    price: 25,
-    pack: 5,
-    badge: "Top Secret"
-  },
-  {
-    id: 9, img: "fly9",
-    name: "Top Secret Winged Cone",
-    desc: "No description necessary.",
-    sizes: ["#12","#14","#16","#18"],
-    colors: null,
-    price: 25,
-    pack: 5,
-    badge: "Top Secret"
-  },
-  {
-    id: 1, img: "fly1",
-    name: "Muskie Buzzer",
-    desc: "A deadly buzzer pattern discovered by Musky John and designed to attract and land trophy trout. Tied on 2x heavy wire hooks with a realistic wing case that seals the deal.",
-    sizes: ["#12","#14","#16","#18"],
-    colors: null,
-    price: 25,
-    pack: 5,
-    badge: "Top Secret"
-  },
-  // === STICKER + BUNDLE SKUs — mirrored from index.html flies[] ===
-  {
-    id: 13, img: "sticker1", gallery: ["sticker1", "wordmarkreal"],
-    name: "Trout Tricks Wordmark Sticker",
-    desc: "Die-cut 3.25\" × 1.2\" weatherproof vinyl. Slap it on your boat, vise, or Yeti.",
-    sizes: null,
-    colors: null,
-    price: 3,
-    pack: null,
-    badge: null,
-    category: "sticker"
-  },
-  {
-    id: 14, img: "sticker2",
-    name: "Trout Tricks Square Sticker",
-    desc: "Die-cut 3\" × 3\" weatherproof vinyl. Slap it on your boat, vise, or Yeti.",
-    sizes: null,
-    colors: null,
-    price: 5,
-    pack: null,
-    badge: null,
-    category: "sticker"
-  },
-  {
-    id: 15, img: "stickerFishOn",
-    name: "Fish On Sticker",
-    desc: "Die-cut weatherproof vinyl. The look when the indicator drops and your eight-weight loads up. Slap it on your vise, boat, or Yeti.",
-    sizes: null,
-    colors: null,
-    price: 5,
-    pack: null,
-    badge: null,
-    category: "sticker"
-  },
-  {
-    id: 16, img: "stickerDontJudge",
-    name: "Don't Judge Me Sticker",
-    desc: "Die-cut weatherproof vinyl. For the day you fish three flies on a 7x leader. Slap it on your vise, boat, or Yeti.",
-    sizes: null,
-    colors: null,
-    price: 5,
-    pack: null,
-    badge: null,
-    category: "sticker"
-  },
-  {
-    id: 17, img: "stickerBuffet",
-    name: "Buffet Mode Sticker",
-    desc: "Die-cut weatherproof vinyl. When the trout are eating chironomids, callibaetis, and midges in the same pass. Slap it on your vise, boat, or Yeti.",
-    sizes: null,
-    colors: null,
-    price: 5,
-    pack: null,
-    badge: null,
-    category: "sticker"
-  },
-  {
-    id: 18, img: "stickerBuzzers",
-    name: "Got Buzzers? Sticker",
-    desc: "Die-cut weatherproof vinyl. UK tying slang for chironomids — if you tie them, you know. Slap it on your vise, boat, or Yeti.",
-    sizes: null,
-    colors: null,
-    price: 3,
-    pack: null,
-    badge: null,
-    category: "sticker"
-  },
-  {
-    id: 19, img: "stickerFishOn",
-    name: "The Greedy Trout Pack",
-    desc: "Includes: Fish On + Don't Judge Me + Buffet Mode. The trout-cinematic-universe set, $3 off retail ($15 → $12).",
-    sizes: null,
-    colors: null,
-    price: 12,
-    pack: null,
-    badge: null,
-    category: "sticker",
-    bundle: true,
-    bundle_includes: [15, 16, 17]
-  },
-  {
-    id: 20, img: "sticker1",
-    name: "The Complete Collection",
-    desc: "Includes: Fish On, Don't Judge Me, Buffet Mode, Got Buzzers?, Wordmark, and Square. Every Trout Tricks sticker — $6 off retail ($26 → $20).",
-    sizes: null,
-    colors: null,
-    price: 20,
-    pack: null,
-    badge: "Best Value",
-    category: "sticker",
-    bundle: true,
-    bundle_includes: [13, 14, 15, 16, 17, 18]
-  }
-];
-
 let cart = [];
 let quantities = {};
 let pickupFlags = {};
