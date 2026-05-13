@@ -14,6 +14,7 @@ Persistent source of truth for active, blocked, and closed work. All adds/closes
 - **#31** SEO P3 (ongoing) — backlinks from tier-adjacent sites
 <!-- #33a + #33b shipped 2026-05-12 — see Closed section below -->
 - *(former #33 PATH A — split into #33a + #33b and shipped, see Closed log)*
+- **#50** Cart extraction to shared `/js/cart.js` + `/css/cart.css` — second phase of PATH A. Currently the cart code (~600 lines JS + ~150 lines CSS + cart panel HTML) is duplicated across 12 inline-style pages, AND per-fly `/flies/<slug>.html` pages get a stripped-down "Quick Add" that writes to the shared `tt_cart` localStorage but lacks the full slide-in cart panel. Extracting cart to shared files unblocks: (1) full cart panel on per-fly pages (Add to Cart → panel slides in, edit qty / remove items / proceed to checkout without leaving the page); (2) one source of truth for cart bug fixes; (3) lighter pages. ~2 hr careful refactor + checkout test. Touch checkout flow — schedule when there's time to test the full Square Worker handoff.
 - **#35** Verify GBP listing reflects tier positioning (Manufacturer + remove charters / clothing / fishing store) — may be blocked until video verification; pending backend check
 - **#38** Free sticker with fly order — gift-with-purchase mechanic
 - **#40** Stillwater money-keyword SEO sprint — keyword domination on Antero / Spinney / Eleven Mile / Delaney+Lake John posts

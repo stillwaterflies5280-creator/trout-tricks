@@ -241,8 +241,54 @@ main { max-width: 920px; margin: 0 auto; padding: 12px 24px 48px; }
   overflow: hidden;
   aspect-ratio: 1 / 1;
   display: flex; align-items: center; justify-content: center;
+  cursor: zoom-in;
+  position: relative;
 }
-.hero-img-wrap img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.hero-img-wrap::after {
+  content: "🔍";
+  position: absolute;
+  top: 12px; right: 12px;
+  background: rgba(0,0,0,0.55);
+  color: #fff;
+  width: 32px; height: 32px;
+  border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 0.95rem;
+  pointer-events: none;
+  opacity: 0.85;
+}
+.hero-img-wrap img { width: 100%; height: 100%; object-fit: cover; display: block; transition: transform 0.4s ease; }
+.hero-img-wrap:hover img { transform: scale(1.04); }
+/* Photo lightbox (click hero img to enlarge) */
+.fly-lightbox {
+  display: none;
+  position: fixed; inset: 0;
+  background: rgba(0,0,0,0.95);
+  z-index: 3000;
+  align-items: center;
+  justify-content: center;
+  cursor: zoom-out;
+  padding: 24px;
+}
+.fly-lightbox.open { display: flex; }
+.fly-lightbox img {
+  max-width: 96vw;
+  max-height: 92vh;
+  object-fit: contain;
+  border: 1px solid #333;
+  border-radius: 4px;
+  box-shadow: 0 0 60px rgba(0,0,0,0.8);
+}
+.fly-lightbox-close {
+  position: absolute; top: 16px; right: 20px;
+  background: var(--red); border: none;
+  color: #fff; font-size: 1.4rem;
+  width: 40px; height: 40px; border-radius: 50%;
+  cursor: pointer; display: flex;
+  align-items: center; justify-content: center;
+  z-index: 3001;
+  box-shadow: 0 0 12px rgba(192,57,43,0.6);
+}
 .hero-info h1 {
   font-family: 'Bebas Neue', sans-serif;
   font-size: clamp(2.2rem, 5vw, 3.2rem);
@@ -386,8 +432,8 @@ footer a { color: var(--red); text-decoration: none; }
 
 <main>
   <div class="hero">
-    <div class="hero-img-wrap">
-      <img src="/images/sticker-fish-on.png" alt="Fish On Sticker — Trout Tricks Colorado stillwater fly pattern" width="600" height="600" loading="eager" fetchpriority="high">
+    <div class="hero-img-wrap" onclick="openFlyLightbox()" role="button" tabindex="0" aria-label="Enlarge photo" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();openFlyLightbox();}">
+      <img id="ffHeroImg" src="/images/sticker-fish-on.png" alt="Fish On Sticker — Trout Tricks Colorado stillwater fly pattern" width="600" height="600" loading="eager" fetchpriority="high">
     </div>
     <div class="hero-info">
       
@@ -437,6 +483,11 @@ footer a { color: var(--red); text-decoration: none; }
 </main>
 
 <div id="toast" aria-live="polite"></div>
+
+<div class="fly-lightbox" id="ffLightbox" onclick="closeFlyLightbox()" role="dialog" aria-label="Enlarged photo">
+  <button class="fly-lightbox-close" onclick="event.stopPropagation();closeFlyLightbox()" aria-label="Close">✕</button>
+  <img id="ffLbImg" src="" alt="">
+</div>
 
 <footer>
   &copy; 2026 Trout Tricks &middot; Hand-tied in Colorado &middot;
@@ -493,6 +544,24 @@ function showToast(msg) {
 }
 document.addEventListener('DOMContentLoaded', updateCartCount);
 window.addEventListener('storage', e => { if (e.key === 'tt_cart') updateCartCount(); });
+
+// Photo lightbox — click hero img to enlarge.
+function openFlyLightbox() {
+  const hero = document.getElementById('ffHeroImg');
+  const lb = document.getElementById('ffLightbox');
+  const img = document.getElementById('ffLbImg');
+  if (!hero || !lb || !img) return;
+  img.src = hero.src;
+  img.style.transform = hero.style.transform || '';
+  lb.classList.add('open');
+  document.body.style.overflow = 'hidden';
+}
+function closeFlyLightbox() {
+  const lb = document.getElementById('ffLightbox');
+  if (lb) lb.classList.remove('open');
+  document.body.style.overflow = '';
+}
+document.addEventListener('keydown', e => { if (e.key === 'Escape') closeFlyLightbox(); });
 </script>
 
 </body>

@@ -2199,13 +2199,15 @@ function buildMosaic() {
   // Trip page — 3 random shoppable fly cards
   const tripCards = document.getElementById('tripFlyCards');
   if (tripCards) {
-    const shuffled = [...flies].sort(() => Math.random() - 0.5).slice(0, 3);
+    // Filter out stickers + bundles — they don't fit the "fly to fish" suggestion context
+    const shuffled = [...flies].filter(f => f.category !== 'sticker' && !f.bundle && f.sizes).sort(() => Math.random() - 0.5).slice(0, 3);
     tripCards.innerHTML = shuffled.map(fly => {
+      const slug = slugifyFlyName(fly.name);
       const badge = fly.badge ? `<div class="fly-badge${fly.badge==='Top Secret'?' gold':''}">${fly.badge}</div>` : '';
-      const colorSel = fly.colors ? `<div class="option-row"><span class="option-label">Color</span><select id="tcolor-${fly.id}">${fly.colors.map(c=>`<option>${c}</option>`).join('')}</select></div>` : '';
+      const colorSel = fly.colors ? `<div class="option-row"><span class="option-label">Color</span><select id="tcolor-${fly.id}" onclick="event.stopPropagation()" onchange="event.stopPropagation()">${fly.colors.map(c=>`<option>${c}</option>`).join('')}</select></div>` : '';
       return `
-        <div class="trip-fly-card fly-card">
-          <div class="fly-img" onclick="openLightbox('${fly.img}','${fly.name}')">
+        <div class="trip-fly-card fly-card fly-card-clickable" onclick="window.location.href='/flies/${slug}.html'" style="cursor:pointer;">
+          <div class="fly-img">
             <img src="${FLY_IMAGES[fly.img]}" alt="${fly.name}" loading="lazy" style="${fly.id===9?'transform:rotate(90deg) scale(1.4);':''}">
             ${badge}
           </div>
@@ -2216,10 +2218,10 @@ function buildMosaic() {
           <div class="fly-options">
             <div class="option-row">
               <span class="option-label">Size</span>
-              <select id="tsize-${fly.id}">${fly.sizes.map(s=>`<option>${s}</option>`).join('')}</select>
+              <select id="tsize-${fly.id}" onclick="event.stopPropagation()" onchange="event.stopPropagation()">${fly.sizes.map(s=>`<option>${s}</option>`).join('')}</select>
             </div>
             ${colorSel}
-            <button class="add-btn" onclick="addTripFlyToCart(${fly.id}, 'tsize-${fly.id}', 'tcolor-${fly.id}')">Add to Cart</button>
+            <button class="add-btn" onclick="event.stopPropagation();addTripFlyToCart(${fly.id}, 'tsize-${fly.id}', 'tcolor-${fly.id}')">Add to Cart</button>
           </div>
         </div>`;
     }).join('');

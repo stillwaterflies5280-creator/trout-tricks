@@ -2074,8 +2074,8 @@
       <p style="text-align:center;color:var(--light-gray);margin:0 0 28px;font-size:0.95rem;">Pick one. Each design printed on weatherproof die-cut vinyl.</p>
       <div class="catalog" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:20px;">
 
-        <div class="fly-card">
-          <div class="fly-img sticker-img" onclick="openLightbox('stickerFishOn', 'Fish On Sticker')"><img src="images/sticker-fish-on.png" alt="Fish On Sticker" loading="lazy" width="240" height="240"></div>
+        <div class="fly-card fly-card-clickable" onclick="window.location.href='/flies/fish-on-sticker.html'" style="cursor:pointer;">
+          <div class="fly-img sticker-img"><img src="images/sticker-fish-on.png" alt="Fish On Sticker" loading="lazy" width="240" height="240"></div>
           <div class="fly-info">
             <div class="fly-name">Fish On Sticker</div>
             <div class="fly-desc">The look when the indicator drops and your eight-weight loads up.</div>
@@ -2085,17 +2085,17 @@
             <div class="option-row">
               <span class="option-label">Qty</span>
               <div class="qty-row">
-                <button class="qty-btn" onclick="changeQty(15,-1)">−</button>
+                <button class="qty-btn" onclick="event.stopPropagation();changeQty(15,-1)">−</button>
                 <span class="qty-display" id="qty-15">1</span>
-                <button class="qty-btn" onclick="changeQty(15,1)">+</button>
+                <button class="qty-btn" onclick="event.stopPropagation();changeQty(15,1)">+</button>
               </div>
             </div>
-            <button class="add-btn" onclick="addToCart(15)">Add to Cart</button>
+            <button class="add-btn" onclick="event.stopPropagation();addToCart(15)">Add to Cart</button>
           </div>
         </div>
 
-        <div class="fly-card">
-          <div class="fly-img sticker-img" onclick="openLightbox('stickerDontJudge', 'Don\'t Judge Me Sticker')"><img src="images/sticker-dont-judge-me.png" alt="Don't Judge Me Sticker" loading="lazy" width="240" height="240"></div>
+        <div class="fly-card fly-card-clickable" onclick="window.location.href='/flies/dont-judge-me-sticker.html'" style="cursor:pointer;">
+          <div class="fly-img sticker-img"><img src="images/sticker-dont-judge-me.png" alt="Don't Judge Me Sticker" loading="lazy" width="240" height="240"></div>
           <div class="fly-info">
             <div class="fly-name">Don't Judge Me Sticker</div>
             <div class="fly-desc">For the day you fish three flies on a 7x leader.</div>
@@ -2105,17 +2105,17 @@
             <div class="option-row">
               <span class="option-label">Qty</span>
               <div class="qty-row">
-                <button class="qty-btn" onclick="changeQty(16,-1)">−</button>
+                <button class="qty-btn" onclick="event.stopPropagation();changeQty(16,-1)">−</button>
                 <span class="qty-display" id="qty-16">1</span>
-                <button class="qty-btn" onclick="changeQty(16,1)">+</button>
+                <button class="qty-btn" onclick="event.stopPropagation();changeQty(16,1)">+</button>
               </div>
             </div>
-            <button class="add-btn" onclick="addToCart(16)">Add to Cart</button>
+            <button class="add-btn" onclick="event.stopPropagation();addToCart(16)">Add to Cart</button>
           </div>
         </div>
 
-        <div class="fly-card">
-          <div class="fly-img sticker-img" onclick="openLightbox('stickerBuffet', 'Buffet Mode Sticker')"><img src="images/sticker-buffet-mode.png" alt="Buffet Mode Sticker" loading="lazy" width="240" height="240"></div>
+        <div class="fly-card fly-card-clickable" onclick="window.location.href='/flies/buffet-mode-sticker.html'" style="cursor:pointer;">
+          <div class="fly-img sticker-img"><img src="images/sticker-buffet-mode.png" alt="Buffet Mode Sticker" loading="lazy" width="240" height="240"></div>
           <div class="fly-info">
             <div class="fly-name">Buffet Mode Sticker</div>
             <div class="fly-desc">When the trout are eating chironomids, callibaetis, and midges in the same pass.</div>
@@ -2125,17 +2125,17 @@
             <div class="option-row">
               <span class="option-label">Qty</span>
               <div class="qty-row">
-                <button class="qty-btn" onclick="changeQty(17,-1)">−</button>
+                <button class="qty-btn" onclick="event.stopPropagation();changeQty(17,-1)">−</button>
                 <span class="qty-display" id="qty-17">1</span>
-                <button class="qty-btn" onclick="changeQty(17,1)">+</button>
+                <button class="qty-btn" onclick="event.stopPropagation();changeQty(17,1)">+</button>
               </div>
             </div>
-            <button class="add-btn" onclick="addToCart(17)">Add to Cart</button>
+            <button class="add-btn" onclick="event.stopPropagation();addToCart(17)">Add to Cart</button>
           </div>
         </div>
 
-        <div class="fly-card">
-          <div class="fly-img sticker-img" onclick="openLightbox('stickerBuzzers', 'Got Buzzers? Sticker')"><img src="images/sticker-got-buzzers.png" alt="Got Buzzers? Sticker" loading="lazy" width="240" height="240"></div>
+        <div class="fly-card fly-card-clickable" onclick="window.location.href='/flies/got-buzzers-sticker.html'" style="cursor:pointer;">
+          <div class="fly-img sticker-img"><img src="images/sticker-got-buzzers.png" alt="Got Buzzers? Sticker" loading="lazy" width="240" height="240"></div>
           <div class="fly-info">
             <div class="fly-name">Got Buzzers? Sticker</div>
             <div class="fly-desc">UK tying slang for chironomids — if you tie them, you know.</div>
@@ -2145,17 +2145,17 @@
             <div class="option-row">
               <span class="option-label">Qty</span>
               <div class="qty-row">
-                <button class="qty-btn" onclick="changeQty(18,-1)">−</button>
+                <button class="qty-btn" onclick="event.stopPropagation();changeQty(18,-1)">−</button>
                 <span class="qty-display" id="qty-18">1</span>
-                <button class="qty-btn" onclick="changeQty(18,1)">+</button>
+                <button class="qty-btn" onclick="event.stopPropagation();changeQty(18,1)">+</button>
               </div>
             </div>
-            <button class="add-btn" onclick="addToCart(18)">Add to Cart</button>
+            <button class="add-btn" onclick="event.stopPropagation();addToCart(18)">Add to Cart</button>
           </div>
         </div>
 
-        <div class="fly-card">
-          <div class="fly-img sticker-img" onclick="openLightbox('sticker1', 'Trout Tricks Wordmark Sticker')"><img src="images/sticker1.png" alt="Trout Tricks Wordmark Sticker" loading="lazy" width="240" height="240"></div>
+        <div class="fly-card fly-card-clickable" onclick="window.location.href='/flies/trout-tricks-wordmark-sticker.html'" style="cursor:pointer;">
+          <div class="fly-img sticker-img"><img src="images/sticker1.png" alt="Trout Tricks Wordmark Sticker" loading="lazy" width="240" height="240"></div>
           <div class="fly-info">
             <div class="fly-name">Trout Tricks Wordmark Sticker</div>
             <div class="fly-desc">Die-cut 3.25" × 1.2" weatherproof vinyl.</div>
@@ -2165,17 +2165,17 @@
             <div class="option-row">
               <span class="option-label">Qty</span>
               <div class="qty-row">
-                <button class="qty-btn" onclick="changeQty(13,-1)">−</button>
+                <button class="qty-btn" onclick="event.stopPropagation();changeQty(13,-1)">−</button>
                 <span class="qty-display" id="qty-13">1</span>
-                <button class="qty-btn" onclick="changeQty(13,1)">+</button>
+                <button class="qty-btn" onclick="event.stopPropagation();changeQty(13,1)">+</button>
               </div>
             </div>
-            <button class="add-btn" onclick="addToCart(13)">Add to Cart</button>
+            <button class="add-btn" onclick="event.stopPropagation();addToCart(13)">Add to Cart</button>
           </div>
         </div>
 
-        <div class="fly-card">
-          <div class="fly-img sticker-img" onclick="openLightbox('sticker2', 'Trout Tricks Square Sticker')"><img src="images/sticker2.png" alt="Trout Tricks Square Sticker" loading="lazy" width="240" height="240"></div>
+        <div class="fly-card fly-card-clickable" onclick="window.location.href='/flies/trout-tricks-square-sticker.html'" style="cursor:pointer;">
+          <div class="fly-img sticker-img"><img src="images/sticker2.png" alt="Trout Tricks Square Sticker" loading="lazy" width="240" height="240"></div>
           <div class="fly-info">
             <div class="fly-name">Trout Tricks Square Sticker</div>
             <div class="fly-desc">Die-cut 3" × 3" weatherproof vinyl.</div>
@@ -2185,12 +2185,12 @@
             <div class="option-row">
               <span class="option-label">Qty</span>
               <div class="qty-row">
-                <button class="qty-btn" onclick="changeQty(14,-1)">−</button>
+                <button class="qty-btn" onclick="event.stopPropagation();changeQty(14,-1)">−</button>
                 <span class="qty-display" id="qty-14">1</span>
-                <button class="qty-btn" onclick="changeQty(14,1)">+</button>
+                <button class="qty-btn" onclick="event.stopPropagation();changeQty(14,1)">+</button>
               </div>
             </div>
-            <button class="add-btn" onclick="addToCart(14)">Add to Cart</button>
+            <button class="add-btn" onclick="event.stopPropagation();addToCart(14)">Add to Cart</button>
           </div>
         </div>
 
@@ -2203,7 +2203,7 @@
       <p style="text-align:center;color:var(--light-gray);margin:0 0 28px;font-size:0.95rem;">Save when you grab the set.</p>
       <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:24px;">
 
-        <article class="fly-card" style="padding:24px;text-align:center;">
+        <article class="fly-card fly-card-clickable" style="padding:24px;text-align:center;cursor:pointer;" onclick="window.location.href='/flies/the-greedy-trout-pack.html'">
           <h3 class="fly-name" style="margin-top:0;">The Greedy Trout Pack</h3>
           <p style="color:var(--gray);font-size:0.85rem;letter-spacing:0.06em;text-transform:uppercase;margin:6px 0 16px;">Fish On + Don't Judge Me + Buffet Mode</p>
           <div class="fly-img sticker-bundle-img" style="height:auto;margin-bottom:18px;">
@@ -2221,16 +2221,16 @@
             <div class="option-row" style="justify-content:center;">
               <span class="option-label">Qty</span>
               <div class="qty-row">
-                <button class="qty-btn" onclick="changeQty(19,-1)">−</button>
+                <button class="qty-btn" onclick="event.stopPropagation();changeQty(19,-1)">−</button>
                 <span class="qty-display" id="qty-19">1</span>
-                <button class="qty-btn" onclick="changeQty(19,1)">+</button>
+                <button class="qty-btn" onclick="event.stopPropagation();changeQty(19,1)">+</button>
               </div>
             </div>
-            <button class="add-btn" onclick="addToCart(19)">Add to Cart</button>
+            <button class="add-btn" onclick="event.stopPropagation();addToCart(19)">Add to Cart</button>
           </div>
         </article>
 
-        <article class="fly-card" style="padding:24px;text-align:center;border:2px solid var(--red);">
+        <article class="fly-card fly-card-clickable" style="padding:24px;text-align:center;border:2px solid var(--red);cursor:pointer;" onclick="window.location.href='/flies/the-complete-collection.html'">
           <div class="best-value-ribbon" style="margin:-24px -24px 18px;">BEST VALUE</div>
           <h3 class="fly-name" style="margin-top:0;">The Complete Collection</h3>
           <p style="color:var(--gray);font-size:0.85rem;letter-spacing:0.06em;text-transform:uppercase;margin:6px 0 16px;">All 6 designs</p>
@@ -2252,12 +2252,12 @@
             <div class="option-row" style="justify-content:center;">
               <span class="option-label">Qty</span>
               <div class="qty-row">
-                <button class="qty-btn" onclick="changeQty(20,-1)">−</button>
+                <button class="qty-btn" onclick="event.stopPropagation();changeQty(20,-1)">−</button>
                 <span class="qty-display" id="qty-20">1</span>
-                <button class="qty-btn" onclick="changeQty(20,1)">+</button>
+                <button class="qty-btn" onclick="event.stopPropagation();changeQty(20,1)">+</button>
               </div>
             </div>
-            <button class="add-btn" onclick="addToCart(20)">Add to Cart</button>
+            <button class="add-btn" onclick="event.stopPropagation();addToCart(20)">Add to Cart</button>
           </div>
         </article>
 

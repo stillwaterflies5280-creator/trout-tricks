@@ -754,8 +754,8 @@
     overflow: hidden;
     background: #111;
     position: relative;
-    cursor: zoom-in;
   }
+  .fly-card-clickable { cursor: pointer; }
   .fly-img img {
     width: 100%;
     height: 100%;
@@ -815,7 +815,7 @@
   .fly-card:hover .fly-img.sticker-bundle-img .bundle-thumb img { transform: none; }
 
   .fly-gallery-wrap { cursor: default; }
-  .fly-gallery-wrap img { cursor: zoom-in; }
+  .fly-gallery-wrap img { cursor: pointer; }
   .gallery-nav {
     position: absolute;
     top: 50%;
@@ -968,30 +968,6 @@
   }
   .fly-share-btn:hover { background: var(--red); color: #fff; }
   .fly-share-btn-icon { font-size: 0.95rem; line-height: 1; }
-  .fly-details-link {
-    display: inline-flex;
-    align-items: center;
-    gap: 6px;
-    margin-top: 10px;
-    background: rgba(192,57,43,0.12);
-    color: var(--red);
-    text-decoration: none;
-    font-family: 'Barlow Condensed', sans-serif;
-    font-size: 0.85rem;
-    font-weight: 700;
-    letter-spacing: 0.14em;
-    text-transform: uppercase;
-    padding: 8px 14px;
-    border: 1px solid var(--red);
-    border-radius: 4px;
-    transition: background 0.2s, color 0.2s, transform 0.15s;
-  }
-  .fly-details-link::after { content: " →"; font-weight: 700; }
-  .fly-details-link:hover {
-    background: var(--red);
-    color: #fff;
-    transform: translateX(2px);
-  }
   .fly-card-highlight {
     box-shadow: 0 0 30px var(--red), 0 0 12px var(--red);
     transition: box-shadow 0.4s;
@@ -3609,14 +3585,14 @@ function buildCatalog() {
     const sizeSel = fly.sizes
       ? `<div class="option-row">
            <span class="option-label">Size</span>
-           <select id="size-${fly.id}">${fly.sizes.map(s=>`<option>${s}</option>`).join("")}</select>
+           <select id="size-${fly.id}" onclick="event.stopPropagation()" onchange="event.stopPropagation()">${fly.sizes.map(s=>`<option>${s}</option>`).join("")}</select>
          </div>`
       : "";
 
     const colorSel = fly.colors
       ? `<div class="option-row">
            <span class="option-label">Color</span>
-           <select id="color-${fly.id}">${fly.colors.map(c=>`<option>${c}</option>`).join("")}</select>
+           <select id="color-${fly.id}" onclick="event.stopPropagation()" onchange="event.stopPropagation()">${fly.colors.map(c=>`<option>${c}</option>`).join("")}</select>
          </div>`
       : "";
 
@@ -3647,6 +3623,9 @@ function buildCatalog() {
     const imgDim = isSticker ? 240 : 280;
     const flySlug = slugifyFlyName(fly.name);
     const shareRow = `<div class="fly-share-row"><button class="fly-share-btn" onclick="event.stopPropagation();openFlyShare(${fly.id},event)" aria-label="Share ${fly.name.replace(/"/g, '&quot;')}" title="Share"><span class="fly-share-btn-icon">📤</span> Share</button></div>`;
+    // Entire card navigates to the per-fly page on click. Interactive children
+    // (qty buttons, Add to Cart, size/color selects, gallery nav, share button)
+    // stop propagation so they don't trigger navigation when used.
     const imgBlock = fly.bundle
       ? `<div class="fly-img sticker-bundle-img">
            ${fly.bundle_includes.map(function(childId) {
@@ -3657,21 +3636,21 @@ function buildCatalog() {
          </div>`
       : fly.gallery
       ? `<div class="fly-img fly-gallery-wrap${isSticker ? ' sticker-img' : ''}" id="gallery-wrap-${fly.id}">
-           <img src="${FLY_IMAGES[fly.gallery[0]]}" alt="${fly.name}" loading="lazy" width="${imgDim}" height="${imgDim}" id="gallery-img-${fly.id}" onclick="openGalleryLightbox(${fly.id})">
-           <button class="gallery-nav prev" onclick="cycleGallery(${fly.id},-1)">&#8249;</button>
-           <button class="gallery-nav next" onclick="cycleGallery(${fly.id},1)">&#8250;</button>
+           <img src="${FLY_IMAGES[fly.gallery[0]]}" alt="${fly.name}" loading="lazy" width="${imgDim}" height="${imgDim}" id="gallery-img-${fly.id}">
+           <button class="gallery-nav prev" onclick="event.stopPropagation();cycleGallery(${fly.id},-1)">&#8249;</button>
+           <button class="gallery-nav next" onclick="event.stopPropagation();cycleGallery(${fly.id},1)">&#8250;</button>
            <div class="fly-gallery-dots">
-             ${fly.gallery.map((k,i)=>`<button class="gallery-dot${i===0?' active':''}" onclick="setGalleryImg(${fly.id},${i})"></button>`).join('')}
+             ${fly.gallery.map((k,i)=>`<button class="gallery-dot${i===0?' active':''}" onclick="event.stopPropagation();setGalleryImg(${fly.id},${i})"></button>`).join('')}
            </div>
            ${badge}
          </div>`
-      : `<div class="fly-img${isSticker ? ' sticker-img' : ''}" onclick="openLightbox('${fly.img}','${fly.name.replace(/'/g, "\\'")}')">
+      : `<div class="fly-img${isSticker ? ' sticker-img' : ''}">
            <img src="${FLY_IMAGES[fly.img]}" alt="${fly.name}" loading="lazy" width="${imgDim}" height="${imgDim}" style="${fly.id===9?'transform:rotate(90deg) scale(1.4);':fly.id===6?'object-fit:cover;object-position:top;':fly.id===5?'object-fit:cover;object-position:right;':''}">
            ${badge}
          </div>`;
 
     target.innerHTML += `
-      <div class="fly-card" id="fly-${flySlug}" data-fly-slug="${flySlug}" data-search="${(fly.name + ' ' + fly.desc).toLowerCase().replace(/"/g, '&quot;')}" data-fly-name="${fly.name.replace(/"/g, '&quot;')}" data-fly-price="${fly.price}">
+      <div class="fly-card fly-card-clickable" id="fly-${flySlug}" data-fly-slug="${flySlug}" data-search="${(fly.name + ' ' + fly.desc).toLowerCase().replace(/"/g, '&quot;')}" data-fly-name="${fly.name.replace(/"/g, '&quot;')}" data-fly-price="${fly.price}" onclick="window.location.href='/flies/${flySlug}.html'">
         ${ribbon}
         ${imgBlock}
         ${shareRow}
@@ -3679,7 +3658,6 @@ function buildCatalog() {
           <div class="fly-name">${fly.name}</div>
           <div class="fly-desc">${fly.desc}</div>
           <div class="fly-price">$${fly.price} ${priceSuffix}</div>
-          <a class="fly-details-link" href="/flies/${flySlug}.html">View Full Details</a>
         </div>
         <div class="fly-options">
           ${sizeSel}
@@ -3687,12 +3665,12 @@ function buildCatalog() {
           <div class="option-row">
             <span class="option-label">${qtyLabel}</span>
             <div class="qty-row">
-              <button class="qty-btn" onclick="changeQty(${fly.id},-1)">−</button>
+              <button class="qty-btn" onclick="event.stopPropagation();changeQty(${fly.id},-1)">−</button>
               <span class="qty-display" id="qty-${fly.id}">1</span>
-              <button class="qty-btn" onclick="changeQty(${fly.id},1)">+</button>
+              <button class="qty-btn" onclick="event.stopPropagation();changeQty(${fly.id},1)">+</button>
             </div>
           </div>
-          <button class="add-btn" onclick="addToCart(${fly.id})">Add to Cart</button>
+          <button class="add-btn" onclick="event.stopPropagation();addToCart(${fly.id})">Add to Cart</button>
         </div>
       </div>
     `;
