@@ -487,7 +487,6 @@
     flex: 1;
   }
   .mobile-sticky-cta .msc-text strong { color: var(--gold); }
-  .mobile-sticky-cta .msc-text .left { color: var(--red-bright); }
   .mobile-sticky-cta .msc-btn {
     background: var(--red);
     color: #fff;
@@ -1671,12 +1670,12 @@ function submitDropWaitlist(ev) {
 }
 </script>
 
-<!-- CRO-2: Mobile sticky CTA -->
+<!-- CRO-2: Mobile sticky CTA. Text is rehydrated by renderDropCounter() in the
+     CRO-1 script block per the current TT_DROP_STATE; the static text below is
+     the no-JS fallback (= pre-launch / waitlist == 0 state). -->
 <div class="mobile-sticky-cta" id="mobileStickyCta">
-  <div class="msc-text">
-    <strong>Founding 10</strong> · <span class="left"><strong data-founding-left>10</strong> spots</span> at $20/mo
-  </div>
-  <a class="msc-btn" href="#waitlist">Join →</a>
+  <div class="msc-text"><strong>Founding 10</strong> · $20/mo locked for life</div>
+  <a class="msc-btn" href="#waitlist">Join the waitlist →</a>
 </div>
 
 <script>
