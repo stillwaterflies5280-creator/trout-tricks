@@ -894,6 +894,23 @@
     font-size: 1.2rem; letter-spacing: 0.1em;
     color: #fff; pointer-events: none;
   }
+  .lightbox-share-btn {
+    position: absolute; top: 16px; right: 70px;
+    background: rgba(255,255,255,0.1);
+    border: 1px solid rgba(255,255,255,0.35);
+    color: #fff;
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 0.85rem; font-weight: 700; letter-spacing: 0.12em;
+    text-transform: uppercase;
+    padding: 8px 14px;
+    border-radius: 4px;
+    cursor: pointer;
+    z-index: 1001;
+  }
+  .lightbox-share-btn:hover { background: rgba(255,255,255,0.2); }
+  @media (max-width: 480px) {
+    .lightbox-share-btn { right: 60px; padding: 6px 10px; font-size: 0.78rem; }
+  }
 
   .fly-badge {
     position: absolute;
@@ -927,23 +944,30 @@
     border-bottom: 1px solid #E74C3C;
   }
 
-  /* Per-fly share button (top-left of .fly-img) + page-level share modal */
-  .fly-share-btn {
-    position: absolute; top: 8px; left: 8px;
-    background: rgba(0,0,0,0.55);
-    border: 1px solid rgba(255,255,255,0.25);
-    color: #fff;
-    width: 32px; height: 32px;
-    border-radius: 50%;
-    cursor: pointer;
-    z-index: 5;
-    font-size: 0.95rem;
-    line-height: 1;
-    display: flex; align-items: center; justify-content: center;
-    transition: background 0.2s, transform 0.2s;
-    padding: 0;
+  /* Per-fly share button (sits below the photo, before the fly-info text) */
+  .fly-share-row {
+    padding: 10px 16px 0;
+    display: flex;
+    justify-content: flex-end;
   }
-  .fly-share-btn:hover { background: var(--red); transform: scale(1.08); }
+  .fly-share-btn {
+    background: transparent;
+    border: 1px solid var(--red);
+    color: var(--red);
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 0.78rem; font-weight: 700;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    padding: 6px 12px;
+    border-radius: 4px;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    transition: background 0.2s, color 0.2s;
+  }
+  .fly-share-btn:hover { background: var(--red); color: #fff; }
+  .fly-share-btn-icon { font-size: 0.95rem; line-height: 1; }
   .fly-card-highlight {
     box-shadow: 0 0 30px var(--red), 0 0 12px var(--red);
     transition: box-shadow 0.4s;
@@ -3082,7 +3106,8 @@
 
 <!-- LIGHTBOX -->
 <div class="lightbox" id="lightbox" onclick="closeLightbox()">
-  <button class="lightbox-close" onclick="closeLightbox()">✕</button>
+  <button class="lightbox-close" onclick="event.stopPropagation();closeLightbox()" aria-label="Close">✕</button>
+  <button class="lightbox-share-btn" id="lightboxShareBtn" onclick="event.stopPropagation();shareFromLightbox()" style="display:none;">📤 Share</button>
   <img id="lightboxImg" src="" alt="">
   <div class="lightbox-name" id="lightboxName"></div>
 </div>
@@ -3845,10 +3870,9 @@ function buildCatalog() {
     // for bundle thumbnail cells.
     const imgDim = isSticker ? 240 : 280;
     const flySlug = slugifyFlyName(fly.name);
-    const shareBtn = `<button class="fly-share-btn" onclick="event.stopPropagation();openFlyShare(${fly.id},event)" aria-label="Share ${fly.name.replace(/"/g, '&quot;')}" title="Share">📤</button>`;
+    const shareRow = `<div class="fly-share-row"><button class="fly-share-btn" onclick="event.stopPropagation();openFlyShare(${fly.id},event)" aria-label="Share ${fly.name.replace(/"/g, '&quot;')}" title="Share"><span class="fly-share-btn-icon">📤</span> Share</button></div>`;
     const imgBlock = fly.bundle
       ? `<div class="fly-img sticker-bundle-img">
-           ${shareBtn}
            ${fly.bundle_includes.map(function(childId) {
              var child = flies.find(function(f) { return f.id === childId; });
              return child ? `<div class="bundle-thumb"><img src="${FLY_IMAGES[child.img]}" alt="${child.name}" loading="lazy" width="92" height="92"></div>` : '';
@@ -3857,7 +3881,6 @@ function buildCatalog() {
          </div>`
       : fly.gallery
       ? `<div class="fly-img fly-gallery-wrap${isSticker ? ' sticker-img' : ''}" id="gallery-wrap-${fly.id}">
-           ${shareBtn}
            <img src="${FLY_IMAGES[fly.gallery[0]]}" alt="${fly.name}" loading="lazy" width="${imgDim}" height="${imgDim}" id="gallery-img-${fly.id}" onclick="openGalleryLightbox(${fly.id})">
            <button class="gallery-nav prev" onclick="cycleGallery(${fly.id},-1)">&#8249;</button>
            <button class="gallery-nav next" onclick="cycleGallery(${fly.id},1)">&#8250;</button>
@@ -3867,7 +3890,6 @@ function buildCatalog() {
            ${badge}
          </div>`
       : `<div class="fly-img${isSticker ? ' sticker-img' : ''}" onclick="openLightbox('${fly.img}','${fly.name.replace(/'/g, "\\'")}')">
-           ${shareBtn}
            <img src="${FLY_IMAGES[fly.img]}" alt="${fly.name}" loading="lazy" width="${imgDim}" height="${imgDim}" style="${fly.id===9?'transform:rotate(90deg) scale(1.4);':fly.id===6?'object-fit:cover;object-position:top;':fly.id===5?'object-fit:cover;object-position:right;':''}">
            ${badge}
          </div>`;
@@ -3876,6 +3898,7 @@ function buildCatalog() {
       <div class="fly-card" id="fly-${flySlug}" data-fly-slug="${flySlug}" data-search="${(fly.name + ' ' + fly.desc).toLowerCase().replace(/"/g, '&quot;')}" data-fly-name="${fly.name.replace(/"/g, '&quot;')}" data-fly-price="${fly.price}">
         ${ribbon}
         ${imgBlock}
+        ${shareRow}
         <div class="fly-info">
           <div class="fly-name">${fly.name}</div>
           <div class="fly-desc">${fly.desc}</div>
@@ -5072,6 +5095,18 @@ function showToast(msg) {
   setTimeout(()=>t.classList.remove("show"), 2500);
 }
 
+let _currentLightboxFlyId = null;
+
+function _updateLightboxShareBtn() {
+  const btn = document.getElementById('lightboxShareBtn');
+  if (!btn) return;
+  btn.style.display = _currentLightboxFlyId ? '' : 'none';
+}
+
+function shareFromLightbox(ev) {
+  if (_currentLightboxFlyId != null) openFlyShare(_currentLightboxFlyId, ev);
+}
+
 function openLightbox(imgKey, name) {
   const lb = document.getElementById('lightbox');
   const img = document.getElementById('lightboxImg');
@@ -5080,6 +5115,10 @@ function openLightbox(imgKey, name) {
   // Apply rotation for fly9 in lightbox too
   img.style.transform = imgKey === 'fly9' ? 'rotate(90deg)' : '';
   nm.textContent = name;
+  // Resolve fly id from name so the lightbox share button knows what to share
+  const matched = (typeof flies !== 'undefined') ? flies.find(f => f.name === name) : null;
+  _currentLightboxFlyId = matched ? matched.id : null;
+  _updateLightboxShareBtn();
   lb.classList.add('open');
   document.body.style.overflow = 'hidden';
 }
@@ -5087,6 +5126,8 @@ function openLightbox(imgKey, name) {
 function closeLightbox() {
   document.getElementById('lightbox').classList.remove('open');
   document.body.style.overflow = '';
+  _currentLightboxFlyId = null;
+  _updateLightboxShareBtn();
 }
 
 // Close lightbox on Escape key

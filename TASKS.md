@@ -12,7 +12,8 @@ Persistent source of truth for active, blocked, and closed work. All adds/closes
 - **#20** UTM social bio links via Bit.ly + GA4
 - **#30** Tying expertise blog posts — needs photo shoot session first, then write
 - **#31** SEO P3 (ongoing) — backlinks from tier-adjacent sites
-- **#33** PATH A — extract `flies[]` + cart functions to shared `/js/catalog.js`
+- **#33a** PATH A (refactor) — extract `flies[]` + `FLY_IMAGES` + cart functions from `index.html` and `fish.html` into shared `/js/catalog.js`. Both pages `<script src>` it. Pure code-hygiene win, ~2 hr, no UI change. **Prereq for #33b.**
+- **#33b** Per-fly static pages — generate `/flies/<slug>.html` (e.g. `/flies/balanced-leech.html`) for every fly + sticker + bundle. Each gets unique `<title>`, meta description, OG tags (so iMessage/FB/X show a real preview card when shared), and Product JSON-LD schema. Existing catalog hash anchors (`#fly-<slug>`) stay working for in-page scroll; the per-fly page becomes the canonical share target. Unlocks per-fly SEO ranking (e.g. ranking for "balanced leech colorado" on a dedicated page instead of the homepage). ~4–6 hr after #33a. **Open questions before starting:** (1) URL flavor — `/flies/balanced-leech.html` vs `/flies/balanced-leech/` folder index; (2) catalog card behavior — does clicking the card take you to the per-fly page or still expand the lightbox; (3) what extra content lives on the per-fly page beyond what the catalog card has (fish-it-on lakes, related blog posts, FAQ, sizing chart).
 - **#35** Verify GBP listing reflects tier positioning (Manufacturer + remove charters / clothing / fishing store) — may be blocked until video verification; pending backend check
 - **#38** Free sticker with fly order — gift-with-purchase mechanic
 - **#40** Stillwater money-keyword SEO sprint — keyword domination on Antero / Spinney / Eleven Mile / Delaney+Lake John posts
