@@ -2119,7 +2119,11 @@
   <div class="sticker-hero">
     <h1>FREE STICKER GIVEAWAY</h1>
     <p class="sticker-subhead">First 15 new subscribers get a free Trout Tricks sticker shipped to your door.</p>
-    <div class="sticker-counter-badge" id="stickerCounterBadge" style="display:none;">— of 15 stickers left</div>
+    <!-- 2026-05-13: Campaign is closed (all 15 claimed). Counter badge defaults
+         to the "GIVEAWAY OVER" stamp. JS will UPDATE it if Apps Script reports
+         available > 0 (i.e., Thomas raised the cap to relaunch); otherwise it
+         stays in the closed state even when fetch fails or JS doesn't run. -->
+    <div class="sticker-counter-badge closed" id="stickerCounterBadge" style="display:inline-block;">GIVEAWAY OVER</div>
   </div>
 
   <!-- STICKER PHOTO HERO -->
@@ -2131,13 +2135,13 @@
     <div class="sticker-photo-caption">Two designs. One free sticker. (I pick which one.)</div>
   </div>
 
-  <!-- DISCLAIMER -->
-  <div class="sticker-disclaimer" id="stickerDisclaimer">
+  <!-- DISCLAIMER (default-hidden — campaign closed; JS re-shows if cap raised) -->
+  <div class="sticker-disclaimer" id="stickerDisclaimer" style="display:none;">
     <strong>This giveaway is for new email subscribers only.</strong> If you're already on my list, please save the freebie for someone discovering Trout Tricks for the first time. (Honor system &mdash; I appreciate it.)
   </div>
 
-  <!-- FORM (visible when capacity available) -->
-  <div class="sticker-form-wrap" id="stickerFormWrap">
+  <!-- FORM (default-hidden — campaign closed; JS re-shows if cap raised) -->
+  <div class="sticker-form-wrap" id="stickerFormWrap" style="display:none;">
     <section class="contact-form-section" aria-labelledby="stickerFormTitle">
       <h2 id="stickerFormTitle" class="contact-form-title" style="margin-bottom:14px;">CLAIM YOUR STICKER</h2>
 
@@ -2231,8 +2235,8 @@
   </div>
 
   <!-- BONUS TIER -->
-  <div class="sticker-bonus-pointers" id="stickerBonusPointers" aria-hidden="true">↓ ↓ ↓</div>
-  <div class="sticker-bonus" id="stickerBonus">
+  <div class="sticker-bonus-pointers" id="stickerBonusPointers" aria-hidden="true" style="display:none;">↓ ↓ ↓</div>
+  <div class="sticker-bonus" id="stickerBonus" style="display:none;">
     <div class="sticker-bonus-eyebrow">🎣 Bonus Tier 🎣</div>
     <div class="sticker-bonus-title">Want a free 5-pack of hand-tied flies?</div>
     <p>Post a pic with your sticker + tag <code>@trouttricks</code> + <code>#TroutTricksStickers</code> and you're entered in the drawing.</p>
@@ -2240,7 +2244,9 @@
   </div>
 
   <!-- CLOSED STATE (hidden by default; revealed by JS when count >= 15) -->
-  <div class="sticker-closed" id="stickerClosed" style="display:none;">
+  <!-- Closed-state card is the DEFAULT now; JS hides it only if Apps Script
+       returns available > 0 (i.e., campaign has been re-opened with a new cap). -->
+  <div class="sticker-closed" id="stickerClosed" style="display:block;">
     <div class="sticker-closed-eyebrow">🎣 Campaign Closed</div>
     <div class="sticker-closed-title">All 15 stickers claimed.</div>
     <p>We'll let you know when we run this again.</p>
@@ -3030,10 +3036,26 @@ window.addEventListener('DOMContentLoaded', function() {
 });
 
 function showStickerCounter(available, max) {
-  var badge = document.getElementById('stickerCounterBadge');
-  if (!badge) return;
-  badge.textContent = available + ' of ' + max + ' stickers left';
-  badge.style.display = 'inline-block';
+  // Page now defaults to CLOSED state. This function gets called only when
+  // Apps Script reports available > 0 — i.e., campaign is open OR was relaunched
+  // by raising the cap. Restores the open-state UI from its default-hidden state.
+  var badge      = document.getElementById('stickerCounterBadge');
+  var formWrap   = document.getElementById('stickerFormWrap');
+  var bonus      = document.getElementById('stickerBonus');
+  var pointers   = document.getElementById('stickerBonusPointers');
+  var disclaimer = document.getElementById('stickerDisclaimer');
+  var closed     = document.getElementById('stickerClosed');
+
+  if (badge) {
+    badge.textContent = available + ' of ' + max + ' stickers left';
+    badge.classList.remove('closed');
+    badge.style.display = 'inline-block';
+  }
+  if (formWrap)   formWrap.style.display   = '';
+  if (bonus)      bonus.style.display      = '';
+  if (pointers)   pointers.style.display   = '';
+  if (disclaimer) disclaimer.style.display = '';
+  if (closed)     closed.style.display     = 'none';
 }
 
 // Option B closed state: keep the marketing visuals (sticker photos + hero),
