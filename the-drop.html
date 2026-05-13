@@ -433,27 +433,32 @@
   .founding-strip-main .price { color: var(--red-bright); font-weight: 700; }
   .founding-strip-main .crossed { color: #888; text-decoration: line-through; margin-left: 6px; }
 
-  /* CRO-1: Founding scarcity counter (rendered in 3 spots: hero, founding strip, waitlist form) */
+  /* CRO-1: Founding-progress counter. State-aware: hidden when waitlist == 0,
+     shows waitlist progress 1-24, switches to founding-spots-claimed at 25+,
+     closed-state at 10/10. Understated brand voice — gold rule above, white
+     text, no emoji or animation. Populated by render() in the JS at end of body. */
   .founding-counter {
-    display: inline-flex;
-    align-items: center;
-    gap: 8px;
-    background: rgba(192,57,43,0.15);
-    border: 1px solid var(--red);
-    border-radius: 999px;
-    padding: 6px 14px;
+    display: block;
+    max-width: 520px;
+    margin: 18px auto 0;
+    padding: 10px 16px 0;
+    border-top: 1px solid var(--gold);
+    background: transparent;
     font-family: 'Barlow Condensed', sans-serif;
-    font-size: 0.88rem;
-    font-weight: 700;
-    letter-spacing: 0.08em;
-    text-transform: uppercase;
+    font-size: 0.92rem;
+    letter-spacing: 0.05em;
     color: #fff;
-    margin: 14px auto 0;
+    text-align: center;
+    font-weight: 400;
+    line-height: 1.5;
   }
-  .founding-counter .flame { font-size: 0.95rem; }
-  .founding-counter strong { color: var(--gold); font-weight: 700; }
-  .founding-counter .sep { opacity: 0.4; }
-  .founding-counter .left { color: var(--red-bright); }
+  .founding-counter[hidden] { display: none; }
+  .founding-counter strong { font-weight: 700; color: #fff; }
+  .founding-counter .accent { color: var(--gold); font-weight: 600; }
+  .founding-counter .dot { color: #555; margin: 0 8px; }
+  .founding-counter.closed-state { color: #888; }
+  .founding-counter.closed-state strong { color: #aaa; }
+  .founding-counter.closed-state .accent { color: #aaa; }
 
   /* CRO-2: Mobile sticky CTA bar */
   .mobile-sticky-cta {
@@ -1147,12 +1152,8 @@
     <h1>Real-time intel for serious<br><span class="accent">Colorado stillwater</span> anglers.</h1>
     <p class="hero-sub">A mastermind for Colorado stillwater. <strong>Bi-weekly live calls. Real intel. Real anglers.</strong></p>
     <div class="hero-tier">Premium tier · <strong>Founding 10 — $20/mo locked for life</strong></div>
-    <div class="founding-counter">
-      <span class="flame">🔥</span>
-      <span><strong data-founding-claimed>0</strong> of <strong>10</strong> founding spots claimed</span>
-      <span class="sep">·</span>
-      <span class="left"><strong data-founding-left>10</strong> left at $20/mo</span>
-    </div>
+    <!-- Counter is hydrated by renderDropCounter() in the JS at end of body. Hidden by default; shows only when state.waitlist > 0. -->
+    <div class="founding-counter" data-drop-counter hidden></div>
     <div class="hero-cta-row" style="margin-top:18px;">
       <a class="btn-primary" href="#waitlist">Join the Waitlist</a>
     </div>
@@ -1166,12 +1167,7 @@
     First 10 members lock in <span class="price">$20/mo</span> for life <span class="crossed">$35/mo</span>
     &nbsp;·&nbsp; After 10, founding rate closes forever.
   </div>
-  <div class="founding-counter">
-    <span class="flame">🔥</span>
-    <span><strong data-founding-claimed>0</strong> of <strong>10</strong> claimed</span>
-    <span class="sep">·</span>
-    <span class="left"><strong data-founding-left>10</strong> spots remaining</span>
-  </div>
+  <div class="founding-counter" data-drop-counter hidden></div>
 </div>
 
 <!-- WHAT IS THE DROP -->
@@ -1402,12 +1398,6 @@
     <h2 class="section-title">Join the <span class="accent">Drop Waitlist</span>.</h2>
     <div class="divider"></div>
     <p class="section-sub">No commitment yet. Get notified when membership opens and claim a founding spot before they fill.</p>
-    <div class="founding-counter">
-      <span class="flame">🔥</span>
-      <span><strong data-founding-claimed>0</strong> of <strong>10</strong> founding spots claimed</span>
-      <span class="sep">·</span>
-      <span class="left"><strong data-founding-left>10</strong> left</span>
-    </div>
 
     <div class="form-card" id="formCard">
       <form id="dropForm" onsubmit="return submitDropWaitlist(event)">
@@ -1425,6 +1415,7 @@
           You'll get <strong>first access</strong> to the 10 founding spots ($20/mo locked for life) the moment membership opens.
         </p>
         <button type="submit" class="form-submit" id="dropSubmit">Add Me to the Waitlist</button>
+        <div class="founding-counter" data-drop-counter hidden></div>
         <p class="form-fine">No spam. You'll get one email when membership opens.</p>
       </form>
     </div>
@@ -1690,27 +1681,74 @@ function submitDropWaitlist(ev) {
 
 <script>
 // ============================================================
-// CRO-1: Founding scarcity counter
-// Update FOUNDING_CLAIMED as signups come in. All three
-// counter renderings + the mobile sticky CTA read from this.
+// CRO-1: Drop progress counter — state-aware
+//
+// HOW TO UPDATE: edit window.TT_DROP_STATE below by hand as signups
+// roll in. ONE place. The renderer hydrates 3 in-body counter slots
+// (hero, founding strip, under-form) AND the mobile sticky CTA from
+// the same state object. No backend yet — future enhancement is a
+// Klaviyo webhook -> JSON file that the page fetches.
+//
+// STATE MACHINE:
+//   waitlist == 0                 -> counter HIDDEN. Hero + strip fallback copy carries it.
+//   waitlist 1..24                -> "{n} of 25 on the waitlist · founding 10 opens at 25"
+//   waitlist >=25, claimed 0..9   -> "{c} of 10 founding spots claimed · {10-c} left at $20/mo locked for life"
+//   founding_claimed >=10         -> "Founding 10 closed · join the waitlist for standard rate"
 // ============================================================
-(function() {
-  var FOUNDING_CLAIMED = 0;
-  var FOUNDING_CAP = 10;
-  var left = Math.max(0, FOUNDING_CAP - FOUNDING_CLAIMED);
-  document.querySelectorAll('[data-founding-claimed]').forEach(function(el) {
-    el.textContent = FOUNDING_CLAIMED;
-  });
-  document.querySelectorAll('[data-founding-left]').forEach(function(el) {
-    el.textContent = left;
-  });
-  // If all founding spots are claimed, swap the urgency framing
-  if (left === 0) {
-    document.querySelectorAll('.founding-counter, .mobile-sticky-cta .msc-text').forEach(function(el) {
-      el.style.opacity = '0.7';
-    });
+window.TT_DROP_STATE = { waitlist: 0, founding_claimed: 0 };
+
+function renderDropCounter() {
+  var s = window.TT_DROP_STATE || { waitlist: 0, founding_claimed: 0 };
+  var wl = parseInt(s.waitlist, 10) || 0;
+  var fc = parseInt(s.founding_claimed, 10) || 0;
+  var mode, main, sub, closed = false;
+
+  if (fc >= 10) {
+    mode = 'closed';
+    main = 'Founding 10 closed';
+    sub  = 'Join the waitlist for standard rate';
+    closed = true;
+  } else if (wl >= 25) {
+    mode = 'founding-open';
+    main = fc + ' of 10 founding spots claimed';
+    sub  = (10 - fc) + ' left at $20/mo locked for life';
+  } else if (wl > 0) {
+    mode = 'waitlist';
+    main = wl + ' of 25 on the waitlist';
+    sub  = 'Founding 10 opens at 25';
+  } else {
+    mode = 'pre-launch';
   }
-})();
+
+  // In-body counter slots
+  var nodes = document.querySelectorAll('[data-drop-counter]');
+  nodes.forEach(function(el) {
+    el.classList.toggle('closed-state', closed);
+    if (mode === 'pre-launch') {
+      el.hidden = true;
+      el.innerHTML = '';
+    } else {
+      el.hidden = false;
+      el.innerHTML = '<strong>' + main + '</strong><span class="dot">·</span><span class="accent">' + sub + '</span>';
+    }
+  });
+
+  // Mobile sticky CTA (CRO-2 — render's also wired here so it stays in sync)
+  var stickyText = document.querySelector('#mobileStickyCta .msc-text');
+  if (stickyText) {
+    if (mode === 'pre-launch') {
+      stickyText.innerHTML = '<strong>Founding 10</strong> · $20/mo locked for life';
+    } else if (mode === 'waitlist') {
+      stickyText.innerHTML = '<strong>' + wl + ' of 25</strong> on the waitlist · Founding 10 opens at 25';
+    } else if (mode === 'founding-open') {
+      stickyText.innerHTML = '<strong>' + (10 - fc) + '</strong> founding spots left · $20/mo for life';
+    } else {
+      stickyText.innerHTML = '<strong>Founding 10 closed</strong> · Standard rate now $35/mo';
+    }
+  }
+}
+
+renderDropCounter();
 
 // CRO-2: Reveal mobile sticky CTA after 20% scroll, hide near waitlist form
 (function() {
