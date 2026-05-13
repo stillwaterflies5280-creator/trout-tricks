@@ -2754,5 +2754,34 @@ window.addEventListener('DOMContentLoaded', function(){
 });
 </script>
 
+<script>
+/* tt-blog-img-lightbox-v1 */
+// Click-to-enlarge for body images in blog posts. Wires every img inside
+// .blog-post to the existing #lightbox modal (used by the fly catalog too).
+// Skips partner logos and the lightbox img itself.
+(function() {
+  var posts = document.querySelectorAll('.blog-post');
+  if (!posts.length) return;
+  var lb = document.getElementById('lightbox');
+  var lbImg = document.getElementById('lightboxImg');
+  if (!lb || !lbImg) return;
+  posts.forEach(function(post) {
+    post.querySelectorAll('img').forEach(function(img) {
+      if (img.id === 'lightboxImg') return;
+      if (img.closest('.partners') || img.closest('.partner-logos')) return;
+      if (img.src && img.src.indexOf('partner-') !== -1) return;
+      img.style.cursor = 'zoom-in';
+      img.addEventListener('click', function() {
+        lbImg.src = img.src;
+        lbImg.alt = img.alt || '';
+        lbImg.style.transform = '';
+        lb.classList.add('open');
+        document.body.style.overflow = 'hidden';
+      });
+    });
+  });
+})();
+</script>
+
 </body>
 </html>
