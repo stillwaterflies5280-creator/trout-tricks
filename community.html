@@ -1979,35 +1979,27 @@
   <section class="cp-hero">
     <h1>JOIN THE COMMUNITY</h1>
     <div class="cp-hero-sub">Talk stillwater. Share fish. Learn what's hatching.</div>
-    <p class="cp-hero-intro">Two free Facebook communities for Colorado stillwater anglers. Whether you're chasing chironomid hatches statewide or specifically obsessed with the Delaney/Lake John triangle, there's a spot for you.</p>
-  </section>
-
-  <section class="cp-cards">
-    <article class="cp-card">
-      <div class="cp-card-eyebrow">Statewide Hub</div>
-      <h2 class="cp-card-title">Colorado Stillwater Flies &amp; Techniques</h2>
-      <p class="cp-card-desc">The main hub. Stillwater patterns, lake reports, hatch updates, and conversation about fly fishing Colorado's lakes and reservoirs.</p>
-      <a class="cp-card-cta"
-         href="https://www.facebook.com/share/g/1GW8wCdgMh/?mibextid=wwXIfr"
-         target="_blank"
-         rel="noopener noreferrer"
-         onclick="if(typeof gtag==='function')gtag('event','community_fb_join',{group:'statewide'});">
-        Join on Facebook →
+    <p class="cp-hero-intro">A free Facebook community for Colorado stillwater anglers. Stillwater patterns, lake reports, hatch updates, and conversation about fly fishing Colorado's lakes and reservoirs.</p>
+    <!-- CRO fix from Clarity dead-click finding: H1 above is read as a button on
+         mobile (FB in-app browser especially). Primary CTA below captures that
+         intent without changing the H1 semantics. -->
+    <a class="cp-card-cta"
+       style="display:inline-block;max-width:480px;padding:18px 36px;margin:8px auto 14px;"
+       href="https://www.facebook.com/share/g/1GW8wCdgMh/?mibextid=wwXIfr"
+       target="_blank"
+       rel="noopener noreferrer"
+       onclick="if(typeof gtag==='function')gtag('event','community_fb_join',{group:'statewide'});">
+      Join on Facebook →
+    </a>
+    <p class="cp-secondary-line" style="margin-top:18px;font-size:0.88rem;color:var(--gray);">
+      Fish North Park specifically?
+      <a href="https://www.facebook.com/share/g/1HFtn9t9vE/?mibextid=wwXIfr"
+         target="_blank" rel="noopener noreferrer"
+         onclick="if(typeof gtag==='function')gtag('event','community_fb_join',{group:'north_park'});"
+         style="color:var(--gold);text-decoration:none;border-bottom:1px solid var(--gold);">
+        There&rsquo;s a separate group for that &rarr;
       </a>
-    </article>
-
-    <article class="cp-card">
-      <div class="cp-card-eyebrow">North Park · Hyper-Local</div>
-      <h2 class="cp-card-title">Lake John / North Delaney / South Delaney</h2>
-      <p class="cp-card-desc">Hyper-local community for North Park anglers. Daily reports, fly recommendations, and tactical chatter for these three lakes.</p>
-      <a class="cp-card-cta"
-         href="https://www.facebook.com/share/g/1HFtn9t9vE/?mibextid=wwXIfr"
-         target="_blank"
-         rel="noopener noreferrer"
-         onclick="if(typeof gtag==='function')gtag('event','community_fb_join',{group:'north_park'});">
-        Join on Facebook →
-      </a>
-    </article>
+    </p>
   </section>
 
   <div class="cp-divider"><hr></div>
