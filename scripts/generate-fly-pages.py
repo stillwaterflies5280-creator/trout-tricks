@@ -75,21 +75,12 @@ def category(fly):
 
 FISH_IT_ON = {
     'chironomid': (
-        'Chironomid Waters',
-        'These patterns earn fish on Colorado stillwaters where chironomids dominate '
-        'the menu — <strong>Antero Reservoir, Spinney Mountain, 11 Mile Reservoir, and '
-        'Delaney Buttes</strong> — plus North Park (Lake John), Steamboat-area waters, '
-        'and Wyoming stillwater rotations. Best season is <strong>ice-off through '
-        'mid-summer</strong> when chironomid emergence is heaviest. Run on an indicator '
-        'in the 12–22 ft column, with depth tuned to where fish are staged that day.'
+        'Stillwaters, Plains Lakes',
+        '<strong>Stillwaters, plains lakes.</strong>'
     ),
     'leech': (
-        'Leech Waters',
-        'A leech is a year-round Colorado stillwater staple — most productive in <strong>'
-        'fall and at ice-off</strong>, but it earns fish in every season. Strong on '
-        '<strong>Delaney Buttes, Lake John, North Park lakes, Eleven Mile, and Spinney '
-        'Mountain</strong>. Balanced versions ride hook-down under an indicator at any '
-        'depth; jigged versions fish well on a sinking line with a slow, varied retrieve.'
+        'Any Stillwater + Rivers',
+        '<strong>Any stillwater. And rivers too!</strong>'
     ),
 }
 
@@ -200,6 +191,103 @@ header nav a {{
   border-radius: 3px;
 }}
 header nav a:hover {{ border-color: var(--red); color: var(--red); }}
+.cart-pill {{
+  display: inline-flex; align-items: center; gap: 6px;
+  background: var(--red); color: #fff;
+  padding: 6px 12px; border-radius: 4px;
+  text-decoration: none;
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 0.92rem; letter-spacing: 0.1em;
+  text-transform: uppercase;
+  border: 2px solid var(--red-bright);
+}}
+.cart-pill:hover {{ background: var(--red-bright); }}
+.cart-pill-count {{
+  background: rgba(0,0,0,0.4);
+  border-radius: 12px;
+  padding: 0 8px;
+  font-size: 0.85rem;
+  min-width: 18px;
+  text-align: center;
+}}
+
+/* Quick-add UI in hero */
+.quick-add {{
+  margin-top: 20px;
+  padding: 16px;
+  background: rgba(0,0,0,0.25);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}}
+.qa-row {{
+  display: flex; align-items: center; gap: 12px;
+  flex-wrap: wrap;
+}}
+.qa-row label {{
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 0.85rem; letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--gray);
+  min-width: 60px;
+}}
+.qa-row select {{
+  background: #0a0a0a;
+  border: 1px solid var(--border);
+  color: var(--white);
+  padding: 8px 12px;
+  border-radius: 4px;
+  font-family: inherit;
+  font-size: 0.95rem;
+  min-width: 100px;
+  cursor: pointer;
+}}
+.qa-qty-row {{
+  display: inline-flex; align-items: center;
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  overflow: hidden;
+}}
+.qa-qty-btn {{
+  background: #111; border: none;
+  color: var(--white);
+  width: 36px; height: 36px;
+  font-size: 1.1rem; font-weight: 700;
+  cursor: pointer;
+}}
+.qa-qty-btn:hover {{ background: var(--red); }}
+.qa-qty {{
+  display: inline-block;
+  min-width: 36px; text-align: center;
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 1.1rem; padding: 0 10px;
+}}
+.qa-add {{
+  margin-top: 4px;
+  width: 100%;
+  justify-content: center;
+}}
+
+/* Toast notification */
+#toast {{
+  position: fixed;
+  bottom: 24px; left: 50%;
+  transform: translateX(-50%) translateY(120%);
+  background: var(--red);
+  color: #fff;
+  padding: 12px 24px;
+  border-radius: 6px;
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 1rem; letter-spacing: 0.08em;
+  text-transform: uppercase;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.6);
+  z-index: 3000;
+  transition: transform 0.4s ease;
+  pointer-events: none;
+}}
+#toast.show {{ transform: translateX(-50%) translateY(0); }}
 .breadcrumb {{
   padding: 14px 24px;
   font-size: 0.78rem;
@@ -358,6 +446,9 @@ footer a {{ color: var(--red); text-decoration: none; }}
     <a href="/blog.html">Blog</a>
     <a href="/about.html">About</a>
   </nav>
+  <a class="cart-pill" href="/#shop" aria-label="View cart">
+    🪝 Cart <span class="cart-pill-count" id="cart-pill-count">0</span>
+  </a>
 </header>
 
 <nav class="breadcrumb">
@@ -374,10 +465,7 @@ footer a {{ color: var(--red); text-decoration: none; }}
       <h1>{name_plain}</h1>
       <div class="hero-price">{price_display}{price_suffix}</div>
       <p class="hero-desc">{desc_plain}</p>
-      <div class="cta-row">
-        <a class="btn-primary" href="/#fly-{slug}">Add to Cart →</a>
-        <a class="btn-ghost" href="/#shop">Browse the Box</a>
-      </div>
+      {quick_add_html}
     </div>
   </div>
 
@@ -399,10 +487,12 @@ footer a {{ color: var(--red); text-decoration: none; }}
 
   <div class="bottom-cta">
     <h3>Ready to fish it?</h3>
-    <p>Hand-tied to order in Colorado. Order on the main catalog and we&rsquo;ll ship it out.</p>
-    <a class="btn-primary" href="/#fly-{slug}">Order {name_plain} →</a>
+    <p>Hand-tied to order in Colorado. Add it to your cart above &mdash; we&rsquo;ll ship it out.</p>
+    <a class="btn-primary" href="/#shop">View Full Cart &amp; Checkout &rarr;</a>
   </div>
 </main>
+
+<div id="toast" aria-live="polite"></div>
 
 <footer>
   &copy; 2026 Trout Tricks &middot; Hand-tied in Colorado &middot;
@@ -410,6 +500,56 @@ footer a {{ color: var(--red); text-decoration: none; }}
   <a href="/the-drop.html">The Drop</a> &middot;
   <a href="/blog.html">Blog</a>
 </footer>
+
+<script src="/js/catalog.js"></script>
+<script>
+// Quick-Add: writes to the same `tt_cart` localStorage shape the homepage cart
+// reads, so adds made here show up in the homepage cart panel + checkout flow.
+function quickAdd(flyId) {{
+  const fly = (typeof flies !== 'undefined') ? flies.find(f => f.id === flyId) : null;
+  if (!fly) {{ console.warn('Fly not found:', flyId); return; }}
+  const sizeEl = document.getElementById('qa-size');
+  const colorEl = document.getElementById('qa-color');
+  const qtyEl = document.getElementById('qa-qty');
+  const size = sizeEl ? sizeEl.value : (fly.sizes ? fly.sizes[0] : null);
+  const color = colorEl ? colorEl.value : null;
+  const qty = qtyEl ? parseInt(qtyEl.textContent, 10) || 1 : 1;
+  let cart = [];
+  try {{ cart = JSON.parse(localStorage.getItem('tt_cart') || '[]'); }} catch(e) {{}}
+  cart.push({{ flyId: flyId, size: size, color: color, qty: qty,
+              pickup: false, uid: Date.now() + Math.random() }});
+  localStorage.setItem('tt_cart', JSON.stringify(cart));
+  updateCartCount();
+  const label = (fly.category === 'sticker' || fly.bundle) ? '' : ' pack' + (qty > 1 ? 's' : '');
+  showToast(qty + label + ' of ' + fly.name + ' added!');
+  if (typeof gtag === 'function') {{
+    try {{ gtag('event', 'add_to_cart', {{ currency: 'USD', value: fly.price * qty, item_name: fly.name, quantity: qty }}); }} catch(e) {{}}
+  }}
+}}
+function updateCartCount() {{
+  let cart = [];
+  try {{ cart = JSON.parse(localStorage.getItem('tt_cart') || '[]'); }} catch(e) {{}}
+  const count = cart.reduce((s, i) => s + (parseInt(i.qty, 10) || 1), 0);
+  const el = document.getElementById('cart-pill-count');
+  if (el) el.textContent = count;
+}}
+function changeQty(delta) {{
+  const el = document.getElementById('qa-qty');
+  if (!el) return;
+  const next = Math.max(1, (parseInt(el.textContent, 10) || 1) + delta);
+  el.textContent = next;
+}}
+function showToast(msg) {{
+  const t = document.getElementById('toast');
+  if (!t) return;
+  t.textContent = msg;
+  t.classList.add('show');
+  clearTimeout(showToast._tid);
+  showToast._tid = setTimeout(() => t.classList.remove('show'), 2800);
+}}
+document.addEventListener('DOMContentLoaded', updateCartCount);
+window.addEventListener('storage', e => {{ if (e.key === 'tt_cart') updateCartCount(); }});
+</script>
 
 </body>
 </html>
@@ -431,6 +571,56 @@ def build_specs(fly):
         f'<div class="spec"><div class="spec-label">{html_escape(lbl)}</div><div class="spec-value">{html_escape(val)}</div></div>'
         for lbl, val in rows
     )
+
+
+def build_quick_add(fly, cat):
+    """Build the in-page Add-to-Cart UI for the hero. Writes to localStorage
+    tt_cart in the same shape the homepage cart reads, so adds persist across
+    pages. Showing the full slide-in cart panel stays on the homepage to keep
+    per-fly pages light and avoid duplicating ~600 lines of cart code per page."""
+    if cat == 'bundle':
+        # Bundles use a single "Add Bundle" button (no size/color selection)
+        return f'''<div class="quick-add">
+        <button class="btn-primary qa-add" onclick="quickAdd({fly['id']})">🪝 Add Bundle to Cart</button>
+        <a class="btn-ghost" href="/#shop">View Full Cart &rarr;</a>
+      </div>'''
+
+    size_sel = ''
+    if fly.get('sizes'):
+        opts = '\n          '.join(f'<option>{s}</option>' for s in fly['sizes'])
+        size_sel = f'''<div class="qa-row">
+        <label for="qa-size">Size</label>
+        <select id="qa-size">
+          {opts}
+        </select>
+      </div>'''
+
+    color_sel = ''
+    if fly.get('colors'):
+        opts = '\n          '.join(f'<option>{c}</option>' for c in fly['colors'])
+        color_sel = f'''<div class="qa-row">
+        <label for="qa-color">Color</label>
+        <select id="qa-color">
+          {opts}
+        </select>
+      </div>'''
+
+    qty_label = 'Qty' if cat == 'sticker' else 'Packs'
+
+    return f'''<div class="quick-add">
+      {size_sel}
+      {color_sel}
+      <div class="qa-row">
+        <label>{qty_label}</label>
+        <div class="qa-qty-row">
+          <button type="button" class="qa-qty-btn" onclick="changeQty(-1)">−</button>
+          <span class="qa-qty" id="qa-qty">1</span>
+          <button type="button" class="qa-qty-btn" onclick="changeQty(1)">+</button>
+        </div>
+      </div>
+      <button class="btn-primary qa-add" onclick="quickAdd({fly['id']})">🪝 Add to Cart</button>
+      <a class="btn-ghost" href="/#shop">View Full Cart &rarr;</a>
+    </div>'''
 
 
 def build_meta_desc(fly, cat):
@@ -500,6 +690,9 @@ def build_page(fly):
 
     rotate_style = ' style="transform:rotate(90deg) scale(1.4);"' if fly.get('id') == 9 else ''
 
+    # Quick-Add UI
+    quick_add_html = build_quick_add(fly, cat)
+
     # Specs
     specs_html = build_specs(fly)
 
@@ -563,6 +756,7 @@ def build_page(fly):
         price_display=price_display,
         price_suffix=price_suffix,
         desc_plain=html_escape(desc_plain),
+        quick_add_html=quick_add_html,
         specs_html=specs_html,
         fish_it_on_html=fish_it_on_html,
         blog_links_html=blog_links_html,

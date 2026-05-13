@@ -969,18 +969,29 @@
   .fly-share-btn:hover { background: var(--red); color: #fff; }
   .fly-share-btn-icon { font-size: 0.95rem; line-height: 1; }
   .fly-details-link {
-    display: inline-block;
-    margin-top: 8px;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    margin-top: 10px;
+    background: rgba(192,57,43,0.12);
     color: var(--red);
     text-decoration: none;
-    font-size: 0.82rem;
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 0.85rem;
     font-weight: 700;
-    letter-spacing: 0.06em;
-    border-bottom: 1px solid transparent;
-    padding-bottom: 1px;
-    transition: border-color 0.2s;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    padding: 8px 14px;
+    border: 1px solid var(--red);
+    border-radius: 4px;
+    transition: background 0.2s, color 0.2s, transform 0.15s;
   }
-  .fly-details-link:hover { border-bottom-color: var(--red); }
+  .fly-details-link::after { content: " →"; font-weight: 700; }
+  .fly-details-link:hover {
+    background: var(--red);
+    color: #fff;
+    transform: translateX(2px);
+  }
   .fly-card-highlight {
     box-shadow: 0 0 30px var(--red), 0 0 12px var(--red);
     transition: box-shadow 0.4s;
@@ -3668,7 +3679,7 @@ function buildCatalog() {
           <div class="fly-name">${fly.name}</div>
           <div class="fly-desc">${fly.desc}</div>
           <div class="fly-price">$${fly.price} ${priceSuffix}</div>
-          <a class="fly-details-link" href="/flies/${flySlug}.html">View Details &rarr;</a>
+          <a class="fly-details-link" href="/flies/${flySlug}.html">View Full Details</a>
         </div>
         <div class="fly-options">
           ${sizeSel}
