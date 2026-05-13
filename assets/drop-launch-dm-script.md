@@ -2,10 +2,10 @@
 
 **Personalize the opener per recipient.** The template below has bracketed placeholders for the personal touch. The bones of the message stay the same; the opener changes based on what you know about each person.
 
-**Send these one at a time, not in bulk.** Spread across a week. FB flags bulk-DMs as spam and the platform's "limited account" warning will tank your reach.
+**Send these one at a time, not in bulk.** Spread across a week. Every major DM platform (FB Messenger, Instagram, TikTok) flags bulk sending as spam and the platform's "limited account" warning will tank your reach.
 
 **UTM-tagged link:**
-`https://www.trouttricks.com/the-drop.html?utm_source=facebook&utm_medium=dm&utm_campaign=drop-launch&utm_content=personal-outreach`
+`https://www.trouttricks.com/the-drop.html?utm_source=dm&utm_medium=personal&utm_campaign=drop-launch&utm_content=personal-outreach`
 
 ---
 
@@ -24,7 +24,7 @@
 > 2. If yes — anything you'd want in or out?
 >
 > No pressure to join — I'm in research mode. If you do want a seat though, founding 10 is $20/mo locked for life:
-> trouttricks.com/the-drop.html?utm_source=facebook&utm_medium=dm&utm_campaign=drop-launch&utm_content=personal-outreach
+> trouttricks.com/the-drop.html?utm_source=dm&utm_medium=personal&utm_campaign=drop-launch&utm_content=personal-outreach
 >
 > Either way — appreciate the input. Tight lines.
 > — Thomas
@@ -56,7 +56,7 @@ These cover the most likely fan profiles. Mix-and-match so DMs don't feel script
 
 ## Don't do this
 
-- Don't copy-paste 10 of these in one sitting. FB sees the pattern.
+- Don't copy-paste 10 of these in one sitting. Every DM platform detects the pattern.
 - Don't make the link the first thing in the DM. Lead with the personal opener.
 - Don't apologize or hedge ("sorry to bother you," "I know this is random"). Reads weak.
 - Don't pitch in the opener. Ask first, offer second.
@@ -69,4 +69,4 @@ These cover the most likely fan profiles. Mix-and-match so DMs don't feel script
 
 After you send the 10 DMs, log each in a sheet (or just a note):
 - Name · group where you found them · date sent · opener variant used · response (Yes / No / No reply) · whether they signed up
-- This gives you the conversion rate for personal outreach. Likely far higher than the FB group posts — but only if you do the personalization right.
+- This gives you the conversion rate for personal outreach. Likely far higher than broader-reach channels (IG/TikTok organic, paid Meta) — but only if you do the personalization right.
