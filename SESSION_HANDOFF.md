@@ -11,6 +11,7 @@ Multi-thread parked work. Each section is independently resumable.
 - macOS Remote Login enabled (System Settings → General → Sharing → Remote Login)
 - `sshd` listening on port 22, reachable over Tailscale at `100.119.145.98`
 - Verified: `ssh -o BatchMode=yes thomasfrankmacbookair@100.119.145.98` returns `Permission denied (publickey,password,keyboard-interactive)` — auth methods advertised, just no creds presented. SSH server up, Tailscale routing works.
+- **tmux 3.6a installed** (`/usr/local/bin/tmux`) and persistence-verified: a detached `tmux new -d -s ...` session survives the spawning shell's exit and remains reattachable. That's the same daemonization mechanism that keeps a `tt` session alive across an SSH disconnect from the MacBook.
 
 **Why Remote Login instead of Tailscale SSH:** The original plan was `sudo tailscale set --ssh` (no key management, Tailscale-identity auth). Blocked by the **App Store Tailscale build's sandbox** — `RunSSH` can't be flipped on that build. Switching would require uninstalling the App Store version and reinstalling from `tailscale.com/download` (or Homebrew). Deferred — went with macOS Remote Login for now.
 
@@ -19,14 +20,15 @@ Multi-thread parked work. Each section is independently resumable.
 1. `ssh-keygen -t ed25519 -C "macbook-pro→mini"` (skip passphrase if you want unattended `tt` over SSH)
 2. `ssh-copy-id thomasfrankmacbookair@100.119.145.98` — prompts for Mini password once, installs pubkey into `~/.ssh/authorized_keys` on the Mini
 3. Verify passwordless: `ssh thomasfrankmacbookair@100.119.145.98 'hostname'` — should return `mac-mini` with no prompt
-4. `brew install tmux` — needed so a long-running `tt` session survives an SSH disconnect (`tmux new -s tt` → run `tt` → `Ctrl-b d` to detach → `tmux attach -t tt` to resume)
-5. Optional polish: add to MacBook's `~/.ssh/config`:
+4. Optional polish: add to MacBook's `~/.ssh/config`:
    ```
    Host mini
      HostName 100.119.145.98
      User thomasfrankmacbookair
    ```
    Then `ssh mini` works.
+
+**Working workflow once MacBook side is set up:** From the MacBook, `ssh mini` → on the Mini shell, `tmux new -s tt` → run `tt` inside that tmux → `Ctrl-b d` to detach when stepping away → close laptop / disconnect SSH freely → next time, `ssh mini` and `tmux attach -t tt` to resume the same session. tmux is on the Mini already (verified 2026-05-14); the MacBook only needs the system `ssh` client.
 
 ---
 
