@@ -56,6 +56,16 @@ const flies = [
     badge: "Top Secret"
   },
   {
+    id: 26, img: "jersey-boy",
+    name: "The Jersey Boy",
+    desc: "Collab pattern dialed in with master angler and tier Ryan \"Jito\" Garcia. Built for the technical eats Jito earns on his home water — translates straight to the Colorado stillwater rotation. Tied on 2x heavy.",
+    sizes: ["#12","#14","#16","#18"],
+    colors: null,
+    price: 21,
+    pack: 5,
+    badge: "Guide Pattern"
+  },
+  {
     id: 2, img: "fly2",
     name: "Chocolate Gold",
     desc: "Sleek, flashy, and tungsten-loaded. A proven guide pattern that sinks fast and triggers strikes when nothing else will. The go-to when fish are deep.",
@@ -306,7 +316,8 @@ const FLY_IMAGES = {
   brown3: "images/brown3.png",
   ironman: "images/ironman.jpg",
   bloodworm: "images/bloodworm.png",
-  bloodworm1: "images/bloodworm1.png"
+  bloodworm1: "images/bloodworm1.png",
+  "jersey-boy": "images/jersey-boy.jpg"
 };
 
 // Slugify a fly name into a URL-safe hash anchor / per-fly page filename.
