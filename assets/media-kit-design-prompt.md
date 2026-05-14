@@ -51,7 +51,7 @@ For headshot — Thomas has a photo at `images/thomas-frank-guide.jpg` (about pa
 
 1. **Chironomids & Buzzers** — Top Secret Ironman, Chocolate Gold, Snow Cone (Frank's Red Hot Ronnie), Chirono'midge, Burnt Wino, Burnt Hopper, Muskie Buzzer, Top Secret Winged Duck, Top Secret Winged Cone, Secret Bloodworm, The Jersey Boy (Ryan "Jito" Garcia collab)
 2. **Leeches** — Balanced Leech, Mayer's Leech, Micro Leech
-3. **Scuds** — Flash Scud (olive / tan / grey)
+3. **Scuds** — Bling Scud (olive / tan / grey)
 4. **Stickers** — Fish On, Don't Judge Me, Buffet Mode, Got Buzzers?, Drop It Like It's Hot, Brown Town, Butter Brown, Wordmark, Square, plus 3 bundle packs
 
 **Premium tier:**
