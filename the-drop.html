@@ -578,20 +578,33 @@
     align-items: center;
     justify-content: center;
     flex-wrap: wrap;
-    gap: 28px;
+    gap: 12px;
+  }
+  .footer-partners-strip a {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    text-decoration: none;
+    background: #fafafa;
+    padding: 10px 16px;
+    border-radius: 6px;
+    min-height: 52px;
+    min-width: 100px;
+    transition: transform 0.2s ease, background 0.2s ease;
+  }
+  .footer-partners-strip a:hover {
+    background: #fff;
+    transform: translateY(-2px);
   }
   .footer-partners-strip img {
     max-height: 32px;
     width: auto;
-    filter: brightness(0) invert(1);
-    opacity: 0.75;
-    transition: filter 0.3s ease, opacity 0.3s ease;
+    display: block;
   }
-  .footer-partners-strip img:hover { filter: none; opacity: 1; }
-  .footer-partners-strip a { display: inline-flex; align-items: center; text-decoration: none; }
   @media (max-width: 768px) {
-    .footer-partners-strip { gap: 12px 18px; }
-    .footer-partners-strip img { max-height: 26px; max-width: calc(25% - 14px); }
+    .footer-partners-strip { gap: 8px; }
+    .footer-partners-strip a { padding: 8px 12px; min-height: 44px; min-width: 78px; }
+    .footer-partners-strip img { max-height: 24px; }
   }
 
   /* GENERIC SECTION */
