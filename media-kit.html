@@ -206,6 +206,61 @@
     text-transform: uppercase;
   }
   .cover-year strong { color: var(--gold); }
+  .cover-cta-row {
+    margin-top: 28px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    justify-content: center;
+  }
+  .btn-primary {
+    background: var(--red);
+    color: #fff;
+    border: 2px solid #ff6b5b;
+    padding: 14px 28px;
+    border-radius: 6px;
+    font-family: 'Barlow Condensed', Impact, sans-serif;
+    font-size: 1.05rem;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    text-decoration: none;
+    cursor: pointer;
+    box-shadow: 0 0 18px rgba(192,57,43,0.6);
+    transition: background 0.2s, transform 0.1s;
+    display: inline-block;
+  }
+  .btn-primary:hover { background: var(--red-bright); }
+  .btn-primary:active { transform: translateY(1px); }
+  .btn-ghost {
+    background: transparent;
+    color: #fff;
+    border: 1px solid #555;
+    padding: 14px 26px;
+    border-radius: 6px;
+    font-family: 'Barlow Condensed', Impact, sans-serif;
+    font-size: 1.05rem;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    text-decoration: none;
+    display: inline-block;
+    transition: background 0.2s, border-color 0.2s;
+  }
+  .btn-ghost:hover { background: #1f1f1f; border-color: #888; }
+  .back-pdf {
+    display: inline-block;
+    margin-top: 22px;
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 0.82rem;
+    color: var(--light-gray);
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    text-decoration: none;
+    border-bottom: 1px dotted var(--gray);
+    padding-bottom: 2px;
+  }
+  .back-pdf:hover { color: var(--red-bright); border-bottom-color: var(--red-bright); }
 
   /* SECTIONS */
   section {
@@ -702,6 +757,10 @@
       Hand-tied chironomid and stillwater fly tier for Colorado and Wyoming lakes — Antero, Spinney Mountain, 11 Mile, Delaney Buttes, Lake John, and the rest of the rotation.
     </p>
     <div class="cover-year">For press, partners, and wholesale · <strong>Fairmount, CO</strong></div>
+    <div class="cover-cta-row">
+      <a class="btn-primary" href="/media/trouttricks-press-kit-2026.pdf" target="_blank" rel="noopener">Download Press Kit (PDF)</a>
+      <a class="btn-ghost" href="mailto:thomas@trouttricks.com?subject=Media%20Kit%20Inquiry">Email Press Inquiry</a>
+    </div>
   </div>
 </section>
 
@@ -967,6 +1026,7 @@
     <img src="images/qr-trouttricks.png" alt="QR code linking to trouttricks.com">
   </a>
   <div class="back-qr-label">Scan · trouttricks.com</div>
+  <a class="back-pdf" href="/media/trouttricks-press-kit-2026.pdf" target="_blank" rel="noopener">↓ Download Press Kit (PDF)</a>
 </div>
 
 <!-- FOOTER -->
