@@ -3598,8 +3598,10 @@ function buildCatalog() {
 
   const chironomidIds = new Set([2, 3, 4, 5, 6, 7, 8, 9, 1, 25, 26]);
   const leechIds = new Set([10, 11, 12]);
+  const scudIds = new Set([27]);
   const chironomids = flies.filter(f => chironomidIds.has(f.id));
   const leeches = flies.filter(f => leechIds.has(f.id));
+  const scuds = flies.filter(f => scudIds.has(f.id));
   const stickers = flies.filter(f => f.category === "sticker");
 
   function renderFlyCard(fly, target) {
@@ -3713,6 +3715,10 @@ function buildCatalog() {
     chironomids.forEach(f => renderFlyCard(f, catalog));
     catalog.innerHTML += `<div class="catalog-group-spacer"></div><h3 class="catalog-group-header">Leeches</h3>`;
     leeches.forEach(f => renderFlyCard(f, catalog));
+    if (scuds.length) {
+      catalog.innerHTML += `<div class="catalog-group-spacer"></div><h3 class="catalog-group-header">Scuds</h3>`;
+      scuds.forEach(f => renderFlyCard(f, catalog));
+    }
   }
 }
 

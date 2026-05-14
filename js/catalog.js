@@ -49,7 +49,7 @@ const flies = [
     id: 25, img: "bloodworm1", gallery: ["bloodworm1", "bloodworm"],
     name: "Secret Bloodworm",
     desc: "Secret purple-hued bloodworm. The color shift gets trophy trout to commit when standard reds get refused. Tied on 2x heavy hooks for the bigger eat.",
-    sizes: ["#10","#12","#14","#16"],
+    sizes: ["#12","#14","#16"],
     colors: null,
     price: 21,
     pack: 5,
@@ -59,9 +59,19 @@ const flies = [
     id: 26, img: "jersey-boy",
     name: "The Jersey Boy",
     desc: "Collab pattern dialed in with master angler and tier Ryan \"Jito\" Garcia. Built for the technical eats Jito earns on his home water — translates straight to the Colorado stillwater rotation. Tied on 2x heavy.",
-    sizes: ["#12","#14","#16","#18"],
+    sizes: ["#12","#14","#16"],
     colors: null,
     price: 21,
+    pack: 5,
+    badge: "Guide Pattern"
+  },
+  {
+    id: 27, img: "scud1", gallery: ["scud1", "scud2", "scud3"],
+    name: "Flash Scud",
+    desc: "Flash scud back, antennas, tied on 2x heavy wire. The scud is the unsung hero of stillwater — match the bug profile in olive, tan, or grey. Fish it deep along weed lines, shoals, and rocky drop-offs.",
+    sizes: ["#14","#16"],
+    colors: ["Olive","Tan","Grey"],
+    price: 25,
     pack: 5,
     badge: "Guide Pattern"
   },
@@ -317,7 +327,10 @@ const FLY_IMAGES = {
   ironman: "images/ironman.jpg",
   bloodworm: "images/bloodworm.png",
   bloodworm1: "images/bloodworm1.png",
-  "jersey-boy": "images/jersey-boy.jpg"
+  "jersey-boy": "images/jersey-boy.jpg",
+  scud1: "images/scud1.png",
+  scud2: "images/scud2.png",
+  scud3: "images/scud3.png"
 };
 
 // Slugify a fly name into a URL-safe hash anchor / per-fly page filename.
