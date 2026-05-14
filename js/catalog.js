@@ -46,6 +46,16 @@ const flies = [
     badge: "Top Secret"
   },
   {
+    id: 25, img: "bloodworm1", gallery: ["bloodworm1", "bloodworm"],
+    name: "Secret Bloodworm",
+    desc: "Secret purple-hued bloodworm. The color shift gets trophy trout to commit when standard reds get refused. Tied on 2x heavy hooks for the bigger eat.",
+    sizes: ["#10","#12","#14","#16"],
+    colors: null,
+    price: 21,
+    pack: 5,
+    badge: "Top Secret"
+  },
+  {
     id: 2, img: "fly2",
     name: "Chocolate Gold",
     desc: "Sleek, flashy, and tungsten-loaded. A proven guide pattern that sinks fast and triggers strikes when nothing else will. The go-to when fish are deep.",
@@ -294,7 +304,9 @@ const FLY_IMAGES = {
   brown1: "images/brown1.png",
   brown2: "images/brown2.png",
   brown3: "images/brown3.png",
-  ironman: "images/ironman.jpg"
+  ironman: "images/ironman.jpg",
+  bloodworm: "images/bloodworm.png",
+  bloodworm1: "images/bloodworm1.png"
 };
 
 // Slugify a fly name into a URL-safe hash anchor / per-fly page filename.
