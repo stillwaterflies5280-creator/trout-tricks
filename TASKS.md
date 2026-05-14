@@ -38,14 +38,10 @@ Persistent source of truth for active, blocked, and closed work. All adds/closes
   - **GATE to #46:** 25+ waitlist signups. If 4 weeks pass without 25 (≈ 2026-06-09), rethink positioning/pricing rather than lowering the gate.
   - **Drive traffic:** email blast to Crew list; ~~FB group soft-posts~~ **KILLED 2026-05-13** (no organic FB-group posts for Drop this launch); Round 2 sticker shipping email P.S.; short IG/TikTok clips with "join the waitlist" CTA; paid Meta ads + cross-promo outreach replacing the FB-group channel.
   - **Locked decisions (2026-05-12):** founding $20/mo cap 10 lifetime / standard $35/mo / member discount 20% (code `DROP`) / bi-weekly Wed 7:00–8:30 PM MT / member chat tentatively Facebook (was Discord) / video platform TBD (Zoom or Meet) / ethics framing = spawn TIMING + closures + conditions, NOT locations.
-- **#53** Colorado Sales Tax Compliance Setup (Square-based, low volume) — ~2–3 hr end-to-end. Letter ID **L046381652** · file at **Colorado.gov/RevenueOnline**.
-  - **53.1** Choose tax filing frequency (monthly / quarterly / annual). Confirm against Colorado DOR thresholds — low volume typically lands you at quarterly or annual.
-  - **53.2** Select sales tax automation tool — research TaxJar free tier vs. Avalara vs. Zapier Tax. Decision criteria: native Square integration + Colorado support. Low volume = TaxJar free tier likely sufficient.
-  - **53.3** Configure Square dashboard — enable sales tax calculation in all sales channels (Online, Invoices, Point of Sale if used); set Colorado tax rate for the Fairmount location; smoke-test with a $100 transaction to verify tax is calculated correctly.
-  - **53.4** Set up tax software integration — connect the selected tool to the Square account; map product categories (taxable: flies, stickers, bundles; non-taxable: any service-based items like guided trips, if applicable per CO rules); run a trial sync to verify data flow.
-  - **53.5** Create filing-calendar reminders — Colorado filing deadline is the **20th of the month following the reporting period**. Set 5-day-before reminders. Confirm filing frequency from 53.1.
-  - **53.6** First payment dry-run — let one filing cycle complete; verify the tax tool's calculated amount-owed matches Square's recorded sales tax collected; submit payment via Colorado.gov/RevenueOnline ahead of the first real deadline.
-  - **53.7** Documentation — save Letter ID **L046381652**, RevenueOnline login credentials, tax rate, and filing frequency in 1Password (or wherever credentials live). Add a one-pager to `assets/` summarizing the setup for future-Thomas.
+- **#53** Colorado Sales Tax Compliance Setup (Square-based, low volume) — Letter ID **L046381652** · file at **Colorado.gov/RevenueOnline** (CO deadline = 20th of month following reporting period).
+  - **53.1** Sign up for TaxJar (free tier) — connect Square account.
+  - **53.2** Set Colorado as filing location in TaxJar.
+  - **53.3** Calendar reminder: **15th of each month** — check TaxJar totals, then file at Colorado.gov/RevenueOnline (5-day buffer before the 20th deadline).
 
 ## Blocked
 
