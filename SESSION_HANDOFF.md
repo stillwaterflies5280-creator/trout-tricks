@@ -1,4 +1,36 @@
-# Session handoff — Square webhook deploy
+# Session handoff
+
+Multi-thread parked work. Each section is independently resumable.
+
+---
+
+## Thread A: MacBook → Mini SSH (Tailscale)
+
+**Mini side: ✅ COMPLETE (2026-05-14)**
+
+- macOS Remote Login enabled (System Settings → General → Sharing → Remote Login)
+- `sshd` listening on port 22, reachable over Tailscale at `100.119.145.98`
+- Verified: `ssh -o BatchMode=yes thomasfrankmacbookair@100.119.145.98` returns `Permission denied (publickey,password,keyboard-interactive)` — auth methods advertised, just no creds presented. SSH server up, Tailscale routing works.
+
+**Why Remote Login instead of Tailscale SSH:** The original plan was `sudo tailscale set --ssh` (no key management, Tailscale-identity auth). Blocked by the **App Store Tailscale build's sandbox** — `RunSSH` can't be flipped on that build. Switching would require uninstalling the App Store version and reinstalling from `tailscale.com/download` (or Homebrew). Deferred — went with macOS Remote Login for now.
+
+**MacBook side: PENDING (resume on MacBook)**
+
+1. `ssh-keygen -t ed25519 -C "macbook-pro→mini"` (skip passphrase if you want unattended `tt` over SSH)
+2. `ssh-copy-id thomasfrankmacbookair@100.119.145.98` — prompts for Mini password once, installs pubkey into `~/.ssh/authorized_keys` on the Mini
+3. Verify passwordless: `ssh thomasfrankmacbookair@100.119.145.98 'hostname'` — should return `mac-mini` with no prompt
+4. `brew install tmux` — needed so a long-running `tt` session survives an SSH disconnect (`tmux new -s tt` → run `tt` → `Ctrl-b d` to detach → `tmux attach -t tt` to resume)
+5. Optional polish: add to MacBook's `~/.ssh/config`:
+   ```
+   Host mini
+     HostName 100.119.145.98
+     User thomasfrankmacbookair
+   ```
+   Then `ssh mini` works.
+
+---
+
+## Thread B: Square post-payment webhook (#17) — Square webhook deploy
 
 Paused mid-deploy of task **#17** (Square post-payment webhook → Apps Script auto-flip status). System is in a safe paused state — no new traffic flows anywhere. Existing site endpoints (sticker form, drop waitlist, pickup orders, /checkout) all unchanged.
 
