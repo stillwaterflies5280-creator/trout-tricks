@@ -1595,12 +1595,12 @@
   .footer-partners-strip img {
     max-height: 32px;
     width: auto;
-    filter: grayscale(1);
-    opacity: 0.5;
+    filter: brightness(0) invert(1);
+    opacity: 0.75;
     transition: filter 0.3s ease, opacity 0.3s ease;
   }
   .footer-partners-strip img:hover {
-    filter: grayscale(0);
+    filter: none;
     opacity: 1;
   }
   @media (max-width: 768px) {
@@ -1609,11 +1609,9 @@
   }
 
 
-  /* MFC logo — lighten because original artwork is very dark */
+  /* MFC logo — keep pro-strip override (still on light/colored bg); footer now uses uniform white silhouettes */
   .pro-partners-strip img.partner-mfc { filter: grayscale(1) brightness(1.6); }
   .pro-partners-strip img.partner-mfc:hover { filter: grayscale(0) brightness(1.6); }
-  .footer-partners-strip img.partner-mfc { filter: grayscale(1) brightness(1.6); }
-  .footer-partners-strip img.partner-mfc:hover { filter: grayscale(0) brightness(1.6); }
   /* Partner links — no link styling on the wrapping <a> */
   .pro-partners-strip a, .footer-partners-strip a { display: inline-flex; align-items: center; text-decoration: none; }
 
