@@ -16,7 +16,7 @@ const flies = [
     badge: "Top Secret"
   },
   {
-    id: 3, img: "fly3",
+    id: 3, img: "ironman", gallery: ["ironman", "fly3"],
     name: "Top Secret Ironman",
     desc: "Built tough for pressured water. The Ironman is a durable, high-contrast chironomid that holds up through dozens of strikes. A staple in any stillwater box.",
     sizes: ["#8","#10","#12","#14"],
@@ -127,20 +127,9 @@ const flies = [
     badge: "New"
   },
   {
-    id: 13, img: "sticker1", gallery: ["sticker1", "wordmarkreal"],
-    name: "Trout Tricks Wordmark Sticker",
-    desc: "Die-cut 3.25\" × 1.2\" weatherproof vinyl. Slap it on your boat, vise, or Yeti.",
-    sizes: null,
-    colors: null,
-    price: 3,
-    pack: null,
-    badge: null,
-    category: "sticker"
-  },
-  {
-    id: 14, img: "sticker2",
-    name: "Trout Tricks Square Sticker",
-    desc: "Die-cut 3\" × 3\" weatherproof vinyl. Slap it on your boat, vise, or Yeti.",
+    id: 15, img: "stickerFishOn",
+    name: "Fish On Sticker",
+    desc: "Die-cut weatherproof vinyl. The look when the indicator drops and your eight-weight loads up. Slap it on your vise, boat, or Yeti.",
     sizes: null,
     colors: null,
     price: 5,
@@ -149,9 +138,31 @@ const flies = [
     category: "sticker"
   },
   {
-    id: 15, img: "stickerFishOn",
-    name: "Fish On Sticker",
-    desc: "Die-cut weatherproof vinyl. The look when the indicator drops and your eight-weight loads up. Slap it on your vise, boat, or Yeti.",
+    id: 23, img: "brown3",
+    name: "Drop It Like It's Hot Sticker",
+    desc: "Die-cut weatherproof vinyl. For the moment the indicator drops and the rod loads. Slap it on your vise, boat, or Yeti.",
+    sizes: null,
+    colors: null,
+    price: 5,
+    pack: null,
+    badge: null,
+    category: "sticker"
+  },
+  {
+    id: 21, img: "brown1",
+    name: "Brown Town Sticker",
+    desc: "Die-cut weatherproof vinyl. For the days the browns are stacked deep and you know exactly where you're headed. Slap it on your vise, boat, or Yeti.",
+    sizes: null,
+    colors: null,
+    price: 5,
+    pack: null,
+    badge: null,
+    category: "sticker"
+  },
+  {
+    id: 22, img: "brown2",
+    name: "Butter Brown Sticker",
+    desc: "Die-cut weatherproof vinyl. Honors the buttery yellow-bellied browns that make a stillwater season. Slap it on your vise, boat, or Yeti.",
     sizes: null,
     colors: null,
     price: 5,
@@ -193,6 +204,41 @@ const flies = [
     category: "sticker"
   },
   {
+    id: 13, img: "sticker1", gallery: ["sticker1", "wordmarkreal"],
+    name: "Trout Tricks Wordmark Sticker",
+    desc: "Die-cut 3.25\" × 1.2\" weatherproof vinyl. Slap it on your boat, vise, or Yeti.",
+    sizes: null,
+    colors: null,
+    price: 3,
+    pack: null,
+    badge: null,
+    category: "sticker"
+  },
+  {
+    id: 14, img: "sticker2",
+    name: "Trout Tricks Square Sticker",
+    desc: "Die-cut 3\" × 3\" weatherproof vinyl. Slap it on your boat, vise, or Yeti.",
+    sizes: null,
+    colors: null,
+    price: 5,
+    pack: null,
+    badge: null,
+    category: "sticker"
+  },
+  {
+    id: 24, img: "brown1",
+    name: "The Browns",
+    desc: "Includes: Brown Town + Butter Brown. Two-pack of brown-trout stickers, $2 off retail ($10 → $8).",
+    sizes: null,
+    colors: null,
+    price: 8,
+    pack: null,
+    badge: null,
+    category: "sticker",
+    bundle: true,
+    bundle_includes: [21, 22]
+  },
+  {
     id: 19, img: "stickerFishOn",
     name: "The Greedy Trout Pack",
     desc: "Includes: Fish On + Don't Judge Me + Buffet Mode. The trout-cinematic-universe set, $3 off retail ($15 → $12).",
@@ -217,39 +263,6 @@ const flies = [
     category: "sticker",
     bundle: true,
     bundle_includes: [13, 14, 15, 16, 17, 18]
-  },
-  {
-    id: 21, img: "brown1",
-    name: "Brown Town Sticker",
-    desc: "Die-cut weatherproof vinyl. For the days the browns are stacked deep and you know exactly where you're headed. Slap it on your vise, boat, or Yeti.",
-    sizes: null,
-    colors: null,
-    price: 5,
-    pack: null,
-    badge: null,
-    category: "sticker"
-  },
-  {
-    id: 22, img: "brown2",
-    name: "Butter Brown Sticker",
-    desc: "Die-cut weatherproof vinyl. Honors the buttery yellow-bellied browns that make a stillwater season. Slap it on your vise, boat, or Yeti.",
-    sizes: null,
-    colors: null,
-    price: 5,
-    pack: null,
-    badge: null,
-    category: "sticker"
-  },
-  {
-    id: 23, img: "brown3",
-    name: "Drop It Like It's Hot Sticker",
-    desc: "Die-cut weatherproof vinyl. For the moment the indicator drops and the rod loads. Slap it on your vise, boat, or Yeti.",
-    sizes: null,
-    colors: null,
-    price: 5,
-    pack: null,
-    badge: null,
-    category: "sticker"
   }
 ];
 
@@ -280,7 +293,8 @@ const FLY_IMAGES = {
   wordmarkreal: "images/wordmarkreal.jpg",
   brown1: "images/brown1.png",
   brown2: "images/brown2.png",
-  brown3: "images/brown3.png"
+  brown3: "images/brown3.png",
+  ironman: "images/ironman.jpg"
 };
 
 // Slugify a fly name into a URL-safe hash anchor / per-fly page filename.
