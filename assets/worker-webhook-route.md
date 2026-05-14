@@ -1,39 +1,39 @@
 # Square → Worker `/webhook` → Apps Script — SHIP-READY (review before deploy)
 
-Task **#17**. Square posts a webhook on payment completion → Worker verifies + normalizes → Apps Script updates (or **creates**, see safety-net) the row.
+Task **#17**. Square posts a webhook on payment completion → Worker verifies + normalizes → Apps Script updates (or **creates**, ghost-order safety-net) the row in `Orders/Fulfillment` + mirrors to `Master Customers`.
 
-**This is for review. Don't deploy yet.** When you give the nod I'll walk you through the rollout sequence.
+**Don't deploy yet. Review and confirm.**
 
 ---
 
-## 1) WORKER `/webhook` HANDLER
+## What changed from the prior draft (c760e8a)
 
-I don't have your current `/checkout` handler source, so this is **a clean self-contained route + helpers** to merge into your existing Worker. Add the new route alongside `/checkout` — don't replace anything you already have.
+- Sheet tab name: `Orders/Fulfillment` (slash literal in the constant)
+- `MASTER_SHEET_ID` constant removed → uses `SpreadsheetApp.getActiveSpreadsheet()` since the Apps Script is sheet-bound
+- Both paths (existing-row update AND ghost-order create) now call `writeToMasterCustomers(body, 'Order')` to mirror to Master Customers — matches the `handleOrder()` pattern
+- Notification email switched from `thomas@trouttricks.com` to `stillwaterflies5280@gmail.com` (matches where Square already sends receipts)
+- Amount writes to the existing `revenue` column, NOT a new `order_total` column (your current schema already has revenue)
+- No `source` column required — ghost-order tagging is embedded in the `details` column instead, since your schema doesn't have a `source` field
 
-### A. Routing change (where your current `fetch` handler is)
+---
 
-If your existing handler is the modern `export default { fetch }` style:
+## 1) WORKER `/webhook` HANDLER (unchanged from prior draft)
+
+Same as before — drop-in route + helpers to merge into your existing Worker.
+
+### A. Routing change
 
 ```javascript
-// In your existing fetch() handler, BEFORE the catch-all 404, add:
-
 if (url.pathname === '/webhook' && request.method === 'POST') {
   return handleSquareWebhook(request, env, ctx);
 }
 ```
 
-If you're still on the older `addEventListener('fetch', …)` style, the same `if`-branch goes inside your event handler — same conditional, just adapt `event.respondWith()` to the existing pattern.
-
-### B. Drop these functions in the same file
+### B. Functions to add
 
 ```javascript
 // ---- Square webhook receiver ---------------------------------------------
-// 1. Verify the HMAC-SHA256 signature against the RAW request body.
-// 2. Filter to payment.updated events with status COMPLETED.
-// 3. Forward a normalized payload to Apps Script via ctx.waitUntil
-//    so we ACK Square in <1s even if Apps Script cold-starts.
 async function handleSquareWebhook(request, env, ctx) {
-  // Read raw body once — needed for both signature check AND JSON parse.
   const rawBody = await request.text();
 
   const signatureHeader = request.headers.get('x-square-hmacsha256-signature');
@@ -43,8 +43,6 @@ async function handleSquareWebhook(request, env, ctx) {
     return new Response('Missing signature header or notification URL config', { status: 400 });
   }
 
-  // Square signs (notificationUrl + rawBody) — the URL must match exactly
-  // (protocol, host, path, no trailing slash) what you registered in Square.
   const valid = await verifySquareSignature(
     notificationUrl + rawBody,
     signatureHeader,
@@ -56,7 +54,6 @@ async function handleSquareWebhook(request, env, ctx) {
     return new Response('Invalid signature', { status: 401 });
   }
 
-  // Parse
   let event;
   try {
     event = JSON.parse(rawBody);
@@ -64,7 +61,6 @@ async function handleSquareWebhook(request, env, ctx) {
     return new Response('Bad JSON', { status: 400 });
   }
 
-  // Only act on completed payments
   if (event.type !== 'payment.updated') {
     return new Response('Ignored: not payment.updated', { status: 200 });
   }
@@ -76,9 +72,6 @@ async function handleSquareWebhook(request, env, ctx) {
     return new Response('Ignored: status=' + payment.status, { status: 200 });
   }
 
-  // Normalized payload. reference_id is the order_number index.html generates
-  // and passes into the Square checkout link — Apps Script uses it to find
-  // the row to flip (or creates one if it's a ghost order, see safety-net).
   const payload = {
     submission_type: 'square_payment_completed',
     event_id: event.event_id || null,
@@ -92,17 +85,10 @@ async function handleSquareWebhook(request, env, ctx) {
     completed_at: payment.updated_at || new Date().toISOString(),
   };
 
-  // Fire-and-forget. ACK Square fast; Apps Script processing happens in
-  // background. Failures are logged but don't bounce the webhook (Square
-  // would retry 3x over 72h on non-2xx — we don't want that for downstream
-  // glitches).
   ctx.waitUntil(
     fetch(env.APPS_SCRIPT_WEBHOOK_URL, {
       method: 'POST',
       body: JSON.stringify(payload),
-      // NO Content-Type header — Apps Script doPost can't handle the CORS
-      // preflight from application/json. Matches the "simple request" pattern
-      // the rest of the site uses (sticker form, drop waitlist, etc).
     }).then(async (r) => {
       if (!r.ok) {
         const txt = await r.text().catch(() => '');
@@ -126,7 +112,6 @@ async function verifySquareSignature(stringToSign, signatureHeader, signingKey) 
     ['sign']
   );
   const sig = await crypto.subtle.sign('HMAC', cryptoKey, enc.encode(stringToSign));
-  // Square uses base64-encoded signatures.
   const computed = btoa(String.fromCharCode(...new Uint8Array(sig)));
   return timingSafeEqual(computed, signatureHeader);
 }
@@ -143,18 +128,20 @@ function timingSafeEqual(a, b) {
 
 ---
 
-## 2) APPS SCRIPT `doPost` BRANCH (with ghost-order safety-net)
+## 2) APPS SCRIPT BRANCH (revised — getActiveSpreadsheet, writeToMasterCustomers on both paths)
 
-Add this branch to your existing `doPost`. **Edit `ORDERS_TAB_NAME` at the top to match your actual sheet tab name.**
+Add this branch to your existing `doPost`. The only thing to edit is `ORDERS_TAB_NAME` if your tab name differs from `'Orders/Fulfillment'`.
 
 ```javascript
 // ============================================================
 // SQUARE PAYMENT WEBHOOK HANDLER
 // Triggered by: Cloudflare Worker /webhook -> POST to Apps Script.
-// Payload shape: see Worker code, search "submission_type"
+// On existing-row match: flip payment_status to Paid, log Square metadata.
+// On no-match: insert a ghost-order row + alert Thomas to reconcile manually.
+// Both paths mirror to Master Customers via writeToMasterCustomers().
 // ============================================================
-const ORDERS_TAB_NAME = 'Orders';          // <-- EDIT if your tab name differs
-const MASTER_SHEET_ID = '<<<PASTE_SHEET_ID>>>'; // <-- EDIT to your Master sheet ID
+const ORDERS_TAB_NAME = 'Orders/Fulfillment';
+const NOTIFY_EMAIL    = 'stillwaterflies5280@gmail.com';
 
 function doPost(e) {
   let data = {};
@@ -164,8 +151,7 @@ function doPost(e) {
     return ContentService.createTextOutput('Bad JSON');
   }
 
-  // ... your existing branches (sticker campaign, drop waitlist, pickup
-  //     order, contact form, etc.) stay above this ...
+  // ... your existing branches stay above this ...
 
   if (data.submission_type === 'square_payment_completed') {
     return handleSquarePaymentCompleted(data);
@@ -175,18 +161,19 @@ function doPost(e) {
 }
 
 function handleSquarePaymentCompleted(data) {
-  const ss = SpreadsheetApp.openById(MASTER_SHEET_ID);
+  // Apps Script is bound to the right sheet — use getActiveSpreadsheet()
+  // for consistency with the other handlers (handleOrder, handleSticker, etc).
+  const ss = SpreadsheetApp.getActiveSpreadsheet();
   const sheet = ss.getSheetByName(ORDERS_TAB_NAME);
   if (!sheet) {
-    Logger.log('[square webhook] Orders tab not found: ' + ORDERS_TAB_NAME);
+    Logger.log('[square webhook] Tab not found: ' + ORDERS_TAB_NAME);
     return ContentService.createTextOutput('Sheet not found');
   }
 
   const lastRow = sheet.getLastRow();
   const headers = sheet.getRange(1, 1, 1, sheet.getLastColumn()).getValues()[0];
 
-  // Header-name → 1-based column index. Case-insensitive substring match
-  // so minor header drift doesn't break the handler.
+  // Case-insensitive header → 1-based column index lookup
   function col(needle) {
     needle = String(needle).toLowerCase();
     for (let i = 0; i < headers.length; i++) {
@@ -195,81 +182,150 @@ function handleSquarePaymentCompleted(data) {
     return -1;
   }
 
-  const ORDER_NUM_COL    = col('order_number');
-  const STATUS_COL       = col('payment_status');
-  const PAYMENT_ID_COL   = col('square_payment_id');
-  const RECEIPT_COL      = col('receipt_url');
-  const COMPLETED_COL    = col('payment_completed_at');
-  const SOURCE_COL       = col('source');
-  const CUSTOMER_EMAIL_COL = col('customer_email');
-  const AMOUNT_COL       = col('order_total');
+  // Existing columns (per your current schema)
+  const EMAIL_COL        = col('email');
+  const FIRST_NAME_COL   = col('firstName');
+  const LAST_NAME_COL    = col('lastName');
+  const PHONE_COL        = col('phone');
+  const ORDER_DATE_COL   = col('orderDate');
+  const DETAILS_COL      = col('details');
+  const FULFILLMENT_COL  = col('fulfillment');
+  const STATUS_COL       = col('status');           // fulfillment status — separate from payment_status
+  const REVENUE_COL      = col('revenue');
+  // Heuristic for matching: most order_number values land in details
+  // (since current schema has no dedicated order_number column).
+  // If you have an order_number column, swap this lookup.
+  const ORDER_NUM_COL    = col('order_number');     // -1 if missing — fall back to details search
 
-  // ---- 1. Try to find an existing row by reference_id (= order_number) ----
-  if (lastRow >= 2 && data.reference_id && ORDER_NUM_COL > 0) {
-    const range = sheet.getRange(2, ORDER_NUM_COL, lastRow - 1, 1).getValues();
-    for (let i = 0; i < range.length; i++) {
-      if (String(range[i][0]).trim() === String(data.reference_id).trim()) {
-        const rowNum = i + 2;
-        if (STATUS_COL > 0)     sheet.getRange(rowNum, STATUS_COL).setValue('Paid');
-        if (PAYMENT_ID_COL > 0) sheet.getRange(rowNum, PAYMENT_ID_COL).setValue(data.payment_id);
-        if (RECEIPT_COL > 0)    sheet.getRange(rowNum, RECEIPT_COL).setValue(data.receipt_url || '');
-        if (COMPLETED_COL > 0)  sheet.getRange(rowNum, COMPLETED_COL).setValue(data.completed_at || new Date().toISOString());
+  // NEW columns (add manually before deploy — see §3)
+  const PAYMENT_STATUS_COL = col('payment_status');
+  const PAYMENT_ID_COL     = col('square_payment_id');
+  const RECEIPT_COL        = col('receipt_url');
+  const COMPLETED_COL      = col('payment_completed_at');
 
-        notifyThomas('💰 Square payment received', data, rowNum, /*ghost=*/false);
-        return ContentService.createTextOutput('Updated row ' + rowNum);
+  // ---- 1. Try to match the existing row by reference_id ----
+  let matchedRow = -1;
+  if (lastRow >= 2 && data.reference_id) {
+    if (ORDER_NUM_COL > 0) {
+      // Dedicated order_number column — exact match
+      const range = sheet.getRange(2, ORDER_NUM_COL, lastRow - 1, 1).getValues();
+      for (let i = 0; i < range.length; i++) {
+        if (String(range[i][0]).trim() === String(data.reference_id).trim()) {
+          matchedRow = i + 2;
+          break;
+        }
+      }
+    } else if (DETAILS_COL > 0) {
+      // Fallback: substring search in the details column (order number is often
+      // embedded in the details text — your pickup-order handler writes it there)
+      const range = sheet.getRange(2, DETAILS_COL, lastRow - 1, 1).getValues();
+      const needle = String(data.reference_id).trim();
+      for (let i = 0; i < range.length; i++) {
+        if (String(range[i][0]).indexOf(needle) !== -1) {
+          matchedRow = i + 2;
+          break;
+        }
       }
     }
   }
 
-  // ---- 2. SAFETY NET: ghost order ----
-  // Square reports a payment but no row in our sheet matches the reference_id.
-  // Root cause is usually a pre-payment write that never fired (network blip,
-  // Apps Script cold-start timeout, user closed the tab between submit and
-  // Square redirect). Marion case = real example we built this for.
-  //
-  // Create a new row with status='Paid' + source='Square Direct' so Thomas
-  // sees it and can reconcile fulfillment manually instead of the order
-  // silently disappearing.
+  if (matchedRow > 0) {
+    // Found — flip payment status + log Square metadata. Leave fulfillment
+    // status untouched (it's a separate axis from payment).
+    if (PAYMENT_STATUS_COL > 0) sheet.getRange(matchedRow, PAYMENT_STATUS_COL).setValue('Paid');
+    if (PAYMENT_ID_COL > 0)     sheet.getRange(matchedRow, PAYMENT_ID_COL).setValue(data.payment_id);
+    if (RECEIPT_COL > 0)        sheet.getRange(matchedRow, RECEIPT_COL).setValue(data.receipt_url || '');
+    if (COMPLETED_COL > 0)      sheet.getRange(matchedRow, COMPLETED_COL).setValue(data.completed_at || new Date().toISOString());
+
+    // Mirror to Master Customers (matches handleOrder() pattern)
+    writeToMasterCustomers(buildCustomersBody(data, sheet, matchedRow), 'Order');
+
+    notifyThomas('💰 Square payment received', data, matchedRow, /*ghost=*/false);
+    return ContentService.createTextOutput('Updated row ' + matchedRow);
+  }
+
+  // ---- 2. GHOST-ORDER SAFETY-NET ----
+  // Square reports a payment but no row in Orders/Fulfillment matches the
+  // reference_id. Pre-payment write must have failed (network blip, tab
+  // closed, Apps Script timeout). Create a new row + flag for manual reconcile.
   const newRow = new Array(headers.length).fill('');
   function set(c, v) { if (c > 0) newRow[c - 1] = v; }
 
-  set(ORDER_NUM_COL,      data.reference_id || ('SQUARE-' + (data.payment_id || '').slice(0, 8)));
-  set(STATUS_COL,         'Paid');
-  set(SOURCE_COL,         'Square Direct');
-  set(PAYMENT_ID_COL,     data.payment_id);
-  set(RECEIPT_COL,        data.receipt_url || '');
-  set(COMPLETED_COL,      data.completed_at || new Date().toISOString());
-  set(CUSTOMER_EMAIL_COL, data.customer_email || '');
-  set(AMOUNT_COL,         data.amount_cents ? (data.amount_cents / 100).toFixed(2) : '');
+  const fallbackOrderNum = data.reference_id ||
+    ('SQUARE-' + (data.payment_id || '').slice(0, 8));
 
-  // Tolerant insert — appendRow with same column count as headers.
+  set(EMAIL_COL,           data.customer_email || '');
+  set(ORDER_DATE_COL,      new Date());
+  // Source-tag the ghost order in details since the schema has no `source` column
+  set(DETAILS_COL,         '⚠️ GHOST ORDER — Square Direct (manual reconcile). Ref: ' + fallbackOrderNum);
+  set(STATUS_COL,          'Pending');             // fulfillment pending — Thomas must reconcile
+  set(REVENUE_COL,         data.amount_cents ? (data.amount_cents / 100).toFixed(2) : '');
+  set(PAYMENT_STATUS_COL,  'Paid');
+  set(PAYMENT_ID_COL,      data.payment_id);
+  set(RECEIPT_COL,         data.receipt_url || '');
+  set(COMPLETED_COL,       data.completed_at || new Date().toISOString());
+  // If you add an order_number column later, this will populate automatically
+  set(ORDER_NUM_COL,       fallbackOrderNum);
+
   sheet.appendRow(newRow);
   const newRowNum = sheet.getLastRow();
+
+  // Mirror to Master Customers — same pattern as the matched-row path
+  writeToMasterCustomers(buildCustomersBody(data, sheet, newRowNum), 'Order');
 
   notifyThomas('🚨 Ghost order paid — manual reconcile needed', data, newRowNum, /*ghost=*/true);
   return ContentService.createTextOutput('Ghost row created at row ' + newRowNum);
 }
 
+// Build a body that matches what handleOrder() typically passes to
+// writeToMasterCustomers. Square webhook only gives us email + amount; other
+// fields stay blank and writeToMasterCustomers should treat missing values
+// as no-ops (matches the existing function's behavior for partial data).
+function buildCustomersBody(data, sheet, rowNum) {
+  // Pull whatever customer info we have from the matched row (for the existing-
+  // row path, this lets writeToMasterCustomers see the pre-payment data too)
+  const row = sheet.getRange(rowNum, 1, 1, sheet.getLastColumn()).getValues()[0];
+  const headers = sheet.getRange(1, 1, 1, sheet.getLastColumn()).getValues()[0];
+  function cell(name) {
+    const i = headers.findIndex(h => String(h).toLowerCase() === String(name).toLowerCase());
+    return i >= 0 ? row[i] : '';
+  }
+  return {
+    email:      data.customer_email || cell('email') || '',
+    firstName:  cell('firstName') || '',
+    lastName:   cell('lastName')  || '',
+    phone:      cell('phone')     || '',
+    order_total: data.amount_cents ? (data.amount_cents / 100).toFixed(2) : (cell('revenue') || ''),
+    order_items: cell('details') || '',
+    payment_method: 'square',
+    fulfillment: cell('fulfillment') || '',
+    receipt_url: data.receipt_url || '',
+    square_payment_id: data.payment_id || '',
+  };
+}
+
 function notifyThomas(subject, data, rowNum, isGhost) {
   const amount = data.amount_cents ? '$' + (data.amount_cents / 100).toFixed(2) : 'unknown';
-  const body = [
-    isGhost ? '⚠️  GHOST ORDER — Square reports a payment with no matching row in ' + ORDERS_TAB_NAME + '.\n' +
-              '   A new row was inserted with status=Paid + source=Square Direct.\n' +
-              '   Reconcile fulfillment manually.\n' : '',
-    'Row:             ' + rowNum,
-    'Reference ID:    ' + (data.reference_id || '(missing)'),
-    'Payment ID:      ' + data.payment_id,
-    'Amount:          ' + amount + ' ' + (data.currency || 'USD'),
-    'Customer email:  ' + (data.customer_email || '(missing)'),
-    'Receipt:         ' + (data.receipt_url || '(none)'),
-    'Completed:       ' + (data.completed_at || ''),
-  ].filter(Boolean).join('\n');
+  const lines = [];
+  if (isGhost) {
+    lines.push('⚠️  GHOST ORDER — Square reports a payment with no matching row in ' + ORDERS_TAB_NAME + '.');
+    lines.push('   A new row was inserted with payment_status=Paid + a "Square Direct" tag in details.');
+    lines.push('   Fulfillment status is "Pending" — reconcile manually.');
+    lines.push('');
+  }
+  lines.push('Row:             ' + rowNum);
+  lines.push('Reference ID:    ' + (data.reference_id || '(missing)'));
+  lines.push('Payment ID:      ' + data.payment_id);
+  lines.push('Amount:          ' + amount + ' ' + (data.currency || 'USD'));
+  lines.push('Customer email:  ' + (data.customer_email || '(missing)'));
+  lines.push('Receipt:         ' + (data.receipt_url || '(none)'));
+  lines.push('Completed:       ' + (data.completed_at || ''));
 
   try {
     MailApp.sendEmail({
-      to: 'thomas@trouttricks.com',
+      to: NOTIFY_EMAIL,
       subject: subject + ' — ' + (data.reference_id || data.payment_id),
-      body: body,
+      body: lines.join('\n'),
     });
   } catch (err) {
     Logger.log('[square webhook] notification email failed: ' + err);
@@ -277,53 +333,57 @@ function notifyThomas(subject, data, rowNum, isGhost) {
 }
 ```
 
-### Why the ghost-order branch matters
-
-The Marion case (and any other "Square has the payment but my sheet doesn't") happens when something in the pre-payment write path fails — `pickupCardCheckout` fires a fetch to Apps Script BEFORE handing off to Square, and that fetch is fire-and-forget with no retry. If it fails (network blip, Apps Script slow start, browser closed the tab), the row never gets written. Customer pays Square anyway. You'd never know until they emailed asking where their flies are.
-
-This safety-net catches every one of those: Square's webhook arrives, no matching row, Apps Script creates a `source='Square Direct'` row + emails you with the 🚨 subject so it can't get lost in the inbox.
-
 ---
 
-## 3) MASTER SHEET COLUMN HEADERS TO ADD
+## 3) MASTER SHEET — ADD COLUMNS MANUALLY BEFORE DEPLOY
 
-Add these to the `Orders` tab (or whatever you've named it — match `ORDERS_TAB_NAME` above). Existing columns stay; just append these at the right:
+**Your current Orders/Fulfillment schema (10 columns):**
 
-| Header (exact spelling) | Type | Notes |
+`email · firstName · lastName · phone · orderDate · details · fulfillment · status · (blank) · revenue`
+
+**Add these 4 NEW columns to the right of `revenue`** (use exact lowercase + underscore spelling — the `col()` lookup is case-insensitive but matches the full header text):
+
+| Position | Header | Type |
 |---|---|---|
-| `payment_status` | text | `pending` / `Paid` / `refunded` |
-| `square_payment_id` | text | Square's payment ID — needed for refund reconciliation |
-| `receipt_url` | URL | Square's customer-facing receipt URL |
-| `payment_completed_at` | ISO timestamp | When Square confirmed the payment |
+| 11 | `payment_status` | text — `Paid` / `refunded` (blank for pre-payment rows) |
+| 12 | `square_payment_id` | text — Square's payment ID (for refund reconciliation) |
+| 13 | `receipt_url` | URL — Square's customer-facing receipt |
+| 14 | `payment_completed_at` | ISO timestamp |
 
-If you don't already have a `source` column (used for tagging the ghost-order rows with `Square Direct`), add that too. Same for `order_total` if not present.
+### Why manual add and not code self-heal
 
-The `col()` lookup in the Apps Script handler is case-insensitive **but matches the exact header text**, so spelling/spaces matter. Use lowercase + underscores to match what the code expects.
+The handler reads positions dynamically via `col(headerName)` — it doesn't care WHERE the new columns sit, only that they exist with the right names. But the code intentionally does NOT add missing columns automatically because:
+
+1. **You have implicit conventions in the existing schema** (e.g., the blank column 9 — I don't know if that's a spacer or a deprecated field; auto-creating columns next to it could break things you do manually).
+2. **Auto-create would re-fire on every webhook** unless gated by a "did I already check?" flag, which adds complexity.
+3. **Manual add is 30 seconds** (right-click column 11 → Insert 4 columns → name them).
+
+If you'd rather have the code self-heal anyway (e.g., for a future fresh-start sheet), say the word and I'll add a one-time `ensureHeaders()` helper that runs lazily on first webhook.
+
+### Where ghost-order metadata lands without a `source` column
+
+Your schema has no `source` column. For ghost orders, the source tag is embedded in `details` as:
+
+> `⚠️ GHOST ORDER — Square Direct (manual reconcile). Ref: SQUARE-abc12345`
+
+Same info, no schema change. If you'd rather have a dedicated `source` column added (column 15), tell me — it's a 1-line code change.
 
 ---
 
-## 4) WRANGLER COMMANDS — set the 3 env vars
-
-Run these from your Worker's local repo (the one with `wrangler.toml`). Each one prompts you for the value — paste, hit Enter.
+## 4) WRANGLER COMMANDS — set the 3 env vars (unchanged)
 
 ```bash
-# Square webhook signing key (from Square Dashboard → Developer → Apps → your app
-# → Webhooks → subscription → Signature Key)
 wrangler secret put SQUARE_WEBHOOK_SIGNATURE_KEY
+# → paste the Signature Key from Square Dashboard → Developer → Apps → Webhooks → subscription → Signature Key
 
-# The EXACT URL you registered in Square (no trailing slash, https, full path).
-# This must match the URL Square thinks it's hitting, byte-for-byte, or signature
-# verification fails silently on every event.
 wrangler secret put SQUARE_WEBHOOK_NOTIFICATION_URL
-# When prompted, paste: https://trouttricks-checkout.stillwaterflies5280.workers.dev/webhook
+# → paste: https://trouttricks-checkout.stillwaterflies5280.workers.dev/webhook
 
-# Your Apps Script web app /exec URL (the same one used by the rest of the
-# site for form submissions).
 wrangler secret put APPS_SCRIPT_WEBHOOK_URL
-# When prompted, paste: https://script.google.com/macros/s/AKfycbw...../exec
+# → paste your existing Apps Script /exec URL (same one the rest of the site uses)
 ```
 
-To verify they're set after the fact (won't show values, just names):
+Verify after:
 
 ```bash
 wrangler secret list
@@ -333,29 +393,28 @@ wrangler secret list
 
 ## REVIEW CHECKLIST
 
-Before you green-light deploy, confirm these:
+Before you green-light deploy:
 
-- [ ] **Sheet tab name.** Update `ORDERS_TAB_NAME` in the Apps Script to match your actual tab. (My draft uses `'Orders'` — change if yours is `'Master Customers'` or similar.)
-- [ ] **MASTER_SHEET_ID.** Paste your sheet ID into the Apps Script constant.
-- [ ] **Sheet columns added.** All 4 new columns + `source` + `order_total` exist with the exact header names from §3.
-- [ ] **Existing `doPost` branches.** Confirm the new branch doesn't conflict with any existing `submission_type` value you've already used.
-- [ ] **Worker `/checkout` route.** Confirm the new `/webhook` branch was added BEFORE the catch-all 404 and AFTER the existing `/checkout` branch — order matters for routing.
-- [ ] **Square dashboard.** Webhook subscription URL exactly matches `SQUARE_WEBHOOK_NOTIFICATION_URL`. Event types include `payment.updated`. Signature key copied into the wrangler secret.
-- [ ] **Ghost-order email.** `thomas@trouttricks.com` is the right inbox. Maybe pre-filter the 🚨 subject to a "Trout Tricks Alerts" Gmail label so it pops.
-- [ ] **Dry-run plan.** Square's "Send Test Event" first → confirm Worker logs show signature valid → confirm Apps Script Executions log shows the ghost branch fired (test event won't have a matching reference_id, so it'll exercise the safety-net specifically). Then a real $1 order via `/free-sticker` or a $5 sticker.
+- [ ] **Orders/Fulfillment** tab exists in the sheet the Apps Script is bound to (confirm tab name is the literal string `Orders/Fulfillment` — slash and all)
+- [ ] **4 new columns added manually** at positions 11–14 with exact lowercase/underscore spelling
+- [ ] **`writeToMasterCustomers` exists** in your Apps Script project. If it's not in your script library, the call will fail. Worth doing `Find` for `function writeToMasterCustomers` in the Apps Script editor before deploy.
+- [ ] **`order_number` lookup behavior.** The code falls back to substring-searching `details` for the reference_id because your schema has no dedicated `order_number` column. If your pickup-order handler writes the order number to details (it does, based on what I saw in `pickupCardCheckout`'s `shipping_address` field), this will work. Quick test: open a recent pickup order row and confirm the order number appears somewhere in the `details` column.
+- [ ] **Existing `doPost` branches.** Confirm the new `submission_type === 'square_payment_completed'` branch doesn't collide with any current value you've used.
+- [ ] **Worker `/webhook` route ordering.** Add the new if-branch BEFORE the catch-all 404, ideally right after the existing `/checkout` branch.
+- [ ] **Square dashboard.** Subscription URL exactly matches `SQUARE_WEBHOOK_NOTIFICATION_URL`. Event types include `payment.updated`. Signature key copied into the wrangler secret.
 
 ---
 
-## DEPLOY SEQUENCE (when you give the nod)
+## DEPLOY SEQUENCE
 
-1. `wrangler secret put` × 3 — env vars first.
-2. Paste the Worker code into your local Worker repo's source file. Save.
-3. `wrangler deploy`.
-4. Add the Apps Script branch + helper functions. Save in the Apps Script editor.
-5. **Apps Script: New Version → Deploy → "Update" the existing web-app deployment.** Critical: pick "Update" not "New deployment" so the existing `/exec` URL keeps working.
-6. Add the 4 (or 6) new column headers to the Orders tab.
+1. **Add the 4 column headers** to `Orders/Fulfillment` manually.
+2. `wrangler secret put` × 3.
+3. Paste the Worker code into your local Worker repo. Save.
+4. `wrangler deploy`.
+5. Open the Apps Script editor → paste the new branch + helpers → Save.
+6. Apps Script: **Manage Deployments → existing web-app deployment → Pencil icon → New Version → Deploy → "Update"**. Don't create a new deployment — the `/exec` URL must stay the same since it's baked into the Worker env var.
 7. Register the webhook subscription in Square Dashboard with the URL from §4.
-8. Square Dashboard → your subscription → "Send Test Event" → check Cloudflare Live Tail + Apps Script Executions log.
-9. Real $1 sticker order → watch the sheet row flip live.
+8. Square Dashboard → your subscription → **Send Test Event** → check Cloudflare Live Tail + Apps Script Executions log. Test events will exercise the ghost-order branch since the test reference_id won't match anything.
+9. Real $1 test order via the site → watch the existing-row-match path flip the existing row.
 
-Standing by for review notes.
+Standing by.
