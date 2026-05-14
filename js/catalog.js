@@ -217,6 +217,39 @@ const flies = [
     category: "sticker",
     bundle: true,
     bundle_includes: [13, 14, 15, 16, 17, 18]
+  },
+  {
+    id: 21, img: "brown1",
+    name: "Brown Town Sticker",
+    desc: "Die-cut weatherproof vinyl. For the days the browns are stacked deep and you know exactly where you're headed. Slap it on your vise, boat, or Yeti.",
+    sizes: null,
+    colors: null,
+    price: 5,
+    pack: null,
+    badge: null,
+    category: "sticker"
+  },
+  {
+    id: 22, img: "brown2",
+    name: "Butter Brown Sticker",
+    desc: "Die-cut weatherproof vinyl. Honors the buttery yellow-bellied browns that make a stillwater season. Slap it on your vise, boat, or Yeti.",
+    sizes: null,
+    colors: null,
+    price: 5,
+    pack: null,
+    badge: null,
+    category: "sticker"
+  },
+  {
+    id: 23, img: "brown3",
+    name: "Drop It Like It's Hot Sticker",
+    desc: "Die-cut weatherproof vinyl. For the moment the indicator drops and the rod loads. Slap it on your vise, boat, or Yeti.",
+    sizes: null,
+    colors: null,
+    price: 5,
+    pack: null,
+    badge: null,
+    category: "sticker"
   }
 ];
 
@@ -244,7 +277,10 @@ const FLY_IMAGES = {
   stickerDontJudge: "images/sticker-dont-judge-me.png",
   stickerBuffet: "images/sticker-buffet-mode.png",
   stickerBuzzers: "images/sticker-got-buzzers.png",
-  wordmarkreal: "images/wordmarkreal.jpg"
+  wordmarkreal: "images/wordmarkreal.jpg",
+  brown1: "images/brown1.png",
+  brown2: "images/brown2.png",
+  brown3: "images/brown3.png"
 };
 
 // Slugify a fly name into a URL-safe hash anchor / per-fly page filename.
