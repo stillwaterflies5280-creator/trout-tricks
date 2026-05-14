@@ -264,8 +264,15 @@
     background: var(--card-2);
     border: 1px solid var(--border);
     border-radius: 4px;
-    padding: 28px 26px;
+    overflow: hidden;
   }
+  .founder-img {
+    width: 100%;
+    height: 220px;
+    background: #0d0d0d center 30% / cover no-repeat;
+    border-bottom: 1px solid var(--border);
+  }
+  .founder-card-body { padding: 24px 26px 26px; }
   .founder-label {
     font-family: 'Barlow Condensed', sans-serif;
     font-size: 0.72rem;
@@ -579,6 +586,24 @@
     border-bottom: 1px solid var(--gold-dim);
     padding-bottom: 2px;
   }
+  .back-qr {
+    margin: 28px auto 0;
+    width: 140px;
+    height: 140px;
+    background: #fff;
+    padding: 10px;
+    border-radius: 6px;
+    display: block;
+  }
+  .back-qr img { width: 100%; height: 100%; display: block; }
+  .back-qr-label {
+    margin-top: 10px;
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 0.72rem;
+    color: var(--gray);
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+  }
 
   /* FOOTER */
   footer {
@@ -705,17 +730,20 @@
     </div>
 
     <aside class="founder-card">
-      <div class="founder-label">Founder · Tier</div>
-      <div class="founder-name">Thomas Frank</div>
-      <div class="founder-role">Hand-tied · Fairmount, CO</div>
-      <div class="founder-bio">
-        Stillwater-first tier. Refined an indicator-based, balanced-fly system on the South Park rotation (Antero, Spinney Mountain, 11 Mile) and North Park (Delaney Buttes, Lake John), plus the Wyoming North Platte chain. Every pattern in the lineup earned its slot by sticking trophy fish — not by looking good in a fly bin.
-      </div>
-      <div class="founder-meta">
-        <strong>Specialty:</strong> indicator stillwater systems, balanced leeches, chironomids<br>
-        <strong>Rotation:</strong> Antero · Spinney · 11 Mile · Delaney · Lake John<br>
-        <strong>Permits:</strong> CO Parks &amp; Wildlife · USFS · BLM<br>
-        <strong>Guided trip model:</strong> W-2 employee (not subcontractor)
+      <div class="founder-img" style="background-image:url('images/plaid-angler-rainbow.jpg');"></div>
+      <div class="founder-card-body">
+        <div class="founder-label">Founder · Tier</div>
+        <div class="founder-name">Thomas Frank</div>
+        <div class="founder-role">Hand-tied · Fairmount, CO</div>
+        <div class="founder-bio">
+          Stillwater-first tier. Refined an indicator-based, balanced-fly system on the South Park rotation (Antero, Spinney Mountain, 11 Mile) and North Park (Delaney Buttes, Lake John), plus the Wyoming North Platte chain. Every pattern in the lineup earned its slot by sticking trophy fish — not by looking good in a fly bin.
+        </div>
+        <div class="founder-meta">
+          <strong>Specialty:</strong> indicator stillwater systems, balanced leeches, chironomids<br>
+          <strong>Rotation:</strong> Antero · Spinney · 11 Mile · Delaney · Lake John<br>
+          <strong>Permits:</strong> CO Parks &amp; Wildlife · USFS · BLM<br>
+          <strong>Guided trip model:</strong> W-2 employee (not subcontractor)
+        </div>
       </div>
     </aside>
   </div>
@@ -935,6 +963,10 @@
   <div class="back-wordmark">TROUT <span>TRICKS</span></div>
   <div class="back-tagline">Hand-tied in Colorado. Built for anglers who actually land them.</div>
   <a class="back-url" href="https://www.trouttricks.com">trouttricks.com</a>
+  <a class="back-qr" href="https://www.trouttricks.com" aria-label="Scan to visit trouttricks.com">
+    <img src="images/qr-trouttricks.png" alt="QR code linking to trouttricks.com">
+  </a>
+  <div class="back-qr-label">Scan · trouttricks.com</div>
 </div>
 
 <!-- FOOTER -->
