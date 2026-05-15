@@ -845,15 +845,12 @@
     aspect-ratio: 1 / 1;
     overflow: hidden;
     padding: 28px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
   }
   .sticker-feature .sf-img img {
-    max-width: 100%;
-    max-height: 100%;
-    width: auto;
-    height: auto;
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    object-position: center;
     display: block;
     transition: transform 0.4s ease;
   }
@@ -3083,7 +3080,7 @@
     <h2 class="section-title" style="padding-top:24px;">The Stickers</h2>
     <a class="sticker-feature" href="/stickers.html">
       <div class="sf-img">
-        <img src="images/sticker-fish-on.png" alt="Trout Tricks stickers — hand-drawn vinyl decals" loading="lazy" width="500" height="500">
+        <img src="images/sticker-fish-on.png?v=2" alt="Trout Tricks stickers — hand-drawn vinyl decals" loading="lazy" width="500" height="500">
       </div>
       <div class="sf-body">
         <div class="sf-eyebrow">Hand-Drawn Vinyl</div>
