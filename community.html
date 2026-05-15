@@ -1854,64 +1854,52 @@
     transform: translateY(-2px);
     box-shadow: 0 8px 26px rgba(0,0,0,0.5);
   }
-  /* Card "art" — typographic header instead of a photo. Dark gradient with a
-     huge Bebas Neue group-code (e.g. CO / NP), an FB icon badge top-right, and
-     a brand-red accent rule. Reads as a styled button rather than a photo card. */
+  /* Card "art" — illustrated mountain landscape header. Inline SVG so we get
+     crisp scaling + brand-color control. Gradient sky behind the silhouettes,
+     gold accent peaks, an FB badge, and a region label at the bottom. */
   .cp-card-art {
-    aspect-ratio: 16 / 10;
+    aspect-ratio: 16 / 9;
     position: relative;
     overflow: hidden;
-    background: linear-gradient(135deg, #1a1a1a 0%, #262626 55%, #1a1a1a 100%);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    border-bottom: 3px solid var(--red);
+    background: linear-gradient(180deg, #1f2632 0%, #2a3140 55%, #3a3128 100%);
     transition: filter 0.3s ease;
   }
-  /* Subtle dotted texture overlay for depth */
-  .cp-card-art::before {
-    content: '';
-    position: absolute; inset: 0;
-    background-image: radial-gradient(rgba(212,175,55,0.10) 1px, transparent 1px);
-    background-size: 14px 14px;
-    pointer-events: none;
+  .cp-card:hover .cp-card-art { filter: brightness(1.1); }
+  .cp-card-art-svg {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    display: block;
   }
-  .cp-card:hover .cp-card-art { filter: brightness(1.12); }
-  .cp-card-art-code {
-    font-family: 'Bebas Neue', Impact, sans-serif;
-    font-size: clamp(4rem, 11vw, 6.5rem);
-    letter-spacing: 0.04em;
-    line-height: 1;
-    color: #fff;
-    text-shadow: 0 4px 22px rgba(0,0,0,0.55);
-    position: relative;
-    z-index: 1;
-  }
-  .cp-card-art-code .accent { color: var(--gold); }
   .cp-card-art-fb {
     position: absolute;
     top: 14px; right: 14px;
-    width: 38px; height: 38px;
+    width: 36px; height: 36px;
     background: #1877F2;
     color: #fff;
     border-radius: 50%;
     display: flex; align-items: center; justify-content: center;
     font-family: 'Helvetica', Arial, sans-serif;
     font-weight: 900;
-    font-size: 1.5rem;
+    font-size: 1.4rem;
     line-height: 1;
-    z-index: 1;
-    box-shadow: 0 4px 14px rgba(0,0,0,0.45);
+    z-index: 2;
+    box-shadow: 0 4px 14px rgba(0,0,0,0.5);
   }
-  .cp-card-art-tag {
+  .cp-card-art-label {
     position: absolute;
     bottom: 12px; left: 16px;
-    font-family: 'Barlow Condensed', Impact, sans-serif;
-    font-size: 0.74rem;
-    letter-spacing: 0.18em;
+    font-family: 'Bebas Neue', Impact, sans-serif;
+    font-size: 1.1rem;
+    letter-spacing: 0.16em;
     text-transform: uppercase;
+    color: #fff;
+    z-index: 2;
+    text-shadow: 0 2px 10px rgba(0,0,0,0.6);
+  }
+  .cp-card-art-label .accent {
     color: var(--gold);
-    z-index: 1;
   }
   .cp-card-body {
     padding: 22px 24px 24px;
@@ -2091,9 +2079,23 @@
        style="text-decoration:none;color:inherit;"
        onclick="if(typeof gtag==='function')gtag('event','community_fb_join',{group:'statewide'});">
       <div class="cp-card-art" aria-hidden="true">
+        <svg class="cp-card-art-svg" viewBox="0 0 320 180" preserveAspectRatio="xMidYMax slice">
+          <!-- distant mountain range (statewide = 5 peaks across the horizon) -->
+          <polygon points="-10,130 30,90 60,110 100,70 140,100 180,75 220,95 260,65 300,100 330,85 330,180 -10,180" fill="#3d3027" opacity="0.85"/>
+          <!-- mid mountain range -->
+          <polygon points="-10,150 40,115 80,140 120,100 165,135 210,105 255,135 300,115 330,145 330,180 -10,180" fill="#241d18"/>
+          <!-- gold sun glow on highest peak -->
+          <circle cx="140" cy="55" r="22" fill="#D4AF37" opacity="0.18"/>
+          <circle cx="140" cy="55" r="11" fill="#D4AF37" opacity="0.55"/>
+          <!-- water foreground -->
+          <rect x="-10" y="155" width="340" height="30" fill="#0f1418" opacity="0.7"/>
+          <!-- water highlights -->
+          <line x1="20" y1="163" x2="80" y2="163" stroke="#5a6f7e" stroke-width="0.8" opacity="0.5"/>
+          <line x1="120" y1="168" x2="200" y2="168" stroke="#5a6f7e" stroke-width="0.8" opacity="0.5"/>
+          <line x1="230" y1="163" x2="290" y2="163" stroke="#5a6f7e" stroke-width="0.8" opacity="0.5"/>
+        </svg>
         <div class="cp-card-art-fb" title="Facebook group">f</div>
-        <div class="cp-card-art-code">C<span class="accent">O</span></div>
-        <div class="cp-card-art-tag">Statewide · Free Group</div>
+        <div class="cp-card-art-label">All of <span class="accent">Colorado</span></div>
       </div>
       <div class="cp-card-body">
         <div class="cp-card-eyebrow">Statewide · Colorado Stillwater</div>
@@ -2110,9 +2112,24 @@
        style="text-decoration:none;color:inherit;"
        onclick="if(typeof gtag==='function')gtag('event','community_fb_join',{group:'north_park'});">
       <div class="cp-card-art" aria-hidden="true">
+        <svg class="cp-card-art-svg" viewBox="0 0 320 180" preserveAspectRatio="xMidYMax slice">
+          <!-- 3 prominent peaks for the 3 lakes (Lake John, North Delaney, South Delaney) -->
+          <polygon points="-10,150 60,95 110,140 160,55 210,140 260,90 330,150 330,180 -10,180" fill="#3d3027" opacity="0.85"/>
+          <!-- snow caps on the 3 main peaks -->
+          <polygon points="50,105 60,95 70,107" fill="#e8e8e8" opacity="0.75"/>
+          <polygon points="148,68 160,55 172,68" fill="#e8e8e8" opacity="0.85"/>
+          <polygon points="250,103 260,90 270,105" fill="#e8e8e8" opacity="0.75"/>
+          <!-- closer foreground hills -->
+          <polygon points="-10,165 50,135 110,160 170,130 230,160 290,135 330,165 330,180 -10,180" fill="#1a140f"/>
+          <!-- gold horizon glow -->
+          <ellipse cx="160" cy="155" rx="180" ry="14" fill="#D4AF37" opacity="0.10"/>
+          <!-- lake surface foreground -->
+          <rect x="-10" y="160" width="340" height="25" fill="#0f1418" opacity="0.78"/>
+          <line x1="40" y1="168" x2="120" y2="168" stroke="#5a6f7e" stroke-width="0.8" opacity="0.55"/>
+          <line x1="200" y1="172" x2="280" y2="172" stroke="#5a6f7e" stroke-width="0.8" opacity="0.55"/>
+        </svg>
         <div class="cp-card-art-fb" title="Facebook group">f</div>
-        <div class="cp-card-art-code">N<span class="accent">P</span></div>
-        <div class="cp-card-art-tag">North Park · Free Group</div>
+        <div class="cp-card-art-label">North <span class="accent">Park</span></div>
       </div>
       <div class="cp-card-body">
         <div class="cp-card-eyebrow">North Park · Hyper-Local</div>
