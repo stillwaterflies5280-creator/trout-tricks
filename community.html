@@ -1978,15 +1978,17 @@
     .cp-newsletter { padding: 48px 20px 64px; }
     .cp-newsletter-form {
       flex-direction: column;
-      max-width: 340px;
+      max-width: 320px;
     }
     .cp-newsletter-input {
-      padding: 10px 12px;
-      font-size: 0.95rem;
+      flex: 0 0 auto;       /* override flex-basis so column layout doesn't blow up the input height */
+      width: 100%;
+      padding: 10px 14px;
+      font-size: 1rem;      /* keep ≥ 16px to prevent iOS Safari from zooming on focus */
     }
     .cp-newsletter-btn {
       width: 100%;
-      padding: 11px 18px;
+      padding: 12px 18px;
       font-size: 0.95rem;
     }
   }
