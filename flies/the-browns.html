@@ -63,7 +63,7 @@
       "@type": "ListItem",
       "position": 2,
       "name": "Stickers",
-      "item": "https://www.trouttricks.com/#shop"
+      "item": "https://www.trouttricks.com/stickers.html"
     },
     {
       "@type": "ListItem",
@@ -401,6 +401,45 @@ ul.blog-links a {
   border-bottom: 1px solid transparent;
 }
 ul.blog-links a:hover { border-color: var(--red); }
+.related-flies { margin: 36px 0; }
+.related-flies h2 {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 1.5rem; letter-spacing: 0.08em;
+  margin: 0 0 14px;
+  color: var(--white);
+  border-bottom: 1px solid var(--red);
+  padding-bottom: 6px;
+  text-transform: uppercase;
+}
+.related-grid {
+  display: grid; gap: 14px;
+  grid-template-columns: repeat(3, 1fr);
+}
+@media (max-width: 720px) { .related-grid { grid-template-columns: repeat(2, 1fr); } }
+@media (max-width: 480px) { .related-grid { grid-template-columns: 1fr; } }
+.related-card {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  overflow: hidden;
+  text-decoration: none;
+  color: inherit;
+  display: flex; flex-direction: column;
+  transition: border-color 0.2s, transform 0.2s, box-shadow 0.2s;
+}
+.related-card:hover {
+  border-color: var(--red);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 18px rgba(0,0,0,0.4);
+}
+.related-card .r-img { aspect-ratio: 1 / 1; overflow: hidden; background: #111; }
+.related-card .r-img img { width: 100%; height: 100%; object-fit: cover; display: block; transition: transform 0.3s ease; }
+.related-card:hover .r-img img { transform: scale(1.04); }
+.related-card .r-body { padding: 10px 12px 12px; }
+.related-card .r-name { font-family: 'Bebas Neue', sans-serif; font-size: 0.98rem; letter-spacing: 0.04em; margin-bottom: 4px; }
+.related-card .r-price { font-family: 'Bebas Neue', sans-serif; font-size: 0.85rem; color: var(--gold); }
+.related-card .r-price .per { font-size: 0.6rem; color: var(--gray); letter-spacing: 0.12em; }
+
 .bottom-cta {
   background: linear-gradient(135deg, #1a1a1a 0%, #222 100%);
   border: 1px solid var(--red);
@@ -444,7 +483,7 @@ footer a { color: var(--red); text-decoration: none; }
 </header>
 
 <nav class="breadcrumb">
-  <a href="/">Trout Tricks</a> &nbsp;/&nbsp; <a href="/#shop">Stickers</a> &nbsp;/&nbsp; The Browns
+  <a href="/">Trout Tricks</a> &nbsp;/&nbsp; <a href="/stickers.html">Stickers</a> &nbsp;/&nbsp; The Browns
 </nav>
 
 <main>
@@ -491,6 +530,33 @@ footer a { color: var(--red); text-decoration: none; }
       <li><a href="/blog/best-chironomid-fly-patterns.html">The 5 chironomid patterns we lean on</a></li>
       <li><a href="/blog/colorado-trophy-trout-guide.html">Colorado trophy trout playbook</a></li>
     </ul>
+  </section>
+
+  <section class="related-flies">
+    <h2>More Stickers</h2>
+    <div class="related-grid">
+      <a class="related-card" href="/flies/fish-on-sticker.html">
+        <div class="r-img"><img src="/images/sticker-fish-on.png" alt="Fish On Sticker" loading="lazy" width="240" height="240"></div>
+        <div class="r-body">
+          <div class="r-name">Fish On Sticker</div>
+          <div class="r-price">$5</div>
+        </div>
+      </a>
+      <a class="related-card" href="/flies/drop-it-like-its-hot-sticker.html">
+        <div class="r-img"><img src="/images/brown3.png" alt="Drop It Like It&#39;s Hot Sticker" loading="lazy" width="240" height="240"></div>
+        <div class="r-body">
+          <div class="r-name">Drop It Like It&#39;s Hot Sticker</div>
+          <div class="r-price">$5</div>
+        </div>
+      </a>
+      <a class="related-card" href="/flies/brown-town-sticker.html">
+        <div class="r-img"><img src="/images/brown1.png" alt="Brown Town Sticker" loading="lazy" width="240" height="240"></div>
+        <div class="r-body">
+          <div class="r-name">Brown Town Sticker</div>
+          <div class="r-price">$5</div>
+        </div>
+      </a>
+    </div>
   </section>
 
   <div class="bottom-cta">

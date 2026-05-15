@@ -58,8 +58,9 @@ def attr_escape(s):
 
 # ---- Per-fly contextual content ----
 
-CHIRONOMID_IDS = {1, 2, 3, 4, 5, 6, 7, 8, 9}
+CHIRONOMID_IDS = {1, 2, 3, 4, 5, 6, 7, 8, 9, 25, 26}
 LEECH_IDS = {10, 11, 12}
+SCUD_IDS = {27}
 
 def category(fly):
     if fly.get('category') == 'sticker':
@@ -68,9 +69,23 @@ def category(fly):
         return 'bundle'
     if fly['id'] in LEECH_IDS:
         return 'leech'
+    if fly['id'] in SCUD_IDS:
+        return 'scud'
     if fly['id'] in CHIRONOMID_IDS:
         return 'chironomid'
     return 'fly'
+
+
+# Breadcrumb parent label + URL per category. Used for both the visible
+# breadcrumb nav and the BreadcrumbList JSON-LD.
+CATEGORY_INFO = {
+    'chironomid': ('Chironomids', '/flies/chironomids.html'),
+    'leech':      ('Leeches',     '/flies/leeches.html'),
+    'scud':       ('Scuds',       '/flies/scuds.html'),
+    'sticker':    ('Stickers',    '/stickers.html'),
+    'bundle':     ('Stickers',    '/stickers.html'),
+    'fly':        ('Flies',       '/'),
+}
 
 
 FISH_IT_ON = {
@@ -472,6 +487,45 @@ ul.blog-links a {{
   border-bottom: 1px solid transparent;
 }}
 ul.blog-links a:hover {{ border-color: var(--red); }}
+.related-flies {{ margin: 36px 0; }}
+.related-flies h2 {{
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 1.5rem; letter-spacing: 0.08em;
+  margin: 0 0 14px;
+  color: var(--white);
+  border-bottom: 1px solid var(--red);
+  padding-bottom: 6px;
+  text-transform: uppercase;
+}}
+.related-grid {{
+  display: grid; gap: 14px;
+  grid-template-columns: repeat(3, 1fr);
+}}
+@media (max-width: 720px) {{ .related-grid {{ grid-template-columns: repeat(2, 1fr); }} }}
+@media (max-width: 480px) {{ .related-grid {{ grid-template-columns: 1fr; }} }}
+.related-card {{
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  overflow: hidden;
+  text-decoration: none;
+  color: inherit;
+  display: flex; flex-direction: column;
+  transition: border-color 0.2s, transform 0.2s, box-shadow 0.2s;
+}}
+.related-card:hover {{
+  border-color: var(--red);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 18px rgba(0,0,0,0.4);
+}}
+.related-card .r-img {{ aspect-ratio: 1 / 1; overflow: hidden; background: #111; }}
+.related-card .r-img img {{ width: 100%; height: 100%; object-fit: cover; display: block; transition: transform 0.3s ease; }}
+.related-card:hover .r-img img {{ transform: scale(1.04); }}
+.related-card .r-body {{ padding: 10px 12px 12px; }}
+.related-card .r-name {{ font-family: 'Bebas Neue', sans-serif; font-size: 0.98rem; letter-spacing: 0.04em; margin-bottom: 4px; }}
+.related-card .r-price {{ font-family: 'Bebas Neue', sans-serif; font-size: 0.85rem; color: var(--gold); }}
+.related-card .r-price .per {{ font-size: 0.6rem; color: var(--gray); letter-spacing: 0.12em; }}
+
 .bottom-cta {{
   background: linear-gradient(135deg, #1a1a1a 0%, #222 100%);
   border: 1px solid var(--red);
@@ -515,7 +569,7 @@ footer a {{ color: var(--red); text-decoration: none; }}
 </header>
 
 <nav class="breadcrumb">
-  <a href="/">Trout Tricks</a> &nbsp;/&nbsp; <a href="/#shop">{breadcrumb_parent}</a> &nbsp;/&nbsp; {name_plain}
+  <a href="/">Trout Tricks</a> &nbsp;/&nbsp; <a href="{breadcrumb_parent_url}">{breadcrumb_parent}</a> &nbsp;/&nbsp; {name_plain}
 </nav>
 
 <main>
@@ -547,6 +601,8 @@ footer a {{ color: var(--red); text-decoration: none; }}
       {blog_links_html}
     </ul>
   </section>
+
+  {related_html}
 
   <div class="bottom-cta">
     <h3>Ready to fish it?</h3>
@@ -732,6 +788,55 @@ def build_meta_desc(fly, cat):
     return cut + '…'
 
 
+def build_related(fly, cat):
+    """Pick up to 3 other patterns in the same category, render as small link
+    cards. Returns '' if there are no siblings (e.g., scuds while only one scud
+    pattern exists) so the section is omitted entirely rather than showing an
+    empty grid."""
+    if cat in ('sticker', 'bundle'):
+        siblings = [f for f in flies if f.get('category') == 'sticker' and f['id'] != fly['id']]
+    elif cat == 'chironomid':
+        siblings = [f for f in flies if f['id'] in CHIRONOMID_IDS and f['id'] != fly['id']]
+    elif cat == 'leech':
+        siblings = [f for f in flies if f['id'] in LEECH_IDS and f['id'] != fly['id']]
+    elif cat == 'scud':
+        siblings = [f for f in flies if f['id'] in SCUD_IDS and f['id'] != fly['id']]
+    else:
+        return ''
+
+    if not siblings:
+        return ''
+
+    picks = siblings[:3]
+    category_label = CATEGORY_INFO.get(cat, ('Patterns', '/'))[0]
+    cards = []
+    for s in picks:
+        s_slug = slugify(s['name'])
+        s_img_key = s.get('img') or (s.get('gallery') or [None])[0]
+        s_img = fly_images.get(s_img_key, '')
+        per = ''
+        if s.get('pack') and s.get('category') != 'sticker':
+            per = f' <span class="per">/ {s["pack"]}-pack</span>'
+        cards.append(
+            f'      <a class="related-card" href="/flies/{s_slug}.html">\n'
+            f'        <div class="r-img"><img src="/{s_img}" alt="{html_escape(s["name"])}" loading="lazy" width="240" height="240"></div>\n'
+            f'        <div class="r-body">\n'
+            f'          <div class="r-name">{html_escape(s["name"])}</div>\n'
+            f'          <div class="r-price">${s["price"]}{per}</div>\n'
+            f'        </div>\n'
+            f'      </a>'
+        )
+
+    return (
+        f'<section class="related-flies">\n'
+        f'    <h2>More {html_escape(category_label)}</h2>\n'
+        f'    <div class="related-grid">\n'
+        + '\n'.join(cards) + '\n'
+        f'    </div>\n'
+        f'  </section>'
+    )
+
+
 def build_page(fly):
     cat = category(fly)
     slug = slugify(fly['name'])
@@ -752,13 +857,12 @@ def build_page(fly):
 
     if cat == 'sticker':
         title = f"{name_plain} — Trout Tricks Colorado Fly Fishing Sticker"
-        breadcrumb_parent = 'Stickers'
     elif cat == 'bundle':
         title = f"{name_plain} — Trout Tricks Hand-Tied Fly Bundle Colorado Stillwater"
-        breadcrumb_parent = 'Bundles'
     else:
         title = f"{name_plain} — Trout Tricks Hand-Tied Colorado Stillwater Fly Pattern"
-        breadcrumb_parent = 'Flies'
+
+    breadcrumb_parent, breadcrumb_parent_url = CATEGORY_INFO.get(cat, CATEGORY_INFO['fly'])
 
     meta_desc = build_meta_desc(fly, cat)
     og_title = f'{name_plain} — Trout Tricks'
@@ -823,10 +927,13 @@ def build_page(fly):
         '@type': 'BreadcrumbList',
         'itemListElement': [
             {'@type': 'ListItem', 'position': 1, 'name': 'Trout Tricks', 'item': SITE + '/'},
-            {'@type': 'ListItem', 'position': 2, 'name': breadcrumb_parent, 'item': SITE + '/#shop'},
+            {'@type': 'ListItem', 'position': 2, 'name': breadcrumb_parent, 'item': SITE + breadcrumb_parent_url},
             {'@type': 'ListItem', 'position': 3, 'name': name_plain, 'item': canonical},
         ]
     }
+
+    # Related flies — up to 3 siblings in the same category, rendered as link cards
+    related_html = build_related(fly, cat)
 
     return PAGE_TEMPLATE.format(
         title=html_escape(title),
@@ -838,6 +945,7 @@ def build_page(fly):
         breadcrumb_jsonld=json.dumps(breadcrumb, indent=2),
         name_plain=html_escape(name_plain),
         breadcrumb_parent=html_escape(breadcrumb_parent),
+        breadcrumb_parent_url=breadcrumb_parent_url,
         slug=slug,
         img_src=img_src,
         rotate_style=rotate_style,
@@ -849,6 +957,7 @@ def build_page(fly):
         specs_html=specs_html,
         fish_it_on_html=fish_it_on_html,
         blog_links_html=blog_links_html,
+        related_html=related_html,
     )
 
 
@@ -867,18 +976,30 @@ for fly in flies:
 print(f'\nGenerated {len(generated)} per-fly pages -> {OUT_DIR}')
 
 # ---- Append sitemap entries ----
+# This script owns ALL /flies/* sitemap entries — both category index pages
+# (chironomids/leeches/scuds) and per-fly product pages — so editors only
+# need to re-run this script after editing catalog.js.
 sitemap_path = os.path.join(REPO, 'sitemap.xml')
 with open(sitemap_path) as f:
     sm = f.read()
-# Remove any existing /flies/ entries first
+# Strip any existing /flies/ entries (categories + per-fly) so we can re-emit
 sm = re.sub(r'\s*<url><loc>https://www\.trouttricks\.com/flies/[^<]+</loc>[^<]*<lastmod>[^<]+</lastmod>[^<]*<priority>[^<]+</priority>[^<]*<changefreq>[^<]+</changefreq></url>\s*', '\n  ', sm)
-# Add new entries before </urlset>
-today = '2026-05-12'
-new_urls = '\n'.join(
+
+today = '2026-05-14'
+
+CATEGORY_PAGES = ['chironomids', 'leeches', 'scuds']
+category_urls = '\n'.join(
+    f'  <url><loc>https://www.trouttricks.com/flies/{slug}.html</loc><lastmod>{today}</lastmod><priority>0.95</priority><changefreq>weekly</changefreq></url>'
+    for slug in CATEGORY_PAGES
+)
+
+per_fly_urls = '\n'.join(
     f'  <url><loc>https://www.trouttricks.com/flies/{s}.html</loc><lastmod>{today}</lastmod><priority>0.85</priority><changefreq>weekly</changefreq></url>'
     for s, _ in generated
 )
+
+new_urls = category_urls + '\n' + per_fly_urls
 sm = sm.replace('</urlset>', new_urls + '\n</urlset>')
 with open(sitemap_path, 'w') as f:
     f.write(sm)
-print(f'Updated sitemap.xml with {len(generated)} /flies/ entries')
+print(f'Updated sitemap.xml with {len(CATEGORY_PAGES)} category + {len(generated)} per-fly /flies/ entries')

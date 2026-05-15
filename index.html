@@ -708,6 +708,142 @@
     background: var(--border);
   }
 
+  /* CATEGORY TILES (homepage browse view) */
+  .category-tiles {
+    display: grid;
+    gap: 18px;
+    padding: 4px 16px 8px;
+    grid-template-columns: repeat(4, 1fr);
+    max-width: 1240px;
+    margin: 0 auto;
+  }
+  @media (max-width: 1024px) { .category-tiles { grid-template-columns: repeat(2, 1fr); } }
+  @media (max-width: 540px) { .category-tiles { grid-template-columns: 1fr; } }
+  .category-tile {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    overflow: hidden;
+    text-decoration: none;
+    color: inherit;
+    display: flex;
+    flex-direction: column;
+    transition: transform 0.2s, border-color 0.2s, box-shadow 0.2s;
+  }
+  .category-tile:hover {
+    transform: translateY(-3px);
+    border-color: var(--red);
+    box-shadow: 0 8px 24px rgba(0,0,0,0.5);
+  }
+  .category-tile .tile-img {
+    aspect-ratio: 4 / 3;
+    overflow: hidden;
+    background: #111;
+  }
+  .category-tile .tile-img img {
+    width: 100%; height: 100%;
+    object-fit: cover;
+    display: block;
+    transition: transform 0.35s ease;
+  }
+  .category-tile:hover .tile-img img { transform: scale(1.05); }
+  .category-tile .tile-body {
+    padding: 14px 18px 18px;
+    text-align: center;
+    display: flex; flex-direction: column;
+    gap: 4px;
+    flex: 1;
+  }
+  .category-tile .tile-name {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 1.55rem;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+  }
+  .category-tile .tile-meta {
+    font-size: 0.78rem;
+    color: var(--gray);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    margin-bottom: 6px;
+  }
+  .category-tile .tile-cta {
+    margin-top: auto;
+    padding-top: 8px;
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 0.92rem;
+    letter-spacing: 0.14em;
+    color: var(--red);
+    text-transform: uppercase;
+  }
+
+  /* FEATURED PATTERNS STRIP */
+  .featured-strip {
+    display: grid;
+    gap: 16px;
+    padding: 4px 16px 36px;
+    grid-template-columns: repeat(4, 1fr);
+    max-width: 1240px;
+    margin: 0 auto;
+  }
+  @media (max-width: 900px) { .featured-strip { grid-template-columns: repeat(2, 1fr); } }
+  @media (max-width: 480px) { .featured-strip { grid-template-columns: 1fr; } }
+  .featured-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    overflow: hidden;
+    text-decoration: none;
+    color: inherit;
+    display: flex; flex-direction: column;
+    transition: transform 0.2s, border-color 0.2s, box-shadow 0.2s;
+  }
+  .featured-card:hover {
+    transform: translateY(-3px);
+    border-color: var(--red);
+    box-shadow: 0 8px 24px rgba(0,0,0,0.5);
+  }
+  .featured-card .feat-img {
+    aspect-ratio: 1 / 1;
+    overflow: hidden;
+    background: #111;
+  }
+  .featured-card .feat-img img {
+    width: 100%; height: 100%;
+    object-fit: cover; display: block;
+    transition: transform 0.35s ease;
+  }
+  .featured-card:hover .feat-img img { transform: scale(1.05); }
+  .featured-card .feat-body {
+    padding: 12px 14px 14px;
+    display: flex; flex-direction: column;
+    gap: 4px;
+    flex: 1;
+  }
+  .featured-card .feat-name {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 1.05rem;
+    letter-spacing: 0.04em;
+  }
+  .featured-card .feat-price {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 0.95rem;
+    color: var(--gold);
+  }
+  .featured-card .feat-price .per {
+    font-size: 0.62rem;
+    color: var(--gray);
+    letter-spacing: 0.12em;
+  }
+  .featured-card .feat-cta {
+    margin-top: 6px;
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 0.82rem;
+    letter-spacing: 0.14em;
+    color: var(--red);
+    text-transform: uppercase;
+  }
+
   /* CATALOG */
   .catalog {
     padding: 4px 16px 40px;
@@ -2766,7 +2902,7 @@
     <h1>Hand-Tied Colorado Stillwater Flies</h1>
     <div class="hero-sub">Stillwater flies tied to catch trophy trout.</div>
     <div class="hero-divider"></div>
-    <a href="#catalog" class="hero-cta">🪝 Browse the Patterns</a>
+    <a href="#shop-browse" class="hero-cta">🪝 Browse the Patterns</a>
   </div>
 
   <div class="ship-banner">
@@ -2828,20 +2964,67 @@
   </div>
 
 
-  <h2 class="section-title" id="fliesSectionTitle">THE FLIES</h2>
-  <div class="fly-search-empty" id="flySearchEmpty">No flies, merch, or articles match "<strong id="flySearchQuery"></strong>"</div>
-  <div class="search-section-header" id="flyResultsHeader" style="display:none;">FLIES <span class="count">(<span id="flyResultsCount">0</span>)</span></div>
-  <div class="catalog" id="catalog"></div>
-  <div class="search-section-header" id="articleResultsHeader" style="display:none;">ARTICLES <span class="count">(<span id="articleResultsCount">0</span>)</span></div>
-  <div class="article-results" id="articleResults"></div>
+  <!-- BROWSE VIEW — category tiles + featured strip. Default state. -->
+  <div id="shop-browse">
+    <h2 class="section-title">The Patterns</h2>
+    <div class="category-tiles">
+      <a class="category-tile" href="/flies/chironomids.html">
+        <div class="tile-img"><img src="images/ironman.jpg" alt="Chironomid fly patterns — Trout Tricks" loading="lazy" width="600" height="450"></div>
+        <div class="tile-body">
+          <div class="tile-name">Chironomids</div>
+          <div class="tile-meta">11 Patterns · Buzzers, Midges, Bloodworms</div>
+          <div class="tile-cta">Browse →</div>
+        </div>
+      </a>
+      <a class="category-tile" href="/flies/leeches.html">
+        <div class="tile-img"><img src="balanced-leech.jpg" alt="Balanced leech patterns — Trout Tricks" loading="lazy" width="600" height="450"></div>
+        <div class="tile-body">
+          <div class="tile-name">Leeches</div>
+          <div class="tile-meta">3 Patterns · Balanced on Jig Hooks</div>
+          <div class="tile-cta">Browse →</div>
+        </div>
+      </a>
+      <a class="category-tile" href="/flies/scuds.html">
+        <div class="tile-img"><img src="images/scud1.png" alt="Scud fly patterns — Trout Tricks" loading="lazy" width="600" height="450"></div>
+        <div class="tile-body">
+          <div class="tile-name">Scuds</div>
+          <div class="tile-meta">Heavy-Wire · Olive, Tan, Grey</div>
+          <div class="tile-cta">Browse →</div>
+        </div>
+      </a>
+      <a class="category-tile" href="/stickers.html">
+        <div class="tile-img" style="background:#f5f5f5;"><img src="images/sticker-fish-on.png" alt="Trout Tricks stickers" loading="lazy" width="600" height="450" style="object-fit:contain;padding:18px;"></div>
+        <div class="tile-body">
+          <div class="tile-name">Stickers</div>
+          <div class="tile-meta">9 Designs · Vinyl Weatherproof</div>
+          <div class="tile-cta">Browse →</div>
+        </div>
+      </a>
+    </div>
+
+    <h2 class="section-title" style="padding-top:24px;">Featured Patterns</h2>
+    <div class="featured-strip" id="featuredFlies"></div>
+  </div>
+
+  <!-- SEARCH RESULTS VIEW — hidden by default. filterFlies() reveals it when the
+       header search has a query so users can search across all flies + stickers
+       from anywhere on the homepage. -->
+  <div id="shop-search-view" style="display:none;">
+    <h2 class="section-title" id="fliesSectionTitle">THE FLIES</h2>
+    <div class="fly-search-empty" id="flySearchEmpty">No flies, merch, or articles match "<strong id="flySearchQuery"></strong>"</div>
+    <div class="search-section-header" id="flyResultsHeader" style="display:none;">FLIES <span class="count">(<span id="flyResultsCount">0</span>)</span></div>
+    <div class="catalog" id="catalog"></div>
+    <div class="search-section-header" id="articleResultsHeader" style="display:none;">ARTICLES <span class="count">(<span id="articleResultsCount">0</span>)</span></div>
+    <div class="article-results" id="articleResults"></div>
 
 
-  <section id="stickers">
-    <h2 class="section-title" id="stickersSectionTitle">STICKERS</h2>
-    <div class="search-section-header" id="merchResultsHeader" style="display:none;">STICKERS <span class="count">(<span id="merchResultsCount">0</span>)</span></div>
-    <p style="text-align:center;font-size:0.9rem;margin:0 0 18px;" id="stickersSubLink"><a href="stickers.html" style="color:var(--light-gray);text-decoration:underline;">See the full collection in one place →</a></p>
-    <div class="catalog" id="merchCatalog"></div>
-  </section>
+    <section id="stickers">
+      <h2 class="section-title" id="stickersSectionTitle">STICKERS</h2>
+      <div class="search-section-header" id="merchResultsHeader" style="display:none;">STICKERS <span class="count">(<span id="merchResultsCount">0</span>)</span></div>
+      <p style="text-align:center;font-size:0.9rem;margin:0 0 18px;" id="stickersSubLink"><a href="stickers.html" style="color:var(--light-gray);text-decoration:underline;">See the full collection in one place →</a></p>
+      <div class="catalog" id="merchCatalog"></div>
+    </section>
+  </div>
 
   <!-- SOCIAL PROOF -->
   <div id="reviews" class="social-proof" style="scroll-margin-top:80px;">
@@ -3582,15 +3765,10 @@ function scrollToFlyFromHash() {
   const m = location.hash.match(/^#fly-([a-z0-9-]+)$/);
   if (!m) return;
   const slug = m[1];
-  requestAnimationFrame(() => {
-    requestAnimationFrame(() => {
-      const target = document.getElementById('fly-' + slug);
-      if (!target) return;
-      target.scrollIntoView({ behavior: 'smooth', block: 'center' });
-      target.classList.add('fly-card-highlight');
-      setTimeout(() => target.classList.remove('fly-card-highlight'), 3500);
-    });
-  });
+  // Homepage now shows category tiles + a featured strip instead of the full
+  // grid, so legacy share links (index.html#fly-{slug}) no longer have a card
+  // to scroll to. Redirect those to the product page — better destination anyway.
+  window.location.replace('/flies/' + slug + '.html');
 }
 
 function buildCatalog() {
@@ -3723,6 +3901,33 @@ function buildCatalog() {
   }
 }
 
+// Featured Patterns strip — 4 hand-picked links shown in the default browse view.
+// Pure-link cards (no inline add-to-cart) so they don't collide with the full
+// catalog cards above (which use `id="fly-${slug}"`). Click → product page.
+function renderFeaturedFlies() {
+  const grid = document.getElementById('featuredFlies');
+  if (!grid) return;
+  const FEATURED_IDS = [1, 3, 10, 27]; // Muskie Buzzer, Ironman, Balanced Leech, Bling Scud
+  const picks = FEATURED_IDS.map(id => flies.find(f => f.id === id)).filter(Boolean);
+  grid.innerHTML = picks.map(fly => {
+    const slug = slugifyFlyName(fly.name);
+    const imgKey = fly.gallery ? fly.gallery[0] : fly.img;
+    const img = FLY_IMAGES[imgKey];
+    const perLabel = fly.pack ? '<span class="per">/ ' + fly.pack + '-pack</span>' : '';
+    return '' +
+      '<a class="featured-card" href="/flies/' + slug + '.html">' +
+        '<div class="feat-img">' +
+          '<img src="/' + img + '" alt="' + fly.name.replace(/"/g, '&quot;') + ' — Trout Tricks Colorado stillwater fly pattern" loading="lazy" width="400" height="400">' +
+        '</div>' +
+        '<div class="feat-body">' +
+          '<div class="feat-name">' + fly.name + '</div>' +
+          '<div class="feat-price">$' + fly.price + ' ' + perLabel + '</div>' +
+          '<div class="feat-cta">View Pattern →</div>' +
+        '</div>' +
+      '</a>';
+  }).join('');
+}
+
 // Blog post index used by site search
 const blogIndex = [
   {
@@ -3843,6 +4048,14 @@ function filterFlies(q) {
   const query = q.trim().toLowerCase();
   const wrap = document.getElementById('flySearch');
   if (wrap) wrap.classList.toggle('has-text', query.length > 0);
+
+  // Toggle browse view (category tiles + featured strip) vs search-results view
+  // (the full fly + stickers catalog). When no query, show the browse view; when
+  // the user types, hide it and reveal the searchable catalog underneath.
+  const browseView = document.getElementById('shop-browse');
+  const searchView = document.getElementById('shop-search-view');
+  if (browseView) browseView.style.display = query.length > 0 ? 'none' : '';
+  if (searchView) searchView.style.display = query.length > 0 ? '' : 'none';
 
   // FLIES — filter only if this section has at least one match; otherwise leave
   // every fly visible so customers can keep browsing during cross-section searches.
@@ -4625,7 +4838,7 @@ function fallbackCopy(text) {
 function shopNowFromPopup() {
   closeEmailPopup();
   setTimeout(() => {
-    const target = document.getElementById('catalog');
+    const target = document.getElementById('shop-browse');
     if (target) {
       target.scrollIntoView({ behavior: 'smooth', block: 'start' });
     }
@@ -4954,6 +5167,7 @@ function loadCart() {
 }
 
 buildCatalog();
+renderFeaturedFlies();
 buildMosaic();
 loadCart();
 
