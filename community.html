@@ -1790,7 +1790,19 @@
 <!-- COMMUNITY PAGE -->
 <style>
   /* Community page-specific layout */
-  .cp-hero { padding: 56px 20px 32px; text-align: center; }
+  .cp-hero {
+    position: relative;
+    padding: 80px 20px 56px;
+    text-align: center;
+    background: linear-gradient(
+      180deg,
+      rgba(10,10,10,0.78) 0%,
+      rgba(10,10,10,0.62) 45%,
+      rgba(10,10,10,0.92) 100%
+    ), url('/images/11-mile-rainbow-mountains.jpg') center/cover no-repeat;
+    border-bottom: 1px solid #1f1f1f;
+  }
+  .cp-hero > * { position: relative; z-index: 1; }
   .cp-hero h1 {
     font-family: 'Bebas Neue', Impact, sans-serif;
     font-size: clamp(2.6rem, 9vw, 5.2rem);
@@ -1800,6 +1812,7 @@
     display: inline-block;
     border-bottom: 4px solid var(--red);
     padding-bottom: 8px;
+    text-shadow: 0 2px 18px rgba(0,0,0,0.55);
   }
   .cp-hero-sub {
     font-family: 'Barlow Condensed', Impact, sans-serif;
@@ -1830,15 +1843,34 @@
     background: #181818;
     border: 1px solid #2a2a2a;
     border-radius: 10px;
-    padding: 28px 24px 26px;
+    padding: 0;
     display: flex;
     flex-direction: column;
+    overflow: hidden;
     transition: border-color 0.2s, transform 0.2s, box-shadow 0.2s;
   }
   .cp-card:hover {
     border-color: var(--gold);
     transform: translateY(-2px);
     box-shadow: 0 8px 26px rgba(0,0,0,0.5);
+  }
+  .cp-card-img {
+    aspect-ratio: 16 / 10;
+    overflow: hidden;
+    background: #111;
+  }
+  .cp-card-img img {
+    width: 100%; height: 100%;
+    object-fit: cover;
+    display: block;
+    transition: transform 0.4s ease;
+  }
+  .cp-card:hover .cp-card-img img { transform: scale(1.04); }
+  .cp-card-body {
+    padding: 22px 24px 24px;
+    display: flex;
+    flex-direction: column;
+    flex: 1;
   }
   .cp-card-eyebrow {
     font-family: 'Barlow Condensed', Impact, sans-serif;
@@ -1883,6 +1915,7 @@
   }
   .cp-card-cta:hover { background: var(--red-bright); }
   .cp-card-cta:active { transform: translateY(1px); }
+  .cp-card:hover .cp-card-cta { background: var(--red-bright); }
 
   .cp-divider {
     max-width: 1080px;
@@ -1969,12 +2002,14 @@
   }
 
   @media (max-width: 600px) {
+    .cp-hero { padding: 56px 20px 36px; }
     .cp-cards {
       grid-template-columns: 1fr;
       gap: 18px;
       margin-top: 28px;
     }
-    .cp-card { padding: 24px 20px; }
+    .cp-card { padding: 0; }
+    .cp-card-body { padding: 18px 20px 20px; }
     .cp-newsletter { padding: 48px 20px 64px; }
     .cp-newsletter-form {
       flex-direction: column;
@@ -1999,32 +2034,43 @@
     <h1>JOIN THE COMMUNITY</h1>
     <div class="cp-hero-sub">Talk stillwater. Share fish. Learn what's hatching.</div>
     <p class="cp-hero-intro">A free Facebook community for Colorado stillwater anglers. Stillwater patterns, lake reports, hatch updates, and conversation about fly fishing Colorado's lakes and reservoirs.</p>
-    <!-- CRO fix from Clarity dead-click finding: H1 above is read as a button on
-         mobile (FB in-app browser especially). Primary CTA below captures that
-         intent without changing the H1 semantics. -->
-    <p style="margin:18px auto 6px;font-size:0.82rem;letter-spacing:0.18em;text-transform:uppercase;color:var(--gold);">
-      Statewide · Colorado Stillwater
-    </p>
-    <a class="cp-card-cta"
-       style="display:inline-block;max-width:480px;padding:18px 36px;margin:0 auto 18px;"
+  </section>
+
+  <div class="cp-cards">
+    <a class="cp-card"
        href="https://www.facebook.com/share/g/1GW8wCdgMh/?mibextid=wwXIfr"
        target="_blank"
        rel="noopener noreferrer"
+       style="text-decoration:none;color:inherit;"
        onclick="if(typeof gtag==='function')gtag('event','community_fb_join',{group:'statewide'});">
-      Join on Facebook →
+      <div class="cp-card-img">
+        <img src="/images/south-park-cutbow-mountains.jpg" alt="Colorado stillwater rainbow trout — Trout Tricks community" loading="lazy" width="600" height="375">
+      </div>
+      <div class="cp-card-body">
+        <div class="cp-card-eyebrow">Statewide · Colorado Stillwater</div>
+        <h2 class="cp-card-title">Colorado Stillwater Anglers</h2>
+        <p class="cp-card-desc">The statewide hub. Stillwater patterns, lake reports, hatch updates, and conversation about fly fishing Antero, Spinney, 11 Mile, Carter, Horsetooth, and beyond.</p>
+        <span class="cp-card-cta">Join on Facebook →</span>
+      </div>
     </a>
-    <p style="margin:14px auto 6px;font-size:0.82rem;letter-spacing:0.18em;text-transform:uppercase;color:var(--gold);">
-      North Park · Lake John / Delaney Buttes
-    </p>
-    <a class="cp-card-cta"
-       style="display:inline-block;max-width:480px;padding:18px 36px;margin:0 auto 14px;"
+
+    <a class="cp-card"
        href="https://www.facebook.com/share/g/1HFtn9t9vE/?mibextid=wwXIfr"
        target="_blank"
        rel="noopener noreferrer"
+       style="text-decoration:none;color:inherit;"
        onclick="if(typeof gtag==='function')gtag('event','community_fb_join',{group:'north_park'});">
-      Join on Facebook →
+      <div class="cp-card-img">
+        <img src="/images/wyoming-hero.jpg" alt="High mountain stillwater trout — North Park Colorado" loading="lazy" width="600" height="375">
+      </div>
+      <div class="cp-card-body">
+        <div class="cp-card-eyebrow">North Park · Hyper-Local</div>
+        <h2 class="cp-card-title">Lake John / Delaney Buttes</h2>
+        <p class="cp-card-desc">Hyper-local community for North Park anglers. Daily reports, fly recommendations, and tactical chatter for Lake John, North Delaney, and South Delaney.</p>
+        <span class="cp-card-cta">Join on Facebook →</span>
+      </div>
     </a>
-  </section>
+  </div>
 
   <div class="cp-divider"><hr></div>
 
