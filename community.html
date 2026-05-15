@@ -1854,18 +1854,65 @@
     transform: translateY(-2px);
     box-shadow: 0 8px 26px rgba(0,0,0,0.5);
   }
-  .cp-card-img {
+  /* Card "art" — typographic header instead of a photo. Dark gradient with a
+     huge Bebas Neue group-code (e.g. CO / NP), an FB icon badge top-right, and
+     a brand-red accent rule. Reads as a styled button rather than a photo card. */
+  .cp-card-art {
     aspect-ratio: 16 / 10;
+    position: relative;
     overflow: hidden;
-    background: #111;
+    background: linear-gradient(135deg, #1a1a1a 0%, #262626 55%, #1a1a1a 100%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-bottom: 3px solid var(--red);
+    transition: filter 0.3s ease;
   }
-  .cp-card-img img {
-    width: 100%; height: 100%;
-    object-fit: cover;
-    display: block;
-    transition: transform 0.4s ease;
+  /* Subtle dotted texture overlay for depth */
+  .cp-card-art::before {
+    content: '';
+    position: absolute; inset: 0;
+    background-image: radial-gradient(rgba(212,175,55,0.10) 1px, transparent 1px);
+    background-size: 14px 14px;
+    pointer-events: none;
   }
-  .cp-card:hover .cp-card-img img { transform: scale(1.04); }
+  .cp-card:hover .cp-card-art { filter: brightness(1.12); }
+  .cp-card-art-code {
+    font-family: 'Bebas Neue', Impact, sans-serif;
+    font-size: clamp(4rem, 11vw, 6.5rem);
+    letter-spacing: 0.04em;
+    line-height: 1;
+    color: #fff;
+    text-shadow: 0 4px 22px rgba(0,0,0,0.55);
+    position: relative;
+    z-index: 1;
+  }
+  .cp-card-art-code .accent { color: var(--gold); }
+  .cp-card-art-fb {
+    position: absolute;
+    top: 14px; right: 14px;
+    width: 38px; height: 38px;
+    background: #1877F2;
+    color: #fff;
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-family: 'Helvetica', Arial, sans-serif;
+    font-weight: 900;
+    font-size: 1.5rem;
+    line-height: 1;
+    z-index: 1;
+    box-shadow: 0 4px 14px rgba(0,0,0,0.45);
+  }
+  .cp-card-art-tag {
+    position: absolute;
+    bottom: 12px; left: 16px;
+    font-family: 'Barlow Condensed', Impact, sans-serif;
+    font-size: 0.74rem;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--gold);
+    z-index: 1;
+  }
   .cp-card-body {
     padding: 22px 24px 24px;
     display: flex;
@@ -2043,8 +2090,10 @@
        rel="noopener noreferrer"
        style="text-decoration:none;color:inherit;"
        onclick="if(typeof gtag==='function')gtag('event','community_fb_join',{group:'statewide'});">
-      <div class="cp-card-img">
-        <img src="/images/south-park-cutbow-mountains.jpg" alt="Colorado stillwater rainbow trout — Trout Tricks community" loading="lazy" width="600" height="375">
+      <div class="cp-card-art" aria-hidden="true">
+        <div class="cp-card-art-fb" title="Facebook group">f</div>
+        <div class="cp-card-art-code">C<span class="accent">O</span></div>
+        <div class="cp-card-art-tag">Statewide · Free Group</div>
       </div>
       <div class="cp-card-body">
         <div class="cp-card-eyebrow">Statewide · Colorado Stillwater</div>
@@ -2060,8 +2109,10 @@
        rel="noopener noreferrer"
        style="text-decoration:none;color:inherit;"
        onclick="if(typeof gtag==='function')gtag('event','community_fb_join',{group:'north_park'});">
-      <div class="cp-card-img">
-        <img src="/images/wyoming-hero.jpg" alt="High mountain stillwater trout — North Park Colorado" loading="lazy" width="600" height="375">
+      <div class="cp-card-art" aria-hidden="true">
+        <div class="cp-card-art-fb" title="Facebook group">f</div>
+        <div class="cp-card-art-code">N<span class="accent">P</span></div>
+        <div class="cp-card-art-tag">North Park · Free Group</div>
       </div>
       <div class="cp-card-body">
         <div class="cp-card-eyebrow">North Park · Hyper-Local</div>
