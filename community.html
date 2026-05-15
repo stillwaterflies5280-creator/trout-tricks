@@ -1854,14 +1854,21 @@
     transform: translateY(-2px);
     box-shadow: 0 8px 26px rgba(0,0,0,0.5);
   }
-  /* Card "art" — illustrated mountain landscape header. Inline SVG so we get
-     crisp scaling + brand-color control. Gradient sky behind the silhouettes,
-     gold accent peaks, an FB badge, and a region label at the bottom. */
+  /* Card "art" — illustrated mountain landscape header. Inline SVG silhouettes
+     against a Colorado-sunset sky gradient using TT brand colors (red horizon,
+     gold sun, dark mountains). Brand-red bottom border ties the whole block
+     to the rest of the site's accent system. */
   .cp-card-art {
     aspect-ratio: 16 / 9;
     position: relative;
     overflow: hidden;
-    background: linear-gradient(180deg, #1f2632 0%, #2a3140 55%, #3a3128 100%);
+    background: linear-gradient(180deg,
+      #0a0a0a 0%,
+      #1a0e08 30%,
+      #4a1812 58%,
+      #B0341E 86%,
+      #2a0e0a 100%);
+    border-bottom: 3px solid var(--red);
     transition: filter 0.3s ease;
   }
   .cp-card:hover .cp-card-art { filter: brightness(1.1); }
@@ -2080,19 +2087,24 @@
        onclick="if(typeof gtag==='function')gtag('event','community_fb_join',{group:'statewide'});">
       <div class="cp-card-art" aria-hidden="true">
         <svg class="cp-card-art-svg" viewBox="0 0 320 180" preserveAspectRatio="xMidYMax slice">
+          <!-- gold sun glow + disc on the horizon -->
+          <circle cx="160" cy="125" r="38" fill="#D4AF37" opacity="0.18"/>
+          <circle cx="160" cy="125" r="22" fill="#D4AF37" opacity="0.42"/>
+          <circle cx="160" cy="125" r="13" fill="#F4D26A"/>
           <!-- distant mountain range (statewide = 5 peaks across the horizon) -->
-          <polygon points="-10,130 30,90 60,110 100,70 140,100 180,75 220,95 260,65 300,100 330,85 330,180 -10,180" fill="#3d3027" opacity="0.85"/>
-          <!-- mid mountain range -->
-          <polygon points="-10,150 40,115 80,140 120,100 165,135 210,105 255,135 300,115 330,145 330,180 -10,180" fill="#241d18"/>
-          <!-- gold sun glow on highest peak -->
-          <circle cx="140" cy="55" r="22" fill="#D4AF37" opacity="0.18"/>
-          <circle cx="140" cy="55" r="11" fill="#D4AF37" opacity="0.55"/>
-          <!-- water foreground -->
-          <rect x="-10" y="155" width="340" height="30" fill="#0f1418" opacity="0.7"/>
-          <!-- water highlights -->
-          <line x1="20" y1="163" x2="80" y2="163" stroke="#5a6f7e" stroke-width="0.8" opacity="0.5"/>
-          <line x1="120" y1="168" x2="200" y2="168" stroke="#5a6f7e" stroke-width="0.8" opacity="0.5"/>
-          <line x1="230" y1="163" x2="290" y2="163" stroke="#5a6f7e" stroke-width="0.8" opacity="0.5"/>
+          <polygon points="-10,135 30,95 60,115 100,75 140,105 180,80 220,100 260,70 300,105 330,90 330,180 -10,180" fill="#0a0a0a" opacity="0.85"/>
+          <!-- foreground mountain silhouette — pure black -->
+          <polygon points="-10,155 40,118 80,143 120,103 165,138 210,108 255,138 300,118 330,148 330,180 -10,180" fill="#000"/>
+          <!-- still water reflection -->
+          <rect x="-10" y="158" width="340" height="28" fill="#0a0a0a" opacity="0.78"/>
+          <!-- gold reflection of sun in water -->
+          <ellipse cx="160" cy="166" rx="22" ry="2" fill="#D4AF37" opacity="0.45"/>
+          <line x1="148" y1="172" x2="172" y2="172" stroke="#D4AF37" stroke-width="0.6" opacity="0.35"/>
+          <!-- subtle TT brand mark — stylized fly hook in upper-left -->
+          <g transform="translate(20,28)" fill="none" stroke="#D4AF37" stroke-width="1.4" stroke-linecap="round" opacity="0.55">
+            <path d="M0,0 L14,0 Q22,0 22,8 Q22,16 14,16 Q9,16 7,12"/>
+            <line x1="0" y1="-2" x2="0" y2="2"/>
+          </g>
         </svg>
         <div class="cp-card-art-fb" title="Facebook group">f</div>
         <div class="cp-card-art-label">All of <span class="accent">Colorado</span></div>
@@ -2113,20 +2125,29 @@
        onclick="if(typeof gtag==='function')gtag('event','community_fb_join',{group:'north_park'});">
       <div class="cp-card-art" aria-hidden="true">
         <svg class="cp-card-art-svg" viewBox="0 0 320 180" preserveAspectRatio="xMidYMax slice">
-          <!-- 3 prominent peaks for the 3 lakes (Lake John, North Delaney, South Delaney) -->
-          <polygon points="-10,150 60,95 110,140 160,55 210,140 260,90 330,150 330,180 -10,180" fill="#3d3027" opacity="0.85"/>
+          <!-- gold sun glow behind the center peak -->
+          <circle cx="160" cy="115" r="40" fill="#D4AF37" opacity="0.16"/>
+          <circle cx="160" cy="115" r="22" fill="#D4AF37" opacity="0.38"/>
+          <circle cx="160" cy="115" r="12" fill="#F4D26A"/>
+          <!-- 3 prominent peaks (one per lake — Lake John, N. Delaney, S. Delaney) -->
+          <polygon points="-10,150 60,90 110,140 160,55 210,140 260,90 330,150 330,180 -10,180" fill="#0a0a0a" opacity="0.9"/>
           <!-- snow caps on the 3 main peaks -->
-          <polygon points="50,105 60,95 70,107" fill="#e8e8e8" opacity="0.75"/>
-          <polygon points="148,68 160,55 172,68" fill="#e8e8e8" opacity="0.85"/>
-          <polygon points="250,103 260,90 270,105" fill="#e8e8e8" opacity="0.75"/>
-          <!-- closer foreground hills -->
-          <polygon points="-10,165 50,135 110,160 170,130 230,160 290,135 330,165 330,180 -10,180" fill="#1a140f"/>
-          <!-- gold horizon glow -->
-          <ellipse cx="160" cy="155" rx="180" ry="14" fill="#D4AF37" opacity="0.10"/>
-          <!-- lake surface foreground -->
-          <rect x="-10" y="160" width="340" height="25" fill="#0f1418" opacity="0.78"/>
-          <line x1="40" y1="168" x2="120" y2="168" stroke="#5a6f7e" stroke-width="0.8" opacity="0.55"/>
-          <line x1="200" y1="172" x2="280" y2="172" stroke="#5a6f7e" stroke-width="0.8" opacity="0.55"/>
+          <polygon points="50,102 60,90 70,104" fill="#fff" opacity="0.85"/>
+          <polygon points="148,68 160,55 172,68" fill="#fff" opacity="0.92"/>
+          <polygon points="250,102 260,90 270,104" fill="#fff" opacity="0.85"/>
+          <!-- foreground hills — pure black -->
+          <polygon points="-10,165 50,135 110,160 170,130 230,160 290,135 330,165 330,180 -10,180" fill="#000"/>
+          <!-- still lake foreground -->
+          <rect x="-10" y="162" width="340" height="24" fill="#0a0a0a" opacity="0.82"/>
+          <!-- gold reflection beneath center peak -->
+          <ellipse cx="160" cy="172" rx="20" ry="1.6" fill="#D4AF37" opacity="0.42"/>
+          <line x1="40" y1="170" x2="100" y2="170" stroke="#D4AF37" stroke-width="0.5" opacity="0.22"/>
+          <line x1="220" y1="170" x2="280" y2="170" stroke="#D4AF37" stroke-width="0.5" opacity="0.22"/>
+          <!-- subtle TT brand mark — stylized fly hook in upper-left -->
+          <g transform="translate(20,28)" fill="none" stroke="#D4AF37" stroke-width="1.4" stroke-linecap="round" opacity="0.55">
+            <path d="M0,0 L14,0 Q22,0 22,8 Q22,16 14,16 Q9,16 7,12"/>
+            <line x1="0" y1="-2" x2="0" y2="2"/>
+          </g>
         </svg>
         <div class="cp-card-art-fb" title="Facebook group">f</div>
         <div class="cp-card-art-label">North <span class="accent">Park</span></div>
