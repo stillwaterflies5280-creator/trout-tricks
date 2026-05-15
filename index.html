@@ -818,6 +818,84 @@
   /* Sticker variant — light bg + contain so PNG transparency reads well */
   .featured-card .feat-img.sticker { background: #f5f5f5; }
   .featured-card .feat-img.sticker img { object-fit: contain; padding: 14px; }
+
+  /* THE STICKERS feature banner — single enticing CTA driving to /stickers.html */
+  .sticker-feature {
+    display: grid;
+    grid-template-columns: 320px 1fr;
+    gap: 24px;
+    align-items: stretch;
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    overflow: hidden;
+    text-decoration: none;
+    color: inherit;
+    max-width: 1080px;
+    margin: 4px auto 36px;
+    transition: transform 0.2s, border-color 0.2s, box-shadow 0.2s;
+  }
+  .sticker-feature:hover {
+    transform: translateY(-3px);
+    border-color: var(--red);
+    box-shadow: 0 10px 28px rgba(0,0,0,0.55);
+  }
+  .sticker-feature .sf-img {
+    background: #f5f5f5;
+    display: flex; align-items: center; justify-content: center;
+    aspect-ratio: 1 / 1;
+    overflow: hidden;
+  }
+  .sticker-feature .sf-img img {
+    width: 100%; height: 100%;
+    object-fit: contain;
+    padding: 32px;
+    transition: transform 0.4s ease;
+  }
+  .sticker-feature:hover .sf-img img { transform: scale(1.04); }
+  .sticker-feature .sf-body {
+    padding: 28px 28px 28px 4px;
+    display: flex; flex-direction: column;
+    justify-content: center;
+    gap: 8px;
+  }
+  .sticker-feature .sf-eyebrow {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 0.82rem;
+    letter-spacing: 0.18em;
+    color: var(--gold);
+    text-transform: uppercase;
+  }
+  .sticker-feature .sf-title {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 2rem;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    line-height: 1;
+  }
+  .sticker-feature .sf-desc {
+    font-size: 0.98rem;
+    color: #c8c8c8;
+    line-height: 1.6;
+    margin: 4px 0 8px;
+  }
+  .sticker-feature .sf-cta {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 1rem;
+    letter-spacing: 0.14em;
+    color: var(--red);
+    text-transform: uppercase;
+  }
+  @media (max-width: 720px) {
+    .sticker-feature {
+      grid-template-columns: 1fr;
+      gap: 0;
+      max-width: 480px;
+    }
+    .sticker-feature .sf-img { aspect-ratio: 16 / 10; }
+    .sticker-feature .sf-img img { padding: 24px; }
+    .sticker-feature .sf-body { padding: 20px 22px 22px; text-align: center; }
+  }
   .featured-card .feat-body {
     padding: 12px 14px 14px;
     display: flex; flex-direction: column;
@@ -3001,11 +3079,18 @@
     <h2 class="section-title" style="padding-top:24px;">Featured Patterns</h2>
     <div class="featured-strip" id="featuredFlies"></div>
 
-    <h2 class="section-title" style="padding-top:24px;">Stickers</h2>
-    <div class="featured-strip" id="featuredStickers"></div>
-    <p style="text-align:center;font-size:0.9rem;margin:0 0 32px;">
-      <a href="/stickers.html" style="color:var(--gold);text-decoration:none;border-bottom:1px solid var(--gold);font-family:'Bebas Neue',sans-serif;letter-spacing:0.14em;text-transform:uppercase;font-size:0.9rem;padding-bottom:2px;">Browse All Stickers →</a>
-    </p>
+    <h2 class="section-title" style="padding-top:24px;">The Stickers</h2>
+    <a class="sticker-feature" href="/stickers.html">
+      <div class="sf-img">
+        <img src="images/sticker-fish-on.png" alt="Trout Tricks stickers — hand-drawn vinyl decals" loading="lazy" width="500" height="500">
+      </div>
+      <div class="sf-body">
+        <div class="sf-eyebrow">Hand-Drawn Vinyl</div>
+        <div class="sf-title">The Stickers</div>
+        <p class="sf-desc">Nine die-cut weatherproof designs. Slap one on your vise, boat, Yeti, or truck. Singles, two-packs, and the complete collection.</p>
+        <div class="sf-cta">Browse the Collection →</div>
+      </div>
+    </a>
   </div>
 
   <!-- SEARCH RESULTS VIEW — hidden by default. filterFlies() reveals it when the
@@ -3930,30 +4015,6 @@ function renderFeaturedFlies() {
   }).join('');
 }
 
-// Featured Stickers strip — same shape as Featured Patterns, but 4 hand-picked
-// stickers. Light-bg sticker variant so transparent PNGs read cleanly.
-function renderFeaturedStickers() {
-  const grid = document.getElementById('featuredStickers');
-  if (!grid) return;
-  const STICKER_IDS = [15, 16, 17, 18]; // Fish On, Don't Judge Me, Buffet Mode, Got Buzzers
-  const picks = STICKER_IDS.map(id => flies.find(f => f.id === id)).filter(Boolean);
-  grid.innerHTML = picks.map(s => {
-    const slug = slugifyFlyName(s.name);
-    const imgKey = s.gallery ? s.gallery[0] : s.img;
-    const img = FLY_IMAGES[imgKey];
-    return '' +
-      '<a class="featured-card" href="/flies/' + slug + '.html">' +
-        '<div class="feat-img sticker">' +
-          '<img src="/' + img + '" alt="' + s.name.replace(/"/g, '&quot;') + ' — Trout Tricks sticker" loading="lazy" width="400" height="400">' +
-        '</div>' +
-        '<div class="feat-body">' +
-          '<div class="feat-name">' + s.name + '</div>' +
-          '<div class="feat-price">$' + s.price + ' <span class="per">/ each</span></div>' +
-          '<div class="feat-cta">View Sticker →</div>' +
-        '</div>' +
-      '</a>';
-  }).join('');
-}
 
 // Blog post index used by site search
 const blogIndex = [
@@ -5195,7 +5256,6 @@ function loadCart() {
 
 buildCatalog();
 renderFeaturedFlies();
-renderFeaturedStickers();
 buildMosaic();
 loadCart();
 
