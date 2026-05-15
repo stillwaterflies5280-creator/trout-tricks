@@ -717,8 +717,9 @@
     max-width: 1240px;
     margin: 0 auto;
   }
-  @media (max-width: 1024px) { .category-tiles { grid-template-columns: repeat(2, 1fr); } }
-  @media (max-width: 540px) { .category-tiles { grid-template-columns: 1fr; } }
+  .category-tiles-3 { grid-template-columns: repeat(3, 1fr); max-width: 1080px; }
+  @media (max-width: 1024px) { .category-tiles, .category-tiles-3 { grid-template-columns: repeat(2, 1fr); } }
+  @media (max-width: 540px) { .category-tiles, .category-tiles-3 { grid-template-columns: 1fr; } }
   .category-tile {
     background: var(--card);
     border: 1px solid var(--border);
@@ -814,6 +815,9 @@
     transition: transform 0.35s ease;
   }
   .featured-card:hover .feat-img img { transform: scale(1.05); }
+  /* Sticker variant — light bg + contain so PNG transparency reads well */
+  .featured-card .feat-img.sticker { background: #f5f5f5; }
+  .featured-card .feat-img.sticker img { object-fit: contain; padding: 14px; }
   .featured-card .feat-body {
     padding: 12px 14px 14px;
     display: flex; flex-direction: column;
@@ -2967,7 +2971,7 @@
   <!-- BROWSE VIEW — category tiles + featured strip. Default state. -->
   <div id="shop-browse">
     <h2 class="section-title">The Patterns</h2>
-    <div class="category-tiles">
+    <div class="category-tiles category-tiles-3">
       <a class="category-tile" href="/flies/chironomids.html">
         <div class="tile-img"><img src="images/ironman.jpg" alt="Chironomid fly patterns — Trout Tricks" loading="lazy" width="600" height="450"></div>
         <div class="tile-body">
@@ -2992,18 +2996,16 @@
           <div class="tile-cta">Browse →</div>
         </div>
       </a>
-      <a class="category-tile" href="/stickers.html">
-        <div class="tile-img" style="background:#f5f5f5;"><img src="images/sticker-fish-on.png" alt="Trout Tricks stickers" loading="lazy" width="600" height="450" style="object-fit:contain;padding:18px;"></div>
-        <div class="tile-body">
-          <div class="tile-name">Stickers</div>
-          <div class="tile-meta">9 Designs · Vinyl Weatherproof</div>
-          <div class="tile-cta">Browse →</div>
-        </div>
-      </a>
     </div>
 
     <h2 class="section-title" style="padding-top:24px;">Featured Patterns</h2>
     <div class="featured-strip" id="featuredFlies"></div>
+
+    <h2 class="section-title" style="padding-top:24px;">Stickers</h2>
+    <div class="featured-strip" id="featuredStickers"></div>
+    <p style="text-align:center;font-size:0.9rem;margin:0 0 32px;">
+      <a href="/stickers.html" style="color:var(--gold);text-decoration:none;border-bottom:1px solid var(--gold);font-family:'Bebas Neue',sans-serif;letter-spacing:0.14em;text-transform:uppercase;font-size:0.9rem;padding-bottom:2px;">Browse All Stickers →</a>
+    </p>
   </div>
 
   <!-- SEARCH RESULTS VIEW — hidden by default. filterFlies() reveals it when the
@@ -3923,6 +3925,31 @@ function renderFeaturedFlies() {
           '<div class="feat-name">' + fly.name + '</div>' +
           '<div class="feat-price">$' + fly.price + ' ' + perLabel + '</div>' +
           '<div class="feat-cta">View Pattern →</div>' +
+        '</div>' +
+      '</a>';
+  }).join('');
+}
+
+// Featured Stickers strip — same shape as Featured Patterns, but 4 hand-picked
+// stickers. Light-bg sticker variant so transparent PNGs read cleanly.
+function renderFeaturedStickers() {
+  const grid = document.getElementById('featuredStickers');
+  if (!grid) return;
+  const STICKER_IDS = [15, 16, 17, 18]; // Fish On, Don't Judge Me, Buffet Mode, Got Buzzers
+  const picks = STICKER_IDS.map(id => flies.find(f => f.id === id)).filter(Boolean);
+  grid.innerHTML = picks.map(s => {
+    const slug = slugifyFlyName(s.name);
+    const imgKey = s.gallery ? s.gallery[0] : s.img;
+    const img = FLY_IMAGES[imgKey];
+    return '' +
+      '<a class="featured-card" href="/flies/' + slug + '.html">' +
+        '<div class="feat-img sticker">' +
+          '<img src="/' + img + '" alt="' + s.name.replace(/"/g, '&quot;') + ' — Trout Tricks sticker" loading="lazy" width="400" height="400">' +
+        '</div>' +
+        '<div class="feat-body">' +
+          '<div class="feat-name">' + s.name + '</div>' +
+          '<div class="feat-price">$' + s.price + ' <span class="per">/ each</span></div>' +
+          '<div class="feat-cta">View Sticker →</div>' +
         '</div>' +
       '</a>';
   }).join('');
@@ -5168,6 +5195,7 @@ function loadCart() {
 
 buildCatalog();
 renderFeaturedFlies();
+renderFeaturedStickers();
 buildMosaic();
 loadCart();
 
