@@ -1976,8 +1976,19 @@
     }
     .cp-card { padding: 24px 20px; }
     .cp-newsletter { padding: 48px 20px 64px; }
-    .cp-newsletter-form { flex-direction: column; }
-    .cp-newsletter-btn { width: 100%; }
+    .cp-newsletter-form {
+      flex-direction: column;
+      max-width: 340px;
+    }
+    .cp-newsletter-input {
+      padding: 10px 12px;
+      font-size: 0.95rem;
+    }
+    .cp-newsletter-btn {
+      width: 100%;
+      padding: 11px 18px;
+      font-size: 0.95rem;
+    }
   }
 </style>
 
@@ -1989,24 +2000,27 @@
     <!-- CRO fix from Clarity dead-click finding: H1 above is read as a button on
          mobile (FB in-app browser especially). Primary CTA below captures that
          intent without changing the H1 semantics. -->
+    <p style="margin:18px auto 6px;font-size:0.82rem;letter-spacing:0.18em;text-transform:uppercase;color:var(--gold);">
+      Statewide · Colorado Stillwater
+    </p>
     <a class="cp-card-cta"
-       style="display:inline-block;max-width:480px;padding:18px 36px;margin:8px auto 14px;"
+       style="display:inline-block;max-width:480px;padding:18px 36px;margin:0 auto 18px;"
        href="https://www.facebook.com/share/g/1GW8wCdgMh/?mibextid=wwXIfr"
        target="_blank"
        rel="noopener noreferrer"
        onclick="if(typeof gtag==='function')gtag('event','community_fb_join',{group:'statewide'});">
       Join on Facebook →
     </a>
-    <p style="margin:22px auto 8px;font-size:0.82rem;letter-spacing:0.18em;text-transform:uppercase;color:var(--gold);">
-      Or — North Park · Lake John / Delaney Buttes
+    <p style="margin:14px auto 6px;font-size:0.82rem;letter-spacing:0.18em;text-transform:uppercase;color:var(--gold);">
+      North Park · Lake John / Delaney Buttes
     </p>
     <a class="cp-card-cta"
-       style="display:inline-block;max-width:480px;padding:18px 36px;margin:0 auto 14px;background:transparent;color:var(--gold);border:1px solid var(--gold);"
+       style="display:inline-block;max-width:480px;padding:18px 36px;margin:0 auto 14px;"
        href="https://www.facebook.com/share/g/1HFtn9t9vE/?mibextid=wwXIfr"
        target="_blank"
        rel="noopener noreferrer"
        onclick="if(typeof gtag==='function')gtag('event','community_fb_join',{group:'north_park'});">
-      Join the North Park Group →
+      Join on Facebook →
     </a>
   </section>
 
