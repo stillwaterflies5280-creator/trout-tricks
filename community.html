@@ -23,6 +23,8 @@
 
   <!-- Twitter Card -->
   <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Community | Trout Tricks">
+  <meta name="twitter:description" content="Join two free Facebook groups for Colorado stillwater anglers — statewide patterns and North Park lakes.">
   <meta name="twitter:image" content="https://www.trouttricks.com/og-image.jpg">
 
   <link rel="canonical" href="https://www.trouttricks.com/community.html">
@@ -199,7 +201,7 @@
   .nav-btn:hover { color: #fff; background: #2a2a2a; }
   .nav-btn.active { color: var(--red); }
   .nav-overlay { display: none; }
-  .nav-more { position:relative; display:inline-block; }
+  .nav-more { position:relative; display:none; }
   .nav-more-btn { text-decoration:none; }
   .nav-more-dropdown { display:none; position:absolute; top:calc(100% + 6px); right:0; background:#1a1a1a; border:1px solid #333; border-radius:4px; z-index:150; min-width:140px; box-shadow:0 4px 16px rgba(0,0,0,0.5); }
   .nav-more-dropdown.open { display:block; }
@@ -1732,6 +1734,9 @@
     .header-search-panel { width: 200px; }
   }
   @media (max-width: 768px) {
+    .nav-btn { font-size: 0.68rem; padding: 4px 5px; }
+    .nav-btn.nav-overflow { display: none; }
+    .nav-more { display: inline-block; }
     .header-search-toggle { display: inline-block; }
     .header-search-panel {
       display: none;
@@ -1766,13 +1771,28 @@
     <a class="nav-btn" href="fish.html">The Fish</a>
     <a class="nav-btn" href="trip.html">Book a Trip</a>
     <a class="nav-btn" href="the-drop.html">The Drop</a>
-    <a class="nav-btn" href="free-sticker.html">Free Sticker</a>
-    <a class="nav-btn" href="affiliates.html">Affiliates</a>
-    <a class="nav-btn" href="blog.html">Blog</a>
-    <a class="nav-btn active" href="community.html">Community</a>
-    <a class="nav-btn" href="about.html">About</a>
-    <a class="nav-btn" href="contact.html">Contact</a>
+    <a class="nav-btn nav-overflow" href="free-sticker.html">Free Sticker</a>
+    <a class="nav-btn nav-overflow" href="affiliates.html">Affiliates</a>
+    <a class="nav-btn nav-overflow" href="blog.html">Blog</a>
+    <a class="nav-btn nav-overflow active" href="community.html">Community</a>
+    <a class="nav-btn nav-overflow" href="about.html">About</a>
+    <a class="nav-btn nav-overflow" href="contact.html">Contact</a>
+    <div class="nav-more">
+      <a class="nav-btn nav-more-btn active" href="#" onclick="toggleNavMore(event)" aria-haspopup="true" aria-expanded="false">More &#9662;</a>
+      <div class="nav-more-dropdown" id="navMoreDropdown">
+        <a class="nav-more-item" href="free-sticker.html">Free Sticker</a>
+        <a class="nav-more-item" href="affiliates.html">Affiliates</a>
+        <a class="nav-more-item" href="blog.html">Blog</a>
+        <a class="nav-more-item active" href="community.html">Community</a>
+        <a class="nav-more-item" href="about.html">About</a>
+        <a class="nav-more-item" href="contact.html">Contact</a>
+      </div>
+    </div>
   </nav>
+  <script>
+    function toggleNavMore(e){e.preventDefault();e.stopPropagation();var d=document.getElementById('navMoreDropdown');var b=e.currentTarget;var open=d.classList.toggle('open');b.setAttribute('aria-expanded',open?'true':'false');}
+    document.addEventListener('click',function(e){var d=document.getElementById('navMoreDropdown');if(d&&d.classList.contains('open')&&!e.target.closest('.nav-more')){d.classList.remove('open');var b=document.querySelector('.nav-more-btn');if(b)b.setAttribute('aria-expanded','false');}});
+  </script>
   <form class="header-search" id="flySearch" action="/" method="get" onsubmit="return onHeaderSearchSubmit(event)">
     <button type="button" class="header-search-toggle" onclick="toggleHeaderSearch()" aria-label="Search">🔍</button>
     <div class="header-search-panel">
