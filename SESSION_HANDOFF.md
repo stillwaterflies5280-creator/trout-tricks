@@ -32,64 +32,77 @@ Multi-thread parked work. Each section is independently resumable.
 
 ---
 
-## Thread B: Square post-payment webhook (#17) — Square webhook deploy
+## Thread B: Square post-payment webhook (#17)
 
-Paused mid-deploy of task **#17** (Square post-payment webhook → Apps Script auto-flip status). System is in a safe paused state — no new traffic flows anywhere. Existing site endpoints (sticker form, drop waitlist, pickup orders, /checkout) all unchanged.
-
-Full code + walkthrough lives at `assets/worker-webhook-route.md` (commit `ebf2504`).
+**STATUS (end-of-night 2026-05-15):** Steps 1–6 ✅ complete. **Step 7 BLOCKED** on Apps Script `doPost` failure for `submission_type=square_payment_completed`. End-to-end signature chain proven; failure is downstream of the Worker, inside Apps Script.
 
 ---
 
 ## What's shipped
 
-### ✅ Step 1 — Apps Script branch deployed
-- New `handleSquarePaymentCompleted` + `ensureHeaders` + `buildCustomersBody` + `notifyThomas` helpers added to the Apps Script project.
-- New `doPost` branch for `submission_type === 'square_payment_completed'`.
-- Deployment **updated in place** (not a new deployment), so the `/exec` URL is unchanged.
-- URL ends in **`...ZxOqBdw/exec`** — same one the rest of the site uses.
+### ✅ Worker `/webhook` route deployed
+- Deployed via Cloudflare API (not web editor) on **2026-05-15 06:59:41 UTC**
+- `deployment_id`: `fcc4c58cc0854bbfb90e6fdd9d195f66`
+- Worker now routes: `OPTIONS` → CORS preflight; `POST /webhook` → `handleSquareWebhook(request, env, ctx)`; other POST → `handleCheckout(request, env)`; else 405
+- `handleSquareWebhook` order: read raw body → header check → HMAC-SHA256 verify against `SQUARE_WEBHOOK_NOTIFICATION_URL + rawBody` → JSON parse → filter to `payment.updated` + `COMPLETED` → normalize → `ctx.waitUntil` forward to Apps Script → 200
+- Local source-of-truth copy: `/tmp/worker.js` (this session) — Worker repo itself is **not** in `~/trout-tricks`, so re-pull via `GET /workers/scripts/trouttricks-checkout` to edit next time
 
-### ✅ Step 2 — Cloudflare secrets set
-Via Cloudflare dashboard (Option A — Worker repo isn't on this Mini; see fallback note below).
-
-3 secrets on the `trouttricks-checkout` Worker:
+### ✅ Cloudflare secrets (all 4 verified via `/bindings` API)
 
 | Secret | Value |
 |---|---|
-| `APPS_SCRIPT_WEBHOOK_URL` | The `/exec` URL ending `…ZxOqBdw/exec` |
+| `SQUARE_ACCESS_TOKEN` | existing |
 | `SQUARE_WEBHOOK_NOTIFICATION_URL` | `https://trouttricks-checkout.stillwaterflies5280.workers.dev/webhook` |
-| `SQUARE_WEBHOOK_SIGNATURE_KEY` | `PLACEHOLDER_REPLACE_IN_STEP_5` |
+| `SQUARE_WEBHOOK_SIGNATURE_KEY` | **real key — placeholder replaced** |
+| `APPS_SCRIPT_WEBHOOK_URL` | `…/macros/s/AKfycbwc5JR5yo76y8-H81D3Dh4e-pc6kqha8rLO2Yu90ZtFV_s-3Hm__YI52WoaW54zXOqBdw/exec` |
 
-Worker saved and re-deployed after secrets landed.
+### ✅ Square webhook subscription
+- Subscription `wbhk_d84f91111b…` enabled
+- Event type: `payment.updated`
+- Notification URL byte-matches `SQUARE_WEBHOOK_NOTIFICATION_URL`
+
+### ✅ Signature chain proven
+Square Dashboard → **Send Test Event** → Worker returned **200 OK at 01:35:54 UTC**. The HMAC verify path works end-to-end. Whatever's failing is *downstream* of the Worker's signature gate, inside Apps Script `doPost`.
+
+### ✅ Apps Script schema migration
+`ensureHeaders()` successfully appended the 4 webhook columns to `Orders/Fulfillment`: `payment_status`, `square_payment_id`, `receipt_url`, `payment_completed_at`.
 
 ---
 
-## What's remaining
+## ⏸️ BLOCKER — Step 7 Apps Script `doPost` Failed
 
-### ⏸️ Step 3 — Deploy Worker code (RESUME HERE)
-Paste the `/webhook` handler from `assets/worker-webhook-route.md` §1 into the Worker source and deploy.
+After the Worker returned 200, Apps Script Executions logged a **Failed** row at **2026-05-15 01:35:57 UTC** for `doPost`. Couldn't open the row to read the actual error message — clicking on the timestamp, duration column, or "Failed" text didn't expand the log panel.
 
-**Worker repo not on this Mini.** No `wrangler.toml` found on the filesystem. Fallback path: edit directly in the **Cloudflare web editor** (Workers & Pages → `trouttricks-checkout` → Edit Code → paste the new functions + add the `/webhook` if-branch in the fetch handler → Save and deploy).
+Working theory from earlier in the session was a stale-deployment artifact: `handleSquarePaymentCompleted` was patched in the editor (null-`reference_id` early return + flat-field reads in `buildCustomersBody`/`notifyThomas`), and `doget alive 12` was redeployed via the **pencil icon → New Version → Deploy** flow (not "+ New deployment"). Re-test still Failed. So either (a) the redeploy didn't actually republish the code, (b) the error is in a different code path than we patched, or (c) there's a runtime exception we haven't seen the stack trace for.
 
-### ⏸️ Step 4 — Register Square webhook subscription
-Square Dashboard → Developer → Apps → [your app] → Webhooks → Add subscription:
-- Notification URL: `https://trouttricks-checkout.stillwaterflies5280.workers.dev/webhook`
-- Event type: `payment.updated` (minimum)
-- Save → **copy the generated Signature Key**
+Current Apps Script editor state for the relevant functions is the version pasted into this session — all flat-field reads, no nested `data.data.object.payment.*` anywhere.
 
-### ⏸️ Step 5 — Replace signature key placeholder
-Set the real signing key (from Step 4) as `SQUARE_WEBHOOK_SIGNATURE_KEY` via Cloudflare dashboard. Save and deploy. The Worker code stays the same — secret update propagates within seconds.
+### Tomorrow's first moves (in order)
 
-### ⏸️ Step 6 — Send Test Event from Square
-Square Dashboard → webhook subscription → **Send Test Event**.
-
-What to expect:
-- Cloudflare Live Tail: signature valid, payload normalized, Apps Script POST fires
-- Apps Script Executions: `handleSquarePaymentCompleted` runs, `ensureHeaders` auto-creates the 4 webhook columns (payment_status, square_payment_id, receipt_url, payment_completed_at) in the `Orders/Fulfillment` tab on first event
-- Test events have no matching reference_id → exercises the **ghost-order safety-net** path → a row gets inserted with `payment_status='Paid'` + ghost tag in `details`
-- Email lands in `stillwaterflies5280@gmail.com` with the 🚨 subject
-
-### ⏸️ Step 7 — Real $1 dry-run
-Place a real $1 sticker order via the site → Square checkout → pay → confirm the matched-row path flips the existing row's `payment_status` to `Paid` and logs Square metadata. Email arrives with the 💰 subject.
+1. **Get the actual error message** from the 01:35:57 UTC Failed `doPost` execution. Three approaches to try:
+   - Right-click the Failed row in Executions → **Open in new tab** (sometimes the side panel only renders in a fresh tab)
+   - Hover the row for a **View Logs / View Details** link that may appear inline
+   - Fastest fallback: in the Apps Script editor, open `handleSquarePaymentCompleted` → **Run** with a manual sample payload to reproduce the exception locally and see the stack trace in the IDE console. Sample payload to paste into a one-off `function _testSquare() { handleSquarePaymentCompleted({...}); }`:
+     ```js
+     {
+       submission_type: "square_payment_completed",
+       event_id: "test-evt",
+       payment_id: "test-pay-abc12345",
+       reference_id: null,              // mirrors a Square test event
+       amount_cents: 100,
+       currency: "USD",
+       receipt_url: "https://example/receipt",
+       customer_email: "test@example.com",
+       completed_at: "2026-05-15T01:35:54Z"
+     }
+     ```
+     If this reproduces the error, you'll get a line-numbered stack trace in the IDE log panel.
+2. **Patch + redeploy** — once the error is identified, patch and redeploy via the **`doget alive 12`** deployment only: Manage Deployments → ✏️ pencil on `doget alive 12` → Version: **New version** → Deploy. **Do not click "+ New deployment"** — that mints a fresh `/exec` URL and Cloudflare is hardcoded to the current one (`…ZxOqBdw/exec`).
+3. **Re-test** with Square Send Test Event → expect `200 OK` + body `{"success":true,"skipped":"no_reference_id"}` + Apps Script log line `[square webhook] No reference_id (likely Square test event) — skipping. payment_id=… event_id=…` + no new row in Orders/Fulfillment + no alert email.
+4. **Real $1 order** via the live checkout → confirms the matched-row path: `payment_status` flips to `Paid`, Square metadata logged, 💰 email to `stillwaterflies5280@gmail.com`.
+5. **Refund the $1 test transaction** in the Square dashboard (Transactions → find the test charge → Refund).
+6. **Apps Script deployment cleanup.** Current deployment list has 8+ entries: `doget alive 12`, `the drop41`, `doget alive 1`, `doget alive`, `the drop3`, `the drop2`, `the drop1`, `the drop`. Archive everything except `doget alive 12`. Verify the `/exec` URL of `doget alive 12` matches `APPS_SCRIPT_WEBHOOK_URL` byte-for-byte before archiving any others.
+7. **Revoke the Cloudflare API token** used in this session (`cfut_K20QN4Gs…`) if not already done — Cloudflare dashboard → My Profile → API Tokens → Roll/Delete. Worker is fully deployed; no further API access from this machine needed.
 
 ---
 
@@ -97,18 +110,39 @@ Place a real $1 sticker order via the site → Square checkout → pay → confi
 
 | Thing | Value |
 |---|---|
-| Apps Script `/exec` URL | `…ZxOqBdw/exec` |
+| Apps Script `/exec` URL | `…/AKfycbwc5JR5yo76y8-H81D3Dh4e-pc6kqha8rLO2Yu90ZtFV_s-3Hm__YI52WoaW54zXOqBdw/exec` |
+| Apps Script deployment to update | **`doget alive 12`** — pencil ✏️, NOT "+ New deployment" |
 | Worker URL | `https://trouttricks-checkout.stillwaterflies5280.workers.dev` |
 | Webhook path | `/webhook` |
+| Worker deployment_id (last good) | `fcc4c58cc0854bbfb90e6fdd9d195f66` (2026-05-15 06:59:41 UTC) |
+| Square subscription | `wbhk_d84f91111b…` (`payment.updated`) |
 | Notification email | `stillwaterflies5280@gmail.com` (both 💰 receipts and 🚨 ghost alerts) |
 | Orders tab name | `Orders/Fulfillment` |
 | Ghost order_number fallback | `SQUARE-<first-8-chars-of-payment-id>` |
-| New columns | Auto-created on first webhook via `ensureHeaders()` — no manual sheet work needed |
+| New columns | Auto-created on first webhook via `ensureHeaders()` — already ran successfully |
 
 ---
 
-## Resume point tomorrow
+## Worker payload contract (for Apps Script-side debugging)
 
-**Step 3** — deploy the Worker code via the Cloudflare web editor (Worker repo isn't on this Mini).
+The Worker forwards this **flat** shape to `APPS_SCRIPT_WEBHOOK_URL` (no nested `data.object.payment.*`):
 
-The exact code to paste is at `assets/worker-webhook-route.md` §1.B "Functions to add" — that's the `handleSquarePaymentCompleted` + `verifySquareSignature` + `timingSafeEqual` block. The if-branch routing change is at §1.A.
+```js
+{
+  submission_type: "square_payment_completed",
+  event_id:        string | null,
+  payment_id:      string | null,
+  reference_id:    string | null,   // null on Square test events — Apps Script must early-return
+  amount_cents:    number | null,
+  currency:        string | null,
+  receipt_url:     string | null,
+  customer_email:  string | null,
+  completed_at:    string | null,
+}
+```
+
+---
+
+## Queued for after #17 lands
+
+**Project 2** — branded HTML order confirmation email + Klaviyo flow. Triggered by the same matched-row event in `handleSquarePaymentCompleted` once Step 7 is green.
