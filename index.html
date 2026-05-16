@@ -851,8 +851,6 @@
     aspect-ratio: 1 / 1;
     overflow: hidden;
     padding: 18px;
-    display: grid;
-    place-items: center;
   }
   .sf-collage {
     display: grid;
@@ -862,7 +860,12 @@
     width: 100%;
     height: 100%;
   }
+  /* min-width/min-height:0 on grid items prevents intrinsic image size from
+     blowing out the 1fr tracks and pushing the bottom row past the container's
+     overflow:hidden edge (was clipping the bottom two stickers on mobile). */
   .sf-collage img {
+    min-width: 0;
+    min-height: 0;
     width: 100%;
     height: 100%;
     object-fit: contain;
@@ -2944,8 +2947,8 @@
 
 <body>
 
-<a class="sticker-promo-bar" href="/the-drop.html">
-  <span class="sticker-promo-inner" style="animation-delay:-1s;">these stickers slap. literally on your boat or box. lol → SEE THE DROP</span>
+<a class="sticker-promo-bar" href="/stickers.html">
+  <span class="sticker-promo-inner" style="animation-delay:-1s;">these stickers slap. literally on your boat or box. lol → SHOP STICKERS</span>
 </a>
 
 <header>
