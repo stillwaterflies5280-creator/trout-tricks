@@ -1466,6 +1466,40 @@
     transition: opacity 0.15s ease;
   }
   .fish-gallery img:hover { opacity: 0.88; }
+  /* Share-overlay wrapper injected by JS (wireFishGalleryLightbox).
+     Keeps the masonry column layout intact (break-inside, margin) while
+     giving us a positioning context for the share icon. */
+  .fish-photo-wrap {
+    position: relative;
+    display: block;
+    break-inside: avoid;
+    margin-bottom: 8px;
+  }
+  .fish-photo-wrap picture, .fish-photo-wrap img { margin-bottom: 0; }
+  .fish-share-overlay {
+    position: absolute;
+    top: 8px; right: 8px;
+    width: 34px; height: 34px;
+    border-radius: 50%;
+    background: rgba(0,0,0,0.6);
+    border: 1px solid rgba(255,255,255,0.3);
+    color: #fff;
+    font-size: 0.95rem;
+    line-height: 1;
+    display: inline-flex; align-items: center; justify-content: center;
+    cursor: pointer;
+    opacity: 0;
+    transition: opacity 0.18s ease, background 0.18s, border-color 0.18s;
+    backdrop-filter: blur(2px);
+    z-index: 2;
+  }
+  .fish-photo-wrap:hover .fish-share-overlay,
+  .fish-photo-wrap:focus-within .fish-share-overlay { opacity: 1; }
+  .fish-share-overlay:hover { background: var(--red); border-color: var(--red); }
+  /* Touch devices: no hover state, so keep the icon visible at lower opacity */
+  @media (hover: none) {
+    .fish-share-overlay { opacity: 0.85; }
+  }
   @media (max-width: 768px) {
     .fish-gallery { column-count: 2; }
   }
@@ -1800,51 +1834,15 @@
 
 </style>
 <script src="/js/catalog.js"></script>
+<script src="/js/share-fly.js"></script>
+<script src="/js/nav.js" defer></script>
 </head>
 
 <body>
 
 <header>
   <a class="logo" href="/">TROUT <span>TRICKS</span></a>
-  <nav id="mainNav">
-    <div class="nav-flies">
-      <a class="nav-btn nav-flies-btn" href="#" onclick="toggleFliesNav(event)" aria-haspopup="true" aria-expanded="false">Flies &#9662;</a>
-      <div class="nav-flies-dropdown" id="navFliesDropdown">
-        <a class="nav-more-item" href="/">All Flies</a>
-        <a class="nav-more-item" href="/flies/chironomids.html">Chironomids</a>
-        <a class="nav-more-item" href="/flies/leeches.html">Leeches</a>
-        <a class="nav-more-item" href="/flies/scuds.html">Scuds</a>
-        <div class="nav-flies-divider"></div>
-        <a class="nav-more-item" href="/stickers.html">Stickers</a>
-      </div>
-    </div>
-    <a class="nav-btn active" href="/fish.html">The Fish</a>
-    <a class="nav-btn" href="/trip.html">Book a Trip</a>
-    <a class="nav-btn" href="/the-drop.html">The Drop</a>
-    <a class="nav-btn" href="/blog.html">Blog</a>
-    <div class="nav-more">
-      <a class="nav-btn nav-more-btn" href="#" onclick="toggleNavMore(event)" aria-haspopup="true" aria-expanded="false">More &#9662;</a>
-      <div class="nav-more-dropdown" id="navMoreDropdown">
-        <a class="nav-more-item" href="/community.html">Community</a>
-        <a class="nav-more-item" href="/about.html">About</a>
-        <a class="nav-more-item" href="/contact.html">Contact</a>
-        <a class="nav-more-item" href="/affiliates.html">Affiliates</a>
-        <a class="nav-more-item" href="/free-sticker.html">Free Sticker</a>
-        <a class="nav-more-item" href="/media-kit.html">Media Kit</a>
-      </div>
-    </div>
-  </nav>
-  <script>
-    function toggleNavMore(e){e.preventDefault();e.stopPropagation();var d=document.getElementById('navMoreDropdown');var b=e.currentTarget;var open=d.classList.toggle('open');b.setAttribute('aria-expanded',open?'true':'false');var fd=document.getElementById('navFliesDropdown');if(fd)fd.classList.remove('open');}
-    function toggleFliesNav(e){e.preventDefault();e.stopPropagation();var d=document.getElementById('navFliesDropdown');var b=e.currentTarget;var open=d.classList.toggle('open');b.setAttribute('aria-expanded',open?'true':'false');var md=document.getElementById('navMoreDropdown');if(md)md.classList.remove('open');}
-    document.addEventListener('click',function(e){
-      ['navMoreDropdown','navFliesDropdown'].forEach(function(id){var d=document.getElementById(id);if(d&&d.classList.contains('open')&&!e.target.closest('.nav-more')&&!e.target.closest('.nav-flies')){d.classList.remove('open');}});
-      var b1=document.querySelector('.nav-more-btn'),b2=document.querySelector('.nav-flies-btn');
-      if(b1)b1.setAttribute('aria-expanded','false');
-      if(b2)b2.setAttribute('aria-expanded','false');
-    });
-  </script>
-  <form class="header-search" id="flySearch" action="/" method="get" onsubmit="return onHeaderSearchSubmit(event)">
+<form class="header-search" id="flySearch" action="/" method="get" onsubmit="return onHeaderSearchSubmit(event)">
     <button type="button" class="header-search-toggle" onclick="toggleHeaderSearch()" aria-label="Search">🔍</button>
     <div class="header-search-panel">
       <span class="header-search-icon" aria-hidden="true">🔍</span>
@@ -1856,8 +1854,6 @@
     🪝 Cart <span class="cart-count" id="cartCount">0</span>
   </button>
 </header>
-<div class="nav-overlay" id="navOverlay"></div>
-
 <!-- THE FISH PAGE -->
 <div id="page-fish" class="page active">
   <div style="padding:0 0 48px;">
@@ -2836,6 +2832,39 @@ loadCart();
   const keys = imgs.map((_, i) => 'g' + i);
   const images = Object.fromEntries(keys.map((k, i) => [k, imgs[i].getAttribute('src')]));
   carousels['fishMasonryLb'] = { index: 0, total: keys.length, images, keys };
+
+  // Wrap each <picture> (or bare <img>) in a positioning container and inject
+  // a hover share icon. The wrapper carries break-inside:avoid so the masonry
+  // column flow stays clean. Done in JS so we don't have to touch the 100+
+  // <picture> tags inline in the markup.
+  imgs.forEach((img, idx) => {
+    const photo = img.closest('picture') || img;
+    if (photo.parentElement.classList.contains('fish-photo-wrap')) return;
+    const wrap = document.createElement('div');
+    wrap.className = 'fish-photo-wrap';
+    photo.parentNode.insertBefore(wrap, photo);
+    wrap.appendChild(photo);
+
+    const btn = document.createElement('button');
+    btn.type = 'button';
+    btn.className = 'fish-share-overlay';
+    btn.setAttribute('aria-label', 'Share this photo');
+    btn.title = 'Share';
+    btn.textContent = '📤';
+    btn.addEventListener('click', (e) => {
+      e.preventDefault();
+      e.stopPropagation();
+      const n = idx + 1;
+      const url = location.origin + location.pathname + '#fish-' + n;
+      const alt = img.getAttribute('alt') || 'Trout Tricks — Colorado stillwater';
+      if (typeof ttShareFly === 'function') {
+        ttShareFly('Trout Tricks', alt, url);
+      } else if (navigator.clipboard) {
+        navigator.clipboard.writeText(url);
+      }
+    });
+    wrap.appendChild(btn);
+  });
 
   function openFishAt(idx, opts) {
     opts = opts || {};

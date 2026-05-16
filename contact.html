@@ -1866,51 +1866,14 @@
 
 </style>
 <script src="/js/catalog.js"></script>
+<script src="/js/nav.js" defer></script>
 </head>
 
 <body>
 
 <header>
   <a class="logo" href="/">TROUT <span>TRICKS</span></a>
-  <nav id="mainNav">
-    <div class="nav-flies">
-      <a class="nav-btn nav-flies-btn" href="#" onclick="toggleFliesNav(event)" aria-haspopup="true" aria-expanded="false">Flies &#9662;</a>
-      <div class="nav-flies-dropdown" id="navFliesDropdown">
-        <a class="nav-more-item" href="/">All Flies</a>
-        <a class="nav-more-item" href="/flies/chironomids.html">Chironomids</a>
-        <a class="nav-more-item" href="/flies/leeches.html">Leeches</a>
-        <a class="nav-more-item" href="/flies/scuds.html">Scuds</a>
-        <div class="nav-flies-divider"></div>
-        <a class="nav-more-item" href="/stickers.html">Stickers</a>
-      </div>
-    </div>
-    <a class="nav-btn" href="/fish.html">The Fish</a>
-    <a class="nav-btn" href="/trip.html">Book a Trip</a>
-    <a class="nav-btn" href="/the-drop.html">The Drop</a>
-    <a class="nav-btn" href="/blog.html">Blog</a>
-    <div class="nav-more">
-      <a class="nav-btn nav-more-btn active" href="#" onclick="toggleNavMore(event)" aria-haspopup="true" aria-expanded="false">More &#9662;</a>
-      <div class="nav-more-dropdown" id="navMoreDropdown">
-        <a class="nav-more-item" href="/community.html">Community</a>
-        <a class="nav-more-item" href="/about.html">About</a>
-        <a class="nav-more-item active" href="/contact.html">Contact</a>
-        <a class="nav-more-item" href="/affiliates.html">Affiliates</a>
-        <a class="nav-more-item" href="/free-sticker.html">Free Sticker</a>
-        <a class="nav-more-item" href="/media-kit.html">Media Kit</a>
-      </div>
-    </div>
-  </nav>
-  <script>
-    function toggleNavMore(e){e.preventDefault();e.stopPropagation();var d=document.getElementById('navMoreDropdown');var b=e.currentTarget;var open=d.classList.toggle('open');b.setAttribute('aria-expanded',open?'true':'false');var fd=document.getElementById('navFliesDropdown');if(fd)fd.classList.remove('open');}
-    function toggleFliesNav(e){e.preventDefault();e.stopPropagation();var d=document.getElementById('navFliesDropdown');var b=e.currentTarget;var open=d.classList.toggle('open');b.setAttribute('aria-expanded',open?'true':'false');var md=document.getElementById('navMoreDropdown');if(md)md.classList.remove('open');}
-    document.addEventListener('click',function(e){
-      ['navMoreDropdown','navFliesDropdown'].forEach(function(id){var d=document.getElementById(id);if(d&&d.classList.contains('open')&&!e.target.closest('.nav-more')&&!e.target.closest('.nav-flies')){d.classList.remove('open');}});
-      var b1=document.querySelector('.nav-more-btn'),b2=document.querySelector('.nav-flies-btn');
-      if(b1)b1.setAttribute('aria-expanded','false');
-      if(b2)b2.setAttribute('aria-expanded','false');
-    });
-  </script>
-  <form class="header-search" id="flySearch" action="/" method="get" onsubmit="return onHeaderSearchSubmit(event)">
+<form class="header-search" id="flySearch" action="/" method="get" onsubmit="return onHeaderSearchSubmit(event)">
     <button type="button" class="header-search-toggle" onclick="toggleHeaderSearch()" aria-label="Search">🔍</button>
     <div class="header-search-panel">
       <span class="header-search-icon" aria-hidden="true">🔍</span>
@@ -1922,8 +1885,6 @@
     🪝 Cart <span class="cart-count" id="cartCount">0</span>
   </button>
 </header>
-<div class="nav-overlay" id="navOverlay"></div>
-
 <!-- CONTACT PAGE -->
 <div id="page-contact" class="page active">
   <div class="contact-page">

@@ -92,6 +92,8 @@ main { max-width: 1200px; margin: 0 auto; padding: 12px 24px 48px; }
 .cat-card:hover .img-wrap img { transform: scale(1.05); }
 .cat-card .badge { position: absolute; top: 10px; left: 10px; background: var(--red); color: #fff; font-size: 0.62rem; font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase; padding: 4px 8px; border-radius: 3px; }
 .cat-card .badge.gold { background: var(--gold); color: #000; }
+.cat-card .share-btn { position: absolute; top: 10px; right: 10px; background: rgba(0,0,0,0.65); color: #fff; border: 1px solid rgba(255,255,255,0.25); width: 34px; height: 34px; border-radius: 50%; display: inline-flex; align-items: center; justify-content: center; font-size: 1rem; cursor: pointer; backdrop-filter: blur(2px); transition: background 0.18s, border-color 0.18s, color 0.18s; }
+.cat-card .share-btn:hover { background: var(--red); border-color: var(--red); color: #fff; }
 .cat-card .body { padding: 14px 16px 16px; display: flex; flex-direction: column; flex: 1; }
 .cat-card .name { font-family: 'Bebas Neue', sans-serif; font-size: 1.25rem; letter-spacing: 0.04em; margin-bottom: 6px; }
 .cat-card .price { font-family: 'Bebas Neue', sans-serif; font-size: 1.05rem; color: var(--gold); margin-bottom: 10px; }
@@ -113,19 +115,12 @@ main { max-width: 1200px; margin: 0 auto; padding: 12px 24px 48px; }
 footer { border-top: 1px solid var(--border); padding: 28px 24px; text-align: center; font-size: 0.78rem; color: var(--gray); letter-spacing: 0.08em; }
 footer a { color: var(--red); text-decoration: none; }
 </style>
+<script src="/js/nav.js" defer></script>
 </head>
 <body>
 
 <header>
   <a class="logo" href="/">TROUT <span>TRICKS</span></a>
-  <nav>
-    <a href="/">The Flies</a>
-    <a href="/stickers.html">The Stickers</a>
-    <a href="/fish.html">The Fish</a>
-    <a href="/the-drop.html">The Drop</a>
-    <a href="/blog.html">Blog</a>
-    <a href="/about.html">About</a>
-  </nav>
   <a class="cart-pill" href="/#cart" aria-label="View cart">
     🪝 Cart <span class="cart-pill-count" id="cart-pill-count">0</span>
   </a>
@@ -176,6 +171,7 @@ footer a { color: var(--red); text-decoration: none; }
 </footer>
 
 <script src="/js/catalog.js"></script>
+<script src="/js/share-fly.js"></script>
 <script>
 const CATEGORY_IDS = [27];
 
@@ -191,11 +187,14 @@ function renderGrid() {
       ? '<div class="badge' + (fly.badge === 'Top Secret' ? ' gold' : '') + '">' + fly.badge + '</div>'
       : '';
     const perLabel = fly.pack ? '<span class="per">/ ' + fly.pack + '-pack</span>' : '';
+    const shareUrl = 'https://www.trouttricks.com/flies/' + slug + '.html';
+    const safeName = fly.name.replace(/'/g, "\\'").replace(/"/g, '&quot;');
     return '' +
       '<a class="cat-card" href="/flies/' + slug + '.html">' +
         '<div class="img-wrap">' +
           '<img src="/' + img + '" alt="' + fly.name.replace(/"/g, '&quot;') + ' — Trout Tricks Colorado stillwater fly pattern" loading="lazy" width="500" height="500">' +
           badge +
+          '<button type="button" class="share-btn" aria-label="Share ' + safeName + '" title="Share" onclick="event.preventDefault();event.stopPropagation();ttShareFly(\'' + safeName + '\',\'Check out ' + safeName + ' from Trout Tricks.\',\'' + shareUrl + '\')">📤</button>' +
         '</div>' +
         '<div class="body">' +
           '<div class="name">' + fly.name + '</div>' +
