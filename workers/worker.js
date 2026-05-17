@@ -1,0 +1,236 @@
+// Trout Tricks — Square Hosted Checkout Worker
+// POST { items, shipping_cost, fulfillment_type, promo_code, discount_amount } -> { checkout_url, order_id }
+// POST /webhook -> Square payment.updated webhook receiver -> forwards to Apps Script
+//
+// This file is a LOCAL MIRROR of the deployed Cloudflare Worker (trouttricks-checkout).
+// Live source-of-truth still lives in Cloudflare's editor; this mirror tracks it for git history.
+// Deploy by copy-pasting back into the editor and saving.
+
+const SQUARE_API = "https://connect.squareup.com/v2/online-checkout/payment-links";
+const SQUARE_LOCATION = "L2Q4AVBV1CP9V";
+const SQUARE_VERSION = "2024-12-18";
+const REDIRECT_URL = "https://www.trouttricks.com/thank-you.html";
+
+const CORS_HEADERS = {
+  "Access-Control-Allow-Origin": "*",
+  "Access-Control-Allow-Methods": "POST, OPTIONS",
+  "Access-Control-Allow-Headers": "Content-Type",
+};
+
+function jsonResponse(body, status = 200) {
+  return new Response(JSON.stringify(body), {
+    status,
+    headers: { "Content-Type": "application/json", ...CORS_HEADERS },
+  });
+}
+
+export default {
+  async fetch(request, env, ctx) {
+    if (request.method === "OPTIONS") return new Response(null, { headers: CORS_HEADERS });
+    if (request.method !== "POST") return jsonResponse({ error: "Method not allowed" }, 405);
+
+    const url = new URL(request.url);
+    if (url.pathname === "/webhook") {
+      return handleSquareWebhook(request, env, ctx);
+    }
+    return handleCheckout(request, env);
+  },
+};
+
+async function handleCheckout(request, env) {
+  let payload;
+  try { payload = await request.json(); }
+  catch (e) { return jsonResponse({ error: "Invalid JSON" }, 400); }
+
+  const items = Array.isArray(payload.items) ? payload.items : [];
+  const shippingCost = Number(payload.shipping_cost) || 0;
+  const fulfillmentType = payload.fulfillment_type === "pickup" ? "pickup" : "ship";
+  const promoCode = payload.promo_code ? String(payload.promo_code).slice(0, 50) : null;
+  const discountAmount = Number(payload.discount_amount) || 0;
+
+  if (items.length === 0) return jsonResponse({ error: "No items in cart" }, 400);
+
+  const lineItems = items.map((it) => {
+    const li = {
+      name: String(it.name || "Fly Pattern"),
+      quantity: String(it.quantity || 1),
+      base_price_money: { amount: Math.round(Number(it.price || 0) * 100), currency: "USD" }
+    };
+    if (it.note) li.note = String(it.note).slice(0, 500);
+    return li;
+  });
+
+  if (shippingCost > 0) {
+    lineItems.push({
+      name: "Shipping",
+      quantity: "1",
+      base_price_money: { amount: Math.round(shippingCost * 100), currency: "USD" },
+    });
+  }
+
+  // Build order — conditionally add the discount only if both fields are valid
+  const orderObj = {
+    location_id: SQUARE_LOCATION,
+    line_items: lineItems
+  };
+
+  if (promoCode && discountAmount > 0) {
+    orderObj.discounts = [{
+      uid: "promo-discount",
+      name: promoCode,
+      amount_money: {
+        amount: Math.round(discountAmount * 100),
+        currency: "USD"
+      },
+      scope: "ORDER"
+    }];
+  }
+
+  const idempotencyKey = crypto.randomUUID();
+  let squareData;
+  try {
+    const squareResp = await fetch(SQUARE_API, {
+      method: "POST",
+      headers: {
+        "Square-Version": SQUARE_VERSION,
+        "Authorization": `Bearer ${env.SQUARE_ACCESS_TOKEN}`,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        idempotency_key: idempotencyKey,
+        order: orderObj,
+        checkout_options: {
+          redirect_url: REDIRECT_URL,
+          ask_for_shipping_address: fulfillmentType === "ship",
+        },
+      }),
+    });
+    squareData = await squareResp.json();
+    if (!squareResp.ok || !squareData.payment_link) {
+      return jsonResponse({ error: "Square API error", details: squareData.errors || squareData }, 500);
+    }
+  } catch (err) {
+    return jsonResponse({ error: "Worker fetch failed", message: String(err) }, 500);
+  }
+
+  return jsonResponse({
+    checkout_url: squareData.payment_link.url,
+    order_id: squareData.payment_link.order_id,
+  });
+}
+
+async function handleSquareWebhook(request, env, ctx) {
+  const rawBody = await request.text();
+  const signatureHeader = request.headers.get("x-square-hmacsha256-signature");
+
+  if (!signatureHeader) {
+    return jsonResponse({ error: "Missing signature header" }, 400);
+  }
+
+  const stringToSign = env.SQUARE_WEBHOOK_NOTIFICATION_URL + rawBody;
+  const valid = await verifySquareSignature(stringToSign, signatureHeader, env.SQUARE_WEBHOOK_SIGNATURE_KEY);
+  if (!valid) {
+    return jsonResponse({ error: "Invalid signature" }, 401);
+  }
+
+  let event;
+  try { event = JSON.parse(rawBody); }
+  catch (e) { return jsonResponse({ error: "Invalid JSON" }, 400); }
+
+  const payment = event && event.data && event.data.object && event.data.object.payment;
+  if (event.type !== "payment.updated" || !payment || payment.status !== "COMPLETED") {
+    return jsonResponse({ status: "Ignored" }, 200);
+  }
+
+  const amountMoney = payment.amount_money || {};
+  const normalized = {
+    submission_type: "square_payment_completed",
+    event_id: event.event_id || null,
+    payment_id: payment.id || null,
+    reference_id: payment.reference_id || null,
+    amount_cents: typeof amountMoney.amount === "number" ? amountMoney.amount : null,
+    currency: amountMoney.currency || null,
+    receipt_url: payment.receipt_url || null,
+    customer_email: (payment.buyer_email_address) || null,
+    completed_at: payment.updated_at || payment.created_at || null,
+    customer_name: null,
+    customer_phone: null,
+    address_line1: null,
+    city: null,
+    state: null,
+    zip: null,
+  };
+
+  // Square attaches buyer-collected shipping info to the ORDER, not the payment.
+  // Fetch the order and pull recipient + address from its SHIPMENT fulfillment.
+  if (payment.order_id) {
+    try {
+      const orderResp = await fetch(`https://connect.squareup.com/v2/orders/${payment.order_id}`, {
+        method: "GET",
+        headers: {
+          "Square-Version": SQUARE_VERSION,
+          "Authorization": `Bearer ${env.SQUARE_ACCESS_TOKEN}`,
+        },
+      });
+      if (orderResp.ok) {
+        const orderData = await orderResp.json();
+        const fulfillments = (orderData.order && orderData.order.fulfillments) || [];
+        const shipment = fulfillments.find((f) => f.type === "SHIPMENT");
+        const recipient = shipment && shipment.shipment_details && shipment.shipment_details.recipient;
+        const addr = recipient && recipient.address;
+        if (recipient) {
+          normalized.customer_name = recipient.display_name || null;
+          normalized.customer_phone = recipient.phone_number || null;
+          if (!normalized.customer_email && recipient.email_address) {
+            normalized.customer_email = recipient.email_address;
+          }
+        }
+        if (addr) {
+          normalized.address_line1 = addr.address_line_1 || null;
+          normalized.city = addr.locality || null;
+          normalized.state = addr.administrative_district_level_1 || null;
+          normalized.zip = addr.postal_code || null;
+        }
+      }
+    } catch (_err) {
+      // Order fetch failure shouldn't block payment-completion forwarding to Apps Script.
+    }
+  }
+
+  ctx.waitUntil(
+    fetch(env.APPS_SCRIPT_WEBHOOK_URL, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(normalized),
+    })
+  );
+
+  return jsonResponse({ status: "ok" }, 200);
+}
+
+async function verifySquareSignature(stringToSign, signatureHeader, signingKey) {
+  const enc = new TextEncoder();
+  const key = await crypto.subtle.importKey(
+    "raw",
+    enc.encode(signingKey),
+    { name: "HMAC", hash: "SHA-256" },
+    false,
+    ["sign"]
+  );
+  const sigBuf = await crypto.subtle.sign("HMAC", key, enc.encode(stringToSign));
+  const bytes = new Uint8Array(sigBuf);
+  let bin = "";
+  for (let i = 0; i < bytes.length; i++) bin += String.fromCharCode(bytes[i]);
+  const computed = btoa(bin);
+  return timingSafeEqual(computed, signatureHeader);
+}
+
+function timingSafeEqual(a, b) {
+  if (typeof a !== "string" || typeof b !== "string") return false;
+  if (a.length !== b.length) return false;
+  let mismatch = 0;
+  for (let i = 0; i < a.length; i++) {
+    mismatch |= a.charCodeAt(i) ^ b.charCodeAt(i);
+  }
+  return mismatch === 0;
+}
