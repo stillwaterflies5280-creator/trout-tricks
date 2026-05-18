@@ -211,8 +211,8 @@ Logo files for each partner are in `images/partner-*.png` in the repo.
 - **Phone:** (303) 917-8278
 - **Website:** trouttricks.com
 - **Location:** Fairmount, CO
-- **Instagram:** @trouttricks *(confirm handle before publishing)*
-- **TikTok:** @trouttricks *(confirm)*
+- **Instagram:** @trouttricks
+- **TikTok:** @trouttricks
 
 ---
 
