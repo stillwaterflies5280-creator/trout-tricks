@@ -52,7 +52,22 @@
   ];
 
   var CSS = [
-    '.tt-hamburger{background:transparent;border:1px solid #2a2a2a;color:#fff;width:42px;height:38px;border-radius:4px;font-size:1.35rem;line-height:1;cursor:pointer;display:inline-flex;align-items:center;justify-content:center;margin-left:8px;flex-shrink:0;font-family:inherit;}',
+    // Header layout: collapses the variable right-side items (search, cart,
+    // hamburger) into a single flex cluster so the page's <header> only has
+    // two children (logo + cluster). Eliminates the "cart drifts to center"
+    // bug that justify-content:space-between caused when N>2.
+    'header > .tt-header-right{display:inline-flex;align-items:center;gap:8px;margin-left:auto;}',
+    '.tt-search{display:inline-flex;align-items:center;position:relative;}',
+    '.tt-search-toggle{background:transparent;border:1px solid #2a2a2a;color:#fff;width:42px;height:38px;border-radius:4px;cursor:pointer;display:inline-flex;align-items:center;justify-content:center;font-size:1rem;flex-shrink:0;font-family:inherit;}',
+    '.tt-search-toggle:hover{border-color:#C0392B;color:#C0392B;}',
+    '.tt-search-panel{position:absolute;top:calc(100% + 6px);right:0;background:#0a0a0a;border:1px solid #2a2a2a;border-radius:4px;padding:6px;display:none;z-index:100;box-shadow:0 6px 20px rgba(0,0,0,0.5);}',
+    '.tt-search.open .tt-search-panel{display:flex;align-items:center;gap:4px;}',
+    '.tt-search-input{background:#050505;border:1px solid #2a2a2a;color:#fff;padding:8px 10px;border-radius:3px;font-family:inherit;font-size:0.92rem;width:240px;outline:none;}',
+    '.tt-search-input:focus{border-color:#C0392B;}',
+    '.tt-search-submit{background:#C0392B;border:none;color:#fff;padding:8px 12px;border-radius:3px;cursor:pointer;font-family:"Bebas Neue",Impact,sans-serif;font-size:0.85rem;letter-spacing:0.1em;text-transform:uppercase;}',
+    '.tt-search-submit:hover{background:#E74C3C;}',
+    '@media (max-width:480px){.tt-search-input{width:180px;}.tt-search-panel{right:-44px;}}',
+    '.tt-hamburger{background:transparent;border:1px solid #2a2a2a;color:#fff;width:42px;height:38px;border-radius:4px;font-size:1.35rem;line-height:1;cursor:pointer;display:inline-flex;align-items:center;justify-content:center;flex-shrink:0;font-family:inherit;}',
     '.tt-hamburger:hover{border-color:#C0392B;color:#C0392B;}',
     '.tt-nav-overlay{position:fixed;inset:0;background:rgba(0,0,0,0.6);z-index:4998;opacity:0;pointer-events:none;transition:opacity 0.25s ease;}',
     '.tt-nav-overlay.open{opacity:1;pointer-events:auto;}',
@@ -143,15 +158,66 @@
 
   function injectHamburger() {
     var header = document.querySelector('header');
-    if (!header || header.querySelector('.tt-hamburger')) return;
-    var btn = document.createElement('button');
-    btn.type = 'button';
-    btn.className = 'tt-hamburger';
-    btn.setAttribute('aria-label', 'Open menu');
-    btn.setAttribute('aria-expanded', 'false');
-    btn.textContent = '☰';
-    btn.addEventListener('click', open);
-    header.appendChild(btn); // last child — sits at the right edge
+    if (!header) return;
+
+    // Build the unified right-side cluster. Pulls every existing non-logo
+    // header child into a single flex container so the cart, search, and
+    // hamburger always anchor to the right edge regardless of how many
+    // items the page contributes. Skips if already set up (e.g., SPA-style
+    // re-mounts).
+    var cluster = header.querySelector('.tt-header-right');
+    if (!cluster) {
+      cluster = document.createElement('div');
+      cluster.className = 'tt-header-right';
+      // Move every child that isn't the logo into the cluster
+      Array.prototype.slice.call(header.children).forEach(function (child) {
+        if (child.classList.contains('logo')) return;
+        cluster.appendChild(child);
+      });
+      header.appendChild(cluster);
+    }
+
+    // If the page didn't ship its own search (Pattern B pages — fly
+    // products, category pages, media-kit), inject a minimal one that
+    // round-trips through the homepage's /?q= query.
+    if (!cluster.querySelector('.header-search, .tt-search')) {
+      var sf = document.createElement('form');
+      sf.className = 'tt-search';
+      sf.setAttribute('action', '/');
+      sf.setAttribute('method', 'get');
+      sf.innerHTML =
+        '<button type="button" class="tt-search-toggle" aria-label="Search">🔍</button>' +
+        '<div class="tt-search-panel">' +
+          '<input type="text" name="q" class="tt-search-input" placeholder="Search flies & articles…" autocomplete="off">' +
+          '<button type="submit" class="tt-search-submit">Go</button>' +
+        '</div>';
+      sf.querySelector('.tt-search-toggle').addEventListener('click', function (e) {
+        e.preventDefault();
+        var open = sf.classList.toggle('open');
+        if (open) {
+          var inp = sf.querySelector('.tt-search-input');
+          setTimeout(function () { inp && inp.focus(); }, 30);
+        }
+      });
+      // Close on outside click
+      document.addEventListener('click', function (e) {
+        if (!sf.contains(e.target)) sf.classList.remove('open');
+      });
+      // Prepend before the cart so order is: [search] [cart] [hamburger]
+      cluster.insertBefore(sf, cluster.firstChild);
+    }
+
+    // Inject the hamburger as the last item in the cluster
+    if (!header.querySelector('.tt-hamburger')) {
+      var btn = document.createElement('button');
+      btn.type = 'button';
+      btn.className = 'tt-hamburger';
+      btn.setAttribute('aria-label', 'Open menu');
+      btn.setAttribute('aria-expanded', 'false');
+      btn.textContent = '☰';
+      btn.addEventListener('click', open);
+      cluster.appendChild(btn);
+    }
   }
 
   function open() {
