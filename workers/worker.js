@@ -1,6 +1,10 @@
 // Trout Tricks — Square Hosted Checkout Worker
-// POST { items, shipping_cost, fulfillment_type, promo_code, discount_amount } -> { checkout_url, order_id }
+// POST { items, shipping_cost, fulfillment_type, promo_code, discount_amount, order_number? } -> { checkout_url, order_id }
 // POST /webhook -> Square payment.updated webhook receiver -> forwards to Apps Script
+//
+// order_number (optional): cart-side TT-XXXXX identifier. Forwarded to Square
+// as order.reference_id so payment.updated webhooks return it and Apps Script
+// can match deterministically instead of falling back to payment_id (#58).
 //
 // This file is a LOCAL MIRROR of the deployed Cloudflare Worker (trouttricks-checkout).
 // Live source-of-truth still lives in Cloudflare's editor; this mirror tracks it for git history.
@@ -47,6 +51,7 @@ async function handleCheckout(request, env) {
   const fulfillmentType = payload.fulfillment_type === "pickup" ? "pickup" : "ship";
   const promoCode = payload.promo_code ? String(payload.promo_code).slice(0, 50) : null;
   const discountAmount = Number(payload.discount_amount) || 0;
+  const orderNumber = payload.order_number ? String(payload.order_number).slice(0, 40) : null;
 
   if (items.length === 0) return jsonResponse({ error: "No items in cart" }, 400);
 
@@ -73,6 +78,12 @@ async function handleCheckout(request, env) {
     location_id: SQUARE_LOCATION,
     line_items: lineItems
   };
+
+  // Attach cart-side order number as Square reference_id so the payment.updated
+  // webhook returns it and Apps Script can match the originating Sheets row
+  // deterministically (#58). Omit entirely when missing to keep backward compat
+  // with any non-cart callers of this endpoint.
+  if (orderNumber) orderObj.reference_id = orderNumber;
 
   if (promoCode && discountAmount > 0) {
     orderObj.discounts = [{
