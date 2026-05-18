@@ -4568,6 +4568,11 @@ function checkoutWithSquare(btnOverride) {
   btn.disabled = true;
   btn.textContent = "Loading checkout…";
 
+  // Ship orders skip goCheckoutLegacy(), so currentOrderNum starts empty
+  // here. Pickup orders get it set in goCheckoutLegacy() before reaching
+  // pickupCardCheckout(), so the guard preserves that value when present.
+  if (!currentOrderNum) currentOrderNum = generateOrderNumber();
+
   const items = cart.map(function(it) {
     const fly = it.fly;
     const noteParts = [];
@@ -4607,7 +4612,8 @@ function checkoutWithSquare(btnOverride) {
       fulfillment_type: fulfillmentType,
       promo_code: appliedPromo ? appliedPromo.code : null,
       discount_amount: discountAmount,
-      discounted_subtotal: discountedSubtotal
+      discounted_subtotal: discountedSubtotal,
+      order_number: currentOrderNum
     })
   })
     .then(function(r) {
