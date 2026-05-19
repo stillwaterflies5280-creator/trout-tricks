@@ -6,6 +6,18 @@ const MASTER_CUSTOMERS_SHEET = 'Master Customers';
 const DROP_WAITLIST_SHEET = 'Drop Waitlist';
 const STICKER_MAX   = 15;
 
+// Orders/Fulfillment column positions (1-indexed for getRange)
+const COL_EMAIL = 1;
+const COL_PHONE = 4;
+const COL_DETAILS = 6;
+const COL_STATUS = 8;
+const COL_NOTES = 9;
+const COL_ACQUISITION_SOURCE = 11;
+const COL_STREET = 12;
+const COL_CITY = 13;
+const COL_STATE = 14;
+const COL_ZIP = 15;
+
 function doPost(e) {
 
   try {
@@ -205,8 +217,7 @@ function handleOrder(body) {
   const fulfillment = fulfillRaw === 'pickup' ? 'Local pickup' :
                       fulfillRaw === 'ship' ? 'Ship' :
                       body.fulfillment;
-  const paymentMethod = body.payment_method || '';
-  const status = paymentMethod === 'square_pending' ? 'Pending Payment' : 'Ordered';
+  const status = 'Ordered';
 
   let details = '';
   if (orderNum) details += orderNum + '\n';
@@ -224,6 +235,8 @@ function handleOrder(body) {
   const state = body.state || '';
   const zip = body.zip || body.postal_code || '';
 
+  const acquisitionSource = body.acquisition_source || body.referrer || '';
+
   const sheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName(ORDERS_SHEET);
   if (!sheet) throw new Error('Sheet not found: ' + ORDERS_SHEET);
 
@@ -231,6 +244,7 @@ function handleOrder(body) {
     email, firstName, lastName, phone,
     orderDate, details, fulfillment,
     status, '', revenue,
+    acquisitionSource,
     street, city, state, zip
   ]);
 
@@ -243,10 +257,15 @@ function handleOrder(body) {
 
 // === SQUARE PAYMENT WEBHOOK HANDLER ===
 // Receives flat payload forwarded from Cloudflare Worker after signature verification.
-// Updates existing "Pending Payment" rows to "Paid", or creates ghost row if no match.
-// #57: writes Square-collected phone (col D) and shipping address (cols K-N).
+// Pickup orders: matches an 'Ordered' row by reference_id and fills missing
+//   customer + shipping fields (status stays 'Ordered'; daily reconciliation
+//   distinguishes paid from abandoned later — see #55).
+// Ship orders: appends a ghost row (status 'Ordered', notes '(ghost)').
+// #57:  writes Square-collected phone (col D) and shipping address (cols L-O).
 // #57b: guards on payment_id instead of reference_id — ship orders have null
-//       reference_id (cart/Worker doesn't set one), but always have a payment_id.
+//       reference_id, but always have a payment_id.
+// #60:  status taxonomy collapsed to 'Ordered' for both paths; ghost dedup by
+//       payment_id (Square fires payment.updated 5-7 times per payment).
 function handleSquarePaymentCompleted(data) {
   const ss = SpreadsheetApp.getActiveSpreadsheet();
   const sheet = ss.getSheetByName(ORDERS_SHEET);
@@ -270,58 +289,60 @@ function handleSquarePaymentCompleted(data) {
 
   // Orders/Fulfillment columns: A=Email, B=First, C=Last, D=Phone, E=OrderDate,
   //                             F=Details, G=Fulfillment, H=Status, I=Notes/Tracking, J=Revenue,
-  //                             K=Street, L=City, M=State, N=Zip, O=Acquisition Source
+  //                             K=Acquisition Source, L=Street, M=City, N=State, O=Zip
 
-  // Try to match an existing order by reference_id in the details column.
-  // Only runs when reference_id is present (typically pickup orders that
-  // went through the cart with a Pending Payment row). Ship orders have
-  // null reference_id and fall through to the ghost-order path below.
+  // Read the details column once — used for both reference_id matching
+  // (pickup orders) and payment_id dedup (ghost-path ship orders, #60).
+  const lastRow = sheet.getLastRow();
+  const details = lastRow >= 2 ?
+    sheet.getRange(2, COL_DETAILS, lastRow - 1, 1).getValues() : [];
+
+  // Try to match an existing order by reference_id. Only runs when
+  // reference_id is present (typically pickup orders that went through
+  // the cart). Ship orders have null reference_id and fall through.
   let matchedRow = -1;
   if (data.reference_id) {
-    const lastRow = sheet.getLastRow();
-    if (lastRow >= 2) {
-      const details = sheet.getRange(2, 6, lastRow - 1, 1).getValues();
-      const needle = String(data.reference_id).trim();
-      for (let i = 0; i < details.length; i++) {
-        const cellText = String(details[i][0] || '');
-        if (cellText.indexOf(needle) !== -1) {
-          matchedRow = i + 2;
-          break;
-        }
+    const needle = String(data.reference_id).trim();
+    for (let i = 0; i < details.length; i++) {
+      const cellText = String(details[i][0] || '');
+      if (cellText.indexOf(needle) !== -1) {
+        matchedRow = i + 2;
+        break;
       }
     }
   }
 
   if (matchedRow > 0) {
-    // Existing order — mark as Paid
-    sheet.getRange(matchedRow, 8).setValue('Paid');
+    // Existing order — fill missing customer fields, then append payment info.
+    // Status stays 'Ordered' (set by handleOrder pre-payment); daily
+    // reconciliation distinguishes paid from abandoned later (#55).
 
     // Fill missing email (col A) and phone (col D) — only if currently blank.
     // Preserves the cart-collected email so Klaviyo identity stays stable.
-    const existingEmail = String(sheet.getRange(matchedRow, 1).getValue() || '').trim();
+    const existingEmail = String(sheet.getRange(matchedRow, COL_EMAIL).getValue() || '').trim();
     if (!existingEmail && data.customer_email) {
-      sheet.getRange(matchedRow, 1).setValue(data.customer_email);
+      sheet.getRange(matchedRow, COL_EMAIL).setValue(data.customer_email);
     }
-    const existingPhone = String(sheet.getRange(matchedRow, 4).getValue() || '').trim();
+    const existingPhone = String(sheet.getRange(matchedRow, COL_PHONE).getValue() || '').trim();
     if (!existingPhone && data.customer_phone) {
-      sheet.getRange(matchedRow, 4).setValue(data.customer_phone);
+      sheet.getRange(matchedRow, COL_PHONE).setValue(data.customer_phone);
     }
 
-    // Address (cols K-N): always overwrite when Worker forwarded an address.
+    // Address (cols L-O): always overwrite when Worker forwarded an address.
     // Square-collected shipping address is the source of truth.
     if (data.address_line1) {
-      sheet.getRange(matchedRow, 11).setValue(data.address_line1);
-      sheet.getRange(matchedRow, 12).setValue(data.city || '');
-      sheet.getRange(matchedRow, 13).setValue(data.state || '');
-      sheet.getRange(matchedRow, 14).setValue(data.zip || '');
+      sheet.getRange(matchedRow, COL_STREET).setValue(data.address_line1);
+      sheet.getRange(matchedRow, COL_CITY).setValue(data.city || '');
+      sheet.getRange(matchedRow, COL_STATE).setValue(data.state || '');
+      sheet.getRange(matchedRow, COL_ZIP).setValue(data.zip || '');
     }
 
     // Append Square payment info to details
-    const existingDetails = String(sheet.getRange(matchedRow, 6).getValue() || '');
+    const existingDetails = String(sheet.getRange(matchedRow, COL_DETAILS).getValue() || '');
     const paymentNote = '\n\n💰 Square Payment: ' + (data.payment_id || '') +
                         (data.receipt_url ? '\nReceipt: ' + data.receipt_url : '') +
                         '\nCompleted: ' + (data.completed_at || new Date().toISOString());
-    sheet.getRange(matchedRow, 6).setValue(existingDetails + paymentNote);
+    sheet.getRange(matchedRow, COL_DETAILS).setValue(existingDetails + paymentNote);
 
     const rowData = sheet.getRange(matchedRow, 1, 1, 10).getValues()[0];
     writeToMasterCustomers({
@@ -338,7 +359,27 @@ function handleSquarePaymentCompleted(data) {
   }
 
   // Ghost order — paid via Square but no matching row in our sheet.
-  // For ship orders this is the normal path (no Pending Payment row pre-existed).
+  // For ship orders this is the normal path (no pre-payment row exists).
+
+  // Dedup (#60): Square fires payment.updated 5-7 times per payment in
+  // production. First fire wins — if this payment_id is already in the
+  // details column, skip the append.
+  const paymentIdNeedle = String(data.payment_id);
+  for (let i = 0; i < details.length; i++) {
+    const cellText = String(details[i][0] || '');
+    if (cellText.indexOf(paymentIdNeedle) !== -1) {
+      Logger.log('[square] Duplicate ghost suppressed — payment_id=' +
+                 paymentIdNeedle + ' already at row ' + (i + 2));
+      return ContentService
+        .createTextOutput(JSON.stringify({
+          success: true,
+          skipped: 'duplicate_payment_id',
+          existing_row: i + 2
+        }))
+        .setMimeType(ContentService.MimeType.JSON);
+    }
+  }
+
   const refLabel = data.reference_id || ('Payment ' + data.payment_id);
   const revenue = data.amount_cents ? '$' + (data.amount_cents / 100).toFixed(2) : '';
   const ghostDetails = refLabel + '\n' +
@@ -355,13 +396,14 @@ function handleSquarePaymentCompleted(data) {
     new Date(),                           // E: Order Date
     ghostDetails,                         // F: Details
     '',                                   // G: Fulfillment
-    'Paid (Ghost)',                       // H: Status
-    '',                                   // I: Notes/Tracking
+    'Ordered',                            // H: Status
+    '(ghost)',                            // I: Notes/Tracking
     revenue,                              // J: Revenue
-    data.address_line1 || '',             // K: Street
-    data.city || '',                      // L: City
-    data.state || '',                     // M: State
-    data.zip || ''                        // N: Zip
+    '',                                   // K: Acquisition Source (Square doesn't carry it)
+    data.address_line1 || '',             // L: Street
+    data.city || '',                      // M: City
+    data.state || '',                     // N: State
+    data.zip || ''                        // O: Zip
   ]);
 
   const newRowNum = sheet.getLastRow();
