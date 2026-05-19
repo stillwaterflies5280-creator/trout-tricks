@@ -59,6 +59,9 @@ async function handleCheckout(request, env) {
   // pre-populate Square's checkout fields so customers don't re-enter (#61).
   const customerEmail = payload.customer_email ? String(payload.customer_email).slice(0, 255).trim() : null;
   const customerPhoneRaw = payload.customer_phone ? String(payload.customer_phone).slice(0, 30).trim() : null;
+  const customerFirstName = payload.customer_first_name ? String(payload.customer_first_name).slice(0, 100).trim() : "";
+  const customerLastName = payload.customer_last_name ? String(payload.customer_last_name).slice(0, 100).trim() : "";
+  const customerDisplayName = (customerFirstName + " " + customerLastName).trim();
   // Square requires E.164 format (+CCNNN...) for buyer_phone_number.
   let customerPhone = null;
   if (customerPhoneRaw) {
@@ -109,6 +112,29 @@ async function handleCheckout(request, env) {
         currency: "USD"
       },
       scope: "ORDER"
+    }];
+  }
+
+  // For pickup orders, Square doesn't auto-create a PICKUP fulfillment because
+  // it never asks the buyer for shipping info. We attach one ourselves with the
+  // cart-collected customer info as recipient — so the webhook handler can
+  // later read order.fulfillments[0].pickup_details.recipient.* and populate
+  // Fulfillment / First Name / Last Name / Phone columns on the sheet row.
+  // pickup_at is required by Square; we set a placeholder 7 days out since
+  // Trout Tricks pickup timing is flexible/local.
+  if (fulfillmentType === "pickup") {
+    const pickupRecipient = {};
+    if (customerDisplayName) pickupRecipient.display_name = customerDisplayName;
+    if (customerEmail) pickupRecipient.email_address = customerEmail;
+    if (customerPhone) pickupRecipient.phone_number = customerPhone;
+    const pickupAt = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString();
+    orderObj.fulfillments = [{
+      type: "PICKUP",
+      state: "PROPOSED",
+      pickup_details: {
+        recipient: pickupRecipient,
+        pickup_at: pickupAt
+      }
     }];
   }
 
