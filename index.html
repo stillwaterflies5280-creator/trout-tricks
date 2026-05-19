@@ -3374,6 +3374,24 @@
       <button class="fulfillment-btn" id="btnPickup" onclick="setFulfillment('pickup')">📍 Local Pickup</button>
     </div>
   </div>
+  <style>
+    .cart-pickup-info{padding:12px 0;margin:4px 0 10px}
+    .cart-pickup-label{font-size:0.85rem;color:#999;margin-bottom:8px}
+    .cart-pickup-row{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:8px}
+    .cart-pickup-input{width:100%;padding:10px 12px;background:rgba(0,0,0,0.3);border:1px solid rgba(255,255,255,0.15);border-radius:6px;color:inherit;font-size:0.95rem;font-family:inherit;box-sizing:border-box;margin-bottom:8px}
+    .cart-pickup-row .cart-pickup-input{margin-bottom:0}
+    .cart-pickup-input::placeholder{color:rgba(255,255,255,0.4)}
+    .cart-pickup-input:focus{outline:none;border-color:rgba(176,138,69,0.6)}
+  </style>
+  <div class="cart-pickup-info" id="cartPickupInfo" style="display:none">
+    <div class="cart-pickup-label">Your info — we'll text you to schedule pickup</div>
+    <div class="cart-pickup-row">
+      <input type="text" id="cartPickupFirstName" class="cart-pickup-input" placeholder="First name" autocomplete="given-name">
+      <input type="text" id="cartPickupLastName" class="cart-pickup-input" placeholder="Last name" autocomplete="family-name">
+    </div>
+    <input type="tel" id="cartPickupPhone" class="cart-pickup-input" placeholder="Phone (10 digits)" autocomplete="tel" oninput="validatePhoneField(this)">
+    <input type="email" id="cartPickupEmail" class="cart-pickup-input" placeholder="Email" autocomplete="email" oninput="validateEmailField(this)">
+  </div>
   <div class="cart-items" id="cartItems">
     <p class="cart-empty">Your cart is empty.</p>
   </div>
@@ -4305,6 +4323,8 @@ function setFulfillment(type) {
   orderFulfillment = type;
   document.getElementById('btnShip').classList.toggle('active', type === 'ship');
   document.getElementById('btnPickup').classList.toggle('active', type === 'pickup');
+  var pickupInfo = document.getElementById('cartPickupInfo');
+  if (pickupInfo) pickupInfo.style.display = (type === 'pickup') ? 'block' : 'none';
   updateCartUI();
   gtag('event', 'set_shipping', { shipping_tier: type === 'pickup' ? 'Local Pickup' : 'Ship' });
 }
@@ -4551,8 +4571,8 @@ function buildOrderSummary() {
 //   - Legacy EmailJS/Zapier form for pickup orders
 function goCheckout() {
   if (!cart || cart.length === 0) return;
-  const isPickup = orderFulfillment === "pickup";
-  if (isPickup) return goCheckoutLegacy();
+  // Both pickup and ship route through checkoutWithSquare(). Pickup customer
+  // info is collected inline in the cart panel (#cartPickupInfo).
   return checkoutWithSquare();
 }
 
@@ -4603,18 +4623,83 @@ function checkoutWithSquare(btnOverride) {
   const shippingCost    = (typeof calcShipping === "function") ? (calcShipping().cost || 0) : 0;
   const fulfillmentType = (orderFulfillment === "pickup") ? "pickup" : "ship";
 
-  // Pickup orders: read customer info from the pickup form so the Worker can
-  // pre-populate Square's checkout page (#61). Ship orders collect on Square.
+  // Pickup orders: read customer info from the cart panel inputs (#cartPickupInfo),
+  // validate, fire Klaviyo + Apps Script pre-write row, then proceed to Square.
+  // Same data also goes to the Worker for Square pre-population (#61).
+  // Ship orders skip this block — Square collects email/phone/address itself.
   let buyerEmail = null, buyerPhone = null, buyerFirstName = null, buyerLastName = null;
   if (fulfillmentType === 'pickup') {
-    const emailEl = document.getElementById('pickupEmail');
-    const phoneEl = document.getElementById('pickupPhone');
-    const firstNameEl = document.getElementById('pickupFirstName');
-    const lastNameEl = document.getElementById('pickupLastName');
-    if (emailEl && emailEl.value.trim()) buyerEmail = emailEl.value.trim();
-    if (phoneEl && phoneEl.value.trim()) buyerPhone = phoneEl.value.trim();
-    if (firstNameEl && firstNameEl.value.trim()) buyerFirstName = firstNameEl.value.trim();
-    if (lastNameEl && lastNameEl.value.trim()) buyerLastName = lastNameEl.value.trim();
+    const fnEl = document.getElementById('cartPickupFirstName');
+    const lnEl = document.getElementById('cartPickupLastName');
+    const phEl = document.getElementById('cartPickupPhone');
+    const emEl = document.getElementById('cartPickupEmail');
+    const firstName = fnEl ? fnEl.value.trim() : '';
+    const lastName  = lnEl ? lnEl.value.trim() : '';
+    const phone     = phEl ? phEl.value.trim() : '';
+    const email     = emEl ? emEl.value.trim() : '';
+
+    // Validate all 4 fields filled
+    if (!firstName || !lastName || !phone || !email) {
+      btn.disabled = false;
+      btn.textContent = origLabel;
+      if (typeof showToast === "function") showToast("Please fill in your name, phone, and email for pickup");
+      const firstMissing = !firstName ? fnEl : (!lastName ? lnEl : (!phone ? phEl : emEl));
+      if (firstMissing) firstMissing.focus();
+      return;
+    }
+    // Validate phone (10 digits)
+    if (typeof validatePhoneField === "function" && !validatePhoneField(phEl)) {
+      btn.disabled = false;
+      btn.textContent = origLabel;
+      phEl.focus();
+      if (typeof showToast === "function") showToast("Please enter a valid 10-digit phone number");
+      return;
+    }
+    // Validate email
+    if (typeof validateEmailField === "function" && !validateEmailField(emEl)) {
+      btn.disabled = false;
+      btn.textContent = origLabel;
+      emEl.focus();
+      if (typeof showToast === "function") showToast("Please enter a valid email address");
+      return;
+    }
+
+    buyerEmail = email;
+    buyerPhone = phone;
+    buyerFirstName = firstName;
+    buyerLastName = lastName;
+
+    // Klaviyo signup (fire-and-forget — submitEmailSignup catches its own errors)
+    if (typeof submitEmailSignup === "function") submitEmailSignup(email, 'Pickup Order');
+
+    // Apps Script pre-write row with payment_method='square_pending' so we have
+    // the customer captured BEFORE the Square redirect (in case they bail).
+    // No Content-Type header keeps the request "simple" and bypasses CORS preflight
+    // (Apps Script doesn't support OPTIONS). Fire-and-forget; Square redirect proceeds regardless.
+    const fullName = firstName + ' ' + lastName;
+    const orderItemsText = items.map(function(it){ return it.quantity + '× ' + it.name; }).join(', ');
+    fetch('https://script.google.com/macros/s/AKfycbwc5JR5yo76y8-H81D3Dh4e-pc6kqha8rLO2Yu90ZtFV_s-3Hm__YI52WoaW54zXOqBdw/exec', {
+      method: 'POST',
+      body: JSON.stringify({
+        order_number:        currentOrderNum,
+        order_items:         orderItemsText,
+        shipping_address:    'LOCAL PICKUP\nName: ' + fullName + '\nPhone: ' + phone + '\nEmail: ' + email,
+        client_email:        email,
+        customer_first_name: firstName,
+        customer_last_name:  lastName,
+        customer_name:       fullName,
+        customer_phone:      phone,
+        customer_email:      email,
+        order_date:          new Date().toLocaleDateString(),
+        order_time:          new Date().toLocaleTimeString(),
+        fulfillment:         'pickup',
+        payment_method:      'square_pending',
+        promo_code:          appliedPromo ? appliedPromo.code : 'none',
+        discount_amount:     Number(discountAmount.toFixed(2)),
+        discounted_total:    Number(grandTotal.toFixed(2)),
+        order_total:         Number(grandTotal.toFixed(2))
+      })
+    }).catch(function(err) { console.error('[pickup pre-write apps script]', err); });
   }
 
   fetch("https://trouttricks-checkout.stillwaterflies5280.workers.dev", {
@@ -5279,6 +5364,8 @@ function loadCart() {
     var btnPickup = document.getElementById('btnPickup');
     if (btnShip) btnShip.classList.toggle('active', orderFulfillment === 'ship');
     if (btnPickup) btnPickup.classList.toggle('active', orderFulfillment === 'pickup');
+    var pickupInfoEl = document.getElementById('cartPickupInfo');
+    if (pickupInfoEl) pickupInfoEl.style.display = (orderFulfillment === 'pickup') ? 'block' : 'none';
     var saved = localStorage.getItem('tt_cart');
     if (saved) {
       var items = JSON.parse(saved);
