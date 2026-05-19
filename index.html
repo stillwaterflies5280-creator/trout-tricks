@@ -4824,6 +4824,18 @@ function submitEmailSignup(email, source) {
   const customSource = source === 'popup_signup'  ? 'Website Popup'
                      : source === 'footer_signup' ? 'Website Footer'
                      : (source || 'Website');
+
+  // Mirror to Apps Script so Crew signups land in Master Customers.
+  // Fire-and-forget; Klaviyo remains the source of truth for delivery (#62).
+  fetch('https://script.google.com/macros/s/AKfycbwc5JR5yo76y8-H81D3Dh4e-pc6kqha8rLO2Yu90ZtFV_s-3Hm__YI52WoaW54zXOqBdw/exec', {
+    method: 'POST',
+    headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+    body: JSON.stringify({
+      submission_type: 'crew_signup',
+      customer_email: email,
+      acquisition_source: customSource
+    })
+  }).catch(function(err) { console.error('[Crew signup Apps Script]', err); });
   const body = {
     data: {
       type: 'subscription',
