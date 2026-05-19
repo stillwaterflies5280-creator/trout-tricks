@@ -188,6 +188,7 @@ async function handleSquareWebhook(request, env, ctx) {
     receipt_url: payment.receipt_url || null,
     customer_email: (payment.buyer_email_address) || null,
     completed_at: payment.updated_at || payment.created_at || null,
+    fulfillment_type: null,
     customer_name: null,
     customer_phone: null,
     address_line1: null,
@@ -220,20 +221,36 @@ async function handleSquareWebhook(request, env, ctx) {
 
         const fulfillments = (orderData.order && orderData.order.fulfillments) || [];
         const shipment = fulfillments.find((f) => f.type === "SHIPMENT");
-        const recipient = shipment && shipment.shipment_details && shipment.shipment_details.recipient;
-        const addr = recipient && recipient.address;
-        if (recipient) {
-          normalized.customer_name = recipient.display_name || null;
-          normalized.customer_phone = recipient.phone_number || null;
-          if (!normalized.customer_email && recipient.email_address) {
-            normalized.customer_email = recipient.email_address;
+        const pickup = fulfillments.find((f) => f.type === "PICKUP");
+
+        if (shipment) {
+          normalized.fulfillment_type = "ship";
+          const recipient = shipment.shipment_details && shipment.shipment_details.recipient;
+          const addr = recipient && recipient.address;
+          if (recipient) {
+            normalized.customer_name = recipient.display_name || null;
+            normalized.customer_phone = recipient.phone_number || null;
+            if (!normalized.customer_email && recipient.email_address) {
+              normalized.customer_email = recipient.email_address;
+            }
           }
-        }
-        if (addr) {
-          normalized.address_line1 = addr.address_line_1 || null;
-          normalized.city = addr.locality || null;
-          normalized.state = addr.administrative_district_level_1 || null;
-          normalized.zip = addr.postal_code || null;
+          if (addr) {
+            normalized.address_line1 = addr.address_line_1 || null;
+            normalized.city = addr.locality || null;
+            normalized.state = addr.administrative_district_level_1 || null;
+            normalized.zip = addr.postal_code || null;
+          }
+        } else if (pickup) {
+          normalized.fulfillment_type = "pickup";
+          const recipient = pickup.pickup_details && pickup.pickup_details.recipient;
+          if (recipient) {
+            normalized.customer_name = recipient.display_name || null;
+            normalized.customer_phone = recipient.phone_number || null;
+            if (!normalized.customer_email && recipient.email_address) {
+              normalized.customer_email = recipient.email_address;
+            }
+          }
+          // No address — Square doesn't collect a shipping address for pickup orders.
         }
       }
     } catch (_err) {
