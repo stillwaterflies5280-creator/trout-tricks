@@ -155,10 +155,14 @@ async function handleCheckout(request, env) {
           redirect_url: REDIRECT_URL,
           ask_for_shipping_address: fulfillmentType === "ship",
         },
-        // Pre-populate buyer email + phone on Square's checkout page if the
-        // cart forwarded them (pickup orders, #61). First/last name skipped —
-        // Square's pre_populated_data doesn't reliably honor those fields.
-        ...(customerEmail || customerPhone ? {
+        // Pre-populate buyer email + phone on Square's checkout page for SHIP
+        // orders only. For PICKUP orders, the fulfillment.recipient we attach
+        // earlier carries email + phone, and Square rejects orders that set
+        // BOTH a fulfillment AND pre_populated_data.buyer_email
+        // (CONFLICTING_PARAMETERS: "Only one of [fulfillment, buyer_email]
+        // fields should be set."). Square auto-populates the checkout page
+        // from the fulfillment recipient instead.
+        ...(fulfillmentType === "ship" && (customerEmail || customerPhone) ? {
           pre_populated_data: {
             ...(customerEmail ? { buyer_email: customerEmail } : {}),
             ...(customerPhone ? { buyer_phone_number: customerPhone } : {}),
