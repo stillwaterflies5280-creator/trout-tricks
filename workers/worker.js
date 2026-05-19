@@ -189,6 +189,7 @@ async function handleSquareWebhook(request, env, ctx) {
     customer_email: (payment.buyer_email_address) || null,
     completed_at: payment.updated_at || payment.created_at || null,
     fulfillment_type: null,
+    order_items: null,
     customer_name: null,
     customer_phone: null,
     address_line1: null,
@@ -251,6 +252,21 @@ async function handleSquareWebhook(request, env, ctx) {
             }
           }
           // No address — Square doesn't collect a shipping address for pickup orders.
+        }
+
+        // Format line items so Apps Script can populate the Details column on
+        // ghost rows. Skip the "Shipping" pseudo-item that handleCheckout adds
+        // for ship orders — it's not a fly to tie.
+        const orderLineItems = (orderData.order && orderData.order.line_items) || [];
+        const itemLines = orderLineItems
+          .filter((li) => li.name !== "Shipping")
+          .map((li) => {
+            let s = (li.quantity || "1") + "x " + (li.name || "Item");
+            if (li.note) s += " (" + li.note + ")";
+            return s;
+          });
+        if (itemLines.length > 0) {
+          normalized.order_items = itemLines.join("\n");
         }
       }
     } catch (_err) {
