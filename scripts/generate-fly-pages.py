@@ -718,7 +718,7 @@ def build_quick_add(fly, cat):
         # Bundles use a single "Add Bundle" button (no size/color selection)
         return f'''<div class="quick-add">
         <button class="btn-primary qa-add" onclick="quickAdd({fly['id']})">🪝 Add Bundle to Cart</button>
-        <a class="btn-ghost" href="/#cart">View Full Cart &rarr;</a>
+        <a class="btn-ghost" href="/" onclick="if(document.referrer&&new URL(document.referrer).origin===location.origin){{event.preventDefault();history.back();}}">&larr; Continue Shopping</a>
         <button class="share-pill" type="button" onclick="ttShareFly('{fly['name'].replace(chr(39), chr(92)+chr(39))}', 'Check out {fly['name'].replace(chr(39), chr(92)+chr(39))} from Trout Tricks.', location.href)">📤 Share This Pattern</button>
       </div>'''
 
@@ -756,7 +756,7 @@ def build_quick_add(fly, cat):
         </div>
       </div>
       <button class="btn-primary qa-add" onclick="quickAdd({fly['id']})">🪝 Add to Cart</button>
-      <a class="btn-ghost" href="/#cart">View Full Cart &rarr;</a>
+      <a class="btn-ghost" href="/" onclick="if(document.referrer&&new URL(document.referrer).origin===location.origin){{event.preventDefault();history.back();}}">&larr; Continue Shopping</a>
       <button class="share-pill" type="button" onclick="ttShareFly('{fly['name'].replace(chr(39), chr(92)+chr(39))}', 'Check out {fly['name'].replace(chr(39), chr(92)+chr(39))} from Trout Tricks.', location.href)">📤 Share This Pattern</button>
     </div>'''
 

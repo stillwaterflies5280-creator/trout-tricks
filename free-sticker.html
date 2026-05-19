@@ -2636,7 +2636,13 @@ function toggleCartItemPickup(uid, val) {
 function updateCartQty(uid, delta) {
   const item = cart.find(i => i.uid === uid);
   if (!item) return;
-  item.qty = Math.max(1, item.qty + delta);
+  const newQty = item.qty + delta;
+  if (newQty < 1) {
+    // Tapping minus at qty=1 removes the line item entirely (matches the X button).
+    removeFromCart(uid);
+    return;
+  }
+  item.qty = newQty;
   updateCartUI();
 }
 

@@ -2023,6 +2023,10 @@
     .header-search-clear { display: inline-block; padding: 0 18px; font-size: 1.1rem; color: #aaa; }
   }
 
+  .breadcrumb { padding: 14px 24px; font-size: 0.78rem; color: var(--gray); letter-spacing: 0.08em; text-transform: uppercase; }
+  .breadcrumb a { color: var(--gray); text-decoration: none; }
+  .breadcrumb a:hover { color: var(--red); }
+
 </style>
 <script src="/js/catalog.js"></script>
 <script src="/js/share-fly.js"></script>
@@ -2045,6 +2049,11 @@
     🪝 Cart <span class="cart-count" id="cartCount">0</span>
   </button>
 </header>
+
+<nav class="breadcrumb">
+  <a href="/">Trout Tricks</a> &nbsp;/&nbsp; Stickers
+</nav>
+
 <!-- STICKERS PAGE -->
 <div id="page-stickers" class="page active">
   <div class="stickers-page" style="max-width:1100px;margin:0 auto;padding:40px 20px 60px;">
@@ -2757,7 +2766,13 @@ function toggleCartItemPickup(uid, val) {
 function updateCartQty(uid, delta) {
   const item = cart.find(i => i.uid === uid);
   if (!item) return;
-  item.qty = Math.max(1, item.qty + delta);
+  const newQty = item.qty + delta;
+  if (newQty < 1) {
+    // Tapping minus at qty=1 removes the line item entirely (matches the X button).
+    removeFromCart(uid);
+    return;
+  }
+  item.qty = newQty;
   updateCartUI();
 }
 

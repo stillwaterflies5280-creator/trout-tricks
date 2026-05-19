@@ -500,7 +500,7 @@ footer a { color: var(--red); text-decoration: none; }
         </div>
       </div>
       <button class="btn-primary qa-add" onclick="quickAdd(22)">🪝 Add to Cart</button>
-      <a class="btn-ghost" href="/#cart">View Full Cart &rarr;</a>
+      <a class="btn-ghost" href="/" onclick="if(document.referrer&&new URL(document.referrer).origin===location.origin){event.preventDefault();history.back();}">&larr; Continue Shopping</a>
       <button class="share-pill" type="button" onclick="ttShareFly('Butter Brown Sticker', 'Check out Butter Brown Sticker from Trout Tricks.', location.href)">📤 Share This Pattern</button>
     </div>
     </div>

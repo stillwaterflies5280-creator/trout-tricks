@@ -1780,6 +1780,15 @@
         var body = document.getElementById('thankYouBody');
         if (body) body.textContent = "Your flies will be ready for pickup at our Fairmount, CO location. We'll text you when ready.";
       }
+      // Clear the cart on successful Square redirect. Gated on transactionId so a
+      // direct visit to /thank-you.html doesn't wipe an in-progress cart.
+      // Runs before loadCart() later in the file, so the cart loads empty.
+      if (transactionId) {
+        try {
+          localStorage.removeItem('tt_cart');
+          localStorage.removeItem('tt_fulfillment');
+        } catch (e) {}
+      }
     } catch (e) {}
   })();
 </script>
@@ -2160,7 +2169,13 @@ function toggleCartItemPickup(uid, val) {
 function updateCartQty(uid, delta) {
   const item = cart.find(i => i.uid === uid);
   if (!item) return;
-  item.qty = Math.max(1, item.qty + delta);
+  const newQty = item.qty + delta;
+  if (newQty < 1) {
+    // Tapping minus at qty=1 removes the line item entirely (matches the X button).
+    removeFromCart(uid);
+    return;
+  }
+  item.qty = newQty;
   updateCartUI();
 }
 
