@@ -55,6 +55,19 @@ async function handleCheckout(request, env) {
   const discountAmount = Number(payload.discount_amount) || 0;
   const orderNumber = payload.order_number ? String(payload.order_number).slice(0, 40) : null;
 
+  // Customer info forwarded from the cart for pickup orders. Used to
+  // pre-populate Square's checkout fields so customers don't re-enter (#61).
+  const customerEmail = payload.customer_email ? String(payload.customer_email).slice(0, 255).trim() : null;
+  const customerPhoneRaw = payload.customer_phone ? String(payload.customer_phone).slice(0, 30).trim() : null;
+  // Square requires E.164 format (+CCNNN...) for buyer_phone_number.
+  let customerPhone = null;
+  if (customerPhoneRaw) {
+    const digits = customerPhoneRaw.replace(/\D/g, "");
+    if (digits.length === 10) customerPhone = "+1" + digits;
+    else if (digits.length === 11 && digits.startsWith("1")) customerPhone = "+" + digits;
+    else if (customerPhoneRaw.startsWith("+")) customerPhone = "+" + digits;
+  }
+
   if (items.length === 0) return jsonResponse({ error: "No items in cart" }, 400);
 
   const lineItems = items.map((it) => {
@@ -116,6 +129,15 @@ async function handleCheckout(request, env) {
           redirect_url: REDIRECT_URL,
           ask_for_shipping_address: fulfillmentType === "ship",
         },
+        // Pre-populate buyer email + phone on Square's checkout page if the
+        // cart forwarded them (pickup orders, #61). First/last name skipped —
+        // Square's pre_populated_data doesn't reliably honor those fields.
+        ...(customerEmail || customerPhone ? {
+          pre_populated_data: {
+            ...(customerEmail ? { buyer_email: customerEmail } : {}),
+            ...(customerPhone ? { buyer_phone_number: customerPhone } : {}),
+          }
+        } : {}),
       }),
     });
     squareData = await squareResp.json();

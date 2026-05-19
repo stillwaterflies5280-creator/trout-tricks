@@ -4603,6 +4603,20 @@ function checkoutWithSquare(btnOverride) {
   const shippingCost    = (typeof calcShipping === "function") ? (calcShipping().cost || 0) : 0;
   const fulfillmentType = (orderFulfillment === "pickup") ? "pickup" : "ship";
 
+  // Pickup orders: read customer info from the pickup form so the Worker can
+  // pre-populate Square's checkout page (#61). Ship orders collect on Square.
+  let buyerEmail = null, buyerPhone = null, buyerFirstName = null, buyerLastName = null;
+  if (fulfillmentType === 'pickup') {
+    const emailEl = document.getElementById('pickupEmail');
+    const phoneEl = document.getElementById('pickupPhone');
+    const firstNameEl = document.getElementById('pickupFirstName');
+    const lastNameEl = document.getElementById('pickupLastName');
+    if (emailEl && emailEl.value.trim()) buyerEmail = emailEl.value.trim();
+    if (phoneEl && phoneEl.value.trim()) buyerPhone = phoneEl.value.trim();
+    if (firstNameEl && firstNameEl.value.trim()) buyerFirstName = firstNameEl.value.trim();
+    if (lastNameEl && lastNameEl.value.trim()) buyerLastName = lastNameEl.value.trim();
+  }
+
   fetch("https://trouttricks-checkout.stillwaterflies5280.workers.dev", {
     method:  "POST",
     headers: { "Content-Type": "application/json" },
@@ -4613,7 +4627,11 @@ function checkoutWithSquare(btnOverride) {
       promo_code: appliedPromo ? appliedPromo.code : null,
       discount_amount: discountAmount,
       discounted_subtotal: discountedSubtotal,
-      order_number: currentOrderNum
+      order_number: currentOrderNum,
+      customer_email: buyerEmail,
+      customer_phone: buyerPhone,
+      customer_first_name: buyerFirstName,
+      customer_last_name: buyerLastName
     })
   })
     .then(function(r) {
