@@ -264,8 +264,9 @@ function handleOrder(body) {
 // #57:  writes Square-collected phone (col D) and shipping address (cols L-O).
 // #57b: guards on payment_id instead of reference_id — ship orders have null
 //       reference_id, but always have a payment_id.
-// #60:  status taxonomy collapsed to 'Ordered' for both paths; ghost dedup by
-//       payment_id (Square fires payment.updated 5-7 times per payment).
+// #60:  status taxonomy collapsed to 'Ordered' for both paths; payment_id
+//       dedup on both ghost AND matched-row paths (Square fires
+//       payment.updated 5-7 times per payment — first fire wins on both paths).
 function handleSquarePaymentCompleted(data) {
   const ss = SpreadsheetApp.getActiveSpreadsheet();
   const sheet = ss.getSheetByName(ORDERS_SHEET);
@@ -317,6 +318,24 @@ function handleSquarePaymentCompleted(data) {
     // Status stays 'Ordered' (set by handleOrder pre-payment); daily
     // reconciliation distinguishes paid from abandoned later (#55).
 
+    // Read details once — used for both dedup check AND the payment-info append below.
+    const existingDetails = String(sheet.getRange(matchedRow, COL_DETAILS).getValue() || '');
+
+    // Dedup (#60): Square fires payment.updated 5-7 times per payment.
+    // First fire wins — if this payment_id is already in the matched row's
+    // details, skip the entire update (no re-append, no Master Customers dupe).
+    if (existingDetails.indexOf(String(data.payment_id)) !== -1) {
+      Logger.log('[square] Duplicate matched-row update suppressed — payment_id=' +
+                 data.payment_id + ' already at row ' + matchedRow);
+      return ContentService
+        .createTextOutput(JSON.stringify({
+          success: true,
+          skipped: 'duplicate_payment_id_matched',
+          existing_row: matchedRow
+        }))
+        .setMimeType(ContentService.MimeType.JSON);
+    }
+
     // Fill missing email (col A) and phone (col D) — only if currently blank.
     // Preserves the cart-collected email so Klaviyo identity stays stable.
     const existingEmail = String(sheet.getRange(matchedRow, COL_EMAIL).getValue() || '').trim();
@@ -338,7 +357,6 @@ function handleSquarePaymentCompleted(data) {
     }
 
     // Append Square payment info to details
-    const existingDetails = String(sheet.getRange(matchedRow, COL_DETAILS).getValue() || '');
     const paymentNote = '\n\n💰 Square Payment: ' + (data.payment_id || '') +
                         (data.receipt_url ? '\nReceipt: ' + data.receipt_url : '') +
                         '\nCompleted: ' + (data.completed_at || new Date().toISOString());
