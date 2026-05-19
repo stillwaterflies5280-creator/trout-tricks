@@ -206,7 +206,7 @@ function handleCrewSignup(body) {
   // Email signups from the homepage popup/footer. Klaviyo is the source of
   // truth for newsletter delivery; we mirror to Master Customers so the CRM
   // has every contact (#62).
-  writeToMasterCustomers(body, 'Crew');
+  writeToMasterCustomers(body, body.acquisition_source || 'Crew');
 
   return ContentService
     .createTextOutput(JSON.stringify({ success: true, type: 'crew_signup' }))
@@ -511,8 +511,8 @@ function writeToMasterCustomers(body, source) {
       notes = body.founding_interest === true ?
         'The Drop waitlist · founding interest' :
         'The Drop waitlist signup';
-    } else if (source === 'Crew') {
-      notes = 'Newsletter signup · ' + (body.acquisition_source || 'Website');
+    } else if (source === 'Website Popup' || source === 'Website Footer' || source === 'Crew') {
+      notes = 'Newsletter signup';
     }
 
     const timestamp = Utilities.formatDate(
