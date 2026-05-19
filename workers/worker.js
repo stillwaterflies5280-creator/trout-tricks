@@ -3,8 +3,10 @@
 // POST /webhook -> Square payment.updated webhook receiver -> forwards to Apps Script
 //
 // order_number (optional): cart-side TT-XXXXX identifier. Forwarded to Square
-// as order.reference_id so payment.updated webhooks return it and Apps Script
-// can match deterministically instead of falling back to payment_id (#58).
+// as order.reference_id at checkout creation. Square does NOT echo this on
+// payment.updated webhooks (payment.reference_id stays null), so the webhook
+// handler re-fetches the order and pulls order.reference_id from there. Apps
+// Script then matches the originating Sheets row deterministically (#58).
 //
 // This file is a LOCAL MIRROR of the deployed Cloudflare Worker (trouttricks-checkout).
 // Live source-of-truth still lives in Cloudflare's editor; this mirror tracks it for git history.
@@ -80,9 +82,9 @@ async function handleCheckout(request, env) {
   };
 
   // Attach cart-side order number as Square reference_id so the payment.updated
-  // webhook returns it and Apps Script can match the originating Sheets row
-  // deterministically (#58). Omit entirely when missing to keep backward compat
-  // with any non-cart callers of this endpoint.
+  // webhook handler can pull it off the order and match the originating Sheets
+  // row deterministically (#58). Omit entirely when missing to keep backward
+  // compat with any non-cart callers of this endpoint.
   if (orderNumber) orderObj.reference_id = orderNumber;
 
   if (promoCode && discountAmount > 0) {
@@ -185,6 +187,15 @@ async function handleSquareWebhook(request, env, ctx) {
       });
       if (orderResp.ok) {
         const orderData = await orderResp.json();
+
+        // Fallback: Square's Payment object and Order object have SEPARATE
+        // reference_id fields. We set it on the Order at checkout creation,
+        // but payment.reference_id arrives null on the webhook. Pull from the
+        // order here so matched-row update can fire (#58).
+        if (!normalized.reference_id && orderData.order && orderData.order.reference_id) {
+          normalized.reference_id = orderData.order.reference_id;
+        }
+
         const fulfillments = (orderData.order && orderData.order.fulfillments) || [];
         const shipment = fulfillments.find((f) => f.type === "SHIPMENT");
         const recipient = shipment && shipment.shipment_details && shipment.shipment_details.recipient;
