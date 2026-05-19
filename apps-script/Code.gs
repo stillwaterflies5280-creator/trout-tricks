@@ -43,6 +43,7 @@ function doPost(e) {
     if (body.submission_type === 'sticker_campaign') return handleStickerCampaign(body);
     if (body.submission_type === 'sticker_waitlist') return handleStickerWaitlist(body);
     if (body.submission_type === 'drop_waitlist')    return handleDropWaitlist(body);
+    if (body.submission_type === 'crew_signup')      return handleCrewSignup(body);
 
     // Default — order webhook from main site
     return handleOrder(body);
@@ -198,6 +199,17 @@ function handleDropWaitlist(body) {
 
   return ContentService
     .createTextOutput(JSON.stringify({ success: true, type: 'drop_waitlist' }))
+    .setMimeType(ContentService.MimeType.JSON);
+}
+
+function handleCrewSignup(body) {
+  // Email signups from the homepage popup/footer. Klaviyo is the source of
+  // truth for newsletter delivery; we mirror to Master Customers so the CRM
+  // has every contact (#62).
+  writeToMasterCustomers(body, 'Crew');
+
+  return ContentService
+    .createTextOutput(JSON.stringify({ success: true, type: 'crew_signup' }))
     .setMimeType(ContentService.MimeType.JSON);
 }
 
@@ -499,6 +511,8 @@ function writeToMasterCustomers(body, source) {
       notes = body.founding_interest === true ?
         'The Drop waitlist · founding interest' :
         'The Drop waitlist signup';
+    } else if (source === 'Crew') {
+      notes = 'Newsletter signup · ' + (body.acquisition_source || 'Website');
     }
 
     const timestamp = Utilities.formatDate(
