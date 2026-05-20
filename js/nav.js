@@ -14,7 +14,7 @@
         { label: 'Top Sellers',    href: '/#top-sellers' },
         { label: 'Chironomids',    href: '/flies/chironomids.html' },
         { label: 'Leeches',        href: '/flies/leeches.html' },
-        { label: 'Scuds',          href: '/flies/scuds.html' },
+        { label: 'Scuds',          href: '/flies/bling-scud.html' },
         { label: 'Stickers',       href: '/stickers.html' },
         { label: 'Free Sticker',   href: '/free-sticker.html' },
         { label: 'Gear We Trust',  href: '/affiliates.html' }
