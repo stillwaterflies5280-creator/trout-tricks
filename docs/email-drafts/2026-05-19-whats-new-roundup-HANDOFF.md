@@ -1,3 +1,7 @@
+---
+render_with_liquid: false
+---
+
 # Email Design Handoff — May 2026 What's New Round-up
 
 **For:** Klaviyo campaign builder (or freelance email designer)
