@@ -545,6 +545,15 @@ function writeToMasterCustomers(body, source) {
         'The Drop waitlist signup';
     } else if (source === 'Website Popup' || source === 'Website Footer' || source === 'Crew') {
       notes = 'Newsletter signup';
+    } else if (source === 'Pickup Order') {
+      // Pre-checkout pickup signup (cart panel, Guides Choice card path, or
+      // legacy form). Threaded from submitEmailSignup(email, source, extra) — #65.
+      const lastName = body.customer_last_name || '';
+      const phone    = body.customer_phone    || '';
+      const parts = ['Pickup pre-checkout'];
+      if (lastName) parts.push('LastName: ' + lastName);
+      if (phone)    parts.push('Phone: ' + phone);
+      notes = parts.join(' · ');
     }
 
     const timestamp = Utilities.formatDate(

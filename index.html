@@ -4769,7 +4769,9 @@ function checkoutWithSquare(btnOverride) {
     // payment.updated fires on Square → handleSquarePaymentCompleted, so unpaid
     // bail-outs don't pollute the to-tie queue. Klaviyo still captures the email
     // for marketing/recovery via Master Customers.
-    if (typeof submitEmailSignup === "function") submitEmailSignup(email, 'Pickup Order');
+    if (typeof submitEmailSignup === "function") {
+      submitEmailSignup(email, 'Pickup Order', { firstName: firstName, lastName: lastName, phone: phone });
+    }
   }
 
   fetch("https://trouttricks-checkout.stillwaterflies5280.workers.dev", {
@@ -4863,9 +4865,14 @@ function backToStep1() {
 // queue. Klaviyo still captures the email for marketing/recovery.
 function pickupCardCheckout(btn) {
   const f = id => document.getElementById(id).value.trim();
-  const email = f('pickupEmail');
+  const firstName = f('pickupFirstName');
+  const lastName  = f('pickupLastName');
+  const phone     = f('pickupPhone');
+  const email     = f('pickupEmail');
 
-  if (typeof submitEmailSignup === "function") submitEmailSignup(email, 'Pickup Order');
+  if (typeof submitEmailSignup === "function") {
+    submitEmailSignup(email, 'Pickup Order', { firstName: firstName, lastName: lastName, phone: phone });
+  }
 
   checkoutWithSquare(btn);
 }
@@ -4962,20 +4969,27 @@ function clearEmailError(el) {
 // Klaviyo is the source of truth; the previous Zapier webhook is no longer used.
 // Discount delivery (WELCOME10) is handled inside Klaviyo via flows — the popup
 // still reveals the code on screen for immediate use.
-function submitEmailSignup(email, source) {
+function submitEmailSignup(email, source, extra) {
   const customSource = source === 'popup_signup'  ? 'Website Popup'
                      : source === 'footer_signup' ? 'Website Footer'
                      : (source || 'Website');
+  extra = extra || {};
 
   // Mirror to Apps Script so Crew signups land in Master Customers.
   // Fire-and-forget; Klaviyo remains the source of truth for delivery (#62).
+  // Pickup callers thread name/phone via `extra` so the Master Customers row
+  // isn't blank in First Name + Notes columns (#65).
   fetch('https://script.google.com/macros/s/AKfycbwc5JR5yo76y8-H81D3Dh4e-pc6kqha8rLO2Yu90ZtFV_s-3Hm__YI52WoaW54zXOqBdw/exec', {
     method: 'POST',
     headers: { 'Content-Type': 'text/plain;charset=utf-8' },
     body: JSON.stringify({
       submission_type: 'crew_signup',
       customer_email: email,
-      acquisition_source: customSource
+      acquisition_source: customSource,
+      customer_first_name: extra.firstName || '',
+      customer_last_name:  extra.lastName  || '',
+      customer_phone:      extra.phone     || '',
+      notes:               extra.notes     || ''
     })
   }).catch(function(err) { console.error('[Crew signup Apps Script]', err); });
   const body = {
@@ -5175,7 +5189,11 @@ function placeOrder() {
     // Fire-and-forget Klaviyo signup for pickup customer (additive — the
     // existing Zapier order POST + EmailJS notifications below still run
     // regardless; submitEmailSignup catches its own fetch errors and logs).
-    submitEmailSignup(document.getElementById('pickupEmail').value.trim(), 'Pickup Order');
+    submitEmailSignup(document.getElementById('pickupEmail').value.trim(), 'Pickup Order', {
+      firstName: document.getElementById('pickupFirstName').value.trim(),
+      lastName:  document.getElementById('pickupLastName').value.trim(),
+      phone:     document.getElementById('pickupPhone').value.trim()
+    });
   }
 
   const btn = document.getElementById('placeOrderBtn');
