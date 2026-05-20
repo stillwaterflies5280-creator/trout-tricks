@@ -722,6 +722,133 @@ function backfillMasterCustomers() {
   return rowsToAdd.length;
 }
 
+// #70 — one-shot reconciliation: pull Klaviyo profiles for list SUpRkF (Crew +
+// Drop Waitlist — both lists merged into one Klaviyo list, distinguished by
+// custom_source on subscription), diff against Master Customers by email,
+// append the missing ones with Source = 'Klaviyo Backfill' and Klaviyo's
+// `created` as the timestamp. Idempotent — safe to re-run.
+//
+// Setup before first run:
+//   1. Klaviyo → Account → Settings → API Keys → Create Private API Key
+//      with read access to "Profiles" + "Lists". Copy the pk_… value.
+//   2. Apps Script → Project Settings (gear icon) → Script Properties →
+//      Add row: KLAVIYO_PRIVATE_API_KEY = <the pk_… value>.
+//   3. Save Code.gs, select this function from the dropdown, click Run,
+//      approve UrlFetch + Spreadsheet permissions on first run.
+//
+// Check Execution log for counts (fetched / added / skipped). After this
+// runs once, going-forward integrity is maintained by #62's crew_signup
+// wiring — Klaviyo and Master Customers stay in sync automatically.
+function backfillKlaviyoToMasterCustomers() {
+  const apiKey = PropertiesService.getScriptProperties().getProperty('KLAVIYO_PRIVATE_API_KEY');
+  if (!apiKey) {
+    throw new Error('KLAVIYO_PRIVATE_API_KEY not set in Script Properties. See function docstring for setup.');
+  }
+
+  const LIST_ID = 'SUpRkF';
+  const REVISION = '2024-10-15';
+
+  const ss = SpreadsheetApp.getActiveSpreadsheet();
+  let master = ss.getSheetByName(MASTER_CUSTOMERS_SHEET);
+  if (!master) {
+    master = ss.insertSheet(MASTER_CUSTOMERS_SHEET);
+    master.appendRow(['Timestamp', 'First Name', 'Email', 'Source', 'Notes', 'Acquisition Source']);
+    master.getRange(1, 1, 1, 6).setFontWeight('bold');
+    master.setFrozenRows(1);
+  }
+
+  // Build set of existing emails (col C, lowercased + trimmed for dedup)
+  const existingEmails = {};
+  const lastRow = master.getLastRow();
+  if (lastRow >= 2) {
+    const emails = master.getRange(2, 3, lastRow - 1, 1).getValues();
+    for (let i = 0; i < emails.length; i++) {
+      const e = String(emails[i][0] || '').trim().toLowerCase();
+      if (e) existingEmails[e] = true;
+    }
+  }
+  Logger.log('[klaviyo backfill] Master Customers has ' + Object.keys(existingEmails).length + ' unique emails');
+
+  // Paginate through Klaviyo list profiles
+  const profiles = [];
+  let nextUrl = 'https://a.klaviyo.com/api/lists/' + LIST_ID + '/profiles/?page%5Bsize%5D=100';
+  let pageNum = 0;
+  while (nextUrl) {
+    pageNum++;
+    const response = UrlFetchApp.fetch(nextUrl, {
+      method: 'get',
+      headers: {
+        'Authorization': 'Klaviyo-API-Key ' + apiKey,
+        'accept': 'application/json',
+        'revision': REVISION
+      },
+      muteHttpExceptions: true
+    });
+    const status = response.getResponseCode();
+    if (status !== 200) {
+      throw new Error('Klaviyo API error ' + status + ' on page ' + pageNum + ': ' +
+                      response.getContentText().substring(0, 500));
+    }
+    const data = JSON.parse(response.getContentText());
+    if (data.data && data.data.length) {
+      for (let i = 0; i < data.data.length; i++) profiles.push(data.data[i]);
+    }
+    nextUrl = (data.links && data.links.next) ? data.links.next : null;
+    if (pageNum > 100) {
+      Logger.log('[klaviyo backfill] safety stop at 100 pages');
+      break;
+    }
+  }
+  Logger.log('[klaviyo backfill] fetched ' + profiles.length + ' Klaviyo profiles across ' + pageNum + ' page(s)');
+
+  // Append missing profiles to Master Customers
+  const rowsToAdd = [];
+  let skippedAlreadyPresent = 0, skippedNoEmail = 0;
+  for (let i = 0; i < profiles.length; i++) {
+    const attrs = profiles[i].attributes || {};
+    const rawEmail = String(attrs.email || '').trim();
+    if (!rawEmail) { skippedNoEmail++; continue; }
+    const emailKey = rawEmail.toLowerCase();
+    if (existingEmails[emailKey]) { skippedAlreadyPresent++; continue; }
+
+    let timestamp = '';
+    if (attrs.created) {
+      try {
+        timestamp = Utilities.formatDate(new Date(attrs.created), 'America/Denver', 'yyyy-MM-dd HH:mm:ss');
+      } catch (e) {
+        timestamp = String(attrs.created);
+      }
+    } else {
+      timestamp = Utilities.formatDate(new Date(), 'America/Denver', 'yyyy-MM-dd HH:mm:ss');
+    }
+
+    rowsToAdd.push([
+      timestamp,
+      attrs.first_name || '',
+      rawEmail,
+      'Klaviyo Backfill',
+      'Klaviyo profile backfill' + (attrs.created ? ' (created: ' + attrs.created + ')' : ''),
+      ''
+    ]);
+    existingEmails[emailKey] = true;
+  }
+
+  Logger.log('[klaviyo backfill] skipped (already in MC): ' + skippedAlreadyPresent);
+  Logger.log('[klaviyo backfill] skipped (no email on profile): ' + skippedNoEmail);
+  Logger.log('[klaviyo backfill] new rows to add: ' + rowsToAdd.length);
+
+  if (rowsToAdd.length > 0) {
+    master.getRange(master.getLastRow() + 1, 1, rowsToAdd.length, 6).setValues(rowsToAdd);
+  }
+
+  return {
+    fetched: profiles.length,
+    added: rowsToAdd.length,
+    skipped_already_present: skippedAlreadyPresent,
+    skipped_no_email: skippedNoEmail
+  };
+}
+
 function doGet(e) {
   const action = e && e.parameter && e.parameter.action;
 
