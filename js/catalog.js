@@ -341,3 +341,49 @@ function slugifyFlyName(name) {
     .replace(/[^a-z0-9]+/g, '-')
     .replace(/^-+|-+$/g, '');
 }
+
+// Inject a volume-promo banner above the "Add to Cart" button on per-fly
+// pages. No-op on pages without a .quick-add block (index, blog, etc.).
+// Tier rules live in /js/promo-tiers.js; this banner is informational and
+// updates passively when the user changes quantity.
+(function injectFlyPagePromoBanner() {
+  function render() {
+    const quickAdd = document.querySelector('.quick-add');
+    if (!quickAdd) return;
+    if (document.getElementById('qaPromoBanner')) return;
+
+    const addBtn = quickAdd.querySelector('.qa-add');
+    if (!addBtn) return;
+
+    const styleId = 'tt-qa-promo-banner-styles';
+    if (!document.getElementById(styleId)) {
+      const style = document.createElement('style');
+      style.id = styleId;
+      style.textContent =
+        '.qa-promo-banner{display:block;margin:14px 0;padding:12px 14px;border-radius:6px;' +
+        'background:linear-gradient(135deg,rgba(46,204,113,.16),rgba(46,204,113,.06));' +
+        'border:1px solid rgba(46,204,113,.45);color:#2ecc71;' +
+        'font-family:"Barlow Condensed",sans-serif;font-size:.92rem;letter-spacing:.05em;' +
+        'text-transform:uppercase;text-align:center;line-height:1.5;}' +
+        '.qa-promo-banner strong{color:#2ecc71;font-weight:700;}' +
+        '.qa-promo-banner .qa-promo-divider{opacity:.5;margin:0 6px;}';
+      document.head.appendChild(style);
+    }
+
+    const banner = document.createElement('div');
+    banner.id = 'qaPromoBanner';
+    banner.className = 'qa-promo-banner';
+    banner.innerHTML =
+      '🎣 Buy 3 packs · <strong>FREE sticker</strong>' +
+      '<span class="qa-promo-divider">·</span>' +
+      'Buy 5 packs · <strong>1 FREE pack</strong>';
+
+    addBtn.parentNode.insertBefore(banner, addBtn);
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', render);
+  } else {
+    render();
+  }
+})();
