@@ -127,7 +127,7 @@ Single CTA per section. No hero offer — this is a round-up, not a sales push.
 - Centered, small text, light gray (`#999`)
 - Social row (gold `#d4af37` links): `Instagram · TikTok · trouttricks.com`
 - Address line: `Trout Tricks · Fairmount, Colorado · thomas@trouttricks.com`
-- Unsubscribe: `You're getting this because you joined the Trout Tricks Crew. [Unsubscribe]` (use Klaviyo's `{% unsubscribe %}` tag for the link)
+- Unsubscribe: `You're getting this because you joined the Trout Tricks Crew. [Unsubscribe]` (use Klaviyo's `{% raw %}{% unsubscribe %}{% endraw %}` tag for the link)
 
 ---
 
@@ -205,7 +205,7 @@ All links append: `?utm_source=klaviyo&utm_medium=email&utm_campaign=may-2026-ro
 - **Builder:** Klaviyo's drag-and-drop email editor. Use **Image + Text blocks** for the product/sticker cards (cleaner than raw HTML for mobile responsiveness).
 - **HTML reference file:** `2026-05-19-whats-new-roundup.html` in the same folder shows working table-based layout if you need a fallback or want to paste-in via "Source Code" block.
 - **Image hosting:** All images already live on the site CDN; no asset uploads needed.
-- **Unsubscribe link:** Must use Klaviyo's `{% unsubscribe %}` tag — don't hardcode a URL.
+- **Unsubscribe link:** Must use Klaviyo's `{% raw %}{% unsubscribe %}{% endraw %}` tag — don't hardcode a URL.
 - **Mobile:** All cards should stack to single-column under 480px viewport. The drag-and-drop builder handles this automatically; if pasting raw HTML, the included tables degrade reasonably but aren't perfect.
 - **Dark mode:** Some clients (Gmail, Apple Mail) auto-invert. Test in preview. White card on warm background should hold up.
 
