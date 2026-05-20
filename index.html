@@ -941,13 +941,27 @@
     letter-spacing: 0.12em;
   }
   .featured-card .feat-cta {
-    margin-top: 6px;
+    margin-top: 8px;
     font-family: 'Bebas Neue', sans-serif;
-    font-size: 0.82rem;
+    font-size: 0.74rem;
     letter-spacing: 0.14em;
-    color: var(--red);
+    color: var(--gray);
     text-transform: uppercase;
+    text-align: center;
   }
+  .featured-card .feat-add-btn {
+    width: 100%; margin-top: 10px; padding: 10px 12px;
+    background: var(--red); color: #fff;
+    border: 1px solid #ff6b5b; border-radius: 4px;
+    font-family: 'Barlow Condensed', Impact, sans-serif;
+    font-size: 0.88rem; font-weight: 700;
+    letter-spacing: 0.1em; text-transform: uppercase;
+    cursor: pointer; transition: background 0.2s;
+    box-shadow: 0 3px 10px rgba(192,57,43,0.35);
+    -webkit-tap-highlight-color: transparent;
+  }
+  .featured-card .feat-add-btn:hover { background: var(--red-bright); }
+  .featured-card .feat-add-btn:active { transform: scale(0.97); }
 
   /* CATALOG */
   .catalog {
@@ -4033,9 +4047,10 @@ function buildCatalog() {
   }
 }
 
-// Featured Patterns strip — 4 hand-picked links shown in the default browse view.
-// Pure-link cards (no inline add-to-cart) so they don't collide with the full
-// catalog cards above (which use `id="fly-${slug}"`). Click → product page.
+// Featured Patterns strip — 4 hand-picked picks shown in the default browse view.
+// Add-to-cart button calls addToCart(id) which reads default size/color from
+// the hidden full-catalog DOM (rendered by buildCatalog at startup). Card body
+// remains a link to the per-fly page.
 function renderFeaturedFlies() {
   const grid = document.getElementById('featuredFlies');
   if (!grid) return;
@@ -4054,6 +4069,7 @@ function renderFeaturedFlies() {
         '<div class="feat-body">' +
           '<div class="feat-name">' + fly.name + '</div>' +
           '<div class="feat-price">$' + fly.price + ' ' + perLabel + '</div>' +
+          '<button type="button" class="feat-add-btn" onclick="event.preventDefault();event.stopPropagation();addToCart(' + fly.id + ')">+ Add to Cart</button>' +
           '<div class="feat-cta">View Pattern →</div>' +
         '</div>' +
       '</a>';
