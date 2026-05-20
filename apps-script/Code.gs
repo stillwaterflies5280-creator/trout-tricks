@@ -73,18 +73,50 @@ function handleContactForm(body) {
     new Date(), 'America/Denver', 'yyyy-MM-dd HH:mm:ss'
   );
 
+  const firstName = body.customer_first_name || body.first_name || '';
+  const lastName  = body.customer_last_name || body.last_name || '';
+  const email     = body.customer_email || body.email || '';
+  const phone     = body.customer_phone || body.phone || '';
+  const reason    = body.contact_reason || body.reason || '';
+  const message   = body.contact_message || body.message || '';
+  const optInRaw  = (body.newsletter_optin === 'Yes' || body.newsletter_opt_in === true) ? 'YES' : 'no';
+
   sheet.appendRow([
-    timestamp,
-    body.customer_first_name || body.first_name || '',
-    body.customer_last_name || body.last_name || '',
-    body.customer_email || body.email || '',
-    body.customer_phone || body.phone || '',
-    body.contact_reason || body.reason || '',
-    body.contact_message || body.message || '',
-    (body.newsletter_optin === 'Yes' || body.newsletter_opt_in === true) ? 'YES' : 'no'
+    timestamp, firstName, lastName, email, phone, reason, message, optInRaw
   ]);
 
   writeToMasterCustomers(body, 'Contact');
+
+  // Email Thomas every contact form submission. EmailJS leg from the client
+  // (template_7wna2ba) was silently failing — MailApp is the reliable path
+  // since it runs on Google infra and we own the recipient address in code.
+  try {
+    MailApp.sendEmail({
+      to: 'thomas@trouttricks.com',
+      replyTo: email || undefined,
+      subject: '📬 Trout Tricks contact: ' + (reason || 'no reason') + ' — ' + (firstName || 'unknown'),
+      body: [
+        'New contact form submission · ' + timestamp + ' MT',
+        '',
+        'Name:    ' + (firstName + ' ' + lastName).trim(),
+        'Email:   ' + email,
+        'Phone:   ' + phone,
+        'Reason:  ' + reason,
+        'Newsletter opt-in: ' + optInRaw,
+        '',
+        'Message:',
+        '--------',
+        message,
+        '',
+        '— sent by handleContactForm (Apps Script)'
+      ].join('\n')
+    });
+  } catch (mailErr) {
+    // Don't fail the whole submission if email send hiccups (over quota,
+    // service hiccup, etc) — sheet row + Master Customers write already
+    // succeeded, so the data is captured even if the ping doesn't go out.
+    logWebhook({}, { error: String(mailErr), context: 'contact_form_mail' }, 'mail_error');
+  }
 
   return ContentService
     .createTextOutput(JSON.stringify({ success: true, type: 'contact_form' }))
