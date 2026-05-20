@@ -120,18 +120,19 @@
   function injectUpsellStyles() {
     if (document.getElementById('tt-upsell-styles')) return;
     const css =
-      '.tt-upsell{position:relative;margin:0 0 14px;padding:14px 12px;background:#0a0a0a;border:1px solid #2a2a2a;border-top:3px solid #c0392b;border-radius:0;}' +
-      '.tt-upsell-close{position:absolute;top:6px;right:6px;width:26px;height:26px;background:transparent;border:none;color:#888;font-size:18px;line-height:1;cursor:pointer;padding:0;border-radius:50%;transition:color 0.15s,background 0.15s;-webkit-tap-highlight-color:transparent;}' +
-      '.tt-upsell-close:hover{color:#fff;background:rgba(255,255,255,0.08);}' +
-      '.tt-upsell-eyebrow{color:#d4a017;font-size:10px;letter-spacing:0.22em;text-transform:uppercase;font-weight:700;text-align:center;font-family:"Barlow Condensed",Impact,sans-serif;padding:0 24px;}' +
-      '.tt-upsell-title{color:#ffffff;font-family:"Bebas Neue",Impact,Arial,sans-serif;font-size:18px;letter-spacing:0.04em;text-align:center;margin-top:4px;text-transform:uppercase;}' +
+      '.tt-upsell{position:relative;margin:0 0 10px;padding:10px 10px 12px;background:#0a0a0a;border:1px solid #2a2a2a;border-top:3px solid #c0392b;border-radius:0;}' +
+      '.tt-upsell-close{position:absolute;top:-10px;right:-10px;width:30px;height:30px;background:#c0392b;border:2px solid #ffffff;color:#ffffff;font-size:16px;font-weight:700;line-height:26px;cursor:pointer;padding:0;border-radius:50%;box-shadow:0 2px 8px rgba(0,0,0,0.45);transition:background 0.15s,transform 0.1s;-webkit-tap-highlight-color:transparent;z-index:5;text-align:center;}' +
+      '.tt-upsell-close:hover{background:#e74c3c;}' +
+      '.tt-upsell-close:active{transform:scale(0.9);}' +
+      '.tt-upsell-eyebrow{color:#d4a017;font-size:10px;letter-spacing:0.2em;text-transform:uppercase;font-weight:700;text-align:center;font-family:"Barlow Condensed",Impact,sans-serif;padding:0 24px;}' +
+      '.tt-upsell-title{color:#ffffff;font-family:"Bebas Neue",Impact,Arial,sans-serif;font-size:16px;letter-spacing:0.04em;text-align:center;margin-top:2px;text-transform:uppercase;}' +
       '.tt-upsell-title em{color:#c0392b;font-style:normal;font-weight:700;}' +
-      '.tt-upsell-sub{color:#aaa;font-size:11px;text-align:center;margin-top:4px;letter-spacing:0.02em;}' +
-      '.tt-upsell-grid{display:flex;justify-content:space-between;gap:6px;margin-top:12px;}' +
+      '.tt-upsell-sub{color:#aaa;font-size:10px;text-align:center;margin-top:2px;letter-spacing:0.02em;}' +
+      '.tt-upsell-grid{display:flex;justify-content:space-between;gap:6px;margin-top:8px;}' +
       '.tt-upsell-card{flex:1;background:#181818;border:1px solid #2a2a2a;border-radius:4px;padding:8px 4px 10px;cursor:pointer;transition:border-color 0.15s,background 0.15s;text-align:center;font-family:"Barlow Condensed",sans-serif;color:#fff;-webkit-tap-highlight-color:transparent;}' +
       '.tt-upsell-card:hover{border-color:#c0392b;background:#1f1f1f;}' +
       '.tt-upsell-card:active{transform:scale(0.97);}' +
-      '.tt-upsell-img{width:100%;max-width:64px;height:auto;display:block;margin:0 auto 6px;background:#fff;border-radius:2px;padding:4px;box-sizing:border-box;}' +
+      '.tt-upsell-img{width:100%;max-width:52px;height:auto;display:block;margin:0 auto 4px;background:#fff;border-radius:2px;padding:3px;box-sizing:border-box;}' +
       '.tt-upsell-name{font-size:11px;color:#fff;line-height:1.2;min-height:26px;display:flex;align-items:center;justify-content:center;text-align:center;letter-spacing:0.02em;}' +
       '.tt-upsell-add{display:inline-block;margin-top:6px;padding:4px 8px;background:#c0392b;color:#fff;font-size:11px;font-weight:700;letter-spacing:0.06em;text-transform:uppercase;border-radius:2px;}' +
       '.tt-upsell:empty{display:none;}';
@@ -201,7 +202,7 @@
         '</div>';
     }
     el.innerHTML =
-      '<button type="button" class="tt-upsell-close" onclick="dismissUpsell()" aria-label="Dismiss offer">✕</button>' +
+      '<button type="button" class="tt-upsell-close" onclick="event.stopPropagation();dismissUpsell();" aria-label="Dismiss offer">×</button>' +
       '<div class="tt-upsell-eyebrow">🎁 You already got 1 FREE sticker</div>' +
       '<div class="tt-upsell-title">Add a second for <em>$3</em></div>' +
       '<div class="tt-upsell-sub">Regularly $5 — save $2 instantly</div>' +
