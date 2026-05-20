@@ -186,8 +186,8 @@
         '</div>';
     }
     el.innerHTML =
-      '<div class="tt-upsell-eyebrow">🎁 Last-chance sticker</div>' +
-      '<div class="tt-upsell-title">Add a sticker for <em>$3</em></div>' +
+      '<div class="tt-upsell-eyebrow">🎁 You already got 1 FREE sticker</div>' +
+      '<div class="tt-upsell-title">Add a second for <em>$3</em></div>' +
       '<div class="tt-upsell-sub">Regularly $5 — save $2 instantly</div>' +
       '<div class="tt-upsell-grid">' + cards + '</div>';
     el.style.display = 'block';

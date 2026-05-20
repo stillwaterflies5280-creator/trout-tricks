@@ -109,7 +109,13 @@ main { max-width: 1200px; margin: 0 auto; padding: 12px 24px 48px; }
 .cat-card .price { font-family: 'Bebas Neue', sans-serif; font-size: 1.05rem; color: var(--gold); margin-bottom: 10px; }
 .cat-card .price .per { font-size: 0.66rem; color: var(--gray); letter-spacing: 0.14em; }
 .cat-card .desc { font-size: 0.88rem; color: #b8b8b8; line-height: 1.55; flex: 1; }
-.cat-card .footer-cta { margin-top: 14px; padding-top: 12px; border-top: 1px solid var(--border); font-family: 'Bebas Neue', sans-serif; font-size: 0.85rem; letter-spacing: 0.14em; color: var(--red); text-transform: uppercase; }
+.cat-card .footer-cta { margin-top: 10px; font-family: 'Bebas Neue', sans-serif; font-size: 0.78rem; letter-spacing: 0.14em; color: var(--gray); text-transform: uppercase; text-align: center; }
+.cat-card .cat-add-btn { width: 100%; margin-top: 14px; padding: 11px 14px; background: var(--red); color: #fff; border: 1px solid #ff6b5b; border-radius: 4px; font-family: 'Barlow Condensed', Impact, sans-serif; font-size: 0.92rem; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; cursor: pointer; transition: background 0.2s; box-shadow: 0 3px 10px rgba(192,57,43,0.35); -webkit-tap-highlight-color: transparent; }
+.cat-card .cat-add-btn:hover { background: var(--red-bright); }
+.cat-card .cat-add-btn:active { transform: scale(0.97); }
+.cat-toast { position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%) translateY(80px); background: #0a0a0a; color: #fff; padding: 13px 22px; border-radius: 4px; border: 1px solid var(--red); font-family: 'Barlow Condensed', sans-serif; font-size: 0.9rem; letter-spacing: 0.06em; text-transform: uppercase; z-index: 9999; transition: transform 0.3s ease; box-shadow: 0 8px 24px rgba(0,0,0,0.5); text-decoration: none; cursor: pointer; }
+.cat-toast.show { transform: translateX(-50%) translateY(0); }
+.cat-toast .toast-cta { color: var(--gold); margin-left: 10px; font-weight: 700; }
 
 .cat-prose { max-width: 760px; margin: 36px auto; font-size: 0.95rem; color: #c8c8c8; line-height: 1.7; }
 .cat-prose h2 { font-family: 'Bebas Neue', sans-serif; font-size: 1.4rem; letter-spacing: 0.08em; margin: 24px 0 12px; border-bottom: 1px solid var(--red); padding-bottom: 6px; text-transform: uppercase; color: var(--white); }
@@ -215,6 +221,7 @@ function renderGrid() {
           '<div class="name">' + fly.name + '</div>' +
           '<div class="price">$' + fly.price + ' ' + perLabel + '</div>' +
           '<div class="desc">' + fly.desc + '</div>' +
+          '<button type="button" class="cat-add-btn" onclick="event.preventDefault();event.stopPropagation();addCatCardToCart(' + fly.id + ')">+ Add to Cart</button>' +
           '<div class="footer-cta">View Pattern →</div>' +
         '</div>' +
       '</a>';
@@ -227,6 +234,40 @@ function updateCartCount() {
   const count = cart.reduce((s, i) => s + (parseInt(i.qty, 10) || 1), 0);
   const el = document.getElementById('cart-pill-count');
   if (el) el.textContent = count;
+}
+
+function addCatCardToCart(flyId) {
+  const fly = flies.find(f => f.id === flyId);
+  if (!fly) return;
+  const size = (fly.sizes && fly.sizes.length) ? fly.sizes[0] : null;
+  const color = (fly.colors && fly.colors.length) ? fly.colors[0] : null;
+  let stored = [];
+  try {
+    stored = JSON.parse(localStorage.getItem('tt_cart') || '[]');
+    if (!Array.isArray(stored)) stored = [];
+  } catch(e) { stored = []; }
+  stored.push({ flyId: flyId, size: size, color: color, qty: 1, pickup: false, uid: Date.now() + Math.random() });
+  try { localStorage.setItem('tt_cart', JSON.stringify(stored)); } catch(e) { return; }
+  updateCartCount();
+  showCatToast(fly.name);
+  if (typeof gtag === 'function') {
+    gtag('event', 'add_to_cart', { currency: 'USD', value: fly.price, item_name: fly.name, quantity: 1 });
+  }
+}
+
+function showCatToast(flyName) {
+  let toast = document.getElementById('catToast');
+  if (!toast) {
+    toast = document.createElement('a');
+    toast.id = 'catToast';
+    toast.className = 'cat-toast';
+    toast.href = '/#cart';
+    document.body.appendChild(toast);
+  }
+  toast.innerHTML = '✓ ' + flyName + ' added <span class="toast-cta">View cart →</span>';
+  toast.classList.add('show');
+  clearTimeout(toast._timer);
+  toast._timer = setTimeout(() => toast.classList.remove('show'), 3000);
 }
 
 document.addEventListener('DOMContentLoaded', () => {
