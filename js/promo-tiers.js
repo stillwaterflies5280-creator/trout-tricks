@@ -120,8 +120,10 @@
   function injectUpsellStyles() {
     if (document.getElementById('tt-upsell-styles')) return;
     const css =
-      '.tt-upsell{margin:0 0 14px;padding:14px 12px;background:#0a0a0a;border:1px solid #2a2a2a;border-top:3px solid #c0392b;border-radius:0;}' +
-      '.tt-upsell-eyebrow{color:#d4a017;font-size:10px;letter-spacing:0.22em;text-transform:uppercase;font-weight:700;text-align:center;font-family:"Barlow Condensed",Impact,sans-serif;}' +
+      '.tt-upsell{position:relative;margin:0 0 14px;padding:14px 12px;background:#0a0a0a;border:1px solid #2a2a2a;border-top:3px solid #c0392b;border-radius:0;}' +
+      '.tt-upsell-close{position:absolute;top:6px;right:6px;width:26px;height:26px;background:transparent;border:none;color:#888;font-size:18px;line-height:1;cursor:pointer;padding:0;border-radius:50%;transition:color 0.15s,background 0.15s;-webkit-tap-highlight-color:transparent;}' +
+      '.tt-upsell-close:hover{color:#fff;background:rgba(255,255,255,0.08);}' +
+      '.tt-upsell-eyebrow{color:#d4a017;font-size:10px;letter-spacing:0.22em;text-transform:uppercase;font-weight:700;text-align:center;font-family:"Barlow Condensed",Impact,sans-serif;padding:0 24px;}' +
       '.tt-upsell-title{color:#ffffff;font-family:"Bebas Neue",Impact,Arial,sans-serif;font-size:18px;letter-spacing:0.04em;text-align:center;margin-top:4px;text-transform:uppercase;}' +
       '.tt-upsell-title em{color:#c0392b;font-style:normal;font-weight:700;}' +
       '.tt-upsell-sub{color:#aaa;font-size:11px;text-align:center;margin-top:4px;letter-spacing:0.02em;}' +
@@ -160,11 +162,24 @@
     return out;
   }
 
+  function isUpsellDismissed() {
+    try { return sessionStorage.getItem('tt_upsell_dismissed') === '1'; }
+    catch (e) { return false; }
+  }
+
+  function dismissUpsell() {
+    try { sessionStorage.setItem('tt_upsell_dismissed', '1'); } catch (e) {}
+    const el = document.getElementById('ttUpsellSection');
+    if (el) { el.style.display = 'none'; el.innerHTML = ''; }
+  }
+
+  global.dismissUpsell = dismissUpsell;
+
   function renderUpsell() {
     const el = document.getElementById('ttUpsellSection');
     if (!el) return;
     const cart = readCart();
-    if (!shouldShowUpsell(cart)) {
+    if (!shouldShowUpsell(cart) || isUpsellDismissed()) {
       el.style.display = 'none';
       el.innerHTML = '';
       return;
@@ -186,6 +201,7 @@
         '</div>';
     }
     el.innerHTML =
+      '<button type="button" class="tt-upsell-close" onclick="dismissUpsell()" aria-label="Dismiss offer">✕</button>' +
       '<div class="tt-upsell-eyebrow">🎁 You already got 1 FREE sticker</div>' +
       '<div class="tt-upsell-title">Add a second for <em>$3</em></div>' +
       '<div class="tt-upsell-sub">Regularly $5 — save $2 instantly</div>' +
