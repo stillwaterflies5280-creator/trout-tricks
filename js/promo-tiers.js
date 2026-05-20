@@ -4,8 +4,9 @@
 // pages other than index.html.
 //
 // Tiers (stack with manual promo codes like WELCOME10):
-//   - Buy 3+ fly packs  → free "Surprise Sticker" added at $0
-//   - Buy 5+ fly packs  → 1 free pack every 6 in cart (cheapest pack price)
+//   - Any fly pack(s) in cart → free "Surprise Sticker" added at $0
+//   - 5+ fly packs in cart    → 1 free pack every 5 (cheapest pack price)
+//     ("Buy 5 Get 1 Free" — 5 in cart unlocks the discount)
 //
 // Two integration modes:
 //   1. INLINE mode (index.html): page's own updateCartUI calls getPromoTiers
@@ -26,8 +27,7 @@
       freePackDiscount: 0,
       freeStickerLine: null,
       stickerThresholdMet: false,
-      packsToFreeSticker: 3,
-      packsToNextFreePack: 6
+      packsToNextFreePack: 5
     };
     if (!Array.isArray(cart) || cart.length === 0) return empty;
 
@@ -37,23 +37,23 @@
     const packCount = packs.reduce(function (s, i) { return s + (i.qty || 0); }, 0);
     if (packCount === 0) return empty;
 
-    const freePackQty = Math.floor(packCount / 6);
+    const freePackQty = Math.floor(packCount / 5);
     const cheapestPackPrice = packs.reduce(function (min, i) {
       const p = Number(i.fly.price) || 0;
       return p > 0 && (min === null || p < min) ? p : min;
     }, null) || 0;
     const freePackDiscount = freePackQty * cheapestPackPrice;
 
-    const stickerThresholdMet = packCount >= 3;
+    // Free sticker drops on ANY cart with at least one fly pack.
+    const stickerThresholdMet = packCount >= 1;
     const freeStickerLine = stickerThresholdMet ? {
-      name: 'Surprise Sticker (free with 3+ packs)',
+      name: 'Surprise Sticker (free with any fly pack)',
       price: 0,
       qty: 1,
       isPromoSticker: true
     } : null;
 
-    const packsToFreeSticker = stickerThresholdMet ? 0 : (3 - packCount);
-    const nextFreePackAt = (freePackQty + 1) * 6;
+    const nextFreePackAt = (freePackQty + 1) * 5;
     const packsToNextFreePack = nextFreePackAt - packCount;
 
     return {
@@ -62,25 +62,34 @@
       freePackDiscount: freePackDiscount,
       freeStickerLine: freeStickerLine,
       stickerThresholdMet: stickerThresholdMet,
-      packsToFreeSticker: packsToFreeSticker,
       packsToNextFreePack: packsToNextFreePack
     };
   }
 
   function getPromoNudge(tiers) {
     if (!tiers || tiers.packCount === 0) return '';
-    if (!tiers.stickerThresholdMet) {
-      const n = tiers.packsToFreeSticker;
-      return 'Add ' + n + ' more pack' + (n === 1 ? '' : 's') + ' for a FREE sticker!';
+
+    // Already have one or more free packs + close to next one
+    if (tiers.freePackQty > 0 && tiers.packsToNextFreePack > 0 && tiers.packsToNextFreePack <= 3) {
+      const n = tiers.packsToNextFreePack;
+      const have = tiers.freePackQty;
+      return have + ' FREE pack' + (have > 1 ? 's' : '') + ' unlocked! Add ' + n + ' more for another.';
     }
+
+    // First free pack already unlocked, not close to next
+    if (tiers.freePackQty > 0) {
+      return '🎁 FREE pack unlocked!' + (tiers.freePackQty > 1 ? ' (x' + tiers.freePackQty + ')' : '');
+    }
+
+    // Close to unlocking the first free pack — 1, 2, or 3 packs away
     if (tiers.packsToNextFreePack > 0 && tiers.packsToNextFreePack <= 3) {
       const n = tiers.packsToNextFreePack;
-      return 'Add ' + n + ' more pack' + (n === 1 ? '' : 's') + ' for a FREE pack!';
+      if (n === 1) return '🎯 Add 1 more pack — your cheapest pack is FREE!';
+      return 'Add ' + n + ' more packs to unlock a FREE pack (cheapest in cart)';
     }
-    if (tiers.freePackQty > 0) {
-      return 'FREE pack unlocked!' + (tiers.freePackQty > 1 ? ' (x' + tiers.freePackQty + ')' : '');
-    }
-    return '';
+
+    // Has packs but far from free-pack threshold (1-2 packs)
+    return '🎁 FREE Surprise Sticker added to your order';
   }
 
   global.getPromoTiers = getPromoTiers;

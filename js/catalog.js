@@ -374,7 +374,7 @@ function slugifyFlyName(name) {
     banner.id = 'qaPromoBanner';
     banner.className = 'qa-promo-banner';
     banner.innerHTML =
-      '🎣 Buy 3 packs · <strong>FREE sticker</strong>' +
+      '🎁 <strong>FREE Surprise Sticker</strong> with any fly pack' +
       '<span class="qa-promo-divider">·</span>' +
       'Buy 5 packs · <strong>1 FREE pack</strong>';
 
