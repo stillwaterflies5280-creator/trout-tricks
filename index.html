@@ -3913,7 +3913,7 @@ function buildCatalog() {
   const chironomids = flies.filter(f => chironomidIds.has(f.id));
   const leeches = flies.filter(f => leechIds.has(f.id));
   const scuds = flies.filter(f => scudIds.has(f.id));
-  const stickers = flies.filter(f => f.category === "sticker");
+  const stickers = flies.filter(f => f.category === "sticker" && !f.hiddenFromCatalog);
 
   function renderFlyCard(fly, target) {
     quantities[fly.id] = 1;

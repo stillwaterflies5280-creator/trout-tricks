@@ -293,6 +293,41 @@ const flies = [
     category: "sticker",
     bundle: true,
     bundle_includes: [13, 14, 15, 16, 17, 18]
+  },
+  // === Cart-upsell variants (hidden from main catalog) ===
+  // Same artwork as the regular Brown Town / Butter Brown / Drop It Like It's Hot
+  // stickers (ids 21/22/23) but priced at $3 for the in-cart "Add a sticker for $3"
+  // impulse upsell. Cart panel renders an "Add for $3" button per variant via
+  // /js/promo-tiers.js. hiddenFromCatalog flag keeps them out of /stickers grids.
+  {
+    id: 121, img: "brown1",
+    name: "Brown Town Sticker",
+    desc: "Cart-upsell special — $3 (regularly $5).",
+    sizes: null, colors: null,
+    price: 3, pack: null, badge: null,
+    category: "sticker",
+    hiddenFromCatalog: true,
+    upsellOf: 21
+  },
+  {
+    id: 122, img: "brown2",
+    name: "Butter Brown Sticker",
+    desc: "Cart-upsell special — $3 (regularly $5).",
+    sizes: null, colors: null,
+    price: 3, pack: null, badge: null,
+    category: "sticker",
+    hiddenFromCatalog: true,
+    upsellOf: 22
+  },
+  {
+    id: 123, img: "brown3",
+    name: "Drop It Like It's Hot Sticker",
+    desc: "Cart-upsell special — $3 (regularly $5).",
+    sizes: null, colors: null,
+    price: 3, pack: null, badge: null,
+    category: "sticker",
+    hiddenFromCatalog: true,
+    upsellOf: 23
   }
 ];
 
