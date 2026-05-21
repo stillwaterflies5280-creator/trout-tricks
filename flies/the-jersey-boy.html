@@ -589,6 +589,7 @@ footer a { color: var(--red); text-decoration: none; }
 <script src="/js/catalog.js"></script>
 <script src="/js/share-fly.js"></script>
 <script src="/js/nav.js" defer></script>
+<script src="/js/klaviyo-cart.js"></script>
 <script>
 // Quick-Add: writes to the same `tt_cart` localStorage shape the homepage cart
 // reads, so adds made here show up in the homepage cart panel + checkout flow.
@@ -607,6 +608,7 @@ function quickAdd(flyId) {
               pickup: false, uid: Date.now() + Math.random() });
   localStorage.setItem('tt_cart', JSON.stringify(cart));
   updateCartCount();
+  if (window.ttTrackKlaviyoCart) ttTrackKlaviyoCart('Added to Cart');
   const label = (fly.category === 'sticker' || fly.bundle) ? '' : ' pack' + (qty > 1 ? 's' : '');
   showToast(qty + label + ' of ' + fly.name + ' added!');
   if (typeof gtag === 'function') {

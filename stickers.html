@@ -2032,6 +2032,7 @@
 <script src="/js/share-fly.js"></script>
 <script src="/js/nav.js" defer></script>
 <script src="/js/promo-tiers.js"></script>
+<script src="/js/klaviyo-cart.js"></script>
 </head>
 
 <body>
@@ -2722,6 +2723,7 @@ function addToCart(id) {
   cart.push({ fly, size, color, qty, pickup: false, uid: Date.now() + Math.random() });
   updateCartUI();
   if (typeof gtag === 'function') gtag('event', 'add_to_cart', { currency: 'USD', value: fly.price * qty, item_name: fly.name, quantity: qty });
+  if (window.ttTrackKlaviyoCart) ttTrackKlaviyoCart('Added to Cart');
   const isSticker = fly.category === 'sticker';
   const unit = isSticker ? (qty>1 ? "stickers" : "sticker") : `pack${qty>1?"s":""}`;
   showToast(isSticker ? `${qty} ${unit} added!` : `${qty} ${unit} of ${fly.name} added!`);
@@ -2859,6 +2861,7 @@ function updateCartUI() {
 function openCart() {
   document.getElementById("overlay").classList.add("open");
   document.getElementById("cartPanel").classList.add("open");
+  if (cart.length >= 1 && window.ttTrackKlaviyoCart) ttTrackKlaviyoCart('Started Checkout');
 }
 function closeCart() {
   document.getElementById("overlay").classList.remove("open");

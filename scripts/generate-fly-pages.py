@@ -23,6 +23,11 @@ SITE = 'https://www.trouttricks.com'
 # Read flies[] and FLY_IMAGES via Node — vastly more reliable than parsing JS in Python
 node_snippet = f'''
 const fs = require('fs');
+// Stub the browser globals catalog.js touches (an IIFE injects a promo banner
+// into per-fly pages at runtime; it references document/window). Without these
+// stubs the eval below throws ReferenceError before flies[] is exposed.
+global.document = {{ readyState: 'complete', addEventListener: () => {{}}, getElementById: () => null, querySelector: () => null, createElement: () => ({{ }}), head: {{ appendChild: () => {{}} }} }};
+global.window = {{ }};
 // Read catalog.js, swap `const ` -> `var ` so the bindings escape the eval block
 let src = fs.readFileSync({json.dumps(CATALOG_JS)}, 'utf8');
 src = src.replace(/\\bconst /g, 'var ');
@@ -620,6 +625,7 @@ footer a {{ color: var(--red); text-decoration: none; }}
 <script src="/js/catalog.js"></script>
 <script src="/js/share-fly.js"></script>
 <script src="/js/nav.js" defer></script>
+<script src="/js/klaviyo-cart.js"></script>
 <script>
 // Quick-Add: writes to the same `tt_cart` localStorage shape the homepage cart
 // reads, so adds made here show up in the homepage cart panel + checkout flow.
@@ -638,6 +644,7 @@ function quickAdd(flyId) {{
               pickup: false, uid: Date.now() + Math.random() }});
   localStorage.setItem('tt_cart', JSON.stringify(cart));
   updateCartCount();
+  if (window.ttTrackKlaviyoCart) ttTrackKlaviyoCart('Added to Cart');
   const label = (fly.category === 'sticker' || fly.bundle) ? '' : ' pack' + (qty > 1 ? 's' : '');
   showToast(qty + label + ' of ' + fly.name + ' added!');
   if (typeof gtag === 'function') {{

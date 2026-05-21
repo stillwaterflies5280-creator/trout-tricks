@@ -1764,6 +1764,7 @@
 <script src="/js/catalog.js"></script>
 <script src="/js/nav.js" defer></script>
 <script src="/js/promo-tiers.js"></script>
+<script src="/js/klaviyo-cart.js"></script>
 </head>
 
 <body>
@@ -2153,6 +2154,7 @@ function addToCart(id) {
   const qty = quantities[id];
   cart.push({ fly, size, color, qty, pickup: false, uid: Date.now() + Math.random() });
   updateCartUI();
+  if (window.ttTrackKlaviyoCart) ttTrackKlaviyoCart('Added to Cart');
   showToast(`${qty} pack${qty>1?"s":""} of ${fly.name} added!`);
   openCart();
 }
@@ -2283,6 +2285,7 @@ function updateCartUI() {
 function openCart() {
   document.getElementById("overlay").classList.add("open");
   document.getElementById("cartPanel").classList.add("open");
+  if (cart.length >= 1 && window.ttTrackKlaviyoCart) ttTrackKlaviyoCart('Started Checkout');
 }
 function closeCart() {
   document.getElementById("overlay").classList.remove("open");

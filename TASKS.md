@@ -7,7 +7,7 @@ Persistent source of truth for active, blocked, and closed work. All adds/closes
 - **#13** Avidmax wholesale walk-in prep — Nick contact
 - **#14** Umpqua signature pattern submission — needs Matt Winkler input first
 - **#15** Local fly shop wholesale — South Park / North Park / Estes / Carter Lake corridors
-- **#18** Klaviyo flows — abandoned cart + post-purchase review request
+- **#18** Klaviyo flows — abandoned cart + post-purchase review request. **Event wiring shipped 2026-05-21** — `Added to Cart` + `Started Checkout` fire from index.html + 11 duplicate-cart pages + 27 per-fly Quick Add pages via shared `/js/klaviyo-cart.js` helper (resolves fly metadata via `catalog.js` + `FLY_IMAGES`, guarded on `window._learnq`). **Next blockers before AC flow fires for cold visitors:** (a) inline optional email field above the Checkout button in the cart panel + `_learnq.push(['identify', { $email }])` on blur — approved approach 2026-05-21; (b) build the AC flow in Klaviyo UI (trigger on `Started Checkout`, delay 1–4 hr, single reminder email). Warm/identified profiles qualify once (a) ships.
 - **#20** UTM social bio links via Bit.ly + GA4
 - **#30** Tying expertise blog posts — needs photo shoot session first, then write
 - **#31** SEO P3 (ongoing) — backlinks from tier-adjacent sites
