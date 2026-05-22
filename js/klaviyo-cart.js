@@ -11,7 +11,7 @@
     var raw = [];
     try { raw = JSON.parse(localStorage.getItem('tt_cart') || '[]'); } catch (e) {}
     if (!Array.isArray(raw) || raw.length === 0) return null;
-    if (!Array.isArray(window.flies)) return null;
+    if (typeof flies === 'undefined' || !Array.isArray(flies)) return null;
 
     var items = [];
     var names = [];
@@ -19,7 +19,7 @@
 
     raw.forEach(function (row) {
       var id = (row && row.flyId != null) ? row.flyId : (row && row.fly && row.fly.id);
-      var fly = window.flies.find(function (f) { return f.id === id; });
+      var fly = flies.find(function (f) { return f.id === id; });
       if (!fly) return;
       var qty = parseInt(row.qty, 10) || 1;
       var price = +fly.price || 0;
