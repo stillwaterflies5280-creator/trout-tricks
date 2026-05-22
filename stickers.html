@@ -2405,6 +2405,18 @@
       <span>Total</span>
       <span class="amt" id="cartTotal">$0.00</span>
     </div>
+    <div class="cart-email-capture" style="padding: 16px 20px; border-top: 1px solid #2a2a2a;">
+      <input
+        type="email"
+        id="cartEmailInput"
+        placeholder="Email for order updates"
+        autocomplete="email"
+        style="width: 100%; padding: 12px; background: #0a0a0a; border: 1px solid #2a2a2a; color: #f0f0f0; border-radius: 4px; font-family: inherit; font-size: 14px;"
+      />
+      <div style="font-size: 11px; color: #888; margin-top: 6px;">
+        Optional — save your cart, get a nudge if you forget anything.
+      </div>
+    </div>
     <button class="checkout-btn" id="checkoutBtn" onclick="goCheckout()" disabled>Proceed to Checkout</button>
     <button class="continue-btn" onclick="closeCart()">← Continue Shopping</button>
   </div>

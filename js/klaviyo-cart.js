@@ -63,4 +63,48 @@
       window._learnq.push(['track', eventName, payload]);
     } catch (e) { /* never break cart on tracker failure */ }
   };
+
+  // Cart-panel email capture → Klaviyo identify. Persists across sessions in
+  // localStorage so a returning visitor stays identified without retyping.
+  // Silent: invalid/empty input never shows an error (low-pressure capture
+  // — the user can still check out without giving an email; Square captures
+  // it at payment as a backstop).
+  var EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+  function initCartEmailCapture() {
+    try {
+      var input = document.getElementById('cartEmailInput');
+      if (!input) return;
+
+      var stored = '';
+      try { stored = localStorage.getItem('tt_customer_email') || ''; } catch (e) {}
+
+      if (stored) {
+        input.value = stored;
+        if (window._learnq) {
+          try { window._learnq.push(['identify', { '$email': stored }]); } catch (e) {}
+        }
+      }
+
+      function handle() {
+        try {
+          var val = (input.value || '').trim();
+          if (!val || !EMAIL_RE.test(val)) return;
+          try { localStorage.setItem('tt_customer_email', val); } catch (e) {}
+          if (window._learnq) {
+            window._learnq.push(['identify', { '$email': val, '$source': 'cart-panel' }]);
+          }
+        } catch (e) {}
+      }
+
+      input.addEventListener('blur', handle);
+      input.addEventListener('change', handle);
+    } catch (e) {}
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initCartEmailCapture);
+  } else {
+    initCartEmailCapture();
+  }
 })();
