@@ -24,11 +24,14 @@
 //      [recon] lines. To exercise the email path, temporarily widen
 //      dayAgo to 7 days for one test run.
 //
-// NOTE: this file is a staged drop-in for Code.gs. It expects the
-// existing constants ORDERS_SHEET and COL_DETAILS to already be defined
-// at the top of Code.gs — don't duplicate them here. Paste the block
-// below at the bottom of Code.gs (or wherever you keep new functions).
+// NOTE: this file lives as its own .gs file in the Apps Script editor
+// alongside Code.gs. Apps Script V8 scopes `const` to each file, so the
+// ORDERS_SHEET / COL_DETAILS constants declared in Code.gs are NOT
+// visible here — we re-declare them at the top. Keep these two values in
+// sync with Code.gs:1 and Code.gs:12.
 
+const ORDERS_SHEET             = 'Orders/Fulfillment';
+const COL_DETAILS              = 6;
 const SQUARE_TOKEN_PROP        = 'SQUARE_ACCESS_TOKEN';
 const SQUARE_BASE              = 'https://connect.squareup.com';
 const SQUARE_API_VERSION       = '2024-10-17';
