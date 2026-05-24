@@ -8,6 +8,30 @@ Persistent source of truth for active, paused, and closed work. All adds/closes/
   - **53.1** Sign up for TaxJar (free tier) — connect Square account.
   - **53.2** Set Colorado as filing location in TaxJar.
   - **53.3** Calendar reminder: **15th of each month** — check TaxJar totals, then file at Colorado.gov/RevenueOnline (5-day buffer before the 20th deadline).
+
+## Klaviyo email UTM convention
+
+Standard for tagging all Klaviyo-sent email traffic so GA / GSC attribute by email type instead of bucketing everything as generic "klaviyo." Drop launch emails keep their existing spec under #52 — this covers everything else.
+
+**Account-default** (set globally in Klaviyo → Account → Settings → UTM Tracking — applies to every link in every Klaviyo send unless overridden):
+
+- `utm_source=klaviyo`
+- `utm_medium=email`
+
+**Per-campaign / per-flow overrides** (set at the campaign or flow-email level, override the account-default):
+
+- **AC flow** (template `XU5bQs`): `utm_campaign=abandoned-cart`, `utm_content={template-or-variant-slug}`
+- **PP flow** (template `RUBeHE`): `utm_campaign=post-purchase`, `utm_content={template-or-variant-slug}`
+- **Crew weekly/monthly newsletter**: `utm_campaign=crew-newsletter`, `utm_content={yyyy-mm-dd}`
+- **Ad-hoc blasts**: `utm_campaign={specific-slug}`, `utm_content={variant-or-asset}`
+- **Drop launch emails**: see existing spec under #52 — `utm_campaign=drop-launch` already documented; don't change.
+
+**Action items:**
+
+1. Set the account-default in Klaviyo → Account → Settings → UTM Tracking — one-time, ~30 seconds.
+2. Update AC flow + PP flow email nodes to use the campaign values above (Klaviyo flow email → Tracking Options).
+3. Going forward, every campaign/flow gets a `utm_campaign` at creation time, no exceptions.
+
 ## Backlog (paused, not active)
 
 - **#13** Avidmax wholesale walk-in prep — Nick contact.
