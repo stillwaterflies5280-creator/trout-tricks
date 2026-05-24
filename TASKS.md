@@ -4,10 +4,21 @@ Persistent source of truth for active, paused, and closed work. All adds/closes/
 
 ## Open (active queue)
 
-- **#53** Colorado Sales Tax Compliance Setup (Square-based, low volume) — file at **Colorado.gov/RevenueOnline** (CO deadline = 20th of month following reporting period). Letter ID **L046381652** · FEIN **422215711** · CO Account **971691110001**.
+### Next 7 days
+
+- **#53** ⏰ **Colorado Sales Tax Compliance** — TIME-SENSITIVE. April reporting-period deadline (20th of month following) is already past. File at **Colorado.gov/RevenueOnline**. Letter ID **L046381652** · FEIN **422215711** · CO Account **971691110001**.
+  - **53.0** ☎️ **Call CDOR Monday morning at 303-238-7378** — triage filing frequency (monthly vs quarterly vs annual based on volume) and confirm what's already been filed for April. Do this FIRST before any TaxJar setup; filing frequency determines whether 53.3's cadence is right.
   - **53.1** Sign up for TaxJar (free tier) — connect Square account.
   - **53.2** Set Colorado as filing location in TaxJar.
-  - **53.3** Calendar reminder: **15th of each month** — check TaxJar totals, then file at Colorado.gov/RevenueOnline (5-day buffer before the 20th deadline).
+  - **53.3** Calendar reminder: **15th of each month** — check TaxJar totals, then file at Colorado.gov/RevenueOnline (5-day buffer before the 20th deadline). Adjust cadence if CDOR puts you on quarterly/annual.
+
+### Other open
+
+- **#72** White stuffer cards for fly packaging — dual-purpose: (a) inside customer packaging so black/dark patterns pop against white instead of vanishing into natural cardstock during unboxing; (b) backdrop for product photography of black/dark flies (supports the broader photo-improvement work).
+  - Spec card size to match current packaging dimensions.
+  - Source: Uline pre-cut cardstock (faster, ~$40 batch) vs office-supply cardstock + paper trimmer DIY (cheaper ~$20, more labor). Pick path.
+  - Order initial batch ~200.
+  - Estimated cost: $20–40 depending on path.
 
 ## Klaviyo email UTM convention
 
