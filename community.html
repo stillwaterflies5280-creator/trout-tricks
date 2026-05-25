@@ -1831,6 +1831,22 @@
     color: var(--light-gray);
     padding: 0 8px;
   }
+  .cp-hero-quicklink {
+    display: inline-block;
+    margin-top: 22px;
+    padding: 11px 22px;
+    border: 1px solid var(--gold);
+    border-radius: 6px;
+    color: var(--gold);
+    font-family: 'Barlow Condensed', Impact, sans-serif;
+    font-size: 0.92rem;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    text-decoration: none;
+    transition: background 0.2s, color 0.2s;
+  }
+  .cp-hero-quicklink:hover { background: var(--gold); color: #0a0a0a; }
 
   .cp-cards {
     max-width: 1080px;
@@ -2077,7 +2093,27 @@
     <h1>JOIN THE COMMUNITY</h1>
     <div class="cp-hero-sub">Talk stillwater. Share fish. Learn what's hatching.</div>
     <p class="cp-hero-intro">A free Facebook community for Colorado stillwater anglers. Stillwater patterns, lake reports, hatch updates, and conversation about fly fishing Colorado's lakes and reservoirs.</p>
+    <a class="cp-hero-quicklink" href="#newsletter">Get flies in your inbox →</a>
   </section>
+
+  <section class="cp-newsletter" id="newsletter">
+    <h2>Get flies in your inbox</h2>
+    <p>Weekly tying tips, hatch reports, and free patterns — plus 10% off your first order.</p>
+    <form class="cp-newsletter-form" id="cpNewsletterForm" onsubmit="return submitCommunityNewsletter(event)" novalidate>
+      <input type="email"
+             class="cp-newsletter-input"
+             id="cpNewsletterEmail"
+             name="email"
+             placeholder="Your email address"
+             autocomplete="email"
+             required>
+      <input type="text" class="cp-hp" id="cpNewsletterHp" name="company" tabindex="-1" autocomplete="off" aria-hidden="true">
+      <button type="submit" class="cp-newsletter-btn" id="cpNewsletterBtn">Join the Newsletter →</button>
+    </form>
+    <div class="cp-newsletter-msg" id="cpNewsletterMsg" role="status" aria-live="polite"></div>
+  </section>
+
+  <div class="cp-divider"><hr></div>
 
   <div class="cp-cards">
     <a class="cp-card"
@@ -2161,25 +2197,6 @@
       </div>
     </a>
   </div>
-
-  <div class="cp-divider"><hr></div>
-
-  <section class="cp-newsletter">
-    <h2>Want flies in your inbox too?</h2>
-    <p>Get my weekly tying tips, hatch reports, and free patterns. Plus 10% off your first order.</p>
-    <form class="cp-newsletter-form" id="cpNewsletterForm" onsubmit="return submitCommunityNewsletter(event)" novalidate>
-      <input type="email"
-             class="cp-newsletter-input"
-             id="cpNewsletterEmail"
-             name="email"
-             placeholder="Your email address"
-             autocomplete="email"
-             required>
-      <input type="text" class="cp-hp" id="cpNewsletterHp" name="company" tabindex="-1" autocomplete="off" aria-hidden="true">
-      <button type="submit" class="cp-newsletter-btn" id="cpNewsletterBtn">Join the Newsletter →</button>
-    </form>
-    <div class="cp-newsletter-msg" id="cpNewsletterMsg" role="status" aria-live="polite"></div>
-  </section>
 </div>
 
 <script>
