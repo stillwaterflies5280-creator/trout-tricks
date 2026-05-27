@@ -127,7 +127,7 @@ const flies = [
   },
   {
     id: 28, img: "rusty-duck",
-    name: "Rusty Ducks",
+    name: "Rusty Duck",
     desc: "A rusty-copper chironomid finished with a soft breather tuft up front. The warm rust body and gold-wire rib give off just enough flash to draw a look in clear or stained water, while the breather pulses on the rise to seal the eat. Tied on 2x heavy wire for the deep stillwater game.",
     sizes: ["#12","#14","#16","#18"],
     colors: null,
