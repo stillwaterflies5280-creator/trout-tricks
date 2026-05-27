@@ -59,11 +59,11 @@
 <!-- TOTALS -->
                       {% for discount in event.extra.discounts %}
                       <div style="font-family:'Barlow','Helvetica Neue',Helvetica,Arial,sans-serif; font-size:14px; color:#C0392B; line-height:1.5; padding-top:12px;">
-                        {{ discount.name }} &minus;${{ discount.applied_money.converted_amount }}
+                        {{ discount.name }} &minus;${{ discount.applied_money.converted_amount|floatformat:2 }}
                       </div>
                       {% endfor %}
                       <div style="font-family:'Bebas Neue','Oswald','Arial Narrow',sans-serif; font-weight:700; font-size:22px; letter-spacing:0.04em; color:#0F0F11; line-height:1.2; padding-top:14px;">
-                        Total: ${{ event.extra.net_amounts.total_money.converted_amount }}
+                        Total: ${{ event.extra.net_amounts.total_money.converted_amount|floatformat:2 }}
                       </div>
 <!-- FULFILLMENT -->
                       <div style="font-family:'Barlow','Helvetica Neue',Helvetica,Arial,sans-serif; font-size:14px; color:#6B6B6B; line-height:1.5; padding-top:14px; border-top:1px solid #E5E5E5; margin-top:14px;">
