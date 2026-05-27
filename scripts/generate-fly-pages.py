@@ -190,6 +190,9 @@ header {{
   padding: 14px 24px;
   border-bottom: 1px solid var(--border);
   background: #050505;
+  position: sticky;
+  top: 0;
+  z-index: 100;
 }}
 header .logo {{
   font-family: 'Bebas Neue', sans-serif;

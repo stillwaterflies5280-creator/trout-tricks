@@ -381,7 +381,9 @@ function slugifyFlyName(name) {
 // pages. No-op on pages without a .quick-add block (index, blog, etc.).
 // Tier rules live in /js/promo-tiers.js; this banner is informational and
 // updates passively when the user changes quantity.
-(function injectFlyPagePromoBanner() {
+// `typeof document` guard keeps scripts/generate-fly-pages.py from crashing
+// when it `eval`s this file in Node to extract the flies[] array.
+if (typeof document !== 'undefined') (function injectFlyPagePromoBanner() {
   function render() {
     const quickAdd = document.querySelector('.quick-add');
     if (!quickAdd) return;
