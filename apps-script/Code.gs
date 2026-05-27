@@ -44,6 +44,12 @@ function doPost(e) {
     if (body.submission_type === 'sticker_waitlist') return handleStickerWaitlist(body);
     if (body.submission_type === 'drop_waitlist')    return handleDropWaitlist(body);
     if (body.submission_type === 'crew_signup')      return handleCrewSignup(body);
+    // Community-page newsletter signup. Routes to the same newsletter-signup
+    // branch as crew_signup based on submission_type ALONE — earlier this fell
+    // through to handleOrder() and created bogus $0.00 LOCAL PICKUP rows because
+    // acquisition_source ('community_page') wasn't matched anywhere. Klaviyo is
+    // unaffected (community.html subscribes the client directly to list SUpRkF).
+    if (body.submission_type === 'newsletter_signup_community') return handleCrewSignup(body);
 
     // Default — order webhook from main site
     return handleOrder(body);
@@ -576,7 +582,8 @@ function writeToMasterCustomers(body, source) {
       notes = body.founding_interest === true ?
         'The Drop waitlist · founding interest' :
         'The Drop waitlist signup';
-    } else if (source === 'Website Popup' || source === 'Website Footer' || source === 'Crew') {
+    } else if (source === 'Website Popup' || source === 'Website Footer' ||
+               source === 'Crew' || source === 'community_page') {
       notes = 'Newsletter signup';
     } else if (source === 'Pickup Order') {
       // Pre-checkout pickup signup (cart panel, Guides Choice card path, or
@@ -598,6 +605,94 @@ function writeToMasterCustomers(body, source) {
   } catch (err) {
     Logger.log('Master Customers write failed: ' + err.toString());
   }
+}
+
+// ============================================================
+// ONE-SHOT CLEANUP — community-page newsletter misroute backfill
+// ============================================================
+// Before the doPost fix, `newsletter_signup_community` submissions had no
+// routing branch and fell through to handleOrder(), which:
+//   (a) appended a phantom $0.00 "Local pickup" row to Orders/Fulfillment
+//       (blank name/phone, Details = "Fulfillment: LOCAL PICKUP\nTOTAL: $0.00"), and
+//   (b) wrote the contact to Master Customers with Source='Order', Notes='Order #?'.
+// Both are wrong — these are newsletter signups, not orders. (Klaviyo was never
+// affected: community.html subscribes the client directly to list SUpRkF.)
+//
+// This function repairs both sheets, matching rows BY CONTENT + email allowlist
+// (not hardcoded row numbers, which drift). It is idempotent — re-running is a
+// no-op once clean. Run it once from the editor after deploying the doPost fix,
+// then check the Execution log for the before/after counts.
+//
+// ryangarcia970 note: its 2026-05-14 phantom row shows the same $0.00 signature
+// but has a BLANK acquisition source (jjarrell/johnmiller carry 'community_page')
+// and its raw payload is no longer in the Webhook Log, so community-page origin
+// is probable but unconfirmed. It's still a $0.00 non-order, so it's cleaned up
+// the same way; the relabel note records the uncertainty.
+function fixCommunityNewsletterMisroute() {
+  const ss = SpreadsheetApp.getActiveSpreadsheet();
+
+  // Affected contacts. Map email -> whether community_page origin is confirmed.
+  const AFFECTED = {
+    'jjarrell410@gmail.com':       { confirmed: true },
+    'johnmiller012302@gmail.com':  { confirmed: true },
+    'ryangarcia970@yahoo.com':     { confirmed: false }
+  };
+  const isAffected = (e) => AFFECTED.hasOwnProperty(String(e || '').trim().toLowerCase());
+
+  // The Details signature a no-order payload produces in handleOrder: no order
+  // number, no items — just the fulfillment + $0.00 total lines.
+  const PHANTOM_DETAILS = /^\s*Fulfillment:\s*LOCAL PICKUP\s*TOTAL:\s*\$0\.00\s*$/i;
+
+  // --- Orders/Fulfillment: delete phantom $0.00 rows (bottom-up) -------------
+  let ordersDeleted = 0;
+  const orders = ss.getSheetByName(ORDERS_SHEET);
+  if (orders && orders.getLastRow() > 1) {
+    const last = orders.getLastRow();
+    const rows = orders.getRange(2, 1, last - 1, 15).getValues(); // A..O
+    for (let i = rows.length - 1; i >= 0; i--) {
+      const email   = rows[i][COL_EMAIL - 1];
+      const details = String(rows[i][COL_DETAILS - 1] || '');
+      const revenue = String(rows[i][9] || '').replace(/[^0-9.]/g, ''); // col J
+      const isPhantom = PHANTOM_DETAILS.test(details) &&
+                        (revenue === '' || Number(revenue) === 0);
+      if (isAffected(email) && isPhantom) {
+        const rowNum = i + 2;
+        orders.deleteRow(rowNum);
+        ordersDeleted++;
+        Logger.log('[cleanup] Deleted phantom Orders row ' + rowNum + ' — ' + email);
+      }
+    }
+  }
+
+  // --- Master Customers: relabel the bogus Order rows -> newsletter signup ----
+  let masterRelabeled = 0;
+  const master = ss.getSheetByName(MASTER_CUSTOMERS_SHEET);
+  if (master && master.getLastRow() > 1) {
+    const last = master.getLastRow();
+    // Cols: A=Timestamp B=First C=Email D=Source E=Notes F=Acquisition Source
+    const rows = master.getRange(2, 1, last - 1, 6).getValues();
+    for (let i = 0; i < rows.length; i++) {
+      const email = rows[i][2];
+      const src   = String(rows[i][3] || '').trim();
+      const notes = String(rows[i][4] || '').trim();
+      // Bogus signature: misrouted as an Order with no real order number.
+      const isBogusOrder = src === 'Order' && /^Order\s*#?\??$/i.test(notes);
+      if (isAffected(email) && isBogusOrder) {
+        const rowNum = i + 2;
+        master.getRange(rowNum, 4).setValue('community_page');   // D: Source
+        master.getRange(rowNum, 5).setValue('Newsletter signup'); // E: Notes
+        master.getRange(rowNum, 6).setValue('community_page');    // F: Acquisition Source
+        masterRelabeled++;
+        Logger.log('[cleanup] Relabeled Master Customers row ' + rowNum + ' — ' + email +
+                   (AFFECTED[String(email).trim().toLowerCase()].confirmed ? '' :
+                    ' (origin unconfirmed — see function docstring)'));
+      }
+    }
+  }
+
+  const summary = { orders_rows_deleted: ordersDeleted, master_rows_relabeled: masterRelabeled };
+  Logger.log('[cleanup] Done: ' + JSON.stringify(summary));
+  return summary;
 }
 
 function backfillMasterCustomers() {
