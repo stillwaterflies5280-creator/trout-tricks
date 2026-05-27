@@ -126,6 +126,26 @@ const flies = [
     badge: null
   },
   {
+    id: 28, img: "rusty-duck",
+    name: "Rusty Ducks",
+    desc: "A rusty-copper chironomid finished with a soft breather tuft up front. The warm rust body and gold-wire rib give off just enough flash to draw a look in clear or stained water, while the breather pulses on the rise to seal the eat. Tied on 2x heavy wire for the deep stillwater game.",
+    sizes: ["#12","#14","#16","#18"],
+    colors: null,
+    price: 21,
+    pack: 5,
+    badge: "New"
+  },
+  {
+    id: 29, img: "franks-red-hot-ronnie-2",
+    name: "Frank\'s Red Hot Ronnie 2.0",
+    desc: "The next evolution of Frank\'s Red Hot Ronnie. Same deadly black-body, red-wire, white-bead recipe — now tied slimmer with a glassy coated finish that adds durability and a wet-look shine trout cannot leave alone. A proven snow cone profile, dialed up.",
+    sizes: ["#12","#14","#16","#18"],
+    colors: null,
+    price: 21,
+    pack: 5,
+    badge: "New"
+  },
+  {
     id: 10, img: "balanced-leech",
     name: "Balanced Leech",
     desc: "The stillwater angler's most versatile weapon. Suspended under an indicator with neutral buoyancy, this pattern triggers strikes when chironomids aren't cutting it. Tied on 2x heavy wire jig hooks for perfect balance and natural movement.",
@@ -365,7 +385,9 @@ const FLY_IMAGES = {
   "jersey-boy": "images/jersey-boy.jpg",
   scud1: "images/scud1.png",
   scud2: "images/scud2.png",
-  scud3: "images/scud3.png"
+  scud3: "images/scud3.png",
+  "rusty-duck": "images/rusty-duck.jpg",
+  "franks-red-hot-ronnie-2": "images/franks-red-hot-ronnie-2.jpg"
 };
 
 // Slugify a fly name into a URL-safe hash anchor / per-fly page filename.

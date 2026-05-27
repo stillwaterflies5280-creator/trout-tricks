@@ -63,7 +63,7 @@ def attr_escape(s):
 
 # ---- Per-fly contextual content ----
 
-CHIRONOMID_IDS = {1, 2, 3, 4, 5, 6, 7, 8, 9, 25, 26}
+CHIRONOMID_IDS = {1, 2, 3, 4, 5, 6, 7, 8, 9, 25, 26, 28, 29}
 LEECH_IDS = {10, 11, 12}
 SCUD_IDS = {27}
 
