@@ -433,9 +433,9 @@ if (typeof document !== 'undefined') (function injectFlyPagePromoBanner() {
     banner.id = 'qaPromoBanner';
     banner.className = 'qa-promo-banner';
     banner.innerHTML =
-      '🎁 <strong>FREE Surprise Sticker</strong> with any fly pack' +
+      '🔥 <strong>50% OFF a pack</strong> today' +
       '<span class="qa-promo-divider">·</span>' +
-      'Buy 5 packs · <strong>1 FREE pack</strong>';
+      '<strong>FREE</strong> Surprise Sticker with any pack';
 
     addBtn.parentNode.insertBefore(banner, addBtn);
   }
