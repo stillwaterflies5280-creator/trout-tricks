@@ -4466,7 +4466,10 @@ function calcShipping() {
 function updateCartUI() {
   const flyTotal = cart.reduce((s,i) => s+i.fly.price*i.qty, 0);
   const tiers = (typeof getPromoTiers === 'function') ? getPromoTiers(cart) : { halfOffDiscount: 0, freeStickerLine: null, halfOffApplies: false, stickerThresholdMet: false };
-  const promoDiscount = appliedPromo ? flyTotal * (appliedPromo.percent / 100) : 0;
+  // Promo code applies to "the rest of the order" — the fly subtotal minus the
+  // one pack already getting 50% off, so the two discounts don't double-dip.
+  const promoBase = Math.max(0, flyTotal - (tiers.halfOffPackPrice || 0));
+  const promoDiscount = appliedPromo ? promoBase * (appliedPromo.percent / 100) : 0;
   const tierDiscount = tiers.halfOffDiscount || 0;
   const discountedSubtotal = Math.max(0, flyTotal - promoDiscount - tierDiscount);
   const { cost, label } = calcShipping();
@@ -4583,7 +4586,10 @@ let currentOrderSubtotal = 0;
 function buildOrderSummary() {
   const flyTotal = cart.reduce((s,i)=>s+i.fly.price*i.qty, 0);
   const tiers = (typeof getPromoTiers === 'function') ? getPromoTiers(cart) : { halfOffDiscount: 0, freeStickerLine: null, halfOffApplies: false };
-  const promoDiscount = appliedPromo ? flyTotal * (appliedPromo.percent / 100) : 0;
+  // Promo code applies to "the rest of the order" — the fly subtotal minus the
+  // one pack already getting 50% off, so the two discounts don't double-dip.
+  const promoBase = Math.max(0, flyTotal - (tiers.halfOffPackPrice || 0));
+  const promoDiscount = appliedPromo ? promoBase * (appliedPromo.percent / 100) : 0;
   const tierDiscount = tiers.halfOffDiscount || 0;
   const discount = promoDiscount + tierDiscount;
   const discountedSubtotal = Math.max(0, flyTotal - discount);
@@ -4711,7 +4717,8 @@ function checkoutWithSquare(btnOverride) {
 
   const flyTotal           = cart.reduce(function(s, it) { return s + it.fly.price * it.qty; }, 0);
   const shippingNow        = (typeof calcShipping === "function" ? (calcShipping().cost || 0) : 0);
-  const promoCodeDiscount  = appliedPromo ? flyTotal * (appliedPromo.percent / 100) : 0;
+  const promoCodeBase      = Math.max(0, flyTotal - (tiers.halfOffPackPrice || 0));
+  const promoCodeDiscount  = appliedPromo ? promoCodeBase * (appliedPromo.percent / 100) : 0;
   const discountAmount     = promoCodeDiscount + (tiers.halfOffDiscount || 0);
   const discountedSubtotal = Math.max(0, flyTotal - discountAmount);
   const grandTotal         = discountedSubtotal + shippingNow;
