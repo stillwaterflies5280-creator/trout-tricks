@@ -3833,7 +3833,11 @@ const guideChoiceFly = {
   name: "Guide's Choice Box",
   price: 95,
   img: "guidechoice",
-  sizes: ["25 flies — Guide Selected"]
+  sizes: ["25 flies — Guide Selected"],
+  // Already a discounted 25-fly bundle — exclude it from the automatic
+  // 50%-off-a-pack promo so half-off doesn't gut the margin. Other packs in
+  // the same cart still get the discount; see getPromoTiers in promo-tiers.js.
+  noPromo: true
 };
 
 function addGuideChoiceToCart() {
