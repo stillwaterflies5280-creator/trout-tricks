@@ -105,6 +105,15 @@ FISH_IT_ON = {
 }
 
 
+# Per-fly blog-link overrides. Anything listed here is prepended to the category
+# default list, so a pattern with its own deep-dive post gets the link without
+# losing the broader category roundups. Add new (href, label) entries keyed by
+# fly id when a per-pattern blog post ships.
+PER_FLY_EXTRA_BLOG_LINKS = {
+    28: [('rusty-duck-chironomid-pattern.html', 'The Rusty Duck chironomid: why it works & how to fish it')],
+}
+
+
 RELATED_BLOG_LINKS = {
     'chironomid': [
         ('best-chironomid-fly-patterns.html', 'The 5 chironomid patterns we lean on'),
@@ -902,8 +911,10 @@ def build_page(fly):
     <p class="lakes-prose">{prose}</p>
   </section>'''
 
-    # Blog links
-    links = RELATED_BLOG_LINKS.get(cat, RELATED_BLOG_LINKS['fly'])
+    # Blog links — per-fly overrides (e.g. a pattern with its own deep-dive
+    # post) prepend to the category default, so the specific link surfaces first
+    # without losing the broader category roundups.
+    links = PER_FLY_EXTRA_BLOG_LINKS.get(fly['id'], []) + RELATED_BLOG_LINKS.get(cat, RELATED_BLOG_LINKS['fly'])
     blog_links_html = '\n      '.join(
         f'<li><a href="/blog/{href}">{html_escape(label)}</a></li>'
         for href, label in links
