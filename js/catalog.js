@@ -267,6 +267,19 @@ const flies = [
     bundle_includes: [21, 22]
   },
   {
+    id: 19, img: "stickerFishOn",
+    name: "The Greedy Trout Pack",
+    desc: "Includes: Fish On + Got Buzzers? + Drop It Like It's Hot. Three character stickers for the trout-angler box, $3 off retail ($13 → $10).",
+    sizes: null,
+    colors: null,
+    price: 10,
+    pack: null,
+    badge: null,
+    category: "sticker",
+    bundle: true,
+    bundle_includes: [15, 18, 23]
+  },
+  {
     id: 20, img: "sticker1",
     name: "The Complete Collection",
     desc: "Includes: Wordmark, Square, Fish On, and Got Buzzers?. Every Trout Tricks sticker — $4 off retail ($16 → $12).",
