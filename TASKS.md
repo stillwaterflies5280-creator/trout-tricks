@@ -22,15 +22,24 @@ Authoritative current-state snapshot of all active work, grouped by priority. De
   - **Depends on:** —
   - **Related ticket:** #53 in active queue (different angle on the same compliance umbrella).
 
-### Priority 2 — List building (highest growth lever per TT12)
+### Priority 2 — List building / Conversion levers (top growth lever per TT12)
 
 - **2 — Chironomid Cheat Sheet PDF lead magnet** — Status: **TODO** (identified in TT12 as "single best list-builder, ships in a week").
   - **Context:** 2-3 page PDF in Brian Chan-style chironomid presentation (depth zones, color by water clarity, retrieve speeds, four-pattern starter rotation). Gate via email signup at `trouttricks.com/cheat-sheet`. Klaviyo flow delivers the PDF + adds to Crew list (`SUpRkF`). Promotion: 1 FB community post/week for 4 weeks + r/flyfishing + CO Trout Unlimited chapter pages.
   - **Acceptance:** Landing page live, Klaviyo flow delivers PDF, **200 signups in 4-6 weeks**.
   - **Depends on:** —
   - **Related ticket:** #21-24 in backlog (previously gated on #13/#14 wholesale — decouple).
+- **11 — Reviews infrastructure / destination** — Status: **TODO** (time-sensitive: first PP review emails fire ~2026-06-10 from May 27 orders).
+  - **Context:** The Post-Purchase Review flow (Klaviyo template `RUBeHE`) fires 14 days after Placed Order, but there's no defined destination for collected reviews. If unresolved by ~2026-06-10 the first PP sends, reviews land nowhere. Options to evaluate:
+    - **Klaviyo Reviews** — native, tightest integration with existing flows, single-vendor stack.
+    - **Yotpo / Stamped / Loox** — UGC-focused third parties, better display widgets, higher cost.
+    - **Google Business Profile reviews + on-site embed** — cheapest, least control, GBP already exists.
+    - **Standalone on-site form** — full control, more build.
+  - **Acceptance:** Destination chosen + review-request email routes there + **at least 5 reviews collected and displayed somewhere on trouttricks.com within 30 days**.
+  - **Depends on:** — (independent decision).
+  - **Related:** PP Review flow (`RUBeHE`, fires Placed Order + 14d, currently routes nowhere specific).
 
-### Priority 3 — Relationship capital (manual, one-off)
+### Priority 3 — Relationship capital & social proof
 
 - **3 — Personal post-purchase notes** — Status: **TODO**.
   - **Context:** Send each individually from `stillwaterflies5280@gmail.com` (NOT Klaviyo). Template lives in the TT13 chat transcript.
@@ -41,6 +50,15 @@ Authoritative current-state snapshot of all active work, grouped by priority. De
     - **Timothy Spaulding** — 2026-05-29 · $114.50 · tgspaulding1234@gmail.com (biggest order to date)
   - **Acceptance:** All 4 sent.
   - **Depends on:** —
+- **12 — UGC "fly in mouth" social proof collection** — Status: **TODO**.
+  - **Context:** Build a system to actively collect customer fish-with-fly photos as social proof. Fly fishing is uniquely suited to this — a "fly in the mouth" shot proves the product works in a way no written review can. Likely combine 2-3 of:
+    - **Klaviyo flow 7-10 days post-delivery** requesting a photo with incentive ("send a photo of a fish caught on these — free pack with your next order").
+    - **White stuffer cards** (item #10 / `#72`) gain a "share your catch" CTA — QR to upload form or FB-group post.
+    - **`/catches` gallery page** on trouttricks.com displaying submitted photos (chronological, by lake, or by fly pattern).
+    - **FB community UGC** + reshare to IG/TikTok with permission.
+  - **Acceptance:** Photo-collection mechanism live (Klaviyo flow OR stuffer-card prompt OR both) + **at least 10 customer photos collected** + gallery page or social-reshare plan running.
+  - **Depends on:** Ideally coordinated with item #10 (white stuffer cards) so the card does double duty.
+  - **Note:** Uniquely credible vs. text reviews — "the fly actually worked" social proof is the fly-fishing market's strongest signal.
 
 ### Priority 4 — Data-gated experiments
 
@@ -88,6 +106,7 @@ Authoritative current-state snapshot of all active work, grouped by priority. De
 - **#20** UTM social bio links via Bit.ly + GA4
 - **#45-48** Drop subscriptions / Apps Script / onboarding (gated on item 5 — Drop validation)
 - **#52** 4-week Drop sprint (held)
+- **#73** Merch line (apparel — hats/tees/hoodies, water bottles, neck gaiters, etc. beyond current stickers) — **GATED** on 50-100 lifetime paying customers OR clear unprompted customer pull. ~20 lifetime / 12 in May 2026 — not there yet. SKU complexity (sizes, colors, returns) is brutal without volume; don't lift the gate prematurely. When ungated: design 3-5 launch SKUs, pick vendor (POD via Printful/Printify vs. small-batch local), wire Square Online merch store.
 - FB value-first cadence (Mon lake report / Wed tying reel / Fri photo) — start whenever
 - Cross-promo DMs to 3-5 CO stillwater creators
 - Clarity diagnostic (5-10 view-no-add sessions to identify funnel friction)
