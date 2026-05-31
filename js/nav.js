@@ -6,23 +6,26 @@
 (function () {
   'use strict';
 
+  // Label convention: "The X" prefix for destination/collection items (e.g.
+  // The Stickers, The Blog, The Community). Excluded from the prefix:
+  //   - All Flies, Free Sticker, About, Contact, Media Kit (per Thomas 2026-05-30)
+  //   - Book a Trip (verb phrase; "The Book a Trip" is ungrammatical)
   var SECTIONS = [
     {
       label: 'Shop',
       items: [
-        { label: 'All Flies',      href: '/' },
-        { label: 'Top Sellers',    href: '/#top-sellers' },
-        { label: 'Chironomids',    href: '/flies/chironomids.html' },
-        { label: 'Leeches',        href: '/flies/leeches.html' },
-        { label: 'Scuds',          href: '/flies/bling-scud.html' },
-        { label: 'Stickers',       href: '/stickers.html' },
-        { label: 'Free Sticker',   href: '/free-sticker.html' },
-        { label: 'Gear We Trust',  href: '/affiliates.html' }
+        { label: 'All Flies',          href: '/' },
+        { label: 'The Top Sellers',    href: '/#top-sellers' },
+        { label: 'The Chironomids',    href: '/flies/chironomids.html' },
+        { label: 'The Leeches',        href: '/flies/leeches.html' },
+        { label: 'The Scuds',          href: '/flies/bling-scud.html' },
+        { label: 'The Stickers',       href: '/stickers.html' },
+        { label: 'Free Sticker',       href: '/free-sticker.html' },
+        { label: 'The Gear We Trust',  href: '/affiliates.html' }
       ]
     },
     {
       label: 'Gallery',
-      color: '#FFD700',          // brighter yellow vs. default #D4AF37 — visual feature
       items: [
         { label: 'The Proof', href: '/catches.html' },   // customer fish-in-mouth photos (was "Catches")
         { label: 'The Fish',  href: '/fish.html' }       // guide/personal catch gallery
@@ -31,15 +34,15 @@
     {
       label: 'Explore',
       items: [
-        { label: 'The Drop',  href: '/the-drop.html' },
-        { label: 'Blog',      href: '/blog.html' },
-        { label: 'Community', href: '/community.html' }
+        { label: 'The Drop',      href: '/the-drop.html' },
+        { label: 'The Blog',      href: '/blog.html' },
+        { label: 'The Community', href: '/community.html' }
       ]
     },
     {
       label: 'Trip',
       items: [
-        { label: 'Book a Trip', href: '/trip.html' }
+        { label: 'Book a Trip', href: '/trip.html' }   // verb phrase — kept as-is
       ]
     },
     {
@@ -53,10 +56,10 @@
   ];
 
   var QUICKLINKS = [
-    { label: 'Order Map',        href: '/about.html#flymap' },
-    { label: 'Reviews',          href: '/#reviews' },
-    { label: 'Trusted Partners', href: '/#trusted-partners' },
-    { label: 'Permits',          href: '/permits.html' }
+    { label: 'The Order Map',        href: '/about.html#flymap' },
+    { label: 'The Reviews',          href: '/#reviews' },
+    { label: 'The Trusted Partners', href: '/#trusted-partners' },
+    { label: 'The Permits',          href: '/permits.html' }
   ];
 
   var CSS = [
