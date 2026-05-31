@@ -31,19 +31,18 @@
       ]
     },
     {
-      label: 'Gallery',
-      items: [
-        { label: 'The Proof', href: '/catches.html' },   // customer fish-in-mouth photos (was "Catches")
-        { label: 'The Fish',  href: '/fish.html' }       // guide/personal catch gallery
-      ]
-    },
-    {
       label: 'Trust',
+      // Gallery items (The Proof / The Fish) merged into Trust per Thomas 2026-05-31
+      // — they're all customer/social proof, so a single coherent group reads cleaner
+      // than two adjacent sections. Order: reviews + map (existing) above proof + fish
+      // (visual evidence) so it reads testimonials → reach → photos.
       items: [
         { label: 'The Reviews', href: '/#reviews' },
-        { label: 'The Map',     href: '/about.html#flymap' }
-        // Trusted Partners removed from nav per Thomas 2026-05-31 (kept in footer Quick Links).
-        // The Gear We Trust moved back to Shop section in the same change.
+        { label: 'The Map',     href: '/about.html#flymap' },
+        { label: 'The Proof',   href: '/catches.html' },   // customer fish-in-mouth photos
+        { label: 'The Fish',    href: '/fish.html' }       // guide/personal catch gallery
+        // Trusted Partners removed from nav (kept in footer Quick Links).
+        // The Gear We Trust lives in Shop now.
       ]
     },
     {
