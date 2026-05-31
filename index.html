@@ -450,6 +450,26 @@
     background: var(--red);
     margin: 18px auto 0;
   }
+  /* Compact 50%-off reinforcement inside the hero, sitting just above the
+     primary CTA so the deal is the last thing the eye lands on before the
+     button click. Gold accent (the brand's "value" color) intentionally
+     differs from the red top promo bar so they read as two distinct passes. */
+  .hero-promo {
+    display: inline-block;
+    margin-top: 18px;
+    padding: 9px 16px;
+    background: rgba(212, 175, 55, 0.10);
+    border: 1px solid rgba(212, 175, 55, 0.55);
+    border-radius: 4px;
+    color: var(--gold);
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 0.88rem;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    line-height: 1.35;
+  }
+  .hero-promo strong { color: #fff; font-weight: 700; }
 
   /* SHIPPING BANNER */
   .ship-banner {
@@ -2989,8 +3009,14 @@
 
 <body>
 
-<a class="sticker-promo-bar" href="/stickers.html">
-  <span class="sticker-promo-inner" style="animation-delay:-1s;">these stickers slap. literally on your boat or box. lol → SHOP STICKERS</span>
+<!--
+  Top-of-page promo bar. Previously pushed stickers; repurposed to advertise
+  the 50%-off-a-pack auto-promo (the bigger conversion lever). Class names
+  kept (sticker-promo-bar/inner) to reuse existing CSS untouched — they're
+  internal styling hooks, not visible to users.
+-->
+<a class="sticker-promo-bar" href="#shop-browse">
+  <span class="sticker-promo-inner" style="animation-delay:-1s;">🔥 50% OFF A PACK + FREE STICKER — AUTO-APPLIED IN CART · SHOP NOW →</span>
 </a>
 
 <header>
@@ -3017,6 +3043,7 @@
     <h1>Hand-Tied Colorado Stillwater Flies</h1>
     <div class="hero-sub">Stillwater flies tied to catch trophy trout.</div>
     <div class="hero-divider"></div>
+    <div class="hero-promo">🎁 <strong>50% Off a Pack</strong> + Free Surprise Sticker · Auto-Applied at Checkout</div>
     <a href="#shop-browse" class="hero-cta">🪝 Browse the Patterns</a>
   </div>
 
