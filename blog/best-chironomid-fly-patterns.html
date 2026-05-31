@@ -1719,6 +1719,26 @@
 
 </style>
 <script src="/js/nav.js" defer></script>
+<script src="/js/share-fly.js" defer></script>
+<script src="/js/comments.js" defer></script>
+<script>
+/* tt-article-share-v1 — wraps the shared ttShareFly helper for blog posts */
+function ttArticleMeta(){
+  var u=document.querySelector('link[rel="canonical"]');
+  u=u?u.href:(document.querySelector('meta[property="og:url"]')||{}).content||location.href;
+  var t=(document.querySelector('meta[property="og:title"]')||{}).content||document.title;
+  return {url:u,title:t};
+}
+function ttShareArticle(){var m=ttArticleMeta();ttShareFly(m.title,m.title,m.url);}
+function ttShareTo(net){
+  var m=ttArticleMeta(),u=encodeURIComponent(m.url),t=encodeURIComponent(m.title),h;
+  if(net==='fb')h='https://www.facebook.com/sharer/sharer.php?u='+u;
+  else if(net==='x')h='https://twitter.com/intent/tweet?url='+u+'&text='+t;
+  else if(net==='email')h='mailto:?subject='+t+'&body='+t+'%20'+u;
+  if(net==='email'){location.href=h;}else{window.open(h,'_blank','noopener,width=600,height=520');}
+}
+</script>
+
 <script async type="text/javascript" src="https://static.klaviyo.com/onsite/js/klaviyo.js?company_id=RyxZFj"></script>
 </head>
 <body>
@@ -1750,6 +1770,13 @@
 <div class="blog-tag">Stillwater Flies · What to Buy</div>
 <h1>The 5 Chironomid Fly Patterns Every Colorado Stillwater Angler Needs</h1>
 <div class="post-meta">April 2026 · By Thomas Frank · Trout Tricks</div>
+<div class="article-share" style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin:18px 0 4px;">
+<span style="color:#888;font-family:'Barlow Condensed',Impact,sans-serif;font-size:0.8rem;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;">Share</span>
+<a class="tt-sh" href="#" onclick="ttShareArticle();return false;" aria-label="Share this article" title="Share / copy link" style="display:inline-flex;align-items:center;gap:6px;background:#c0392b;color:#fff;text-decoration:none;padding:7px 14px;border-radius:4px;font-family:'Barlow Condensed',Impact,sans-serif;font-size:0.85rem;font-weight:700;letter-spacing:0.06em;text-transform:uppercase;">🔗 Share</a>
+<a class="tt-sh" href="#" onclick="ttShareTo('fb');return false;" aria-label="Share on Facebook" title="Facebook" style="display:inline-flex;align-items:center;background:#1f1f1f;color:#ccc;text-decoration:none;padding:7px 12px;border-radius:4px;border:1px solid #333;font-family:'Barlow Condensed',Impact,sans-serif;font-size:0.85rem;font-weight:700;letter-spacing:0.06em;text-transform:uppercase;">Facebook</a>
+<a class="tt-sh" href="#" onclick="ttShareTo('x');return false;" aria-label="Share on X" title="X / Twitter" style="display:inline-flex;align-items:center;background:#1f1f1f;color:#ccc;text-decoration:none;padding:7px 12px;border-radius:4px;border:1px solid #333;font-family:'Barlow Condensed',Impact,sans-serif;font-size:0.85rem;font-weight:700;letter-spacing:0.06em;text-transform:uppercase;">X</a>
+<a class="tt-sh" href="#" onclick="ttShareTo('email');return false;" aria-label="Share by email" title="Email" style="display:inline-flex;align-items:center;background:#1f1f1f;color:#ccc;text-decoration:none;padding:7px 12px;border-radius:4px;border:1px solid #333;font-family:'Barlow Condensed',Impact,sans-serif;font-size:0.85rem;font-weight:700;letter-spacing:0.06em;text-transform:uppercase;">Email</a>
+</div>
 <p>Walk into any fly shop in Colorado and you'll see walls covered in chironomid patterns — dozens of variations in every color imaginable. It's overwhelming, and most of it is unnecessary. After years of guiding and fishing Colorado's best stillwaters, I've narrowed it down to 5 patterns that cover 95% of situations you'll encounter at Antero, Spinney Mountain, 11 Mile, and Delaney Buttes.</p>
 <h2>1. <a href="/flies/chocolate-gold.html" style="color:#c0392b;font-weight:bold;text-decoration:none;border-bottom:1px solid #c0392b;">Chocolate Gold</a> (#12–16)</h2>
 <p>The most versatile chironomid in Colorado. A tungsten bead, brown body with gold ribbing, and subtle flash triggers fish across every water we fish. When in doubt, tie on a <a href="/flies/chocolate-gold.html" style="color:#c0392b;font-weight:bold;text-decoration:none;border-bottom:1px solid #c0392b;">Chocolate Gold</a>. It works in 6 feet and 20 feet, in clear water and stained water, in spring and fall. This is the pattern I reach for first on any new water.</p>
@@ -1810,6 +1837,10 @@
 <div style="color:#c0392b;font-family:'Barlow Condensed',Impact,sans-serif;font-size:0.82rem;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;margin-top:12px;">Read article →</div>
 </a>
 </div>
+</section>
+<section class="article-comments" style="margin-top:44px;padding-top:8px;">
+<h2 style="color:#f0f0f0;font-family:'Barlow Condensed',Impact,sans-serif;font-size:1.4rem;letter-spacing:0.04em;text-transform:uppercase;margin-bottom:18px;padding-bottom:8px;border-bottom:1px solid #2a2a2a;">Comments</h2>
+<div id="tt-comments"></div>
 </section>
 </div>
 </div>

@@ -1781,6 +1781,26 @@
 
 </style>
 <script src="/js/nav.js" defer></script>
+<script src="/js/share-fly.js" defer></script>
+<script src="/js/comments.js" defer></script>
+<script>
+/* tt-article-share-v1 — wraps the shared ttShareFly helper for blog posts */
+function ttArticleMeta(){
+  var u=document.querySelector('link[rel="canonical"]');
+  u=u?u.href:(document.querySelector('meta[property="og:url"]')||{}).content||location.href;
+  var t=(document.querySelector('meta[property="og:title"]')||{}).content||document.title;
+  return {url:u,title:t};
+}
+function ttShareArticle(){var m=ttArticleMeta();ttShareFly(m.title,m.title,m.url);}
+function ttShareTo(net){
+  var m=ttArticleMeta(),u=encodeURIComponent(m.url),t=encodeURIComponent(m.title),h;
+  if(net==='fb')h='https://www.facebook.com/sharer/sharer.php?u='+u;
+  else if(net==='x')h='https://twitter.com/intent/tweet?url='+u+'&text='+t;
+  else if(net==='email')h='mailto:?subject='+t+'&body='+t+'%20'+u;
+  if(net==='email'){location.href=h;}else{window.open(h,'_blank','noopener,width=600,height=520');}
+}
+</script>
+
 <script async type="text/javascript" src="https://static.klaviyo.com/onsite/js/klaviyo.js?company_id=RyxZFj"></script>
 </head>
 <body>
@@ -1812,6 +1832,13 @@
 <div class="blog-tag">Delaney Buttes · North Park, Colorado</div>
 <h1>Delaney Buttes &amp; Lake John Flies — Chironomid &amp; Leech Patterns for North Park Stillwater</h1>
 <div class="post-meta">Updated May 20, 2026 · By Thomas Frank · Trout Tricks</div>
+<div class="article-share" style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin:18px 0 4px;">
+<span style="color:#888;font-family:'Barlow Condensed',Impact,sans-serif;font-size:0.8rem;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;">Share</span>
+<a class="tt-sh" href="#" onclick="ttShareArticle();return false;" aria-label="Share this article" title="Share / copy link" style="display:inline-flex;align-items:center;gap:6px;background:#c0392b;color:#fff;text-decoration:none;padding:7px 14px;border-radius:4px;font-family:'Barlow Condensed',Impact,sans-serif;font-size:0.85rem;font-weight:700;letter-spacing:0.06em;text-transform:uppercase;">🔗 Share</a>
+<a class="tt-sh" href="#" onclick="ttShareTo('fb');return false;" aria-label="Share on Facebook" title="Facebook" style="display:inline-flex;align-items:center;background:#1f1f1f;color:#ccc;text-decoration:none;padding:7px 12px;border-radius:4px;border:1px solid #333;font-family:'Barlow Condensed',Impact,sans-serif;font-size:0.85rem;font-weight:700;letter-spacing:0.06em;text-transform:uppercase;">Facebook</a>
+<a class="tt-sh" href="#" onclick="ttShareTo('x');return false;" aria-label="Share on X" title="X / Twitter" style="display:inline-flex;align-items:center;background:#1f1f1f;color:#ccc;text-decoration:none;padding:7px 12px;border-radius:4px;border:1px solid #333;font-family:'Barlow Condensed',Impact,sans-serif;font-size:0.85rem;font-weight:700;letter-spacing:0.06em;text-transform:uppercase;">X</a>
+<a class="tt-sh" href="#" onclick="ttShareTo('email');return false;" aria-label="Share by email" title="Email" style="display:inline-flex;align-items:center;background:#1f1f1f;color:#ccc;text-decoration:none;padding:7px 12px;border-radius:4px;border:1px solid #333;font-family:'Barlow Condensed',Impact,sans-serif;font-size:0.85rem;font-weight:700;letter-spacing:0.06em;text-transform:uppercase;">Email</a>
+</div>
 <p>For years, the Colorado stillwater conversation defaulted to South Park: Antero, Spinney, Eleven Mile. With <a href="antero-reservoir-chironomid-patterns.html" style="color:#e74c3c;">Antero drained for 2026</a> and the remaining South Park waters absorbing every displaced angler in the state, the drive north to <strong>Delaney Buttes</strong> and <strong>Lake John</strong> in North Park is suddenly the smartest play on the map. Less pressure, water that's arguably more interesting, and trophy fish that fight harder than anywhere else in the region.</p>
 <h2>Why Delaney Buttes?</h2>
 <p>Delaney Buttes is actually three lakes — North, South, and East Butte — each with distinct characteristics and fish populations. The fishery is managed specifically for trophy trout, with special regulations that protect large fish. The result is one of the most consistent big-fish stillwaters in the region, with rainbow and brown trout exceeding 20 inches regularly. The chironomid hatches here are prolific.</p>
@@ -1898,6 +1925,10 @@
 <div style="color:#c0392b;font-family:'Barlow Condensed',Impact,sans-serif;font-size:0.82rem;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;margin-top:12px;">Read article →</div>
 </a>
 </div>
+</section>
+<section class="article-comments" style="margin-top:44px;padding-top:8px;">
+<h2 style="color:#f0f0f0;font-family:'Barlow Condensed',Impact,sans-serif;font-size:1.4rem;letter-spacing:0.04em;text-transform:uppercase;margin-bottom:18px;padding-bottom:8px;border-bottom:1px solid #2a2a2a;">Comments</h2>
+<div id="tt-comments"></div>
 </section>
 </div>
 </div>
