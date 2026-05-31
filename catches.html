@@ -52,8 +52,7 @@
       "https://trouttricks.com/images/catches/fly-in-mouth-13.jpg",
       "https://trouttricks.com/images/catches/fly-in-mouth-14.jpg",
       "https://trouttricks.com/images/catches/fly-in-mouth-15.jpg",
-      "https://trouttricks.com/images/catches/fly-in-mouth-16.jpg",
-      "https://trouttricks.com/images/catches/fly-in-mouth-17.jpg"
+      "https://trouttricks.com/images/catches/fly-in-mouth-16.jpg"
     ]
   }
   </script>
@@ -1930,94 +1929,95 @@
     }
     .catches-eyebrow {
       font-family: 'Barlow Condensed','Oswald','Arial Narrow',sans-serif;
-      font-weight: 700;
-      font-size: 13px;
-      letter-spacing: 0.22em;
-      color: #c0392b;
-      text-transform: uppercase;
-      margin-bottom: 14px;
+      font-weight: 700; font-size: 13px; letter-spacing: 0.22em;
+      color: #c0392b; text-transform: uppercase; margin-bottom: 14px;
     }
     .catches-h1 {
       font-family: 'Bebas Neue','Oswald','Arial Narrow',sans-serif;
-      font-weight: 700;
-      font-size: clamp(2.4rem, 7vw, 4.2rem);
-      letter-spacing: 0.06em;
-      color: #fff;
-      text-transform: uppercase;
-      line-height: 1;
-      margin: 0;
+      font-weight: 700; font-size: clamp(2.4rem, 7vw, 4.2rem);
+      letter-spacing: 0.06em; color: #fff; text-transform: uppercase;
+      line-height: 1; margin: 0;
     }
-    .catches-divider {
-      width: 60px;
-      height: 2px;
-      background: #c0392b;
-      margin: 22px auto 0;
-    }
+    .catches-divider { width: 60px; height: 2px; background: #c0392b; margin: 22px auto 0; }
     .catches-sub {
       font-family: 'Barlow','Helvetica Neue',Helvetica,Arial,sans-serif;
-      font-size: 1.05rem;
-      line-height: 1.55;
-      color: #bbb;
-      max-width: 560px;
-      margin: 22px auto 0;
+      font-size: 1.05rem; line-height: 1.55; color: #bbb;
+      max-width: 560px; margin: 22px auto 0;
     }
-    .catches-section {
-      padding: 28px 16px 48px;
-      max-width: 1200px;
-      margin: 0 auto;
-    }
+    .catches-section { padding: 28px 16px 48px; max-width: 1200px; margin: 0 auto; }
+
+    /* Masonry via CSS columns so portrait + landscape photos pack tightly
+       without dark "empty space" below shorter cards. break-inside:avoid
+       keeps each figure intact within a column. */
     .catches-grid {
-      display: grid;
-      grid-template-columns: 1fr;
-      gap: 12px;
+      column-count: 1;
+      column-gap: 12px;
     }
-    @media (min-width: 600px) { .catches-grid { grid-template-columns: repeat(2, 1fr); } }
-    @media (min-width: 900px) { .catches-grid { grid-template-columns: repeat(3, 1fr); } }
+    @media (min-width: 600px) { .catches-grid { column-count: 2; } }
+    @media (min-width: 900px) { .catches-grid { column-count: 3; } }
+
     .catch-card {
-      margin: 0;
+      display: block;
+      width: 100%;
+      margin: 0 0 12px;
+      break-inside: avoid;
+      page-break-inside: avoid;
       background: #141414;
       border: 1px solid #2a2a2a;
       border-radius: 6px;
       overflow: hidden;
-      transition: transform 0.2s, border-color 0.2s;
+      cursor: zoom-in;
+      transition: transform 0.2s, border-color 0.2s, box-shadow 0.2s;
+      position: relative;
     }
     .catch-card:hover {
       transform: translateY(-2px);
       border-color: #c0392b;
+      box-shadow: 0 6px 20px rgba(0,0,0,0.4);
+    }
+    .catch-card:focus-visible {
+      outline: 2px solid #c0392b;
+      outline-offset: 2px;
     }
     .catch-card img {
       display: block;
       width: 100%;
       height: auto;
     }
+    /* tiny zoom icon overlay so the click affordance is obvious */
+    .catch-card::after {
+      content: "🔍";
+      position: absolute;
+      top: 8px; right: 8px;
+      width: 28px; height: 28px;
+      background: rgba(0,0,0,0.55);
+      color: #fff;
+      border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 0.85rem;
+      opacity: 0;
+      transition: opacity 0.2s;
+      pointer-events: none;
+    }
+    .catch-card:hover::after, .catch-card:focus-visible::after { opacity: 0.85; }
+
     .catches-cta {
-      padding: 56px 24px 88px;
-      text-align: center;
-      background: #141414;
-      border-top: 1px solid #2a2a2a;
+      padding: 56px 24px 88px; text-align: center;
+      background: #141414; border-top: 1px solid #2a2a2a;
     }
     .catches-cta p {
       font-family: 'Barlow','Helvetica Neue',Helvetica,Arial,sans-serif;
-      font-size: 1.05rem;
-      line-height: 1.6;
-      color: #ccc;
-      max-width: 520px;
-      margin: 0 auto 26px;
+      font-size: 1.05rem; line-height: 1.6; color: #ccc;
+      max-width: 520px; margin: 0 auto 26px;
     }
     .catches-cta strong { color: #fff; }
     .catches-cta-btn {
-      display: inline-block;
-      background: #c0392b;
-      color: #fff;
+      display: inline-block; background: #c0392b; color: #fff;
       padding: 16px 36px;
       font-family: 'Bebas Neue','Oswald','Arial Narrow',sans-serif;
-      font-size: 1.15rem;
-      font-weight: 700;
-      letter-spacing: 0.14em;
-      text-transform: uppercase;
-      text-decoration: none;
-      border-radius: 4px;
-      border: 2px solid #ff6b5b;
+      font-size: 1.15rem; font-weight: 700; letter-spacing: 0.14em;
+      text-transform: uppercase; text-decoration: none;
+      border-radius: 4px; border: 2px solid #ff6b5b;
       box-shadow: 0 4px 16px rgba(192,57,43,0.4);
       transition: background 0.2s;
     }
@@ -2033,23 +2033,22 @@
 
   <section class="catches-section">
     <div class="catches-grid">
-      <figure class="catch-card"><picture><source srcset="/images/catches/fly-in-mouth-01.webp" type="image/webp"><img src="/images/catches/fly-in-mouth-01.jpg" alt="Customer catch on a Trout Tricks fly #1" loading="lazy" decoding="async"></picture></figure>
-      <figure class="catch-card"><picture><source srcset="/images/catches/fly-in-mouth-02.webp" type="image/webp"><img src="/images/catches/fly-in-mouth-02.jpg" alt="Customer catch on a Trout Tricks fly #2" loading="lazy" decoding="async"></picture></figure>
-      <figure class="catch-card"><picture><source srcset="/images/catches/fly-in-mouth-03.webp" type="image/webp"><img src="/images/catches/fly-in-mouth-03.jpg" alt="Customer catch on a Trout Tricks fly #3" loading="lazy" decoding="async"></picture></figure>
-      <figure class="catch-card"><picture><source srcset="/images/catches/fly-in-mouth-04.webp" type="image/webp"><img src="/images/catches/fly-in-mouth-04.jpg" alt="Customer catch on a Trout Tricks fly #4" loading="lazy" decoding="async"></picture></figure>
-      <figure class="catch-card"><picture><source srcset="/images/catches/fly-in-mouth-05.webp" type="image/webp"><img src="/images/catches/fly-in-mouth-05.jpg" alt="Customer catch on a Trout Tricks fly #5" loading="lazy" decoding="async"></picture></figure>
-      <figure class="catch-card"><picture><source srcset="/images/catches/fly-in-mouth-06.webp" type="image/webp"><img src="/images/catches/fly-in-mouth-06.jpg" alt="Customer catch on a Trout Tricks fly #6" loading="lazy" decoding="async"></picture></figure>
-      <figure class="catch-card"><picture><source srcset="/images/catches/fly-in-mouth-07.webp" type="image/webp"><img src="/images/catches/fly-in-mouth-07.jpg" alt="Customer catch on a Trout Tricks fly #7" loading="lazy" decoding="async"></picture></figure>
-      <figure class="catch-card"><picture><source srcset="/images/catches/fly-in-mouth-08.webp" type="image/webp"><img src="/images/catches/fly-in-mouth-08.jpg" alt="Customer catch on a Trout Tricks fly #8" loading="lazy" decoding="async"></picture></figure>
-      <figure class="catch-card"><picture><source srcset="/images/catches/fly-in-mouth-09.webp" type="image/webp"><img src="/images/catches/fly-in-mouth-09.jpg" alt="Customer catch on a Trout Tricks fly #9" loading="lazy" decoding="async"></picture></figure>
-      <figure class="catch-card"><picture><source srcset="/images/catches/fly-in-mouth-10.webp" type="image/webp"><img src="/images/catches/fly-in-mouth-10.jpg" alt="Customer catch on a Trout Tricks fly #10" loading="lazy" decoding="async"></picture></figure>
-      <figure class="catch-card"><picture><source srcset="/images/catches/fly-in-mouth-11.webp" type="image/webp"><img src="/images/catches/fly-in-mouth-11.jpg" alt="Customer catch on a Trout Tricks fly #11" loading="lazy" decoding="async"></picture></figure>
-      <figure class="catch-card"><picture><source srcset="/images/catches/fly-in-mouth-12.webp" type="image/webp"><img src="/images/catches/fly-in-mouth-12.jpg" alt="Customer catch on a Trout Tricks fly #12" loading="lazy" decoding="async"></picture></figure>
-      <figure class="catch-card"><picture><source srcset="/images/catches/fly-in-mouth-13.webp" type="image/webp"><img src="/images/catches/fly-in-mouth-13.jpg" alt="Customer catch on a Trout Tricks fly #13" loading="lazy" decoding="async"></picture></figure>
-      <figure class="catch-card"><picture><source srcset="/images/catches/fly-in-mouth-14.webp" type="image/webp"><img src="/images/catches/fly-in-mouth-14.jpg" alt="Customer catch on a Trout Tricks fly #14" loading="lazy" decoding="async"></picture></figure>
-      <figure class="catch-card"><picture><source srcset="/images/catches/fly-in-mouth-15.webp" type="image/webp"><img src="/images/catches/fly-in-mouth-15.jpg" alt="Customer catch on a Trout Tricks fly #15" loading="lazy" decoding="async"></picture></figure>
-      <figure class="catch-card"><picture><source srcset="/images/catches/fly-in-mouth-16.webp" type="image/webp"><img src="/images/catches/fly-in-mouth-16.jpg" alt="Customer catch on a Trout Tricks fly #16" loading="lazy" decoding="async"></picture></figure>
-      <figure class="catch-card"><picture><source srcset="/images/catches/fly-in-mouth-17.webp" type="image/webp"><img src="/images/catches/fly-in-mouth-17.jpg" alt="Customer catch on a Trout Tricks fly #17" loading="lazy" decoding="async"></picture></figure>
+      <figure class="catch-card" onclick="openCatchLightbox('/images/catches/fly-in-mouth-01.jpg', 1)" role="button" tabindex="0" aria-label="Enlarge customer catch photo #1" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();openCatchLightbox('/images/catches/fly-in-mouth-01.jpg', 1);}"><picture><source srcset="/images/catches/fly-in-mouth-01.webp" type="image/webp"><img src="/images/catches/fly-in-mouth-01.jpg" alt="Customer catch on a Trout Tricks fly #1" loading="lazy" decoding="async"></picture></figure>
+      <figure class="catch-card" onclick="openCatchLightbox('/images/catches/fly-in-mouth-02.jpg', 2)" role="button" tabindex="0" aria-label="Enlarge customer catch photo #2" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();openCatchLightbox('/images/catches/fly-in-mouth-02.jpg', 2);}"><picture><source srcset="/images/catches/fly-in-mouth-02.webp" type="image/webp"><img src="/images/catches/fly-in-mouth-02.jpg" alt="Customer catch on a Trout Tricks fly #2" loading="lazy" decoding="async"></picture></figure>
+      <figure class="catch-card" onclick="openCatchLightbox('/images/catches/fly-in-mouth-03.jpg', 3)" role="button" tabindex="0" aria-label="Enlarge customer catch photo #3" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();openCatchLightbox('/images/catches/fly-in-mouth-03.jpg', 3);}"><picture><source srcset="/images/catches/fly-in-mouth-03.webp" type="image/webp"><img src="/images/catches/fly-in-mouth-03.jpg" alt="Customer catch on a Trout Tricks fly #3" loading="lazy" decoding="async"></picture></figure>
+      <figure class="catch-card" onclick="openCatchLightbox('/images/catches/fly-in-mouth-04.jpg', 4)" role="button" tabindex="0" aria-label="Enlarge customer catch photo #4" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();openCatchLightbox('/images/catches/fly-in-mouth-04.jpg', 4);}"><picture><source srcset="/images/catches/fly-in-mouth-04.webp" type="image/webp"><img src="/images/catches/fly-in-mouth-04.jpg" alt="Customer catch on a Trout Tricks fly #4" loading="lazy" decoding="async"></picture></figure>
+      <figure class="catch-card" onclick="openCatchLightbox('/images/catches/fly-in-mouth-05.jpg', 5)" role="button" tabindex="0" aria-label="Enlarge customer catch photo #5" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();openCatchLightbox('/images/catches/fly-in-mouth-05.jpg', 5);}"><picture><source srcset="/images/catches/fly-in-mouth-05.webp" type="image/webp"><img src="/images/catches/fly-in-mouth-05.jpg" alt="Customer catch on a Trout Tricks fly #5" loading="lazy" decoding="async"></picture></figure>
+      <figure class="catch-card" onclick="openCatchLightbox('/images/catches/fly-in-mouth-06.jpg', 6)" role="button" tabindex="0" aria-label="Enlarge customer catch photo #6" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();openCatchLightbox('/images/catches/fly-in-mouth-06.jpg', 6);}"><picture><source srcset="/images/catches/fly-in-mouth-06.webp" type="image/webp"><img src="/images/catches/fly-in-mouth-06.jpg" alt="Customer catch on a Trout Tricks fly #6" loading="lazy" decoding="async"></picture></figure>
+      <figure class="catch-card" onclick="openCatchLightbox('/images/catches/fly-in-mouth-07.jpg', 7)" role="button" tabindex="0" aria-label="Enlarge customer catch photo #7" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();openCatchLightbox('/images/catches/fly-in-mouth-07.jpg', 7);}"><picture><source srcset="/images/catches/fly-in-mouth-07.webp" type="image/webp"><img src="/images/catches/fly-in-mouth-07.jpg" alt="Customer catch on a Trout Tricks fly #7" loading="lazy" decoding="async"></picture></figure>
+      <figure class="catch-card" onclick="openCatchLightbox('/images/catches/fly-in-mouth-08.jpg', 8)" role="button" tabindex="0" aria-label="Enlarge customer catch photo #8" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();openCatchLightbox('/images/catches/fly-in-mouth-08.jpg', 8);}"><picture><source srcset="/images/catches/fly-in-mouth-08.webp" type="image/webp"><img src="/images/catches/fly-in-mouth-08.jpg" alt="Customer catch on a Trout Tricks fly #8" loading="lazy" decoding="async"></picture></figure>
+      <figure class="catch-card" onclick="openCatchLightbox('/images/catches/fly-in-mouth-09.jpg', 9)" role="button" tabindex="0" aria-label="Enlarge customer catch photo #9" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();openCatchLightbox('/images/catches/fly-in-mouth-09.jpg', 9);}"><picture><source srcset="/images/catches/fly-in-mouth-09.webp" type="image/webp"><img src="/images/catches/fly-in-mouth-09.jpg" alt="Customer catch on a Trout Tricks fly #9" loading="lazy" decoding="async"></picture></figure>
+      <figure class="catch-card" onclick="openCatchLightbox('/images/catches/fly-in-mouth-10.jpg', 10)" role="button" tabindex="0" aria-label="Enlarge customer catch photo #10" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();openCatchLightbox('/images/catches/fly-in-mouth-10.jpg', 10);}"><picture><source srcset="/images/catches/fly-in-mouth-10.webp" type="image/webp"><img src="/images/catches/fly-in-mouth-10.jpg" alt="Customer catch on a Trout Tricks fly #10" loading="lazy" decoding="async"></picture></figure>
+      <figure class="catch-card" onclick="openCatchLightbox('/images/catches/fly-in-mouth-11.jpg', 11)" role="button" tabindex="0" aria-label="Enlarge customer catch photo #11" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();openCatchLightbox('/images/catches/fly-in-mouth-11.jpg', 11);}"><picture><source srcset="/images/catches/fly-in-mouth-11.webp" type="image/webp"><img src="/images/catches/fly-in-mouth-11.jpg" alt="Customer catch on a Trout Tricks fly #11" loading="lazy" decoding="async"></picture></figure>
+      <figure class="catch-card" onclick="openCatchLightbox('/images/catches/fly-in-mouth-12.jpg', 12)" role="button" tabindex="0" aria-label="Enlarge customer catch photo #12" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();openCatchLightbox('/images/catches/fly-in-mouth-12.jpg', 12);}"><picture><source srcset="/images/catches/fly-in-mouth-12.webp" type="image/webp"><img src="/images/catches/fly-in-mouth-12.jpg" alt="Customer catch on a Trout Tricks fly #12" loading="lazy" decoding="async"></picture></figure>
+      <figure class="catch-card" onclick="openCatchLightbox('/images/catches/fly-in-mouth-13.jpg', 13)" role="button" tabindex="0" aria-label="Enlarge customer catch photo #13" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();openCatchLightbox('/images/catches/fly-in-mouth-13.jpg', 13);}"><picture><source srcset="/images/catches/fly-in-mouth-13.webp" type="image/webp"><img src="/images/catches/fly-in-mouth-13.jpg" alt="Customer catch on a Trout Tricks fly #13" loading="lazy" decoding="async"></picture></figure>
+      <figure class="catch-card" onclick="openCatchLightbox('/images/catches/fly-in-mouth-14.jpg', 14)" role="button" tabindex="0" aria-label="Enlarge customer catch photo #14" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();openCatchLightbox('/images/catches/fly-in-mouth-14.jpg', 14);}"><picture><source srcset="/images/catches/fly-in-mouth-14.webp" type="image/webp"><img src="/images/catches/fly-in-mouth-14.jpg" alt="Customer catch on a Trout Tricks fly #14" loading="lazy" decoding="async"></picture></figure>
+      <figure class="catch-card" onclick="openCatchLightbox('/images/catches/fly-in-mouth-15.jpg', 15)" role="button" tabindex="0" aria-label="Enlarge customer catch photo #15" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();openCatchLightbox('/images/catches/fly-in-mouth-15.jpg', 15);}"><picture><source srcset="/images/catches/fly-in-mouth-15.webp" type="image/webp"><img src="/images/catches/fly-in-mouth-15.jpg" alt="Customer catch on a Trout Tricks fly #15" loading="lazy" decoding="async"></picture></figure>
+      <figure class="catch-card" onclick="openCatchLightbox('/images/catches/fly-in-mouth-16.jpg', 16)" role="button" tabindex="0" aria-label="Enlarge customer catch photo #16" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();openCatchLightbox('/images/catches/fly-in-mouth-16.jpg', 16);}"><picture><source srcset="/images/catches/fly-in-mouth-16.webp" type="image/webp"><img src="/images/catches/fly-in-mouth-16.jpg" alt="Customer catch on a Trout Tricks fly #16" loading="lazy" decoding="async"></picture></figure>
     </div>
   </section>
 
@@ -2057,6 +2056,24 @@
     <p>Your catch could be here. <strong>Tag us @trouttricks</strong> or send a photo when your flies move fish.</p>
     <a href="/flies/chironomids.html" class="catches-cta-btn">🪝 Shop the Patterns &rarr;</a>
   </section>
+
+  <script>
+    // openCatchLightbox: direct-URL variant for the customer-catch grid.
+    // Reuses the existing #lightbox modal + closeLightbox() defined elsewhere
+    // on this page (which originally served the fly-catalog images).
+    function openCatchLightbox(url, n) {
+      var lb = document.getElementById('lightbox');
+      var img = document.getElementById('lightboxImg');
+      var nm = document.getElementById('lightboxName');
+      if (!lb || !img) return;
+      img.src = url;
+      img.alt = 'Customer catch on a Trout Tricks fly #' + n;
+      img.style.transform = '';
+      if (nm) nm.textContent = '';
+      lb.classList.add('open');
+      document.body.style.overflow = 'hidden';
+    }
+  </script>
 
 </div>
 
