@@ -20,7 +20,8 @@
         { label: 'The Leeches',        href: '/flies/leeches.html' },
         { label: 'The Scuds',          href: '/flies/bling-scud.html' },
         { label: 'The Stickers',       href: '/stickers.html' },
-        { label: 'Free Sticker',       href: '/free-sticker.html' }
+        { label: 'Free Sticker',       href: '/free-sticker.html' },
+        { label: 'The Gear We Trust',  href: '/affiliates.html' }   // moved back from Trust per Thomas 2026-05-31
       ]
     },
     {
@@ -39,10 +40,10 @@
     {
       label: 'Trust',
       items: [
-        { label: 'The Reviews',       href: '/#reviews' },
-        { label: 'The Map',           href: '/about.html#flymap' },
-        { label: 'Trusted Partners',  href: '/#trusted-partners' },   // no "The" per Thomas 2026-05-31
-        { label: 'The Gear We Trust', href: '/affiliates.html' }
+        { label: 'The Reviews', href: '/#reviews' },
+        { label: 'The Map',     href: '/about.html#flymap' }
+        // Trusted Partners removed from nav per Thomas 2026-05-31 (kept in footer Quick Links).
+        // The Gear We Trust moved back to Shop section in the same change.
       ]
     },
     {
