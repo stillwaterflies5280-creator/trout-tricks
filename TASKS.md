@@ -2,6 +2,103 @@
 
 Persistent source of truth for active, paused, and closed work. All adds/closes/edits happen here.
 
+## Open Loops — May 30, 2026
+
+Authoritative current-state snapshot of all active work, grouped by priority. Detailed historical context for some items lives in the numbered tickets under **## Open (active queue)** and **## Backlog (paused, not active)** below; this section supersedes those for current status. Existing ticket IDs are cross-referenced where applicable.
+
+### Priority 1 — Revenue / compliance blockers
+
+- **1a — CDOR Revenue Online access** — Status: **BLOCKED**.
+  - **Context:** Form submission rejected as "info wrong." Tried hyphen variants and ZIP+4. First call attempt to CDOR (☎️ 303-238-7378) hit a too-busy line. Account `97169111-0001` · FEIN `422215711` · Letter ID `L0463816592` · Liability date 2026-05-04.
+  - **Acceptance:** Logged in to Revenue Online.
+  - **Depends on:** —
+- **1b — Confirm filing frequency** — Status: **BLOCKED on 1a**.
+  - **Context:** License doesn't show frequency. Likely quarterly or annually given current revenue (~$200-300/mo gross).
+  - **Acceptance:** Frequency documented here in TASKS.md.
+  - **Depends on:** 1a.
+- **1c — Cloudflare Worker tax collection** — Status: **TODO**.
+  - **Context:** Square dashboard has CO Sales Tax enabled with automatic delivery/pickup overrides, but the Worker creates Hosted Checkout sessions via API and tax isn't auto-applying — all orders since 2026-05-04 show `tax_money: $0`. Fix candidates: include tax in line items, or set `pricing_options.auto_apply_taxes` on session creation. Estimated retroactive tax owed across May: **~$25-50** — document for first filing.
+  - **Acceptance:** A test order through Hosted Checkout shows a tax line on the Square receipt.
+  - **Depends on:** —
+  - **Related ticket:** #53 in active queue (different angle on the same compliance umbrella).
+
+### Priority 2 — List building (highest growth lever per TT12)
+
+- **2 — Chironomid Cheat Sheet PDF lead magnet** — Status: **TODO** (identified in TT12 as "single best list-builder, ships in a week").
+  - **Context:** 2-3 page PDF in Brian Chan-style chironomid presentation (depth zones, color by water clarity, retrieve speeds, four-pattern starter rotation). Gate via email signup at `trouttricks.com/cheat-sheet`. Klaviyo flow delivers the PDF + adds to Crew list (`SUpRkF`). Promotion: 1 FB community post/week for 4 weeks + r/flyfishing + CO Trout Unlimited chapter pages.
+  - **Acceptance:** Landing page live, Klaviyo flow delivers PDF, **200 signups in 4-6 weeks**.
+  - **Depends on:** —
+  - **Related ticket:** #21-24 in backlog (previously gated on #13/#14 wholesale — decouple).
+
+### Priority 3 — Relationship capital (manual, one-off)
+
+- **3 — Personal post-purchase notes** — Status: **TODO**.
+  - **Context:** Send each individually from `stillwaterflies5280@gmail.com` (NOT Klaviyo). Template lives in the TT13 chat transcript.
+  - **Recipients:**
+    - **David Romero** — 2026-05-27 · $54.50 · d111d@yahoo.com
+    - **Ryan Greene** — 2026-05-27 · $54.50 · rynegreene8@gmail.com · Fort Collins, CO
+    - **Trev Jasper** — 2026-05-27 · $42 · trevorjasper44@gmail.com
+    - **Timothy Spaulding** — 2026-05-29 · $114.50 · tgspaulding1234@gmail.com (biggest order to date)
+  - **Acceptance:** All 4 sent.
+  - **Depends on:** —
+
+### Priority 4 — Data-gated experiments
+
+- **4 — FB Group paid ad test** — Status: **GATED** (today is day 3 post-50%-off-launch; need 5-7 more days of clean post-promo baseline data first).
+  - **Context:** Engagement objective, **$50 budget, 7 days**. Targeting: Fly Fishing + (Lakes OR Stillwater), CO/WY/MT/NM/UT, ages 25-65. Creative: bench shot or lake report. CTA: "Join the community" → group link.
+  - **Pre-flight:** Audit the group "shop window" (banner, pinned post, post quality) before launching ads.
+  - **Acceptance:** Cost per group join measured; scale-or-kill decision made.
+  - **Depends on:** 5-7 more days of clean post-promo baseline data.
+- **5 — The Drop validation** — Status: **NEEDS AUDIT** (0 real waitlist signups in 30 days).
+  - **Context:** Audit whether the Drop signup is visible anywhere customers actually see (site, emails, social). Distinguish a **distribution problem** (fix = promote it) from a **validation problem** (concept doesn't resonate). Hold Drop Welcome flow refresh until clear. Re-think date 2026-06-09 per TT13 backlog.
+  - **Acceptance:** Audit done, root cause identified, decision made: promote-harder OR pivot/kill.
+  - **Depends on:** —
+  - **Related ticket:** #45 in backlog.
+
+### Priority 5 — Technical polish (small wins, batch when energy permits)
+
+- **6 — UTM tagging audit on all Klaviyo flows** — Status: **TODO**.
+  - **Context:** Verify order confirmation, welcome, abandoned cart, post-purchase, and future campaign templates all carry `utm_source=klaviyo`, `utm_medium=email`, `utm_campaign={flow_name}`. Account default was set in TT12 but per-template verification needed. The Klaviyo / email line in GA4 should reflect this.
+  - **Acceptance:** Every live flow template verified; GA4 attribution reflects tagged sends.
+  - **Depends on:** —
+- **7 — Sticker QR code tracking** — Status: **TODO** (~30 min).
+  - **Context:** Thomas's parking-lot stickers are currently invisible to GA. Options: QR points to `trouttricks.com/?utm_source=sticker&utm_medium=guerrilla&utm_campaign=parking-lot`, OR a dedicated `/sticker` landing page with a free fly + `STICKER` code.
+  - **Acceptance:** Sticker traffic shows up in GA4 under the chosen UTM.
+  - **Depends on:** —
+- **8 — AOV expansion lever** — Status: **TODO**.
+  - **Context:** Test free shipping threshold over $40. Welcome popup could add a "free shipping over $40" badge.
+  - **Acceptance:** Threshold live in cart math + messaging surfaced; track AOV delta vs baseline.
+  - **Depends on:** —
+- **9 — Cart structured address + acquisition_source** — Status: **READY** (release with next cart deploy).
+  - **Context:** Wire cart to send structured address fields (`address_line1` / `city` / `state` / `zip`) and `acquisition_source` (e.g. `document.referrer`) so the new Code.gs columns auto-populate from real ship orders.
+  - **Acceptance:** Next ship order populates the new columns automatically.
+  - **Depends on:** Next cart deploy (release-bundle).
+  - **Related ticket:** #54 in backlog.
+- **10 — White stuffer cards** — Status: **TODO**.
+  - **Context:** Each shipped box gets a card: "Share your catch in the FB group" + QR. Closes the loop: customer → group → social proof → more customers. Source: Uline pre-cut (~$40) OR DIY (~$20).
+  - **Acceptance:** Initial batch (~200 cards) ordered + slipped into outgoing boxes.
+  - **Depends on:** —
+  - **Related ticket:** #72 in active queue.
+
+### Priority 6 — Deferred (paused, revisit later)
+
+- **#13** Avidmax wholesale (Nick contact)
+- **#14** Umpqua signature pattern (blocked on Matt Winkler)
+- **#15** Local fly shop wholesale (South Park / North Park / Estes / Carter Lake)
+- **#20** UTM social bio links via Bit.ly + GA4
+- **#45-48** Drop subscriptions / Apps Script / onboarding (gated on item 5 — Drop validation)
+- **#52** 4-week Drop sprint (held)
+- FB value-first cadence (Mon lake report / Wed tying reel / Fri photo) — start whenever
+- Cross-promo DMs to 3-5 CO stillwater creators
+- Clarity diagnostic (5-10 view-no-add sessions to identify funnel friction)
+- GSC Performance → queries at position 5-20 with 50+ impressions (almost-ranking SEO wins)
+
+### Insights worth preserving (from TT13 chat, May 27-30)
+
+- **50% off promo + new welcome email + new order confirmation flow + Klaviyo UTM fixes deployed 2026-05-27.** Effects sustaining 3 days in: **AOV up from $24 → ~$66 (2.75×)**, **purchasers 12 in May vs 3 in April (+300%)**, **Google organic +218%** (compounding SEO), **Facebook share of traffic dropped 66% → 47.5%** (healthy diversification, not loss — FB absolute volume also grew). System is working as designed; **don't tinker for at least 2 more weeks.**
+- **Klaviyo Placed Order events arrive via Square's native integration (NOT Apps Script).** Field structure: `Items` is a flat string array; structured money/discount/fulfillment data lives in `event.extra.*`. Order Confirmation template at `assets/email-templates/order-confirmation.html` rebuilt against this schema (commit `eca8a33` + later).
+- **"Same shipping address, two orders" pattern observed** — David Romero + Ryan Greene both at 2203 Sandbur Dr, Fort Collins. Likely legitimate household co-purchase, not fraud. Verify via Square payment method comparison if the pattern repeats.
+
 ## Open (active queue)
 
 ### Next 7 days
