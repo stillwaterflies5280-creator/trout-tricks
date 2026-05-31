@@ -455,8 +455,14 @@
      button click. Gold accent (the brand's "value" color) intentionally
      differs from the red top promo bar so they read as two distinct passes. */
   .hero-promo {
-    display: inline-block;
-    margin-top: 18px;
+    /* display:block + fit-content + auto margins so the pill stacks ABOVE the
+       CTA on its own line while still hugging its text (not full-width). Was
+       inline-block — caused side-by-side rendering next to .hero-cta on wide
+       viewports. */
+    display: block;
+    width: fit-content;
+    max-width: 100%;
+    margin: 18px auto 0;
     padding: 9px 16px;
     background: rgba(212, 175, 55, 0.10);
     border: 1px solid rgba(212, 175, 55, 0.55);
@@ -468,6 +474,7 @@
     letter-spacing: 0.12em;
     text-transform: uppercase;
     line-height: 1.35;
+    text-align: center;
   }
   .hero-promo strong { color: #fff; font-weight: 700; }
 
