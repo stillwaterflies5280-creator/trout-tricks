@@ -24,6 +24,12 @@
       ]
     },
     {
+      label: 'Trip',
+      items: [
+        { label: 'Book a Trip', href: '/trip.html' }   // verb phrase — kept as-is
+      ]
+    },
+    {
       label: 'Gallery',
       items: [
         { label: 'The Proof', href: '/catches.html' },   // customer fish-in-mouth photos (was "Catches")
@@ -33,10 +39,10 @@
     {
       label: 'Trust',
       items: [
-        { label: 'The Reviews',          href: '/#reviews' },
-        { label: 'The Map',              href: '/about.html#flymap' },
-        { label: 'The Trusted Partners', href: '/#trusted-partners' },
-        { label: 'The Gear We Trust',    href: '/affiliates.html' }
+        { label: 'The Reviews',       href: '/#reviews' },
+        { label: 'The Map',           href: '/about.html#flymap' },
+        { label: 'Trusted Partners',  href: '/#trusted-partners' },   // no "The" per Thomas 2026-05-31
+        { label: 'The Gear We Trust', href: '/affiliates.html' }
       ]
     },
     {
@@ -45,12 +51,6 @@
         { label: 'The Drop',      href: '/the-drop.html' },
         { label: 'The Blog',      href: '/blog.html' },
         { label: 'The Community', href: '/community.html' }
-      ]
-    },
-    {
-      label: 'Trip',
-      items: [
-        { label: 'Book a Trip', href: '/trip.html' }   // verb phrase — kept as-is
       ]
     },
     {

@@ -215,7 +215,10 @@
     align-items: center;
     justify-content: space-between;
     position: sticky;
-    top: 0;
+    /* Sits BELOW the promo bar (56px on desktop, 50px mobile — overridden in
+       the existing @media (max-width:640px) block further down). Both elements
+       are position:sticky so they pin together on scroll. */
+    top: 56px;
     z-index: 100;
     min-height: 62px;
     gap: 12px;
@@ -505,6 +508,56 @@
     top: 62px;
     z-index: 90;
   }
+  /* "Why Trout Tricks" — section heading. Was small uppercase eyebrow text;
+     bumped to a proper H2 sized for visibility (per Thomas 2026-05-31). */
+  .highlights-title {
+    font-family: 'Bebas Neue', Impact, sans-serif;
+    font-size: clamp(2rem, 5.5vw, 3rem);
+    letter-spacing: 0.05em;
+    color: #fff;
+    text-transform: uppercase;
+    text-align: center;
+    margin: 0 0 8px;
+    line-height: 1.05;
+  }
+  .highlights-title-underline {
+    width: 60px;
+    height: 2px;
+    background: var(--red);
+    margin: 0 auto 26px;
+  }
+  /* Trust CTA row below the 4 highlight cards — Reviews + Map clickable
+     ghost buttons that anchor-jump to /#reviews and /about.html#flymap. */
+  .highlights-cta-row {
+    display: flex;
+    gap: 14px;
+    justify-content: center;
+    flex-wrap: wrap;
+    margin-top: 30px;
+  }
+  .highlights-cta {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: transparent;
+    color: var(--gold);
+    border: 1.5px solid var(--gold);
+    padding: 12px 26px;
+    font-family: 'Bebas Neue', Impact, sans-serif;
+    font-size: 1rem;
+    font-weight: 700;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    text-decoration: none;
+    border-radius: 4px;
+    transition: background 0.2s, color 0.2s;
+  }
+  .highlights-cta:hover {
+    background: var(--gold);
+    color: #0a0a0a;
+  }
+  /* Legacy eyebrow class — kept in case any other page references it; styling
+     unchanged below so nothing else breaks. */
   .highlights-eyebrow {
     font-family: 'Barlow Condensed', Impact, sans-serif;
     font-size: 0.65rem;
@@ -1964,7 +2017,7 @@
 
   /* MOBILE RESPONSIVE */
   @media (max-width: 480px) {
-    header { padding: 0 12px; gap: 6px; }
+    header { padding: 0 12px; gap: 6px; top: 50px; }   /* mobile promo bar is 50px tall */
     .logo { font-size: 1.4rem; }
     .nav-btn { font-size: 0.68rem; padding: 4px 5px; }
     .nav-btn.nav-overflow { display: none; }
@@ -2965,6 +3018,12 @@
      stays hidden. If the fetch errors out we fail-open and show the bar
      without the count number rather than dropping a conversion surface. */
   .sticker-promo-bar {
+    /* Sticky to the very top of the viewport so it stays in view alongside the
+       header on scroll. z-index sits above the header (header is z:100, this is
+       z:101) so the bar can't get visually covered. */
+    position: sticky;
+    top: 0;
+    z-index: 101;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -3063,7 +3122,8 @@
 
   <!-- HIGHLIGHTS SECTION -->
   <div class="highlights-section">
-    <div class="highlights-eyebrow">Why Trout Tricks</div>
+    <h2 class="highlights-title">Why Trout Tricks</h2>
+    <div class="highlights-title-underline"></div>
     <div class="highlights-grid">
       <div class="highlight-card">
         <div class="highlight-icon">🏔️</div>
@@ -3093,6 +3153,10 @@
           <div class="highlight-desc">Drops fast to the strike zone</div>
         </div>
       </div>
+    </div>
+    <div class="highlights-cta-row">
+      <a class="highlights-cta" href="#reviews">⭐ Read the Reviews</a>
+      <a class="highlights-cta" href="/about.html#flymap">🗺️ See the Map</a>
     </div>
   </div>
 
@@ -3233,27 +3297,119 @@
     </div>
   </div>
 
-  <!-- WHERE THE FLIES ARE HEADED — homepage teaser. Live interactive map lives
-       on /about.html#flymap; this section keeps the homepage focused (no
-       Leaflet load) while still showcasing the geographic reach as social proof
-       and pushing curious clicks toward the full map. -->
-  <section class="map-teaser" style="padding:64px 20px;text-align:center;background:linear-gradient(180deg,#0a0a0a 0%,#141414 100%);border-top:1px solid #1a1a1a;border-bottom:1px solid #1a1a1a;">
-    <div style="max-width:680px;margin:0 auto;">
-      <div style="font-family:'Barlow Condensed',sans-serif;font-size:12px;letter-spacing:0.22em;color:#c0392b;text-transform:uppercase;font-weight:700;margin-bottom:14px;">
+  <!-- WHERE THE FLIES ARE HEADED — homepage mini live map. Same Leaflet
+       implementation as /about.html#flymap, smaller (260px) so it doesn't
+       dominate the page. Reads ORDERS from /js/order-map-data.js (shared with
+       /about.html), so adding a pin in one place auto-updates both maps. -->
+  <section class="home-map" style="padding:60px 20px 56px;background:linear-gradient(180deg,#0a0a0a 0%,#141414 100%);border-top:1px solid #1a1a1a;border-bottom:1px solid #1a1a1a;">
+    <div style="max-width:840px;margin:0 auto;">
+      <div style="text-align:center;font-family:'Barlow Condensed',sans-serif;font-size:12px;letter-spacing:0.22em;color:#c0392b;text-transform:uppercase;font-weight:700;margin-bottom:14px;">
         Where the Flies Are Headed
       </div>
-      <h2 style="font-family:'Bebas Neue',Impact,sans-serif;font-size:clamp(1.9rem,5vw,2.9rem);letter-spacing:0.04em;color:#fff;text-transform:uppercase;line-height:1.05;margin:0;">
+      <h2 style="text-align:center;font-family:'Bebas Neue',Impact,sans-serif;font-size:clamp(1.9rem,5vw,2.9rem);letter-spacing:0.04em;color:#fff;text-transform:uppercase;line-height:1.05;margin:0;">
         Hand-Tied in Fairmount.<br>Headed Across the Map.
       </h2>
-      <div style="width:60px;height:2px;background:#c0392b;margin:20px auto 22px;"></div>
-      <p style="font-family:'Barlow',sans-serif;font-size:1rem;line-height:1.6;color:#bbb;max-width:520px;margin:0 auto 28px;">
-        Every pin is a hand-tied fly or sticker shipped out the door &mdash; from the bench in Fairmount, CO to anglers across North America. See where your patterns might be heading next.
-      </p>
-      <a href="/about.html#flymap" style="display:inline-block;background:#c0392b;color:#fff;padding:15px 32px;font-family:'Bebas Neue',Impact,sans-serif;font-size:1.1rem;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;text-decoration:none;border-radius:4px;border:2px solid #ff6b5b;box-shadow:0 4px 16px rgba(192,57,43,0.4);transition:background 0.2s;" onmouseover="this.style.background='#e74c3c'" onmouseout="this.style.background='#c0392b'">
-        🗺️ See the Live Map &rarr;
-      </a>
+      <div style="width:60px;height:2px;background:#c0392b;margin:18px auto 22px;"></div>
+
+      <!-- Reach counter — same 4-stat strip as /about.html, derived live from
+           the same ORDERS array via the script at the bottom of the section. -->
+      <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:10px;max-width:520px;margin:0 auto 20px;">
+        <div style="padding:10px 4px;border:1px solid #2a2a2a;border-radius:6px;background:rgba(0,0,0,0.25);text-align:center;">
+          <div id="homeMapCities" style="font-family:'Bebas Neue',sans-serif;font-size:1.7rem;color:#d4af37;line-height:1;">—</div>
+          <div style="font-family:'Barlow Condensed',sans-serif;font-size:0.66rem;color:#888;letter-spacing:0.14em;text-transform:uppercase;margin-top:6px;">Cities</div>
+        </div>
+        <div style="padding:10px 4px;border:1px solid #2a2a2a;border-radius:6px;background:rgba(0,0,0,0.25);text-align:center;">
+          <div id="homeMapStates" style="font-family:'Bebas Neue',sans-serif;font-size:1.7rem;color:#d4af37;line-height:1;">—</div>
+          <div style="font-family:'Barlow Condensed',sans-serif;font-size:0.66rem;color:#888;letter-spacing:0.14em;text-transform:uppercase;margin-top:6px;">States</div>
+        </div>
+        <div style="padding:10px 4px;border:1px solid #2a2a2a;border-radius:6px;background:rgba(0,0,0,0.25);text-align:center;">
+          <div id="homeMapProvinces" style="font-family:'Bebas Neue',sans-serif;font-size:1.7rem;color:#d4af37;line-height:1;">—</div>
+          <div style="font-family:'Barlow Condensed',sans-serif;font-size:0.66rem;color:#888;letter-spacing:0.14em;text-transform:uppercase;margin-top:6px;">Provinces</div>
+        </div>
+        <div style="padding:10px 4px;border:1px solid #2a2a2a;border-radius:6px;background:rgba(0,0,0,0.25);text-align:center;">
+          <div id="homeMapCountries" style="font-family:'Bebas Neue',sans-serif;font-size:1.7rem;color:#d4af37;line-height:1;">—</div>
+          <div style="font-family:'Barlow Condensed',sans-serif;font-size:0.66rem;color:#888;letter-spacing:0.14em;text-transform:uppercase;margin-top:6px;">Countries</div>
+        </div>
+      </div>
+
+      <!-- Mini live map. Dark tile theme, hover-tooltip city labels, no scroll
+           wheel zoom (since the page itself scrolls). -->
+      <div id="homeMap" style="height:260px;width:100%;border:1px solid #2a2a2a;border-radius:8px;background:#0a0a0a;z-index:0;"></div>
+
+      <div style="text-align:center;margin-top:22px;">
+        <a href="/about.html#flymap" style="display:inline-block;background:transparent;color:#d4af37;border:1.5px solid #d4af37;padding:11px 26px;font-family:'Bebas Neue',Impact,sans-serif;font-size:1rem;font-weight:700;letter-spacing:0.14em;text-transform:uppercase;text-decoration:none;border-radius:4px;transition:background 0.2s,color 0.2s;" onmouseover="this.style.background='#d4af37';this.style.color='#0a0a0a'" onmouseout="this.style.background='transparent';this.style.color='#d4af37'">
+          🗺️ See the Full Map &rarr;
+        </a>
+      </div>
     </div>
   </section>
+
+  <!-- Mini-map dependencies + render. Leaflet CSS only loads when this section
+       is on the page (homepage); other pages skip the cost. -->
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="">
+  <style>
+    .home-map .leaflet-tooltip {
+      background:#141414;color:#f0f0f0;border:1px solid var(--red);border-radius:4px;
+      padding:5px 9px;font-family:'Barlow Condensed',sans-serif;font-size:0.82rem;
+      letter-spacing:0.04em;box-shadow:0 2px 8px rgba(0,0,0,0.5);white-space:nowrap;
+    }
+    .home-map .leaflet-tooltip strong { color:#fff; }
+    .home-map .leaflet-tooltip::before { display:none; }
+  </style>
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+  <script src="/js/order-map-data.js"></script>
+  <script>
+  (function () {
+    var HQ = window.TT_HQ, ORDERS = window.TT_ORDERS || [];
+    if (!HQ || typeof L === 'undefined') return;
+
+    // Reach counter — same parser as /about.html so the math stays consistent.
+    var US = new Set(['AL','AK','AZ','AR','CA','CO','CT','DE','FL','GA','HI','ID','IL','IN','IA','KS','KY','LA','ME','MD','MA','MI','MN','MS','MO','MT','NE','NV','NH','NJ','NM','NY','NC','ND','OH','OK','OR','PA','RI','SC','SD','TN','TX','UT','VT','VA','WA','WV','WI','WY','DC']);
+    var states = new Set(), provinces = new Set(), countries = new Set(['United States']);
+    ORDERS.forEach(function (o) {
+      var parts = o.city.split(/,\s*/), last = parts[parts.length - 1];
+      if (last === 'Canada') { countries.add('Canada'); if (parts.length >= 2) provinces.add(parts[parts.length - 2]); }
+      else if (US.has(last)) { states.add(last); countries.add('United States'); }
+      else { countries.add(last); }
+    });
+    function set(id, v) { var n = document.getElementById(id); if (n) n.textContent = v; }
+    set('homeMapCities',   ORDERS.length);
+    set('homeMapStates',   states.size);
+    set('homeMapProvinces',provinces.size);
+    set('homeMapCountries',countries.size);
+
+    var el = document.getElementById('homeMap');
+    if (!el) return;
+    var map = L.map(el, { scrollWheelZoom: false, attributionControl: true });
+    L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
+      attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> &copy; <a href="https://carto.com/attributions">CARTO</a>',
+      subdomains: 'abcd',
+      maxZoom: 19
+    }).addTo(map);
+
+    var bounds = [], tipOpts = { direction: 'top', offset: [0, -8], opacity: 1 };
+
+    L.circleMarker([HQ.lat, HQ.lng], {
+      radius: 8, color: '#d4af37', weight: 2, fillColor: '#d4af37', fillOpacity: 0.85
+    }).addTo(map).bindTooltip('<strong>The Bench</strong><br>' + HQ.city, tipOpts);
+    bounds.push([HQ.lat, HQ.lng]);
+
+    ORDERS.forEach(function (o) {
+      L.circleMarker([o.lat, o.lng], {
+        radius: 5 + Math.min(o.count, 6) * 1.5,
+        color: '#e74c3c', weight: 2, fillColor: '#c0392b', fillOpacity: 0.75
+      }).addTo(map).bindTooltip(
+        '<strong>' + o.city + '</strong><br>' + o.count + (o.count === 1 ? ' shipment' : ' shipments'),
+        tipOpts
+      );
+      bounds.push([o.lat, o.lng]);
+    });
+
+    if (bounds.length === 1) map.setView(bounds[0], 5);
+    else map.fitBounds(bounds, { padding: [30, 30] });
+    setTimeout(function () { map.invalidateSize(); }, 200);
+  })();
+  </script>
 
   <!-- FEATURED FROM THE BLOG -->
   <div class="blog-feature">
