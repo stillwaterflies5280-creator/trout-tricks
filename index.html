@@ -198,12 +198,18 @@
     width: 100%;
     max-width: 100vw;
   }
-
+  /* Fixed promo bar (~56px) + fixed header (~62px) sit above the flow; reserve
+     that space at the top of body so the first content row isn't covered.
+     scroll-padding-top makes anchor jumps (#shop-browse etc.) clear the fixed
+     area instead of landing under it. Mobile values are adjusted below in the
+     existing @media (max-width:640px) block. */
+  html { scroll-padding-top: 118px; }
   body {
     font-family: 'Barlow', sans-serif;
     background: var(--black);
     color: var(--white);
     min-height: 100vh;
+    padding-top: 118px;
   }
 
   /* HEADER */
@@ -214,11 +220,13 @@
     display: flex;
     align-items: center;
     justify-content: space-between;
-    position: sticky;
-    /* Sits BELOW the promo bar (56px on desktop, 50px mobile — overridden in
-       the existing @media (max-width:640px) block further down). Both elements
-       are position:sticky so they pin together on scroll. */
+    /* position:fixed (not sticky — see promo bar comment for why). Sits BELOW
+       the fixed promo bar; mobile top:50px override is in the existing
+       @media (max-width:640px) block further down. */
+    position: fixed;
     top: 56px;
+    left: 0;
+    right: 0;
     z-index: 100;
     min-height: 62px;
     gap: 12px;
@@ -2018,6 +2026,8 @@
   /* MOBILE RESPONSIVE */
   @media (max-width: 480px) {
     header { padding: 0 12px; gap: 6px; top: 50px; }   /* mobile promo bar is 50px tall */
+    html { scroll-padding-top: 112px; }                /* 50px bar + 62px header */
+    body { padding-top: 112px; }
     .logo { font-size: 1.4rem; }
     .nav-btn { font-size: 0.68rem; padding: 4px 5px; }
     .nav-btn.nav-overflow { display: none; }
@@ -3018,11 +3028,14 @@
      stays hidden. If the fetch errors out we fail-open and show the bar
      without the count number rather than dropping a conversion surface. */
   .sticker-promo-bar {
-    /* Sticky to the very top of the viewport so it stays in view alongside the
-       header on scroll. z-index sits above the header (header is z:100, this is
-       z:101) so the bar can't get visually covered. */
-    position: sticky;
+    /* position:fixed (not sticky) because the parent overflow-x:hidden context
+       breaks position:sticky silently in most browsers. Fixed stays pinned
+       regardless of parent overflow. Body padding-top compensates for the
+       height fixed elements take out of flow. */
+    position: fixed;
     top: 0;
+    left: 0;
+    right: 0;
     z-index: 101;
     display: flex;
     align-items: center;
