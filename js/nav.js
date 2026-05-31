@@ -55,12 +55,8 @@
     }
   ];
 
-  var QUICKLINKS = [
-    { label: 'The Order Map',        href: '/about.html#flymap' },
-    { label: 'The Reviews',          href: '/#reviews' },
-    { label: 'The Trusted Partners', href: '/#trusted-partners' },
-    { label: 'The Permits',          href: '/permits.html' }
-  ];
+  // QUICKLINKS removed 2026-05-31 — the bottom strip looked cramped and the
+  // items now live in the page footer's "Quick Links" column site-wide.
 
   var CSS = [
     // Header layout: collapses the variable right-side items (search, cart,
@@ -94,9 +90,6 @@
     '.tt-nav-link{display:block;color:#fff;text-decoration:none;font-size:1.02rem;letter-spacing:0.04em;padding:9px 6px;border-radius:3px;transition:background 0.15s,color 0.15s;}',
     '.tt-nav-link:hover{background:#1a1a1a;color:#E74C3C;}',
     '.tt-nav-link.active{color:#C0392B;border-left:2px solid #C0392B;padding-left:10px;background:#150707;}',
-    '.tt-nav-foot{padding:14px 20px 22px;border-top:1px solid #1a1a1a;display:flex;flex-wrap:wrap;gap:6px 14px;}',
-    '.tt-nav-foot a{color:#888;font-size:0.78rem;letter-spacing:0.1em;text-transform:uppercase;text-decoration:none;}',
-    '.tt-nav-foot a:hover{color:#C0392B;}',
     'body.tt-nav-locked{overflow:hidden;}',
     '@media (max-width:480px){.tt-hamburger{width:38px;height:36px;font-size:1.2rem;margin-left:6px;}}'
   ].join('');
@@ -141,10 +134,6 @@
       );
     }).join('');
 
-    var quickHTML = QUICKLINKS.map(function (q) {
-      return '<a href="' + q.href + '">' + q.label + '</a>';
-    }).join('');
-
     var drawer = document.createElement('div');
     drawer.className = 'tt-nav-drawer';
     drawer.id = 'ttNavDrawer';
@@ -156,8 +145,7 @@
         '<div class="tt-nav-head-title">Menu</div>' +
         '<button class="tt-nav-close" type="button" aria-label="Close menu">&times;</button>' +
       '</div>' +
-      '<div class="tt-nav-body">' + sectionsHTML + '</div>' +
-      '<div class="tt-nav-foot">' + quickHTML + '</div>';
+      '<div class="tt-nav-body">' + sectionsHTML + '</div>';
 
     var overlay = document.createElement('div');
     overlay.className = 'tt-nav-overlay';
