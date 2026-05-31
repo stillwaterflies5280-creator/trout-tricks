@@ -1269,6 +1269,24 @@
     margin: 8px 12px;
   }
   .order-map .leaflet-container a.leaflet-popup-close-button { color: #888; }
+  /* Hover tooltip styling (city + count appear on pointer hover, no click).
+     Falls back to tap-to-show on touch devices — Leaflet handles that. */
+  .order-map .leaflet-tooltip {
+    background: #141414;
+    color: #f0f0f0;
+    border: 1px solid var(--red);
+    border-radius: 4px;
+    padding: 6px 10px;
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 0.85rem;
+    letter-spacing: 0.04em;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.5);
+    white-space: nowrap;
+  }
+  .order-map .leaflet-tooltip strong { color: #fff; }
+  /* Hide the default Leaflet tooltip arrow — the tooltip floats above the
+     marker via the JS offset; cleaner than the white triangle. */
+  .order-map .leaflet-tooltip::before { display: none; }
   .order-map-legend {
     display: flex;
     justify-content: center;
@@ -2940,11 +2958,16 @@ window.addEventListener('DOMContentLoaded', function(){
 
   var bounds = [];
 
+  // Tooltips appear on hover (mouseover) and dismiss on mouseout — no click
+  // required. On touch devices Leaflet shows them on tap and dismisses when
+  // another marker is tapped or the map is panned, so mobile UX still works.
+  var tipOpts = { direction: "top", offset: [0, -8], opacity: 1, sticky: false };
+
   // HQ / the bench — gold
   L.circleMarker([HQ.lat, HQ.lng], {
     radius: 9, color: "#d4af37", weight: 2, fillColor: "#d4af37", fillOpacity: 0.85
   }).addTo(map)
-    .bindPopup("<strong>The Bench</strong><br>" + HQ.city + " · where every fly is tied");
+    .bindTooltip("<strong>The Bench</strong><br>" + HQ.city + " · where every fly is tied", tipOpts);
   bounds.push([HQ.lat, HQ.lng]);
 
   // Shipped orders — red, sized by count
@@ -2953,7 +2976,7 @@ window.addEventListener('DOMContentLoaded', function(){
       radius: 6 + Math.min(o.count, 6) * 2,
       color: "#e74c3c", weight: 2, fillColor: "#c0392b", fillOpacity: 0.75
     }).addTo(map)
-      .bindPopup("<strong>" + o.city + "</strong><br>" + o.count + (o.count === 1 ? " shipment" : " shipments"));
+      .bindTooltip("<strong>" + o.city + "</strong><br>" + o.count + (o.count === 1 ? " shipment" : " shipments"), tipOpts);
     bounds.push([o.lat, o.lng]);
   });
 
