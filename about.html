@@ -1287,6 +1287,39 @@
   }
   .order-map-legend .dot-hq { background: #d4af37; box-shadow: 0 0 0 2px rgba(212,175,55,0.3); }
   .order-map-legend .dot-order { background: var(--red); box-shadow: 0 0 0 2px rgba(192,57,43,0.3); }
+  /* Reach counter above the map — counts derived live from the ORDERS array. */
+  .order-stats {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 12px;
+    max-width: 560px;
+    margin: 0 auto 18px;
+  }
+  .order-stats .stat {
+    padding: 12px 6px;
+    border: 1px solid #2a2a2a;
+    border-radius: 6px;
+    background: rgba(0,0,0,0.25);
+    text-align: center;
+  }
+  .order-stats .stat-num {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 2rem;
+    color: #d4af37;
+    line-height: 1;
+    letter-spacing: 0.02em;
+  }
+  .order-stats .stat-label {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 0.72rem;
+    color: #888;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    margin-top: 6px;
+  }
+  @media (max-width: 480px) {
+    .order-stats { grid-template-columns: repeat(2, 1fr); gap: 10px; }
+  }
 
   /* FISH GALLERY */
   .fish-gallery {
@@ -1964,6 +1997,12 @@
     <section id="flymap" class="order-map-section" style="scroll-margin-top:90px;">
       <div class="order-map-title">WHERE THE FLIES ARE HEADED</div>
       <div class="order-map-sub">Every pin is hand-tied flies or stickers shipped out the door — from the bench in Fairmount, CO to anglers across the map.</div>
+      <div class="order-stats" id="orderStats" aria-label="Shipping reach">
+        <div class="stat"><div class="stat-num" id="statCities">—</div><div class="stat-label">Cities</div></div>
+        <div class="stat"><div class="stat-num" id="statStates">—</div><div class="stat-label">States</div></div>
+        <div class="stat"><div class="stat-num" id="statProvinces">—</div><div class="stat-label">Provinces</div></div>
+        <div class="stat"><div class="stat-num" id="statCountries">—</div><div class="stat-label">Countries</div></div>
+      </div>
       <div id="orderMap" class="order-map"></div>
       <div class="order-map-legend">
         <span><i class="dot dot-hq"></i> The Bench (Fairmount, CO)</span>
@@ -2858,6 +2897,35 @@ window.addEventListener('DOMContentLoaded', function(){
     { city: "Saskatchewan, Canada", lat: 52.1332, lng: -106.6700, count: 1 }
   ];
   // ──────────────────────────────────────────────────────────────────────
+
+  // ── Reach counter (above the map) ─────────────────────────────────────
+  // Derived from ORDERS so adding a destination above auto-updates the stats.
+  // Suffix parsing: 2-letter code = US state; trailing "Canada" = treat the
+  // previous segment as the province; anything else counts as its own country.
+  (function renderStats() {
+    var US_STATE_CODES = new Set(['AL','AK','AZ','AR','CA','CO','CT','DE','FL','GA','HI','ID','IL','IN','IA','KS','KY','LA','ME','MD','MA','MI','MN','MS','MO','MT','NE','NV','NH','NJ','NM','NY','NC','ND','OH','OK','OR','PA','RI','SC','SD','TN','TX','UT','VT','VA','WA','WV','WI','WY','DC']);
+    var states = new Set();
+    var provinces = new Set();
+    var countries = new Set(['United States']); // the bench is in CO
+    ORDERS.forEach(function (o) {
+      var parts = o.city.split(/,\s*/);
+      var last = parts[parts.length - 1];
+      if (last === 'Canada') {
+        countries.add('Canada');
+        if (parts.length >= 2) provinces.add(parts[parts.length - 2]);
+      } else if (US_STATE_CODES.has(last)) {
+        states.add(last);
+        countries.add('United States');
+      } else {
+        countries.add(last); // future-proof for non-US, non-Canada destinations
+      }
+    });
+    function set(id, v) { var n = document.getElementById(id); if (n) n.textContent = v; }
+    set('statCities', ORDERS.length);
+    set('statStates', states.size);
+    set('statProvinces', provinces.size);
+    set('statCountries', countries.size);
+  })();
 
   var el = document.getElementById("orderMap");
   if (!el || typeof L === "undefined") return;
