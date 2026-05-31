@@ -21,10 +21,16 @@
       ]
     },
     {
+      label: 'Gallery',
+      color: '#FFD700',          // brighter yellow vs. default #D4AF37 — visual feature
+      items: [
+        { label: 'The Proof', href: '/catches.html' },   // customer fish-in-mouth photos (was "Catches")
+        { label: 'The Fish',  href: '/fish.html' }       // guide/personal catch gallery
+      ]
+    },
+    {
       label: 'Explore',
       items: [
-        { label: 'Catches',   href: '/catches.html' },
-        { label: 'The Fish',  href: '/fish.html' },
         { label: 'The Drop',  href: '/the-drop.html' },
         { label: 'Blog',      href: '/blog.html' },
         { label: 'Community', href: '/community.html' }
@@ -121,9 +127,12 @@
         var cls = 'tt-nav-link' + (isActive(it.href, path) ? ' active' : '');
         return '<a class="' + cls + '" href="' + it.href + '">' + it.label + '</a>';
       }).join('');
+      // Optional per-section color override (sec.color = CSS color string) lets
+      // a featured section (e.g. Gallery) stand out from the default gold.
+      var labelStyle = sec.color ? ' style="color:' + sec.color + ';"' : '';
       return (
         '<div class="tt-nav-section">' +
-          '<div class="tt-nav-section-label">' + sec.label + '</div>' +
+          '<div class="tt-nav-section-label"' + labelStyle + '>' + sec.label + '</div>' +
           links +
         '</div>'
       );
