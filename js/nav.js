@@ -20,8 +20,7 @@
         { label: 'The Leeches',        href: '/flies/leeches.html' },
         { label: 'The Scuds',          href: '/flies/bling-scud.html' },
         { label: 'The Stickers',       href: '/stickers.html' },
-        { label: 'Free Sticker',       href: '/free-sticker.html' },
-        { label: 'The Gear We Trust',  href: '/affiliates.html' }
+        { label: 'Free Sticker',       href: '/free-sticker.html' }
       ]
     },
     {
@@ -29,6 +28,15 @@
       items: [
         { label: 'The Proof', href: '/catches.html' },   // customer fish-in-mouth photos (was "Catches")
         { label: 'The Fish',  href: '/fish.html' }       // guide/personal catch gallery
+      ]
+    },
+    {
+      label: 'Trust',
+      items: [
+        { label: 'The Reviews',          href: '/#reviews' },
+        { label: 'The Map',              href: '/about.html#flymap' },
+        { label: 'The Trusted Partners', href: '/#trusted-partners' },
+        { label: 'The Gear We Trust',    href: '/affiliates.html' }
       ]
     },
     {
