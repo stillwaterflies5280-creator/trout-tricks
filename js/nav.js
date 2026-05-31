@@ -23,6 +23,7 @@
     {
       label: 'Explore',
       items: [
+        { label: 'Catches',   href: '/catches.html' },
         { label: 'The Fish',  href: '/fish.html' },
         { label: 'The Drop',  href: '/the-drop.html' },
         { label: 'Blog',      href: '/blog.html' },
