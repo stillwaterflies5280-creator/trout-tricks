@@ -221,28 +221,6 @@ const flies = [
     category: "sticker"
   },
   {
-    id: 16, img: "stickerDontJudge",
-    name: "Don't Judge Me Sticker",
-    desc: "Die-cut weatherproof vinyl. For the day you fish three flies on a 7x leader. Slap it on your vise, boat, or Yeti.",
-    sizes: null,
-    colors: null,
-    price: 5,
-    pack: null,
-    badge: null,
-    category: "sticker"
-  },
-  {
-    id: 17, img: "stickerBuffet",
-    name: "Buffet Mode Sticker",
-    desc: "Die-cut weatherproof vinyl. When the trout are eating chironomids, callibaetis, and midges in the same pass. Slap it on your vise, boat, or Yeti.",
-    sizes: null,
-    colors: null,
-    price: 5,
-    pack: null,
-    badge: null,
-    category: "sticker"
-  },
-  {
     id: 18, img: "stickerBuzzers",
     name: "Got Buzzers? Sticker",
     desc: "Die-cut weatherproof vinyl. UK tying slang for chironomids — if you tie them, you know. Slap it on your vise, boat, or Yeti.",
@@ -289,30 +267,17 @@ const flies = [
     bundle_includes: [21, 22]
   },
   {
-    id: 19, img: "stickerFishOn",
-    name: "The Greedy Trout Pack",
-    desc: "Includes: Fish On + Don't Judge Me + Buffet Mode. The trout-cinematic-universe set, $3 off retail ($15 → $12).",
+    id: 20, img: "sticker1",
+    name: "The Complete Collection",
+    desc: "Includes: Wordmark, Square, Fish On, and Got Buzzers?. Every Trout Tricks sticker — $4 off retail ($16 → $12).",
     sizes: null,
     colors: null,
     price: 12,
     pack: null,
-    badge: null,
-    category: "sticker",
-    bundle: true,
-    bundle_includes: [15, 16, 17]
-  },
-  {
-    id: 20, img: "sticker1",
-    name: "The Complete Collection",
-    desc: "Includes: Fish On, Don't Judge Me, Buffet Mode, Got Buzzers?, Wordmark, and Square. Every Trout Tricks sticker — $6 off retail ($26 → $20).",
-    sizes: null,
-    colors: null,
-    price: 20,
-    pack: null,
     badge: "Best Value",
     category: "sticker",
     bundle: true,
-    bundle_includes: [13, 14, 15, 16, 17, 18]
+    bundle_includes: [13, 14, 15, 18]
   },
   // === Cart-upsell variants (hidden from main catalog) ===
   // Same artwork as the regular Brown Town / Butter Brown / Drop It Like It's Hot
@@ -372,8 +337,6 @@ const FLY_IMAGES = {
   sticker1: "images/sticker1.png",
   sticker2: "images/sticker2.png",
   stickerFishOn: "images/sticker-fish-on.png",
-  stickerDontJudge: "images/sticker-dont-judge-me.png",
-  stickerBuffet: "images/sticker-buffet-mode.png",
   stickerBuzzers: "images/sticker-got-buzzers.png",
   wordmarkreal: "images/wordmarkreal.jpg",
   brown1: "images/brown1.png",
