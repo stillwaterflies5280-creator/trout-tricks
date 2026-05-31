@@ -46,6 +46,7 @@
   ];
 
   var QUICKLINKS = [
+    { label: 'Order Map',        href: '/about.html#flymap' },
     { label: 'Reviews',          href: '/#reviews' },
     { label: 'Trusted Partners', href: '/#trusted-partners' },
     { label: 'Permits',          href: '/permits.html' }

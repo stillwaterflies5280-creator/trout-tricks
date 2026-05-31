@@ -120,6 +120,7 @@
   })();
 </script>
 <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Barlow+Condensed:wght@300;400;600;700&family=Barlow:wght@300;400;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="">
 <style>
   :root {
     --black: #0a0a0a;
@@ -1228,6 +1229,65 @@
     margin-top: 4px;
   }
 
+  /* ORDER MAP */
+  .order-map-section {
+    margin: 34px 0 8px;
+  }
+  .order-map-title {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 1.45rem;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    text-align: center;
+    color: #f0f0f0;
+  }
+  .order-map-sub {
+    font-size: 0.9rem;
+    color: #bbb;
+    text-align: center;
+    line-height: 1.55;
+    max-width: 560px;
+    margin: 6px auto 16px;
+  }
+  .order-map {
+    height: 380px;
+    width: 100%;
+    border: 1px solid #2a2a2a;
+    border-radius: 8px;
+    background: #0a0a0a;
+    z-index: 0;
+  }
+  .order-map .leaflet-popup-content-wrapper,
+  .order-map .leaflet-popup-tip {
+    background: #141414;
+    color: #f0f0f0;
+    border: 1px solid var(--red);
+  }
+  .order-map .leaflet-popup-content {
+    font-family: 'Barlow Condensed', sans-serif;
+    letter-spacing: 0.02em;
+    margin: 8px 12px;
+  }
+  .order-map .leaflet-container a.leaflet-popup-close-button { color: #888; }
+  .order-map-legend {
+    display: flex;
+    justify-content: center;
+    gap: 22px;
+    flex-wrap: wrap;
+    margin-top: 12px;
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 0.82rem;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: #bbb;
+  }
+  .order-map-legend span { display: inline-flex; align-items: center; gap: 7px; }
+  .order-map-legend .dot {
+    width: 12px; height: 12px; border-radius: 50%; display: inline-block;
+  }
+  .order-map-legend .dot-hq { background: #d4af37; box-shadow: 0 0 0 2px rgba(212,175,55,0.3); }
+  .order-map-legend .dot-order { background: var(--red); box-shadow: 0 0 0 2px rgba(192,57,43,0.3); }
+
   /* FISH GALLERY */
   .fish-gallery {
     padding: 0 16px 40px;
@@ -1900,6 +1960,17 @@
       </div>
     </div>
 
+    <!-- ORDER MAP -->
+    <section id="flymap" class="order-map-section" style="scroll-margin-top:90px;">
+      <div class="order-map-title">WHERE THE FLIES ARE HEADED</div>
+      <div class="order-map-sub">Every pin is hand-tied flies or stickers shipped out the door — from the bench in Fairmount, CO to anglers across the map.</div>
+      <div id="orderMap" class="order-map"></div>
+      <div class="order-map-legend">
+        <span><i class="dot dot-hq"></i> The Bench (Fairmount, CO)</span>
+        <span><i class="dot dot-order"></i> Flies &amp; stickers shipped</span>
+      </div>
+    </section>
+
     <!-- PRO PARTNERS -->
     <section class="pro-partners">
       <div class="pro-partners-title">PRO PARTNERS</div>
@@ -2004,6 +2075,7 @@
         <a href="/flies/leeches.html">Leeches</a>
         <a href="/flies/bling-scud.html">Scuds</a>
         <a href="fish.html">The Fish</a>
+        <a href="/about.html#flymap">Order Map</a>
         <a href="/trip.html">Book a Trip</a>
         <a href="/the-drop.html">The Drop</a>
         <a href="blog.html">Blog</a>
@@ -2752,6 +2824,87 @@ window.addEventListener('DOMContentLoaded', function(){
     }, 120);
   }
 });
+</script>
+
+<!-- ORDER MAP (Leaflet) -->
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+<script>
+(function () {
+  // ── Order destinations ────────────────────────────────────────────────
+  // City-level only (never street addresses — customer privacy).
+  // To add a destination: copy a line, set city/lat/lng, and bump count.
+  // Look up coords at https://www.latlong.net if you don't have them.
+  var HQ = { city: "Fairmount, CO", lat: 39.7686, lng: -105.1447 };
+  var ORDERS = [
+    // Colorado
+    { city: "Fort Collins, CO",     lat: 40.5853, lng: -105.0844, count: 3 },
+    { city: "Littleton, CO",        lat: 39.6133, lng: -105.0166, count: 2 },
+    { city: "Denver, CO",           lat: 39.7392, lng: -104.9903, count: 1 },
+    { city: "Lakewood, CO",         lat: 39.7047, lng: -105.0814, count: 1 },
+    { city: "Arvada, CO",           lat: 39.8028, lng: -105.0875, count: 1 },
+    { city: "Westminster, CO",      lat: 39.8367, lng: -105.0372, count: 1 },
+    { city: "Commerce City, CO",    lat: 39.8083, lng: -104.9339, count: 1 },
+    { city: "Centennial, CO",       lat: 39.5807, lng: -104.8772, count: 1 },
+    { city: "Highlands Ranch, CO",  lat: 39.5539, lng: -104.9689, count: 1 },
+    { city: "Parker, CO",           lat: 39.5186, lng: -104.7614, count: 1 },
+    { city: "Erie, CO",             lat: 40.0503, lng: -105.0499, count: 1 },
+    { city: "Longmont, CO",         lat: 40.1672, lng: -105.1019, count: 1 },
+    { city: "Colorado Springs, CO", lat: 38.8339, lng: -104.8214, count: 1 },
+    { city: "Steamboat Springs, CO",lat: 40.4850, lng: -106.8317, count: 1 },
+    // Out of state
+    { city: "Germfask, MI",         lat: 46.2480, lng:  -85.9477, count: 1 },
+    { city: "Newfoundland, PA",     lat: 41.2962, lng:  -75.3338, count: 1 },
+    // Canada
+    { city: "Saskatchewan, Canada", lat: 52.1332, lng: -106.6700, count: 1 }
+  ];
+  // ──────────────────────────────────────────────────────────────────────
+
+  var el = document.getElementById("orderMap");
+  if (!el || typeof L === "undefined") return;
+
+  var map = L.map(el, { scrollWheelZoom: false, attributionControl: true });
+
+  L.tileLayer("https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png", {
+    attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> &copy; <a href="https://carto.com/attributions">CARTO</a>',
+    subdomains: "abcd",
+    maxZoom: 19
+  }).addTo(map);
+
+  var bounds = [];
+
+  // HQ / the bench — gold
+  L.circleMarker([HQ.lat, HQ.lng], {
+    radius: 9, color: "#d4af37", weight: 2, fillColor: "#d4af37", fillOpacity: 0.85
+  }).addTo(map)
+    .bindPopup("<strong>The Bench</strong><br>" + HQ.city + " · where every fly is tied");
+  bounds.push([HQ.lat, HQ.lng]);
+
+  // Shipped orders — red, sized by count
+  ORDERS.forEach(function (o) {
+    L.circleMarker([o.lat, o.lng], {
+      radius: 6 + Math.min(o.count, 6) * 2,
+      color: "#e74c3c", weight: 2, fillColor: "#c0392b", fillOpacity: 0.75
+    }).addTo(map)
+      .bindPopup("<strong>" + o.city + "</strong><br>" + o.count + (o.count === 1 ? " shipment" : " shipments"));
+    bounds.push([o.lat, o.lng]);
+  });
+
+  if (bounds.length === 1) {
+    map.setView(bounds[0], 9);
+  } else {
+    map.fitBounds(bounds, { padding: [40, 40] });
+  }
+
+  // Leaflet needs a size recalc once the element is laid out / visible.
+  setTimeout(function () {
+    map.invalidateSize();
+    // If arriving via /about.html#flymap, scroll the section into view after
+    // the map has a real size (native hash jump fires before layout settles).
+    if (location.hash === "#flymap") {
+      document.getElementById("flymap").scrollIntoView({ behavior: "smooth", block: "start" });
+    }
+  }, 250);
+})();
 </script>
 
 </body>
