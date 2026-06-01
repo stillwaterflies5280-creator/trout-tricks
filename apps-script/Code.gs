@@ -1019,3 +1019,219 @@ function logWebhook(e, parsedBody, note) {
     console.error('[logWebhook] failed:', err);
   }
 }
+
+/**
+ * upsertCustomer — idempotent merge into the Master Customers sheet.
+ *
+ * Looks up `email` (case-insensitive, whitespace-trimmed) in the Email column.
+ * If found, appends `source` to the existing comma-separated Source list
+ * (deduped, order-preserved), refreshes the Timestamp to the most recent value,
+ * and back-fills First Name / Notes only when previously blank. If not found,
+ * appends a new row with all five fields.
+ *
+ * Header row is auto-created on first call against an empty/new sheet.
+ *
+ * Signature:
+ *   upsertCustomer(email, firstName, source, notes, timestamp)
+ *
+ * @param {string} email      — required; rows with empty email are rejected
+ * @param {string} [firstName]
+ * @param {string} [source]   — single source token to merge into the row
+ * @param {string} [notes]
+ * @param {Date|string} [timestamp] — Date object or string; defaults to now (MT)
+ *
+ * @returns {{
+ *   ok: boolean,
+ *   action: 'inserted'|'updated'|'noop'|'error',
+ *   row: number|null,        // 1-indexed sheet row, or null on error/insert-fail
+ *   email: string,            // trimmed (original casing of first occurrence)
+ *   sources: string,          // post-merge Source cell value
+ *   error?: string
+ * }}
+ */
+function upsertCustomer(email, firstName, source, notes, timestamp) {
+  // ── Config ────────────────────────────────────────────────────────────────
+  // Sheet name is referenced via the existing MASTER_CUSTOMERS_SHEET const if
+  // present in this Code.gs (matches writeToMasterCustomers); falls back to the
+  // literal name so this function is paste-and-go even in isolation.
+  var SHEET_NAME = (typeof MASTER_CUSTOMERS_SHEET === 'string')
+    ? MASTER_CUSTOMERS_SHEET
+    : 'Master Customers';
+  var TZ = 'America/Denver';
+  var FMT = 'yyyy-MM-dd HH:mm:ss';
+
+  // 0-indexed column positions matching the schema:
+  // Timestamp | First Name | Email | Source | Notes
+  var COL_TIMESTAMP = 0;
+  var COL_FIRST     = 1;
+  var COL_EMAIL     = 2;
+  var COL_SOURCE    = 3;
+  var COL_NOTES     = 4;
+  var NUM_COLS      = 5;
+  var HEADERS       = ['Timestamp', 'First Name', 'Email', 'Source', 'Notes'];
+
+  // ── Input validation ──────────────────────────────────────────────────────
+  var emailRaw = (email == null ? '' : String(email)).trim();
+  if (!emailRaw) {
+    return { ok: false, action: 'error', row: null, email: '', sources: '',
+             error: 'email is required' };
+  }
+  var emailKey = emailRaw.toLowerCase();
+
+  var firstNameClean = (firstName == null ? '' : String(firstName)).trim();
+  var sourceClean    = (source    == null ? '' : String(source)).trim();
+  var notesClean     = (notes     == null ? '' : String(notes)).trim();
+
+  // Timestamp: accept Date or string; default to now (MT). Always store as a
+  // formatted string for consistency with writeToMasterCustomers output.
+  var tsString;
+  try {
+    var d = (timestamp instanceof Date) ? timestamp
+          : (timestamp ? new Date(timestamp) : new Date());
+    if (isNaN(d.getTime())) d = new Date();
+    tsString = Utilities.formatDate(d, TZ, FMT);
+  } catch (e) {
+    tsString = Utilities.formatDate(new Date(), TZ, FMT);
+  }
+
+  // ── Concurrency guard — every upsert is read-modify-write, so two simultaneous
+  //    calls for the same email could race and double-insert. DocumentLock
+  //    serializes within this spreadsheet. 10s wait covers normal trigger
+  //    contention; longer waits indicate a real problem worth surfacing.
+  var lock = LockService.getDocumentLock();
+  try {
+    lock.waitLock(10000);
+  } catch (lockErr) {
+    return { ok: false, action: 'error', row: null, email: emailRaw, sources: '',
+             error: 'lock_timeout: ' + lockErr.message };
+  }
+
+  try {
+    var ss = SpreadsheetApp.getActiveSpreadsheet();
+    var sheet = ss.getSheetByName(SHEET_NAME);
+    if (!sheet) {
+      sheet = ss.insertSheet(SHEET_NAME);
+      sheet.appendRow(HEADERS);
+      sheet.getRange(1, 1, 1, NUM_COLS).setFontWeight('bold');
+      sheet.setFrozenRows(1);
+    }
+
+    // Header sanity — auto-fill if the sheet was hand-created without headers.
+    var lastCol = Math.max(sheet.getLastColumn(), NUM_COLS);
+    if (sheet.getLastRow() === 0) {
+      sheet.appendRow(HEADERS);
+      sheet.getRange(1, 1, 1, NUM_COLS).setFontWeight('bold');
+      sheet.setFrozenRows(1);
+    }
+
+    var lastRow = sheet.getLastRow();
+    var dataRows = lastRow - 1;   // exclude header
+
+    // ── Find existing row by case-insensitive trimmed email ────────────────
+    // Read only the Email column for the lookup — minimizes payload + avoids
+    // pulling the entire sheet for large CRMs.
+    var existingRowIndex = -1;     // 0-indexed within data (i.e., not sheet-row)
+    if (dataRows > 0) {
+      var emailCol = sheet.getRange(2, COL_EMAIL + 1, dataRows, 1).getValues();
+      for (var i = 0; i < emailCol.length; i++) {
+        var cell = (emailCol[i][0] == null ? '' : String(emailCol[i][0])).trim().toLowerCase();
+        if (cell && cell === emailKey) {
+          existingRowIndex = i;
+          break;
+        }
+      }
+    }
+
+    // ── UPDATE path: merge into existing row ───────────────────────────────
+    if (existingRowIndex >= 0) {
+      var sheetRow = existingRowIndex + 2;  // +1 for 1-indexed, +1 for header
+      var existing = sheet.getRange(sheetRow, 1, 1, NUM_COLS).getValues()[0];
+
+      var existingSourceCell = (existing[COL_SOURCE] == null ? '' : String(existing[COL_SOURCE])).trim();
+      var mergedSource = _mergeSourceList_(existingSourceCell, sourceClean);
+
+      // Back-fill First Name and Notes only if they're currently blank — don't
+      // clobber existing data on a re-sync that happens to omit those fields.
+      var existingFirst = (existing[COL_FIRST] == null ? '' : String(existing[COL_FIRST])).trim();
+      var existingNotes = (existing[COL_NOTES] == null ? '' : String(existing[COL_NOTES])).trim();
+      var newFirst = existingFirst || firstNameClean;
+      var newNotes = existingNotes || notesClean;
+
+      var changed =
+        mergedSource !== existingSourceCell ||
+        newFirst     !== existingFirst     ||
+        newNotes     !== existingNotes;
+
+      // Timestamp always refreshes to the latest touch — useful for "last seen"
+      // CRM views and matches the spec ("update timestamp to latest").
+      sheet.getRange(sheetRow, COL_TIMESTAMP + 1).setValue(tsString);
+      if (newFirst     !== existingFirst)     sheet.getRange(sheetRow, COL_FIRST  + 1).setValue(newFirst);
+      if (mergedSource !== existingSourceCell) sheet.getRange(sheetRow, COL_SOURCE + 1).setValue(mergedSource);
+      if (newNotes     !== existingNotes)     sheet.getRange(sheetRow, COL_NOTES  + 1).setValue(newNotes);
+
+      return {
+        ok:      true,
+        action:  changed ? 'updated' : 'noop',
+        row:     sheetRow,
+        email:   String(existing[COL_EMAIL] || emailRaw).trim(),
+        sources: mergedSource,
+      };
+    }
+
+    // ── INSERT path: brand-new email ───────────────────────────────────────
+    sheet.appendRow([
+      tsString,
+      firstNameClean,
+      emailRaw,
+      sourceClean,
+      notesClean,
+    ]);
+    var insertedRow = sheet.getLastRow();
+    return {
+      ok:      true,
+      action:  'inserted',
+      row:     insertedRow,
+      email:   emailRaw,
+      sources: sourceClean,
+    };
+
+  } catch (err) {
+    try { Logger.log('upsertCustomer failed for ' + emailRaw + ': ' + err); } catch (_) {}
+    return {
+      ok:      false,
+      action:  'error',
+      row:     null,
+      email:   emailRaw,
+      sources: '',
+      error:   String(err && err.message ? err.message : err),
+    };
+  } finally {
+    try { lock.releaseLock(); } catch (_) {}
+  }
+}
+
+/**
+ * _mergeSourceList_ — combine an existing comma-separated source cell with a
+ * new source token. Returns a comma-separated string with:
+ *   - leading/trailing whitespace on each token trimmed
+ *   - empty tokens dropped
+ *   - case-insensitive dedup (keeps the casing of the FIRST occurrence)
+ *   - original insertion order preserved
+ *
+ * Internal helper for upsertCustomer; underscored so it's clearly private.
+ */
+function _mergeSourceList_(existingCell, newSource) {
+  var tokens = String(existingCell || '').split(',');
+  if (newSource) tokens.push(String(newSource));
+  var seen = {};
+  var out  = [];
+  for (var i = 0; i < tokens.length; i++) {
+    var t = String(tokens[i] || '').trim();
+    if (!t) continue;
+    var k = t.toLowerCase();
+    if (seen[k]) continue;
+    seen[k] = true;
+    out.push(t);
+  }
+  return out.join(', ');
+}
