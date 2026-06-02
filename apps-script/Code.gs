@@ -410,6 +410,10 @@ function handleSquarePaymentCompleted(data) {
         sheet.getRange(matchedRow, COL_ZIP).setValue(data.zip || '');
       }
 
+      if (data.tax_cents) {
+        sheet.getRange(matchedRow, 16).setValue('$' + (data.tax_cents / 100).toFixed(2)); // P: Tax
+      }
+
       const paymentNote = '\n\n💰 Square Payment: ' + (data.payment_id || '') +
                           (data.receipt_url ? '\nReceipt: ' + data.receipt_url : '') +
                           '\nCompleted: ' + (data.completed_at || new Date().toISOString());
@@ -451,6 +455,7 @@ function handleSquarePaymentCompleted(data) {
 
     const refLabel = data.reference_id || ('Payment ' + data.payment_id);
     const revenue = data.amount_cents ? '$' + (data.amount_cents / 100).toFixed(2) : '';
+    const tax = data.tax_cents ? '$' + (data.tax_cents / 100).toFixed(2) : '';
 
     // Cart orders carry a TT-XXXXX reference_id. Truly external Square sales
     // (POS, Invoice) don't — those still need the "manual reconcile" flag.
@@ -476,6 +481,7 @@ function handleSquarePaymentCompleted(data) {
     if (!isCartOrder) detailsLines.push('⚠️ EXTERNAL ORDER — needs manual reconcile');
     if (fulfillmentLabel) detailsLines.push('\nFulfillment: ' + fulfillmentLabel.toUpperCase());
     if (revenue) detailsLines.push('TOTAL: ' + revenue);
+    if (tax) detailsLines.push('TAX: ' + tax);
     detailsLines.push('\n💰 Square Payment: ' + (data.payment_id || ''));
     if (data.receipt_url) detailsLines.push('Receipt: ' + data.receipt_url);
     detailsLines.push('Completed: ' + (data.completed_at || new Date().toISOString()));
@@ -496,7 +502,8 @@ function handleSquarePaymentCompleted(data) {
       data.address_line1 || '',             // L: Street
       data.city || '',                      // M: City
       data.state || '',                     // N: State
-      data.zip || ''                        // O: Zip
+      data.zip || '',                       // O: Zip
+      tax                                   // P: Tax (2.9% on flies; '' if none)
     ]);
 
     const newRowNum = sheet.getLastRow();

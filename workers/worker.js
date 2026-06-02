@@ -77,7 +77,12 @@ async function handleCheckout(request, env) {
     const li = {
       name: String(it.name || "Fly Pattern"),
       quantity: String(it.quantity || 1),
-      base_price_money: { amount: Math.round(Number(it.price || 0) * 100), currency: "USD" }
+      base_price_money: { amount: Math.round(Number(it.price || 0) * 100), currency: "USD" },
+      // Apply the 2.9% sales tax (defined in orderObj.taxes, uid "sales-tax")
+      // to flies ONLY. The Shipping pseudo-item below is deliberately left
+      // without applied_taxes, so Square does not tax shipping (CO: separately
+      // stated, optional shipping is non-taxable).
+      applied_taxes: [{ tax_uid: "sales-tax" }]
     };
     if (it.note) li.note = String(it.note).slice(0, 500);
     return li;
@@ -114,6 +119,21 @@ async function handleCheckout(request, env) {
       scope: "ORDER"
     }];
   }
+
+  // Apply 2.9% sales tax (CO state rate). LINE_ITEM scope means the tax only
+  // hits line items that reference it in their applied_taxes array — i.e. the
+  // fly line items above, NOT the Shipping pseudo-item. ADDITIVE adds it on top
+  // of the (post-discount) line total. Square computes total_tax_money itself
+  // from this percentage; without it Square returns tax_money: $0 (the bug
+  // since May 4). The computed tax is surfaced on the webhook via
+  // order.total_tax_money.
+  orderObj.taxes = [{
+    uid: "sales-tax",
+    name: "Sales Tax",
+    percentage: "2.9",
+    scope: "LINE_ITEM",
+    type: "ADDITIVE"
+  }];
 
   // For pickup orders, Square doesn't auto-create a PICKUP fulfillment because
   // it never asks the buyer for shipping info. We attach one ourselves with the
@@ -214,6 +234,7 @@ async function handleSquareWebhook(request, env, ctx) {
     payment_id: payment.id || null,
     reference_id: payment.reference_id || null,
     amount_cents: typeof amountMoney.amount === "number" ? amountMoney.amount : null,
+    tax_cents: null,
     currency: amountMoney.currency || null,
     receipt_url: payment.receipt_url || null,
     customer_email: (payment.buyer_email_address) || null,
@@ -248,6 +269,13 @@ async function handleSquareWebhook(request, env, ctx) {
         // order here so matched-row update can fire (#58).
         if (!normalized.reference_id && orderData.order && orderData.order.reference_id) {
           normalized.reference_id = orderData.order.reference_id;
+        }
+
+        // Square computes tax on the ORDER, not the payment. Pull total_tax_money
+        // so Apps Script can record the tax portion of each order.
+        const taxMoney = orderData.order && orderData.order.total_tax_money;
+        if (taxMoney && typeof taxMoney.amount === "number") {
+          normalized.tax_cents = taxMoney.amount;
         }
 
         const fulfillments = (orderData.order && orderData.order.fulfillments) || [];
