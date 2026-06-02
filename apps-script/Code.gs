@@ -1243,3 +1243,73 @@ function _mergeSourceList_(existingCell, newSource) {
   }
   return out.join(', ');
 }
+
+/**
+ * ONE-TIME migration: reshuffle the Orders/Fulfillment sheet from the old
+ * column order to the new one, matching the appendRow() reorder.
+ *
+ *   OLD: A-I customer | J=Revenue | K=Acquisition | L=Street | M=City | N=State | O=Zip | P=Tax
+ *   NEW: A-I customer | J=Acquisition | K=Street | L=City | M=State | N=Zip | O=Revenue | P=Tax
+ *
+ * Idempotent via a header guard on J1 — safe to run, but only needs running
+ * once. Run manually from the Apps Script editor, NOT on a trigger.
+ */
+function migrateColumnOrder() {
+  const ss = SpreadsheetApp.getActiveSpreadsheet();
+  const sheet = ss.getSheetByName(ORDERS_SHEET);
+  if (!sheet) {
+    Logger.log('[migrate] Sheet "' + ORDERS_SHEET + '" not found, skipping');
+    return;
+  }
+
+  // SAFETY CHECK: J1 tells us which layout we're looking at.
+  const headerJ = String(sheet.getRange(1, 10).getValue() || '').trim();
+  if (headerJ.toLowerCase().indexOf('acquisition source') !== -1) {
+    Logger.log('Already migrated, skipping');
+    return;
+  }
+  if (headerJ.toLowerCase().indexOf('revenue') === -1) {
+    Logger.log('[migrate] Unexpected J1 header "' + headerJ +
+               '" (expected "Revenue") — aborting to avoid corrupting data');
+    return;
+  }
+
+  const lastRow = sheet.getLastRow();
+  const dataRowCount = lastRow - 1;
+
+  if (dataRowCount > 0) {
+    // Read all data rows, cols A..P (16 wide).
+    const range = sheet.getRange(2, 1, dataRowCount, 16);
+    const rows = range.getValues();
+
+    const reshuffled = rows.map(function (row) {
+      // OLD indices: [9]=Revenue [10]=Acquisition [11]=Street
+      //              [12]=City [13]=State [14]=Zip [15]=Tax
+      return [
+        row[0], row[1], row[2], row[3], row[4],   // A-E customer
+        row[5], row[6], row[7], row[8],           // F-I customer
+        row[10],                                  // J: Acquisition (was K)
+        row[11],                                  // K: Street      (was L)
+        row[12],                                  // L: City        (was M)
+        row[13],                                  // M: State       (was N)
+        row[14],                                  // N: Zip         (was O)
+        row[9],                                   // O: Revenue     (was J)
+        row[15]                                   // P: Tax         (unchanged)
+      ];
+    });
+
+    // Overwrite in place.
+    range.setValues(reshuffled);
+  }
+
+  // Update the header row to match the new layout.
+  sheet.getRange(1, 10).setValue('Acquisition Source'); // J1
+  sheet.getRange(1, 11).setValue('Street');             // K1
+  sheet.getRange(1, 12).setValue('City');               // L1
+  sheet.getRange(1, 13).setValue('State');              // M1
+  sheet.getRange(1, 14).setValue('Zip');                // N1
+  sheet.getRange(1, 15).setValue('Revenue');            // O1
+  sheet.getRange(1, 16).setValue('Tax');                // P1
+
+  Logger.log('Migrated ' + dataRowCount + ' rows');
+}
