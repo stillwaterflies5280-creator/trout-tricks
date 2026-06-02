@@ -12,11 +12,11 @@ const COL_PHONE = 4;
 const COL_DETAILS = 6;
 const COL_STATUS = 8;
 const COL_NOTES = 9;
-const COL_ACQUISITION_SOURCE = 11;
-const COL_STREET = 12;
-const COL_CITY = 13;
-const COL_STATE = 14;
-const COL_ZIP = 15;
+const COL_ACQUISITION_SOURCE = 10;
+const COL_STREET = 11;
+const COL_CITY = 12;
+const COL_STATE = 13;
+const COL_ZIP = 14;
 
 function doPost(e) {
 
@@ -355,8 +355,9 @@ function handleSquarePaymentCompleted(data) {
 
   try {
     // Orders/Fulfillment columns: A=Email, B=First, C=Last, D=Phone, E=OrderDate,
-    //                             F=Details, G=Fulfillment, H=Status, I=Notes/Tracking, J=Revenue,
-    //                             K=Acquisition Source, L=Street, M=City, N=State, O=Zip
+    //                             F=Details, G=Fulfillment, H=Status, I=Notes/Tracking,
+    //                             J=Acquisition Source, K=Street, L=City, M=State, N=Zip,
+    //                             O=Revenue, P=Tax
 
     // Read the details column once — used for reference_id matching AND payment_id dedup.
     const lastRow = sheet.getLastRow();
@@ -414,7 +415,7 @@ function handleSquarePaymentCompleted(data) {
         sheet.getRange(matchedRow, 16).setValue('$' + (data.tax_cents / 100).toFixed(2)); // P: Tax
       }
 
-      const paymentNote = '\n\n💰 Square Payment: ' + (data.payment_id || '') +
+      const paymentNote = '\n\nSquare Payment: ' + (data.payment_id || '') +
                           (data.receipt_url ? '\nReceipt: ' + data.receipt_url : '') +
                           '\nCompleted: ' + (data.completed_at || new Date().toISOString());
       sheet.getRange(matchedRow, COL_DETAILS).setValue(existingDetails + paymentNote);
@@ -482,7 +483,7 @@ function handleSquarePaymentCompleted(data) {
     if (fulfillmentLabel) detailsLines.push('\nFulfillment: ' + fulfillmentLabel.toUpperCase());
     if (revenue) detailsLines.push('TOTAL: ' + revenue);
     if (tax) detailsLines.push('TAX: ' + tax);
-    detailsLines.push('\n💰 Square Payment: ' + (data.payment_id || ''));
+    detailsLines.push('\nSquare Payment: ' + (data.payment_id || ''));
     if (data.receipt_url) detailsLines.push('Receipt: ' + data.receipt_url);
     detailsLines.push('Completed: ' + (data.completed_at || new Date().toISOString()));
     const detailsText = detailsLines.join('\n');
@@ -497,12 +498,12 @@ function handleSquarePaymentCompleted(data) {
       fulfillmentLabel,                     // G: Fulfillment
       'Ordered',                            // H: Status
       isCartOrder ? '' : '(external)',      // I: Notes/Tracking
-      revenue,                              // J: Revenue
-      '',                                   // K: Acquisition Source (Square doesn't carry it)
-      data.address_line1 || '',             // L: Street
-      data.city || '',                      // M: City
-      data.state || '',                     // N: State
-      data.zip || '',                       // O: Zip
+      '',                                   // J: Acquisition Source (Square doesn't carry it)
+      data.address_line1 || '',             // K: Street
+      data.city || '',                      // L: City
+      data.state || '',                     // M: State
+      data.zip || '',                       // N: Zip
+      revenue,                              // O: Revenue
       tax                                   // P: Tax (2.9% on flies; '' if none)
     ]);
 
@@ -659,7 +660,7 @@ function fixCommunityNewsletterMisroute() {
     for (let i = rows.length - 1; i >= 0; i--) {
       const email   = rows[i][COL_EMAIL - 1];
       const details = String(rows[i][COL_DETAILS - 1] || '');
-      const revenue = String(rows[i][9] || '').replace(/[^0-9.]/g, ''); // col J
+      const revenue = String(rows[i][14] || '').replace(/[^0-9.]/g, ''); // col O
       const isPhantom = PHANTOM_DETAILS.test(details) &&
                         (revenue === '' || Number(revenue) === 0);
       if (isAffected(email) && isPhantom) {
@@ -722,7 +723,7 @@ function backfillMasterCustomers() {
 
   const orders = ss.getSheetByName(ORDERS_SHEET);
   if (orders && orders.getLastRow() > 1) {
-    const data = orders.getRange(2, 1, orders.getLastRow() - 1, 10).getValues();
+    const data = orders.getRange(2, 1, orders.getLastRow() - 1, 15).getValues();
     data.forEach(row => {
       const email = row[0];
       if (!email) return;
@@ -730,7 +731,7 @@ function backfillMasterCustomers() {
       const orderDate = row[4] || '';
       const details = String(row[5] || '');
       const fulfillment = row[6] || '';
-      const revenue = row[9] || '';
+      const revenue = row[14] || '';
 
       const orderNum = (details.split('\n')[0] || '?').trim();
 
