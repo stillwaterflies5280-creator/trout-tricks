@@ -4,6 +4,31 @@ Multi-thread parked work. Each section is independently resumable.
 
 ---
 
+## TT15 — 2026-06-01
+
+### ✅ Major wins
+- **GSC redirect stubs deployed** — `/files/*` → `/flies/*` (plus `flash-scud` → `bling-scud`)
+- **Tax collection live** — Worker `LINE_ITEM` scope + Apps Script tax column **P**
+- **Column reorder complete** — address now **K–N**, **Revenue → O**, **Tax → P** (was J=Revenue, K–O=acq/address)
+- **17 historical rows migrated** — `migrateColumnOrder()` run once against the live sheet
+- **Dynamic totals** — revenue + tax sum formulas now in **O1 / P1**
+- **Row 1 protected** + **data validation re-added in warning mode** ("Show warning", not "Reject")
+
+### 📝 Lessons learned
+- **Strict data validation breaks `setValues()`** — always use **"Show warning"**, not **"Reject"**, on any column automation writes to. A "Reject" rule silently aborts the whole `setValues()` call.
+- **Sheet migration runbook:** (1) back up the sheet first, (2) remove validation, (3) run the migration, (4) restore formulas, (5) re-add validation in warning mode.
+- **Reference column positions with formulas dynamically** — the totals formula moved from **J1 → O1** when Revenue moved; keep formulas pointing at the column by header/position, not a hard-coded letter.
+
+### ⏭️ Still pending (carry to TT16)
+- **Priority 1a:** CDOR (Colorado Dept. of Revenue) Revenue Online — *call when they open*
+- **Priority 2:** Chironomid Cheat Sheet PDF — ready to design; organic distribution first
+- **Priority 2a:** Reviews infrastructure decision — **deadline June 10, 2026**
+
+### 🗑️ Removed from list
+- **FortiGuard cleanup** — low impact at current scale
+
+---
+
 ## Thread A: MacBook → Mini SSH (Tailscale)
 
 **Mini side: ✅ COMPLETE (2026-05-14)**
