@@ -2886,7 +2886,14 @@ window.addEventListener('DOMContentLoaded', function(){
 <script>
 (function () {
   var HQ = window.TT_HQ;
-  var ORDERS = window.TT_ORDERS || [];
+  if (!HQ) return;
+
+  // Live order-map endpoint (Apps Script) — aggregates the Orders/Fulfillment
+  // sheet so the map auto-updates as orders ship. Falls back to the static
+  // /js/order-map-data.js array on any failure so the map always renders.
+  var ORDER_MAP_URL = 'https://script.google.com/macros/s/AKfycbwc5JR5yo76y8-H81D3Dh4e-pc6kqha8rLO2Yu90ZtFV_s-3Hm__YI52WoaW54zXOqBdw/exec?action=orderMap';
+
+  function render(ORDERS) {
 
   // ── Reach counter (above the map) ─────────────────────────────────────
   // Derived from ORDERS so adding a destination above auto-updates the stats.
@@ -2899,7 +2906,8 @@ window.addEventListener('DOMContentLoaded', function(){
     var countries = new Set(['United States']); // the bench is in CO
     ORDERS.forEach(function (o) {
       var parts = o.city.split(/,\s*/);
-      var last = parts[parts.length - 1];
+      // Strip any trailing "(...)" tag (e.g. "CO (Local Pickup)") before parsing.
+      var last = parts[parts.length - 1].replace(/\s*\(.*\)$/, '');
       if (last === 'Canada') {
         countries.add('Canada');
         if (parts.length >= 2) provinces.add(parts[parts.length - 2]);
@@ -2967,6 +2975,17 @@ window.addEventListener('DOMContentLoaded', function(){
       document.getElementById("flymap").scrollIntoView({ behavior: "smooth", block: "start" });
     }
   }, 250);
+  }
+
+  // Try the live endpoint; on any failure (network, bad JSON, error object,
+  // empty array) fall back to the static array. render() runs exactly once.
+  fetch(ORDER_MAP_URL)
+    .then(function (r) { if (!r.ok) throw new Error('http ' + r.status); return r.json(); })
+    .then(function (data) {
+      if (!Array.isArray(data) || data.length === 0) throw new Error('bad payload');
+      render(data);
+    })
+    .catch(function () { render(window.TT_ORDERS || []); });
 })();
 </script>
 

@@ -4,12 +4,20 @@ const STICKER_SHEET = 'Sticker Campaign';
 const STICKER_WAITLIST_SHEET = 'Sticker Waitlist';
 const MASTER_CUSTOMERS_SHEET = 'Master Customers';
 const DROP_WAITLIST_SHEET = 'Drop Waitlist';
+const GEOCACHE_SHEET = 'GeoCache';
 const STICKER_MAX   = 15;
+
+// HQ / the bench (Fairmount, CO). Local-pickup orders all stack here on the
+// customer map — fixed coords, so no geocoding is ever needed for pickups.
+const TT_HQ_LAT = 39.7686;
+const TT_HQ_LNG = -105.1447;
+const TT_HQ_PICKUP_LABEL = 'Fairmount, CO (Local Pickup)';
 
 // Orders/Fulfillment column positions (1-indexed for getRange)
 const COL_EMAIL = 1;
 const COL_PHONE = 4;
 const COL_DETAILS = 6;
+const COL_FULFILLMENT = 7;
 const COL_STATUS = 8;
 const COL_NOTES = 9;
 const COL_ACQUISITION_SOURCE = 10;
@@ -973,9 +981,160 @@ function doGet(e) {
       .setMimeType(ContentService.MimeType.JSON);
   }
 
+  if (action === 'orderMap') {
+    return handleOrderMap();
+  }
+
   return ContentService
     .createTextOutput('Trout Tricks order + contact + sticker + drop_waitlist + square webhook is alive.')
     .setMimeType(ContentService.MimeType.TEXT);
+}
+
+// ============================================================
+// ORDER MAP — powers the live customer map on / and /about.html.
+// Aggregates every Orders/Fulfillment row into map pins:
+//   • Local-pickup orders all stack on the bench (TT_HQ, no geocoding).
+//   • Ship orders are grouped by "City, State" and counted.
+// Unique ship cities are geocoded ONCE via Maps.newGeocoder() and
+// cached in the hidden GeoCache tab, so repeat calls are cheap.
+// Returns the same shape the frontend already understands (TT_ORDERS):
+//   [{ city, lat, lng, count }, ...]
+// On total failure returns { error: ... } so the frontend falls back
+// to the static /js/order-map-data.js array instead of an empty map.
+// ============================================================
+function handleOrderMap() {
+  const lock = LockService.getDocumentLock();
+  try {
+    lock.waitLock(10000);
+  } catch (lockErr) {
+    return ContentService
+      .createTextOutput(JSON.stringify({ error: 'lock_timeout' }))
+      .setMimeType(ContentService.MimeType.JSON);
+  }
+
+  try {
+    const ss = SpreadsheetApp.getActiveSpreadsheet();
+    const sheet = ss.getSheetByName(ORDERS_SHEET);
+    if (!sheet) {
+      return ContentService
+        .createTextOutput(JSON.stringify({ error: 'orders_sheet_not_found' }))
+        .setMimeType(ContentService.MimeType.JSON);
+    }
+
+    // --- Aggregate every row (no status filter) into city buckets --------
+    const rows = sheet.getDataRange().getValues();
+    let pickupCount = 0;
+    const shipCounts = {};   // "City, State" -> count
+
+    for (let i = 1; i < rows.length; i++) {            // skip header row
+      const row = rows[i];
+      const fulfillment = String(row[COL_FULFILLMENT - 1] || '').toLowerCase();
+      const city  = String(row[COL_CITY  - 1] || '').trim();
+      const state = String(row[COL_STATE - 1] || '').trim();
+
+      if (fulfillment.indexOf('pickup') !== -1) {
+        pickupCount++;
+      } else if (city) {
+        const key = state ? city + ', ' + state : city;
+        shipCounts[key] = (shipCounts[key] || 0) + 1;
+      }
+      // Ship rows with no city are unmappable — skipped silently.
+    }
+
+    // --- Geocode unique ship cities, cache-first ------------------------
+    const cache = readGeoCache_(ss);
+    const result = [];
+    const geocodeErrors = [];
+
+    Object.keys(shipCounts).forEach(function (key) {
+      let coords = cache[key];
+      if (!coords) {
+        coords = geocodeCity_(key);                    // key is "City, State"
+        if (coords) {
+          writeGeoCache_(ss, key, coords);
+          cache[key] = coords;
+        }
+      }
+      if (coords) {
+        result.push({ city: key, lat: coords.lat, lng: coords.lng, count: shipCounts[key] });
+      } else {
+        geocodeErrors.push(key);
+      }
+    });
+
+    // Local pickups all stack on the bench — fixed coords, never geocoded.
+    if (pickupCount > 0) {
+      result.push({ city: TT_HQ_PICKUP_LABEL, lat: TT_HQ_LAT, lng: TT_HQ_LNG, count: pickupCount });
+    }
+
+    if (geocodeErrors.length > 0) {
+      Logger.log('[orderMap] geocode failed for: ' + geocodeErrors.join(' | '));
+    }
+
+    // Nothing mappable — return a helpful error so the frontend falls back
+    // to the static array rather than rendering an empty map.
+    if (result.length === 0) {
+      return ContentService
+        .createTextOutput(JSON.stringify({ error: 'no_mappable_orders', geocodeErrors: geocodeErrors }))
+        .setMimeType(ContentService.MimeType.JSON);
+    }
+
+    return ContentService
+      .createTextOutput(JSON.stringify(result))
+      .setMimeType(ContentService.MimeType.JSON);
+
+  } catch (err) {
+    return ContentService
+      .createTextOutput(JSON.stringify({ error: err.toString() }))
+      .setMimeType(ContentService.MimeType.JSON);
+  } finally {
+    try { lock.releaseLock(); } catch (_) {}
+  }
+}
+
+// Read the hidden GeoCache tab into a { "City, State": {lat,lng} } map.
+// Creates (and hides) the tab on first run.
+function readGeoCache_(ss) {
+  let sheet = ss.getSheetByName(GEOCACHE_SHEET);
+  if (!sheet) {
+    sheet = ss.insertSheet(GEOCACHE_SHEET);
+    sheet.appendRow(['city_state', 'lat', 'lng', 'last_updated']);
+    sheet.getRange(1, 1, 1, 4).setFontWeight('bold');
+    sheet.setFrozenRows(1);
+    sheet.hideSheet();
+  }
+  const data = sheet.getDataRange().getValues();
+  const cache = {};
+  for (let i = 1; i < data.length; i++) {
+    const key = String(data[i][0] || '').trim();
+    const lat = Number(data[i][1]);
+    const lng = Number(data[i][2]);
+    if (key && !isNaN(lat) && !isNaN(lng)) cache[key] = { lat: lat, lng: lng };
+  }
+  return cache;
+}
+
+// Append one newly-geocoded city to the cache so it's never geocoded again.
+function writeGeoCache_(ss, key, coords) {
+  const sheet = ss.getSheetByName(GEOCACHE_SHEET);
+  if (!sheet) return;
+  sheet.appendRow([key, coords.lat, coords.lng, new Date()]);
+}
+
+// Geocode "City, State" → {lat,lng}, or null on any failure.
+function geocodeCity_(cityState) {
+  try {
+    const res = Maps.newGeocoder().geocode(cityState);
+    if (res && res.status === 'OK' && res.results && res.results.length > 0) {
+      const loc = res.results[0].geometry.location;
+      return { lat: loc.lat, lng: loc.lng };
+    }
+    Logger.log('[orderMap] geocode non-OK for "' + cityState + '": ' +
+               (res && res.status ? res.status : 'no response'));
+  } catch (err) {
+    Logger.log('[orderMap] geocode error for "' + cityState + '": ' + err.toString());
+  }
+  return null;
 }
 
 // ============================================================
