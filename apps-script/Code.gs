@@ -1041,6 +1041,23 @@ function handleOrderMap() {
       // Ship rows with no city are unmappable — skipped silently.
     }
 
+    // --- Also fold in sticker shipments (Sticker Campaign sheet) ---------
+    // Free-sticker claims are always mailed to an address (no pickup option),
+    // City col H(8) / State col I(9). They count into the same city buckets so
+    // the map shows "flies or stickers shipped" — e.g. the Saskatchewan pin.
+    const stickerSheet = ss.getSheetByName(STICKER_SHEET);
+    if (stickerSheet) {
+      const sRows = stickerSheet.getDataRange().getValues();
+      for (let i = 1; i < sRows.length; i++) {          // skip header row
+        const city  = String(sRows[i][7] || '').trim(); // H = City
+        const state = String(sRows[i][8] || '').trim(); // I = State
+        if (city) {
+          const key = state ? city + ', ' + state : city;
+          shipCounts[key] = (shipCounts[key] || 0) + 1;
+        }
+      }
+    }
+
     // --- Geocode unique ship cities, cache-first ------------------------
     const cache = readGeoCache_(ss);
     const result = [];

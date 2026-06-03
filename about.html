@@ -2901,6 +2901,9 @@ window.addEventListener('DOMContentLoaded', function(){
   // previous segment as the province; anything else counts as its own country.
   (function renderStats() {
     var US_STATE_CODES = new Set(['AL','AK','AZ','AR','CA','CO','CT','DE','FL','GA','HI','ID','IL','IN','IA','KS','KY','LA','ME','MD','MA','MI','MN','MS','MO','MT','NE','NV','NH','NJ','NM','NY','NC','ND','OH','OK','OR','PA','RI','SC','SD','TN','TX','UT','VT','VA','WA','WV','WI','WY','DC']);
+    // Canadian provinces/territories — codes AND full names, since sheet data
+    // can store either (e.g. "Saskatoon, SK" or "Saskatoon, Saskatchewan").
+    var CA_PROVINCES = new Set(['AB','BC','MB','NB','NL','NS','NT','NU','ON','PE','QC','SK','YT','Alberta','British Columbia','Manitoba','New Brunswick','Newfoundland and Labrador','Nova Scotia','Northwest Territories','Nunavut','Ontario','Prince Edward Island','Quebec','Saskatchewan','Yukon']);
     var states = new Set();
     var provinces = new Set();
     var countries = new Set(['United States']); // the bench is in CO
@@ -2911,6 +2914,9 @@ window.addEventListener('DOMContentLoaded', function(){
       if (last === 'Canada') {
         countries.add('Canada');
         if (parts.length >= 2) provinces.add(parts[parts.length - 2]);
+      } else if (CA_PROVINCES.has(last)) {
+        provinces.add(last);
+        countries.add('Canada');
       } else if (US_STATE_CODES.has(last)) {
         states.add(last);
         countries.add('United States');
