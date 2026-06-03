@@ -1013,6 +1013,16 @@ function handleOrderMap() {
   }
 
   try {
+    // Manual pins for off-sheet customers (gifts/sends never logged in any
+    // sheet). Each entry runs through the same normalize → geocode → cache
+    // pipeline below, and merges into the city buckets — so if the same city
+    // later shows up in a sheet, the counts simply combine into one pin.
+    const EXTRAS = [
+      { city: 'Saskatoon', state: 'SK', count: 1 }
+      // Thomas's buddy — sent him flies + stickers, never logged in any sheet.
+      // Add more entries here for future off-sheet gifts/sends.
+    ];
+
     const ss = SpreadsheetApp.getActiveSpreadsheet();
     const sheet = ss.getSheetByName(ORDERS_SHEET);
     if (!sheet) {
@@ -1022,9 +1032,11 @@ function handleOrderMap() {
     }
 
     // --- Aggregate every row (no status filter) into city buckets --------
+    // Keys are normalized ("Commerce City, CO") so casing variants collapse
+    // into one pin instead of scattering across near-duplicate buckets.
     const rows = sheet.getDataRange().getValues();
     let pickupCount = 0;
-    const shipCounts = {};   // "City, State" -> count
+    const shipCounts = {};   // normalized "City, ST" -> count
 
     for (let i = 1; i < rows.length; i++) {            // skip header row
       const row = rows[i];
@@ -1035,7 +1047,7 @@ function handleOrderMap() {
       if (fulfillment.indexOf('pickup') !== -1) {
         pickupCount++;
       } else if (city) {
-        const key = state ? city + ', ' + state : city;
+        const key = mapKey_(city, state);
         shipCounts[key] = (shipCounts[key] || 0) + 1;
       }
       // Ship rows with no city are unmappable — skipped silently.
@@ -1052,11 +1064,18 @@ function handleOrderMap() {
         const city  = String(sRows[i][7] || '').trim(); // H = City
         const state = String(sRows[i][8] || '').trim(); // I = State
         if (city) {
-          const key = state ? city + ', ' + state : city;
+          const key = mapKey_(city, state);
           shipCounts[key] = (shipCounts[key] || 0) + 1;
         }
       }
     }
+
+    // --- Fold in manual EXTRAS (off-sheet customers) --------------------
+    EXTRAS.forEach(function (e) {
+      if (!e.city) return;
+      const key = mapKey_(e.city, e.state);
+      shipCounts[key] = (shipCounts[key] || 0) + (Number(e.count) || 1);
+    });
 
     // --- Geocode unique ship cities, cache-first ------------------------
     const cache = readGeoCache_(ss);
@@ -1107,6 +1126,17 @@ function handleOrderMap() {
   } finally {
     try { lock.releaseLock(); } catch (_) {}
   }
+}
+
+// Normalize a city/state pair into a consistent "City, ST" bucket key so
+// casing variants ("COMMERCE CITY, co", "commerce city, CO") collapse into
+// one pin. City → Title Case, state → UPPER. Done before cache lookup so the
+// GeoCache stays keyed consistently too.
+function mapKey_(city, state) {
+  const c = String(city || '').trim().toLowerCase()
+    .replace(/\b\w/g, function (m) { return m.toUpperCase(); });
+  const s = String(state || '').trim().toUpperCase();
+  return s ? c + ', ' + s : c;
 }
 
 // Read the hidden GeoCache tab into a { "City, State": {lat,lng} } map.
