@@ -1094,6 +1094,19 @@ function submitApply(ev, form) {
     })
   }).catch(function (err) { console.error('[apply.html Klaviyo]', err); });
 
+  // Sheet mirror — Apps Script "Drop Waitlist" tab. Fire-and-forget (not
+  // awaited): a failure here must never block Klaviyo or the success state.
+  fetch('https://script.google.com/macros/s/AKfycbwc5JR5yo76y8-H81D3Dh4e-pc6kqha8rLO2Yu90ZtFV_s-3Hm__YI52WoaW54zXOqBdw/exec', {
+    method: 'POST',
+    headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+    body: JSON.stringify({
+      submission_type: 'drop_waitlist_signup',
+      customer_email: email,
+      customer_first_name: name,
+      acquisition_source: 'drop_funnel_fb'
+    })
+  }).catch(function (err) { console.error('[apply.html Drop Waitlist sheet]', err); });
+
   // Meta Pixel Lead event (no-ops until base pixel code is pasted in <head>)
   if (typeof fbq === 'function') {
     fbq('track', 'Lead', { content_name: 'The Drop FB Funnel' });

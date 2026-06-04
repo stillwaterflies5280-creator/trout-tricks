@@ -51,6 +51,7 @@ function doPost(e) {
     if (body.submission_type === 'sticker_campaign') return handleStickerCampaign(body);
     if (body.submission_type === 'sticker_waitlist') return handleStickerWaitlist(body);
     if (body.submission_type === 'drop_waitlist')    return handleDropWaitlist(body);
+    if (body.submission_type === 'drop_waitlist_signup') return handleDropWaitlistSignup(body);
     if (body.submission_type === 'crew_signup')      return handleCrewSignup(body);
     // Community-page newsletter signup. Routes to the same newsletter-signup
     // branch as crew_signup based on submission_type ALONE — earlier this fell
@@ -246,6 +247,86 @@ function handleDropWaitlist(body) {
   return ContentService
     .createTextOutput(JSON.stringify({ success: true, type: 'drop_waitlist' }))
     .setMimeType(ContentService.MimeType.JSON);
+}
+
+// ============================================================
+// DROP WAITLIST — FB AD FUNNEL (apply.html)
+// Separate from handleDropWaitlist() above (the-drop.html landing). Both
+// write to the same "Drop Waitlist" tab, but this one is the FB-funnel
+// mirror: it defaults Source to 'drop_funnel_fb', Founding Interest to
+// 'unknown', dedupes on Email, and is lock-protected against double-fires.
+// Klaviyo (list S5XAFW) still happens client-side from apply.html — this is
+// the sheet mirror only.
+// ============================================================
+function handleDropWaitlistSignup(body) {
+  const lock = LockService.getDocumentLock();
+  try {
+    lock.waitLock(10000);
+  } catch (lockErr) {
+    return ContentService
+      .createTextOutput(JSON.stringify({ success: false, error: 'lock_timeout' }))
+      .setMimeType(ContentService.MimeType.JSON);
+  }
+
+  try {
+    // Typed entry in the Webhook Log (doPost also logs a generic 'incoming').
+    logWebhook(null, body, 'drop_waitlist_signup');
+
+    const ss = SpreadsheetApp.getActiveSpreadsheet();
+    let sheet = ss.getSheetByName(DROP_WAITLIST_SHEET);
+    if (!sheet) {
+      sheet = ss.insertSheet(DROP_WAITLIST_SHEET);
+      sheet.appendRow([
+        'Timestamp', 'First Name', 'Email',
+        'Source', 'Founding Interest', 'Notes'
+      ]);
+      sheet.getRange(1, 1, 1, 6).setFontWeight('bold');
+      sheet.setFrozenRows(1);
+    }
+
+    const email = String(body.customer_email || '').trim();
+    const firstName = body.customer_first_name || '';
+    const source = body.acquisition_source || 'drop_funnel_fb';
+    // 'yes'/'no'/'maybe' once apply.html wires the field; 'unknown' until then.
+    const foundingInterest = body.founding_interest || 'unknown';
+    const notes = body.notes || '';
+
+    // Dedup on Email (column C). On a repeat email, append a flagged RESUBMIT
+    // row instead of a clean duplicate — double-fires stay auditable without
+    // polluting the real signup count.
+    let isDuplicate = false;
+    const lastRow = sheet.getLastRow();
+    if (email && lastRow > 1) {
+      const existing = sheet.getRange(2, 3, lastRow - 1, 1).getValues(); // col C
+      const target = email.toLowerCase();
+      for (let i = 0; i < existing.length; i++) {
+        if (String(existing[i][0] || '').trim().toLowerCase() === target) {
+          isDuplicate = true;
+          break;
+        }
+      }
+    }
+
+    sheet.appendRow([
+      new Date(),
+      firstName,
+      email,
+      source,
+      foundingInterest,
+      isDuplicate ? ('RESUBMIT — duplicate signup' + (notes ? ' · ' + notes : '')) : notes
+    ]);
+
+    return ContentService
+      .createTextOutput(JSON.stringify({ success: true, type: 'drop_waitlist_signup', duplicate: isDuplicate }))
+      .setMimeType(ContentService.MimeType.JSON);
+
+  } catch (err) {
+    return ContentService
+      .createTextOutput(JSON.stringify({ success: false, error: err.toString() }))
+      .setMimeType(ContentService.MimeType.JSON);
+  } finally {
+    try { lock.releaseLock(); } catch (_) {}
+  }
 }
 
 function handleCrewSignup(body) {
