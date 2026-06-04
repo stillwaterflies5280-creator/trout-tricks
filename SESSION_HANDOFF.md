@@ -1,6 +1,123 @@
-# Session handoff
+# Session Handoff Log
 
 Multi-thread parked work. Each section is independently resumable.
+
+## 2026-06-03 — TT16 (Customer map + Drop funnel + Drop Waitlist webhook)
+
+### ✅ Shipped to `main`
+
+| Commit | What |
+|---|---|
+| `d67f421` | Removed size **#18** from Muskie Buzzer + Top Secret Winged Cone (catalog.js + both fly pages) |
+| `9d0e9e4` | **Auto-updating customer map** — Apps Script `orderMap` endpoint + frontend fetch-with-fallback |
+| `afefa4a` | Order map: include **sticker shipments** + recognize **Canadian provinces** |
+| `891e414` | Order map: **city dedupe** (`mapKey_`) + **EXTRAS** array for off-sheet customers |
+| `e97fa52` | Build `/apply.html` — FB ad funnel for The Drop (prior session's base) |
+| `1e4f919` | apply.html: **Meta Pixel** + **real Google reviews** + **founding $20 hook** |
+| `e282314` | apply.html: **crop face** out of solution-section image |
+
+---
+
+### Thread 1: Auto-updating customer map — ✅ COMPLETE & DEPLOYED
+
+**Goal:** ship an order → map updates next page load, zero manual edits.
+
+#### What's live
+- **`GET …/exec?action=orderMap`** → `handleOrderMap()` in `apps-script/Code.gs`.
+  - Reads **Orders/Fulfillment** (city col **L/12**, state col **M/13**, fulfillment col **G/7**) — *all* rows, no status filter.
+  - **Local pickup** orders stack at HQ as `"Fairmount, CO (Local Pickup)"` (lat 39.7686 / lng -105.1447, never geocoded).
+  - **Ship** orders grouped by normalized `"City, ST"`, geocoded once via `Maps.newGeocoder()`, cached in hidden **GeoCache** tab (`city_state, lat, lng, last_updated`).
+  - Also folds in **Sticker Campaign** sheet (city col **H/8**, state col **I/9**) — all mailed, no pickup.
+  - **EXTRAS** array (top of `handleOrderMap`) for off-sheet gifts — currently seeded with `Saskatoon, SK` (Thomas's buddy).
+  - `mapKey_()` normalizes city→Title Case, state→UPPER so casing variants collapse to one pin.
+  - Returns `[{city,lat,lng,count}]` (same shape as static `TT_ORDERS`); returns `{error:…}` on lock timeout / missing sheet / nothing mappable.
+- **Frontend** (`index.html` mini-map + `about.html#flymap`): `fetch(orderMap)` → on success render live data, on **any** failure fall back to static `/js/order-map-data.js`. Static file kept intact as fallback.
+- **Counter parser** on both pages recognizes Canadian province codes **and** full names → counts as Canada + province. Strips trailing `"(…)"` tags before parsing.
+
+#### Status
+- ✅ Merged to `main`, **Apps Script redeployed** by Thomas (verified working).
+- The Saskatchewan pin (was a sticker shipment) is restored via the Sticker sheet + EXTRAS.
+
+#### Notes / carry-forward
+- **Stale GeoCache rows:** earlier deploys may have left non-normalized keys in the GeoCache tab. Harmless (never matched again). To start clean, delete the hidden **GeoCache** tab — it rebuilds on next endpoint hit.
+- Adding future off-sheet sends = add a line to `EXTRAS` in `handleOrderMap()` + redeploy.
+
+---
+
+### Thread 2: The Drop FB funnel (`apply.html`) — ✅ MERGED to `main`
+
+Built on `feature/drop-funnel` (now merged + local branch deleted; **`origin/feature/drop-funnel` still exists on GitHub**, harmless).
+
+#### Edits live
+1. **Meta Pixel** installed in `<head>`, ID **`1630431118063509`** (PageView + noscript). The `fbq('track','Lead')` on form submit (guarded by `typeof fbq==='function'`) now fires for real.
+2. **Testimonials** — 5 fake quotes → **3 real 5.0★ Google reviews** (Dustin H., Peter F., Tanner P.), each tagged "Google Review". New header "Real reviews from Trout Tricks anglers" + 5.0★ subhead + "See all reviews on Google →" → `https://share.google/q3H0I3myXr0Y4OrTZ`.
+3. **Founding pricing hook** (Urgency section) — "Founding members — 10 spots, **$20/mo locked for life**", 3-paragraph body ($20 founding vs $35 standard, both tiers equal, waitlist opens founding 10 at 25 signups). Placeholder `[N of 10 founding spots claimed]` line, `id="foundingSpots"`.
+4. **FAQ** "How much does it cost?" → $20 founding / $35 standard / fit-call copy.
+5. **Solution image face-crop** — `.solution-photo img { object-position: center 80%; }`. Image is 700×525 (4:3) in a 16:9 frame; 80% crops the top ~20% (face) and shows hands+fish. Verified via simulated crop. (OPTION A succeeded; no image swap needed.)
+
+#### Ghosting verified (all PASS)
+- **Nav/footer:** no `href` to `/apply` anywhere; only 3 self-references inside apply.html (comments + Klaviyo source string).
+- **Sitemap:** `apply` absent from `sitemap.xml`.
+- **Robots meta:** `apply.html:9` has `<meta name="robots" content="noindex, nofollow">`.
+- **robots.txt:** only `User-agent: * / Allow: / / Sitemap:…` — no explicit `/apply` rule. Discovery limited to people sent the ad link (the intent).
+
+#### Carry-forward
+- **founding-spots counter** is a static placeholder — wire to `the-drop.html`'s `TT_DROP_STATE` later if reusable.
+- **`founding_interest` field** not yet in the apply.html form (webhook defaults it to `'unknown'`).
+
+---
+
+### Thread 3: Drop Waitlist webhook — ⏸️ BUILT, NOT DEPLOYED, NOT MERGED
+
+Branch **`feature/drop-waitlist-sheet`** (tip `f1c6525`), pushed to origin. **Pending Thomas review before deploy.**
+
+#### What's in the branch
+- **`handleDropWaitlistSignup(body)`** in `Code.gs` for `submission_type === 'drop_waitlist_signup'` (apply.html FB-funnel mirror).
+  - ⚠️ **Named distinctly on purpose.** A `handleDropWaitlist` (the-drop.html flow, type `drop_waitlist`) **already exists**; a second same-named function would silently override it in Apps Script and break that flow. Both write to the same **Drop Waitlist** tab.
+  - LockService-protected; **email dedup** on column C → appends a flagged `RESUBMIT —` row instead of a clean duplicate; calls `logWebhook(null, body, 'drop_waitlist_signup')`.
+  - Defaults: Source `drop_funnel_fb`, Founding Interest `unknown`.
+- **Router** (Code.gs ~line 54): `if (body.submission_type === 'drop_waitlist_signup') return handleDropWaitlistSignup(body);`
+- **apply.html** (after the Klaviyo POST): fire-and-forget `fetch()` POST mirroring the signup to the sheet. Klaviyo (list **S5XAFW**) unchanged.
+
+#### Open decisions for Thomas (flagged at delivery)
+1. **Double-logging:** `doPost` already logs every request as `'incoming'`, so each signup produces two Webhook Log rows (one `incoming`, one `drop_waitlist_signup`). Keep or drop the typed one?
+2. **No Master Customers write:** the sibling `handleDropWaitlist` calls `writeToMasterCustomers()`; the new one doesn't (not in spec). Add for parity?
+3. **Extra field:** the POST body includes `customer_first_name` (beyond the spec's 3 fields) so the First Name column fills.
+
+#### Deploy path (when approved)
+1. Merge `feature/drop-waitlist-sheet` → `main`.
+2. `git show main:apps-script/Code.gs | pbcopy` → paste into Apps Script editor → Save.
+3. **Deploy → Manage deployments → ✏️ on `doget alive 12` → Version: New version → Deploy.** (NEVER "+ New deployment" — mints a new `/exec` URL; Cloudflare + all frontends are hardcoded to the current one.)
+4. Test with `"submission_type":"drop_waitlist_signup"` (a retry should produce a **RESUBMIT** row, not a clean dupe).
+
+---
+
+### 🧹 Cleanup owed
+- **Delete 2 test rows** `test-deploy-check@trouttricks.com` (2026-06-03 23:25:54 + 23:26:55) from **Drop Waitlist**, plus the matching **Master Customers** and **Webhook Log** entries. (Verification POSTs to the existing no-dedup `drop_waitlist` handler; both wrote rows.)
+- **Stale remote branches** on GitHub: `origin/feature/auto-map`, `origin/feature/drop-funnel` (both merged). Delete with `git push origin --delete <branch>` when convenient.
+
+---
+
+### 🔍 Verification finding (deployment health)
+- `GET …/exec` → **200** + alive text → deployment live & current.
+- POST testing via **curl is unreliable** for Apps Script: POST→302→`googleusercontent.com` echo URL serves the response only via GET, so the terminal sees a "Sorry, unable to open the file" / 405 page even when the script ran fine. **A browser `fetch()` (apply.html's real call) handles this correctly.** Verify POSTs by checking the sheet, not the curl response.
+- Confirmed via Drive read: the deployed `handleDropWaitlist` (`drop_waitlist`) works. The **new** `handleDropWaitlistSignup` is **not deployed yet** (Thread 3).
+
+---
+
+### Configuration locked
+
+| Thing | Value |
+|---|---|
+| Apps Script `/exec` URL | `…/AKfycbwc5JR5yo76y8-H81D3Dh4e-pc6kqha8rLO2Yu90ZtFV_s-3Hm__YI52WoaW54zXOqBdw/exec` |
+| Deployment to update | **`doget alive 12`** — pencil ✏️ → New version, NOT "+ New deployment" |
+| Master Tracker Sheet ID | `1xWB17PN1YKdUAmPGYmpdQdkg71NsHwyDKV5QgWWNcV8` |
+| Meta Pixel ID (apply.html) | `1630431118063509` |
+| Klaviyo (apply.html) | company `RyxZFj`, Drop Waitlist list `S5XAFW` |
+| Google reviews link | `https://share.google/q3H0I3myXr0Y4OrTZ` |
+| Order map endpoint | `…/exec?action=orderMap` (GET) |
+| New sheet tabs | `GeoCache` (hidden, auto-created), `Drop Waitlist` (existing) |
+| Order map cols | Orders/Fulfillment: city L/12, state M/13, fulfillment G/7 · Sticker Campaign: city H/8, state I/9 |
 
 ---
 
