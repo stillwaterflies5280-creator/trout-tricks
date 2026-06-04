@@ -1,0 +1,1057 @@
+<!DOCTYPE html>
+<!-- FB AD FUNNEL: noindex until ready. Calendly URL needs to be added. -->
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<!-- GHOSTED: FB ad traffic only. Do NOT index, do NOT add to sitemap, do NOT link from nav. -->
+<meta name="robots" content="noindex, nofollow">
+
+<title>The Drop — Colorado Stillwater Mastermind | Apply</title>
+<meta name="description" content="Private community for serious Colorado fly anglers. Insider intel, member-only patterns, monthly Q&As with a working guide. Apply for The Drop.">
+<meta name="author" content="Thomas Frank - Trout Tricks">
+
+<!-- META_PIXEL_HERE: paste FB pixel code -->
+<!--
+  Meta Pixel goes here. Replace this comment block with the snippet from
+  Facebook Business Manager > Events Manager > Data Sources > your Pixel > "Add code manually".
+  It looks like:
+
+  <script>
+  !function(f,b,e,v,n,t,s){...}(window, document,'script','https://connect.facebook.net/en_US/fbevents.js');
+  fbq('init', 'YOUR_PIXEL_ID_HERE');
+  fbq('track', 'PageView');
+  </script>
+  <noscript><img height="1" width="1" style="display:none" src="https://www.facebook.com/tr?id=YOUR_PIXEL_ID_HERE&ev=PageView&noscript=1"/></noscript>
+
+  The Lead conversion event is already fired from the form JS below via fbq('track','Lead')
+  (guarded so it no-ops until the pixel base code above is live).
+-->
+
+<!-- Favicon -->
+<link rel="icon" type="image/x-icon" href="/favicon.ico">
+<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Barlow+Condensed:wght@300;400;600;700&family=Barlow:wght@300;400;600&display=swap" rel="stylesheet">
+
+<style>
+  :root {
+    --black: #0a0a0a;
+    --dark: #111111;
+    --card: #181818;
+    --card-2: #1c1c1c;
+    --border: #2a2a2a;
+    --red: #c0392b;
+    --red-bright: #e74c3c;
+    --gold: #d4a017;
+    --gold-dim: #9a7410;
+    --white: #f0f0f0;
+    --gray: #888;
+    --light-gray: #ccc;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body { overflow-x: hidden; width: 100%; max-width: 100vw; scroll-behavior: smooth; }
+  body {
+    font-family: 'Barlow', sans-serif;
+    background: var(--black);
+    color: var(--white);
+    min-height: 100vh;
+    line-height: 1.5;
+  }
+  a { color: inherit; }
+  img { max-width: 100%; }
+
+  /* MINIMAL HEADER — wordmark only, no nav (ghosted funnel page) */
+  header {
+    background: #1a1a1a;
+    border-bottom: 2px solid var(--red);
+    padding: 0 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 56px;
+  }
+  .logo {
+    font-family: 'Bebas Neue', Impact, Arial Narrow, sans-serif;
+    font-size: 1.7rem;
+    letter-spacing: 0.08em;
+    color: #fff;
+    line-height: 1;
+    white-space: nowrap;
+    text-decoration: none;
+    border-bottom: 2px solid var(--red);
+    padding-bottom: 2px;
+  }
+  .logo span { color: var(--red); }
+
+  /* SHARED SECTION SCAFFOLD */
+  section {
+    padding: 56px 20px;
+    max-width: 1080px;
+    margin: 0 auto;
+  }
+  .eyebrow {
+    font-family: 'Barlow Condensed', Impact, sans-serif;
+    font-size: 0.72rem;
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    color: var(--red-bright);
+    text-align: center;
+    margin-bottom: 12px;
+  }
+  .section-title {
+    font-family: 'Bebas Neue', Impact, sans-serif;
+    font-size: clamp(1.9rem, 5vw, 2.8rem);
+    text-align: center;
+    letter-spacing: 0.04em;
+    color: #fff;
+    margin-bottom: 12px;
+    line-height: 1.04;
+  }
+  .section-title .accent { color: var(--red-bright); }
+  .section-sub {
+    text-align: center;
+    color: var(--light-gray);
+    max-width: 720px;
+    margin: 0 auto 36px;
+    font-size: 1.02rem;
+    line-height: 1.6;
+  }
+  .divider { width: 60px; height: 2px; background: var(--red); margin: 0 auto 28px; }
+
+  /* HERO (above the fold — no heavy bg image, fast paint) */
+  .hero {
+    position: relative;
+    background: radial-gradient(ellipse at 50% 0%, #1d1310 0%, var(--black) 60%);
+    border-bottom: 2px solid var(--red);
+    padding: 48px 20px 44px;
+    text-align: center;
+    max-width: none;
+  }
+  .hero::after {
+    content: '';
+    position: absolute; inset: 0;
+    background: radial-gradient(ellipse at 50% 100%, rgba(192,57,43,0.22) 0%, transparent 65%);
+    pointer-events: none;
+  }
+  .hero-inner { position: relative; z-index: 2; max-width: 720px; margin: 0 auto; }
+  .hero-tag {
+    font-family: 'Barlow Condensed', Impact, sans-serif;
+    font-size: 0.74rem;
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    color: var(--red-bright);
+    margin-bottom: 14px;
+  }
+  .hero h1 {
+    font-family: 'Bebas Neue', Impact, sans-serif;
+    font-size: clamp(2.6rem, 9vw, 4.4rem);
+    letter-spacing: 0.03em;
+    line-height: 0.98;
+    color: #fff;
+    margin-bottom: 16px;
+  }
+  .hero h1 .accent { color: var(--red-bright); }
+  .hero-sub {
+    font-family: 'Barlow', sans-serif;
+    font-size: clamp(1rem, 2.4vw, 1.15rem);
+    color: #d8d8d8;
+    line-height: 1.55;
+    max-width: 560px;
+    margin: 0 auto 22px;
+  }
+
+  .hero-bullets {
+    list-style: none;
+    display: inline-flex;
+    flex-direction: column;
+    gap: 8px;
+    text-align: left;
+    margin: 0 auto 26px;
+  }
+  .hero-bullets li {
+    position: relative;
+    padding-left: 30px;
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 1.02rem;
+    letter-spacing: 0.03em;
+    color: #eee;
+  }
+  .hero-bullets li::before {
+    content: '✓';
+    position: absolute; left: 0; top: 0;
+    color: var(--gold);
+    font-weight: 700;
+    font-size: 1.1rem;
+  }
+
+  /* EMAIL CAPTURE FORM */
+  .capture {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 22px 20px;
+    max-width: 460px;
+    margin: 0 auto;
+    text-align: left;
+  }
+  .capture .form-row { display: flex; flex-direction: column; gap: 10px; }
+  .capture input[type="text"],
+  .capture input[type="email"] {
+    width: 100%;
+    background: #0d0d0d;
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 14px 14px;
+    color: #fff;
+    font-family: 'Barlow', sans-serif;
+    font-size: 1rem;
+    transition: border-color 0.2s;
+  }
+  .capture input:focus { outline: none; border-color: var(--red); }
+  .capture input.invalid { border-color: var(--red-bright); }
+  .form-error {
+    display: none;
+    color: var(--red-bright);
+    font-size: 0.82rem;
+    margin-top: -4px;
+  }
+  .form-error.show { display: block; }
+
+  .btn-primary {
+    width: 100%;
+    background: var(--red);
+    color: #fff;
+    border: 2px solid #ff6b5b;
+    padding: 15px;
+    border-radius: 6px;
+    font-family: 'Barlow Condensed', Impact, sans-serif;
+    font-size: 1.15rem;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    cursor: pointer;
+    box-shadow: 0 0 18px rgba(192,57,43,0.55);
+    transition: background 0.2s, transform 0.1s;
+  }
+  .btn-primary:hover:not(:disabled) { background: var(--red-bright); }
+  .btn-primary:active { transform: translateY(1px); }
+  .btn-primary:disabled { opacity: 0.6; cursor: wait; }
+
+  .trust-line {
+    text-align: center;
+    color: var(--gray);
+    font-size: 0.82rem;
+    margin-top: 14px;
+    letter-spacing: 0.03em;
+  }
+  .trust-line strong { color: var(--light-gray); }
+
+  .capture-success {
+    display: none;
+    background: #0f1a0f;
+    border: 1px solid #2a4a2a;
+    border-radius: 10px;
+    padding: 24px 20px;
+    text-align: center;
+  }
+  .capture-success.show { display: block; }
+  .capture-success h3 {
+    font-family: 'Bebas Neue', Impact, sans-serif;
+    font-size: 1.7rem;
+    color: var(--gold);
+    margin-bottom: 8px;
+    letter-spacing: 0.04em;
+  }
+  .capture-success p { color: var(--light-gray); font-size: 0.96rem; line-height: 1.55; margin-bottom: 8px; }
+  .capture-success .btn-primary { max-width: 340px; margin: 12px auto 0; display: block; text-decoration: none; text-align: center; }
+
+  /* PROBLEM AGITATION */
+  .pain-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: 16px;
+    margin-bottom: 28px;
+  }
+  .pain-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-left: 3px solid var(--red);
+    border-radius: 8px;
+    padding: 22px 20px;
+  }
+  .pain-card .pain-icon { font-size: 1.5rem; margin-bottom: 10px; }
+  .pain-card p { color: var(--light-gray); font-size: 0.98rem; line-height: 1.55; }
+  .pain-closer {
+    text-align: center;
+    font-family: 'Bebas Neue', Impact, sans-serif;
+    font-size: clamp(1.6rem, 4vw, 2.2rem);
+    color: #fff;
+    letter-spacing: 0.04em;
+  }
+  .pain-closer .accent { color: var(--red-bright); }
+
+  /* SOLUTION */
+  .solution-photo {
+    width: 100%;
+    max-width: 760px;
+    margin: 0 auto;
+    aspect-ratio: 16 / 9;
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    background: linear-gradient(135deg, #161616, #0e0e0e);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #555;
+    font-family: 'Barlow Condensed', sans-serif;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    font-size: 0.85rem;
+    overflow: hidden;
+  }
+  .solution-photo img { width: 100%; height: 100%; object-fit: cover; display: block; }
+
+  /* BENEFIT CARDS */
+  .values-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    gap: 16px;
+  }
+  .value-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 22px 20px;
+    transition: border-color 0.2s, transform 0.2s;
+  }
+  .value-card:hover { border-color: #3a3a3a; transform: translateY(-2px); }
+  .value-icon { font-size: 1.5rem; margin-bottom: 10px; display: inline-block; }
+  .value-card h3 {
+    font-family: 'Barlow Condensed', Impact, sans-serif;
+    font-size: 1.05rem;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: #fff;
+    margin-bottom: 8px;
+  }
+  .value-card p { color: var(--light-gray); font-size: 0.94rem; line-height: 1.5; }
+
+  /* ABOUT THE GUIDE */
+  .guide-block {
+    display: grid;
+    grid-template-columns: 280px 1fr;
+    gap: 30px;
+    align-items: center;
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 30px;
+  }
+  @media (max-width: 720px) {
+    .guide-block { grid-template-columns: 1fr; padding: 22px; gap: 22px; }
+  }
+  .guide-photo {
+    width: 100%;
+    aspect-ratio: 1 / 1;
+    border-radius: 10px;
+    border: 1px solid var(--border);
+    background: linear-gradient(135deg, #161616, #0e0e0e);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #555;
+    font-family: 'Barlow Condensed', sans-serif;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    font-size: 0.8rem;
+    overflow: hidden;
+  }
+  .guide-photo img { width: 100%; height: 100%; object-fit: cover; display: block; border-radius: 10px; }
+  .guide-name {
+    font-family: 'Bebas Neue', Impact, sans-serif;
+    font-size: 1.9rem;
+    color: #fff;
+    letter-spacing: 0.04em;
+    margin-bottom: 4px;
+  }
+  .guide-role {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 0.8rem;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--red-bright);
+    margin-bottom: 16px;
+  }
+  .guide-bullets { list-style: none; margin-bottom: 18px; }
+  .guide-bullets li {
+    position: relative;
+    padding: 5px 0 5px 24px;
+    color: var(--light-gray);
+    font-size: 0.96rem;
+    line-height: 1.45;
+  }
+  .guide-bullets li::before {
+    content: '✓';
+    position: absolute; left: 0; top: 5px;
+    color: var(--gold);
+    font-weight: 700;
+  }
+  .guide-quote {
+    border-left: 3px solid var(--red);
+    padding: 6px 0 6px 16px;
+    color: #fff;
+    font-style: italic;
+    font-size: 1.02rem;
+    line-height: 1.6;
+  }
+
+  /* TESTIMONIALS */
+  .testi-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    gap: 16px;
+  }
+  .testi-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 22px 20px;
+  }
+  .testi-stars { color: var(--gold); font-size: 1rem; letter-spacing: 0.1em; margin-bottom: 10px; }
+  .testi-quote { color: var(--light-gray); font-size: 0.96rem; line-height: 1.55; margin-bottom: 12px; }
+  .testi-name {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 0.85rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: #fff;
+  }
+  .testi-name span { color: var(--gray); }
+
+  /* URGENCY */
+  .urgency {
+    background: linear-gradient(90deg, #1a0f0d 0%, #2a1310 50%, #1a0f0d 100%);
+    border-top: 1px solid #3a1a14;
+    border-bottom: 1px solid #3a1a14;
+    padding: 40px 20px;
+    text-align: center;
+    max-width: none;
+  }
+  .urgency-eyebrow {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 0.72rem;
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    color: var(--gold);
+    margin-bottom: 10px;
+  }
+  .urgency-main {
+    font-family: 'Bebas Neue', Impact, sans-serif;
+    font-size: clamp(1.7rem, 4.5vw, 2.6rem);
+    color: #fff;
+    letter-spacing: 0.04em;
+    line-height: 1.05;
+    margin-bottom: 8px;
+  }
+  .urgency-main .accent { color: var(--red-bright); }
+  .urgency-sub { color: var(--light-gray); font-size: 1rem; max-width: 560px; margin: 0 auto; }
+
+  /* CTA / TWO-STEP */
+  .cta-section {
+    background: linear-gradient(180deg, #0d0d0d 0%, #141414 100%);
+    border-top: 2px solid var(--red);
+    border-bottom: 2px solid var(--red);
+    padding: 56px 20px;
+    max-width: none;
+  }
+  .cta-inner { max-width: 640px; margin: 0 auto; }
+  .steps-two {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+    margin-bottom: 28px;
+  }
+  @media (max-width: 560px) { .steps-two { grid-template-columns: 1fr; } }
+  .step-box {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 20px 18px;
+    text-align: center;
+  }
+  .step-box .step-num {
+    font-family: 'Bebas Neue', Impact, sans-serif;
+    font-size: 2.2rem;
+    color: var(--red-bright);
+    line-height: 1;
+    margin-bottom: 6px;
+  }
+  .step-box .step-h {
+    font-family: 'Barlow Condensed', Impact, sans-serif;
+    font-size: 1rem;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: #fff;
+    margin-bottom: 6px;
+  }
+  .step-box p { color: var(--light-gray); font-size: 0.9rem; line-height: 1.45; }
+
+  /* CALENDLY EMBED */
+  .calendly-wrap {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 16px;
+    min-height: 200px;
+  }
+  .calendly-placeholder {
+    border: 2px dashed #3a3a3a;
+    border-radius: 8px;
+    padding: 40px 24px;
+    text-align: center;
+    color: var(--gray);
+  }
+  .calendly-placeholder strong { color: var(--gold); display: block; margin-bottom: 8px; font-family: 'Barlow Condensed', sans-serif; letter-spacing: 0.08em; text-transform: uppercase; }
+
+  /* FAQ */
+  .faq-list { display: grid; gap: 12px; max-width: 760px; margin: 0 auto; }
+  details.faq {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    overflow: hidden;
+    transition: border-color 0.2s;
+  }
+  details.faq[open] { border-color: var(--red); }
+  details.faq summary {
+    list-style: none;
+    cursor: pointer;
+    padding: 18px 22px;
+    font-family: 'Barlow Condensed', Impact, sans-serif;
+    font-size: 1.05rem;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    color: #fff;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 14px;
+    user-select: none;
+  }
+  details.faq summary::-webkit-details-marker { display: none; }
+  details.faq summary::after {
+    content: '+';
+    font-family: 'Bebas Neue', Impact, sans-serif;
+    font-size: 1.6rem;
+    color: var(--red-bright);
+    line-height: 1;
+    flex-shrink: 0;
+    transition: transform 0.2s;
+  }
+  details.faq[open] summary::after { content: '−'; }
+  details.faq .faq-body { padding: 0 22px 22px; color: var(--light-gray); font-size: 0.97rem; line-height: 1.6; }
+
+  /* FOOTER (minimal) */
+  footer {
+    background: #0a0a0a;
+    border-top: 1px solid var(--border);
+    padding: 36px 20px 28px;
+    text-align: center;
+  }
+  .footer-logo {
+    font-family: 'Bebas Neue', Impact, sans-serif;
+    font-size: 1.5rem;
+    letter-spacing: 0.08em;
+    color: #fff;
+    margin-bottom: 10px;
+  }
+  .footer-logo span { color: var(--red); }
+  .footer-slap {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 1.05rem;
+    letter-spacing: 0.06em;
+    color: #fff;
+    margin-bottom: 14px;
+  }
+  .footer-contact a { color: var(--gold); text-decoration: none; margin: 0 8px; font-size: 0.9rem; }
+  .footer-copy { color: var(--gray); font-size: 0.76rem; letter-spacing: 0.05em; margin-top: 14px; }
+
+  /* MOBILE STICKY CTA */
+  .mobile-sticky-cta {
+    display: none;
+    position: fixed;
+    bottom: 0; left: 0; right: 0;
+    z-index: 200;
+    background: rgba(15,15,17,0.96);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border-top: 1px solid var(--red);
+    padding: 10px 14px;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 -4px 20px rgba(0,0,0,0.6);
+    transform: translateY(110%);
+    transition: transform 0.3s ease;
+  }
+  .mobile-sticky-cta.visible { transform: translateY(0); }
+  .mobile-sticky-cta .msc-btn {
+    width: 100%;
+    max-width: 420px;
+    background: var(--red);
+    color: #fff;
+    border: 2px solid var(--red-bright);
+    border-radius: 6px;
+    padding: 13px 18px;
+    font-family: 'Bebas Neue', Impact, sans-serif;
+    font-size: 1.2rem;
+    letter-spacing: 0.08em;
+    text-decoration: none;
+    text-transform: uppercase;
+    text-align: center;
+    white-space: nowrap;
+  }
+  @media (max-width: 720px) {
+    .mobile-sticky-cta { display: flex; }
+    body { padding-bottom: 70px; }
+    section { padding: 44px 16px; }
+    .hero { padding: 40px 16px 38px; }
+    .guide-block { padding: 20px; }
+  }
+</style>
+</head>
+
+<body>
+
+<header>
+  <a class="logo" href="/">TROUT <span>TRICKS</span></a>
+</header>
+
+<!-- ============================================================
+  1. HERO
+
+  A/B HEADLINE OPTIONS (swap the <h1> content to test):
+    A) STOP GUESSING. START SLAYING.            <-- LIVE
+    B) THE COLORADO STILLWATER MASTERMIND.
+    C) FISH WITH THE GUYS WHO ACTUALLY CATCH.
+============================================================ -->
+<section class="hero" id="top">
+  <div class="hero-inner">
+    <div class="hero-tag">The Drop · Colorado Stillwater Mastermind</div>
+    <!-- HEADLINE A (live) -->
+    <h1>Stop guessing.<br><span class="accent">Start slaying.</span></h1>
+    <!-- HEADLINE B: <h1>The Colorado<br><span class="accent">stillwater mastermind.</span></h1> -->
+    <!-- HEADLINE C: <h1>Fish with the guys<br>who <span class="accent">actually catch.</span></h1> -->
+    <p class="hero-sub">Private community for serious Colorado fly anglers. Insider intel, member-only patterns, monthly Q&amp;As with a working guide. Cut years off your learning curve.</p>
+
+    <ul class="hero-bullets">
+      <li>Real-time intel on Antero, Spinney, Eleven Mile &amp; more</li>
+      <li>Member-only patterns you won't find in any shop</li>
+      <li>Monthly live Q&amp;As with a working Colorado guide</li>
+    </ul>
+
+    <div class="capture" id="captureCard">
+      <form id="dropForm" onsubmit="return submitApply(event)">
+        <div class="form-row">
+          <input type="text" id="applyName" name="name" autocomplete="given-name" placeholder="First name (optional)">
+          <input type="email" id="applyEmail" name="email" required autocomplete="email" placeholder="you@email.com" oninput="clearErr('applyEmail')">
+          <div class="form-error" id="applyEmailError">Please enter a valid email.</div>
+          <button type="submit" class="btn-primary" id="applySubmit">Get Insider Access</button>
+        </div>
+      </form>
+      <p class="trust-line"><strong>Brian Chan / Phil Rowley methodology.</strong> No spam, just fish.</p>
+    </div>
+
+    <div class="capture-success" id="captureSuccess">
+      <h3>You're in 🪝</h3>
+      <p>Check your email — then lock in your 15-minute call with Thomas below.</p>
+      <a class="btn-primary" href="#book">Book My Call →</a>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================
+  2. PROBLEM AGITATION
+============================================================ -->
+<section>
+  <div class="eyebrow">The Real Cost</div>
+  <h2 class="section-title">Fishing alone <span class="accent">costs you</span>.</h2>
+  <div class="divider"></div>
+
+  <div class="pain-grid">
+    <div class="pain-card">
+      <div class="pain-icon">🚗</div>
+      <p>You drive 2+ hours and <strong style="color:#fff;">guess at depth zones</strong> — burning the first three hours of light figuring out where the fish are holding.</p>
+    </div>
+    <div class="pain-card">
+      <div class="pain-icon">🪰</div>
+      <p>You tie patterns <strong style="color:#fff;">nobody's catching on</strong> — copying YouTube flies that worked somewhere else, on some other water, last season.</p>
+    </div>
+    <div class="pain-card">
+      <div class="pain-icon">⏱️</div>
+      <p>You miss hatches because <strong style="color:#fff;">nobody tells you when they hit</strong> — showing up a week late to the best window of the month.</p>
+    </div>
+  </div>
+
+  <p class="pain-closer">There's a <span class="accent">better way</span>.</p>
+</section>
+
+<!-- ============================================================
+  3. SOLUTION
+============================================================ -->
+<section>
+  <div class="eyebrow">Introducing</div>
+  <h2 class="section-title">Meet <span class="accent">The Drop</span>.</h2>
+  <div class="divider"></div>
+  <p class="section-sub">The Drop is a private mastermind for serious Colorado stillwater anglers — a working crew that pools real-time intel on conditions, hatches, locations, and patterns so nobody fishes blind. Anchored by a working guide and built on the Brian Chan / Phil Rowley stillwater methodology, it's the playbook and the room that cut years off your learning curve.</p>
+
+  <div class="solution-photo">
+    <!-- PHOTO: /images/drop/member-catch.jpg — hero shot of a member's stillwater trophy -->
+    <img src="/images/drop/member-catch.jpg" alt="The Drop member with a Colorado stillwater trophy trout" loading="lazy" onerror="this.style.display='none';this.parentNode.insertAdjacentText('beforeend','PHOTO: /images/drop/member-catch.jpg');">
+  </div>
+</section>
+
+<!-- ============================================================
+  4. WHAT YOU GET
+============================================================ -->
+<section>
+  <div class="eyebrow">What You Get</div>
+  <h2 class="section-title">Everything you need to <span class="accent">level up</span>.</h2>
+  <div class="divider"></div>
+
+  <div class="values-grid">
+    <div class="value-card">
+      <div class="value-icon">🎣</div>
+      <h3>Weekly Insider Reports</h3>
+      <p>Real conditions from the water — Antero, Spinney, Eleven Mile, Williams Fork, Lathrop, Delaney, and Lake John. What's working, what isn't, week by week.</p>
+    </div>
+    <div class="value-card">
+      <div class="value-icon">🧵</div>
+      <h3>Member-Only Patterns</h3>
+      <p>Flies we don't sell publicly, plus the tying tutorials to match. First look at new patterns before they ever hit the shop.</p>
+    </div>
+    <div class="value-card">
+      <div class="value-icon">🎥</div>
+      <h3>Monthly Live Q&amp;A</h3>
+      <p>Direct video calls with Thomas. Bring your toughest problem — a lake you can't crack, a rig that's not earning — and work it with the group.</p>
+    </div>
+    <div class="value-card">
+      <div class="value-icon">👥</div>
+      <h3>Private Community</h3>
+      <p>A crew of serious anglers sharing intel in real time. Trip reports, conditions, breakthroughs — the room compounds the value.</p>
+    </div>
+    <div class="value-card">
+      <div class="value-icon">💰</div>
+      <h3>20% Off Trout Tricks</h3>
+      <p>Member discount on every fly, every sticker, every drop — plus early access to limited batches before the public link goes live.</p>
+    </div>
+    <div class="value-card">
+      <div class="value-icon">🏆</div>
+      <h3>Trophy Fish Protocol</h3>
+      <p>The step-by-step Chan/Rowley stillwater methodology — depth tuning, balanced rigging, retrieves, and hatch timing, broken down to repeat.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================
+  5. ABOUT THE GUIDE
+============================================================ -->
+<section>
+  <div class="eyebrow">Who's Running This</div>
+  <h2 class="section-title">Meet your <span class="accent">guide</span>.</h2>
+  <div class="divider"></div>
+
+  <div class="guide-block">
+    <div class="guide-photo">
+      <!-- PHOTO: /images/drop/thomas.jpg — portrait of Thomas with a fish or at the bench -->
+      <img src="/images/drop/thomas.jpg" alt="Thomas Frank, Trout Tricks founder and stillwater guide" loading="lazy" onerror="this.style.display='none';this.parentNode.insertAdjacentText('beforeend','PHOTO: /images/drop/thomas.jpg');">
+    </div>
+    <div>
+      <div class="guide-name">Thomas Frank</div>
+      <div class="guide-role">Founder · Trout Tricks</div>
+      <ul class="guide-bullets">
+        <!-- TODO before launch: uncomment once outfitter license issues. <li>Licensed Colorado outfitter</li> -->
+        <li>Fly tier behind every Trout Tricks pattern</li>
+        <li>Colorado stillwater specialist</li>
+        <li>Wilderness First Aid + CPR certified</li>
+      </ul>
+      <p class="guide-quote">"I've put more fish in nets on Colorado stillwater than I can count. The Drop is the playbook I wish I'd had 10 years ago."</p>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================
+  6. SOCIAL PROOF
+  REPLACE BEFORE LAUNCH — these are placeholder testimonials with
+  generic names. Swap in real member quotes + first names before
+  any spend goes live.
+============================================================ -->
+<section>
+  <div class="eyebrow">From The Crew</div>
+  <h2 class="section-title">What members <span class="accent">say</span>.</h2>
+  <div class="divider"></div>
+
+  <div class="testi-grid">
+    <!-- REPLACE BEFORE LAUNCH -->
+    <div class="testi-card">
+      <div class="testi-stars">★★★★★</div>
+      <p class="testi-quote">"First call paid for itself. Dialed in my indicator depth on Antero and netted three before noon the next weekend."</p>
+      <div class="testi-name">Jake M. <span>· Denver, CO</span></div>
+    </div>
+    <!-- REPLACE BEFORE LAUNCH -->
+    <div class="testi-card">
+      <div class="testi-stars">★★★★★</div>
+      <p class="testi-quote">"The member patterns alone are worth it. Stuff you genuinely can't buy anywhere, and they flat-out work on Spinney."</p>
+      <div class="testi-name">Ryan T. <span>· Colorado Springs, CO</span></div>
+    </div>
+    <!-- REPLACE BEFORE LAUNCH -->
+    <div class="testi-card">
+      <div class="testi-stars">★★★★★</div>
+      <p class="testi-quote">"I used to guess. Now I show up knowing the water temp, the hatch window, and what they're eating. Total game-changer."</p>
+      <div class="testi-name">Marcus D. <span>· Fort Collins, CO</span></div>
+    </div>
+    <!-- REPLACE BEFORE LAUNCH -->
+    <div class="testi-card">
+      <div class="testi-stars">★★★★★</div>
+      <p class="testi-quote">"Best fly fishing money I've spent. The crew is the real deal — everyone's sharing, nobody's gatekeeping."</p>
+      <div class="testi-name">Dave R. <span>· Boulder, CO</span></div>
+    </div>
+    <!-- REPLACE BEFORE LAUNCH -->
+    <div class="testi-card">
+      <div class="testi-stars">★★★★★</div>
+      <p class="testi-quote">"Cut my learning curve by years. Wish I'd found this crew before I wasted a hundred trips figuring it out alone."</p>
+      <div class="testi-name">Chris P. <span>· Littleton, CO</span></div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================
+  7. URGENCY
+============================================================ -->
+<div class="urgency">
+  <div class="urgency-eyebrow">Limited Crew Size</div>
+  <!-- TODO: set the real number of spots before launch -->
+  <div class="urgency-main">Only <span class="accent">10 spots</span> opening this month.</div>
+  <p class="urgency-sub">Application required to maintain crew quality. We screen for fit so the room stays sharp.</p>
+</div>
+
+<!-- ============================================================
+  8. CTA SECTION — two-step
+============================================================ -->
+<section class="cta-section" id="book">
+  <div class="cta-inner">
+    <div class="eyebrow">Two Quick Steps</div>
+    <h2 class="section-title">Ready to <span class="accent">level up</span>?</h2>
+    <div class="divider"></div>
+
+    <div class="steps-two">
+      <div class="step-box">
+        <div class="step-num">1</div>
+        <div class="step-h">Drop Your Email</div>
+        <p>Grab your spot on the list and get insider access. Takes 10 seconds.</p>
+      </div>
+      <div class="step-box">
+        <div class="step-num">2</div>
+        <div class="step-h">Book a 15-Min Call</div>
+        <p>Quick fit call with Thomas. No pressure — we just make sure it's a match.</p>
+      </div>
+    </div>
+
+    <div class="calendly-wrap">
+      <!-- CALENDLY_URL: REPLACE WITH ACTUAL CALENDLY EMBED CODE -->
+      <!--
+        Paste Thomas's Calendly inline embed here. From Calendly:
+        Share > Add to website > Inline Embed. It looks like:
+
+        <div class="calendly-inline-widget" data-url="https://calendly.com/YOUR-HANDLE/15min" style="min-width:320px;height:700px;"></div>
+        <script type="text/javascript" src="https://assets.calendly.com/assets/external/widget.js" async></script>
+
+        Delete the placeholder div below once the real embed is in.
+      -->
+      <div class="calendly-placeholder" id="calendlyPlaceholder">
+        <strong>Calendly Embed Goes Here</strong>
+        Thomas — paste your 15-min call booking link here before launch.
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================
+  9. FAQ
+============================================================ -->
+<section>
+  <div class="eyebrow">Questions</div>
+  <h2 class="section-title">FAQ</h2>
+  <div class="divider"></div>
+
+  <div class="faq-list">
+    <details class="faq">
+      <summary>What is The Drop exactly?</summary>
+      <div class="faq-body">The Drop is a private mastermind community for serious Colorado stillwater fly anglers. You get weekly insider lake reports, member-only fly patterns, monthly live Q&amp;A calls with a working guide, a private crew sharing real-time intel, and a member discount on Trout Tricks gear. It's the room and the playbook that cut years off your learning curve.</div>
+    </details>
+    <details class="faq">
+      <summary>Who is this for?</summary>
+      <div class="faq-body">Intermediate-to-advanced anglers who already fish Colorado stillwaters a few times a month, run an indicator or balanced setup, and want a real edge. If you're serious about getting better — and willing to share intel as well as take it — you'll fit right in.</div>
+    </details>
+    <details class="faq">
+      <summary>How much does it cost?</summary>
+      <div class="faq-body">We share membership details on the call. We screen for crew fit first — the room only works if everyone in it is serious — so the 15-minute call comes before any numbers.</div>
+    </details>
+    <details class="faq">
+      <summary>What's the time commitment?</summary>
+      <div class="faq-body">As much or as little as you want. The live Q&amp;A is monthly. Reports and the community are there whenever you need them — most members check in a few times a week, especially before a trip. Everything live is recorded, so you never miss out.</div>
+    </details>
+    <details class="faq">
+      <summary>Can I cancel anytime?</summary>
+      <div class="faq-body">Yes. No contracts, no exit fees, cancel anytime. We'd rather have a crew that wants to be here than lock anyone in.</div>
+    </details>
+    <details class="faq">
+      <summary>What if I'm a beginner?</summary>
+      <div class="faq-body">The Drop assumes you've got the basics down — casting, rigging an indicator, reading water. If you're brand new, start with our free content and a guided trip first, then come back when you're fishing stillwater regularly. We'll tell you straight on the call if it's not the right time yet.</div>
+    </details>
+    <details class="faq">
+      <summary>Are you based in Colorado?</summary>
+      <div class="faq-body">Yes — Trout Tricks is based in Fairmount, CO, and the intel is built around the Colorado stillwater rotation: Antero, Spinney, Eleven Mile, Williams Fork, Lathrop, Delaney, Lake John, and more. The technique deep-dives travel anywhere; the lake reports are pure Colorado.</div>
+    </details>
+  </div>
+</section>
+
+<!-- ============================================================
+  10. FOOTER (minimal)
+============================================================ -->
+<footer>
+  <div class="footer-logo">TROUT <span>TRICKS</span></div>
+  <div class="footer-slap">These flies slap.</div>
+  <div class="footer-contact">
+    <a href="mailto:thomas@trouttricks.com">thomas@trouttricks.com</a>
+    <a href="tel:3039178278">(303) 917-8278</a>
+  </div>
+  <div class="footer-copy">&copy; 2026 Trout Tricks &middot; Fairmount, CO &middot; Hand-tied in the USA</div>
+</footer>
+
+<!-- MOBILE STICKY CTA — jumps to top form -->
+<div class="mobile-sticky-cta" id="mobileStickyCta">
+  <a class="msc-btn" href="#top">Get Insider Access →</a>
+</div>
+
+<!-- Klaviyo onsite (company RyxZFj) -->
+<script async type="text/javascript" src="https://static.klaviyo.com/onsite/js/klaviyo.js?company_id=RyxZFj"></script>
+
+<script>
+// =====================================================================
+// THE DROP — FB AD FUNNEL (/apply.html)
+// Email capture -> Klaviyo (Drop Waitlist list S5XAFW, single opt-in)
+//   acquisition_source: 'drop_funnel_fb'
+// Then surfaces the Calendly call booking (success state + #book anchor).
+// =====================================================================
+var KLAVIYO_LIST_ID = 'S5XAFW';
+var KLAVIYO_COMPANY_ID = 'RyxZFj';
+
+function isValidEmail(v) { return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test((v || '').trim()); }
+function clearErr(id) {
+  var el = document.getElementById(id);
+  var err = document.getElementById(id + 'Error');
+  if (el) el.classList.remove('invalid');
+  if (err) err.classList.remove('show');
+}
+
+function submitApply(ev) {
+  ev.preventDefault();
+
+  var nameEl = document.getElementById('applyName');
+  var emailEl = document.getElementById('applyEmail');
+  var submitBtn = document.getElementById('applySubmit');
+
+  var name = nameEl.value.trim();
+  var email = emailEl.value.trim();
+
+  if (!isValidEmail(email)) {
+    emailEl.classList.add('invalid');
+    document.getElementById('applyEmailError').classList.add('show');
+    emailEl.focus();
+    return false;
+  }
+
+  submitBtn.disabled = true;
+  submitBtn.textContent = 'Getting you in…';
+
+  // Klaviyo — Drop Waitlist list, tagged as FB funnel traffic
+  var kPromise = fetch('https://a.klaviyo.com/client/subscriptions/?company_id=' + KLAVIYO_COMPANY_ID, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', 'revision': '2024-10-15' },
+    body: JSON.stringify({
+      data: {
+        type: 'subscription',
+        attributes: {
+          custom_source: 'The Drop — FB Funnel (apply.html)',
+          profile: {
+            data: {
+              type: 'profile',
+              attributes: {
+                email: email,
+                first_name: name,
+                properties: {
+                  acquisition_source: 'drop_funnel_fb'
+                }
+              }
+            }
+          }
+        },
+        relationships: { list: { data: { type: 'list', id: KLAVIYO_LIST_ID } } }
+      }
+    })
+  }).catch(function (err) { console.error('[apply.html Klaviyo]', err); });
+
+  // Meta Pixel Lead event (no-ops until base pixel code is pasted in <head>)
+  if (typeof fbq === 'function') {
+    fbq('track', 'Lead', { content_name: 'The Drop FB Funnel' });
+  }
+
+  // GA (if present on the domain)
+  if (typeof gtag === 'function') {
+    gtag('event', 'drop_funnel_signup', { acquisition_source: 'drop_funnel_fb' });
+  }
+
+  // Swap to success state, then send them to book the call
+  kPromise.finally(function () {
+    document.getElementById('captureCard').style.display = 'none';
+    var ok = document.getElementById('captureSuccess');
+    ok.classList.add('show');
+    ok.scrollIntoView({ behavior: 'smooth', block: 'center' });
+  });
+
+  return false;
+}
+
+// MOBILE STICKY CTA — reveal after 25% scroll, hide while hero form / booking is on screen
+(function () {
+  var el = document.getElementById('mobileStickyCta');
+  if (!el) return;
+  var hero = document.getElementById('top');
+  var book = document.getElementById('book');
+  function near(node) {
+    if (!node) return false;
+    var r = node.getBoundingClientRect();
+    return r.top < window.innerHeight * 0.7 && r.bottom > 0;
+  }
+  function onScroll() {
+    var y = window.scrollY || window.pageYOffset;
+    var docH = (document.documentElement.scrollHeight - window.innerHeight) || 1;
+    var pct = y / docH;
+    if (pct >= 0.25 && !near(hero) && !near(book)) {
+      el.classList.add('visible');
+    } else {
+      el.classList.remove('visible');
+    }
+  }
+  window.addEventListener('scroll', onScroll, { passive: true });
+  onScroll();
+})();
+</script>
+
+</body>
+</html>
