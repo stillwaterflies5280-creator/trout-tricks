@@ -315,7 +315,9 @@ src="https://www.facebook.com/tr?id=1630431118063509&ev=PageView&noscript=1"
     font-size: 0.85rem;
     overflow: hidden;
   }
-  .solution-photo img { width: 100%; height: 100%; object-fit: cover; display: block; }
+  /* object-position pushed down to 80% so the top of the frame (the angler's
+     face) is cropped off — visible portion shows hands + fish only. */
+  .solution-photo img { width: 100%; height: 100%; object-fit: cover; object-position: center 80%; display: block; }
 
   /* BENEFIT CARDS */
   .values-grid {
