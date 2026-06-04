@@ -12,22 +12,23 @@
 <meta name="description" content="Private community for serious Colorado fly anglers. Insider intel, member-only patterns, monthly Q&As with a working guide. Apply for The Drop.">
 <meta name="author" content="Thomas Frank - Trout Tricks">
 
-<!-- META_PIXEL_HERE: paste FB pixel code -->
-<!--
-  Meta Pixel goes here. Replace this comment block with the snippet from
-  Facebook Business Manager > Events Manager > Data Sources > your Pixel > "Add code manually".
-  It looks like:
-
-  <script>
-  !function(f,b,e,v,n,t,s){...}(window, document,'script','https://connect.facebook.net/en_US/fbevents.js');
-  fbq('init', 'YOUR_PIXEL_ID_HERE');
-  fbq('track', 'PageView');
-  </script>
-  <noscript><img height="1" width="1" style="display:none" src="https://www.facebook.com/tr?id=YOUR_PIXEL_ID_HERE&ev=PageView&noscript=1"/></noscript>
-
-  The Lead conversion event is already fired from the form JS below via fbq('track','Lead')
-  (guarded so it no-ops until the pixel base code above is live).
--->
+<!-- Meta Pixel Code -->
+<script>
+!function(f,b,e,v,n,t,s)
+{if(f.fbq)return;n=f.fbq=function(){n.callMethod?
+n.callMethod.apply(n,arguments):n.queue.push(arguments)};
+if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';
+n.queue=[];t=b.createElement(e);t.async=!0;
+t.src=v;s=b.getElementsByTagName(e)[0];
+s.parentNode.insertBefore(t,s)}(window, document,'script',
+'https://connect.facebook.net/en_US/fbevents.js');
+fbq('init', '1630431118063509');
+fbq('track', 'PageView');
+</script>
+<noscript><img height="1" width="1" style="display:none"
+src="https://www.facebook.com/tr?id=1630431118063509&ev=PageView&noscript=1"
+/></noscript>
+<!-- End Meta Pixel Code -->
 
 <!-- Favicon -->
 <link rel="icon" type="image/x-icon" href="/favicon.ico">
@@ -501,6 +502,32 @@
   }
   .step-box p { color: var(--light-gray); font-size: 0.9rem; line-height: 1.45; }
 
+  /* Inline email capture inside Step 1 */
+  .cta-capture-form { display: flex; flex-direction: column; gap: 9px; margin-top: 12px; text-align: left; }
+  .cta-capture-form input[type="email"] {
+    width: 100%;
+    background: #0d0d0d;
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 13px 14px;
+    color: #fff;
+    font-family: 'Barlow', sans-serif;
+    font-size: 1rem;
+    transition: border-color 0.2s;
+  }
+  .cta-capture-form input:focus { outline: none; border-color: var(--red); }
+  .cta-capture-form input.invalid { border-color: var(--red-bright); }
+  .cta-capture-success { display: none; margin-top: 12px; }
+  .cta-capture-success.show { display: block; }
+  .cta-capture-success strong {
+    display: block;
+    font-family: 'Bebas Neue', Impact, sans-serif;
+    font-size: 1.3rem;
+    color: var(--gold);
+    letter-spacing: 0.02em;
+  }
+  .cta-capture-success span { color: var(--light-gray); font-size: 0.9rem; }
+
   /* CALENDLY EMBED */
   .calendly-wrap {
     background: var(--card);
@@ -655,7 +682,7 @@
     </ul>
 
     <div class="capture" id="captureCard">
-      <form id="dropForm" onsubmit="return submitApply(event)">
+      <form id="dropForm" onsubmit="return submitApply(event, this)">
         <div class="form-row">
           <input type="text" id="applyName" name="name" autocomplete="given-name" placeholder="First name (optional)">
           <input type="email" id="applyEmail" name="email" required autocomplete="email" placeholder="you@email.com" oninput="clearErr('applyEmail')">
@@ -668,7 +695,7 @@
 
     <div class="capture-success" id="captureSuccess">
       <h3>You're in 🪝</h3>
-      <p>Check your email — then lock in your 15-minute call with Thomas below.</p>
+      <p>Check your email — then lock in your call with Thomas below.</p>
       <a class="btn-primary" href="#book">Book My Call →</a>
     </div>
   </div>
@@ -710,8 +737,8 @@
   <p class="section-sub">The Drop is a private mastermind for serious Colorado stillwater anglers — a working crew that pools real-time intel on conditions, hatches, locations, and patterns so nobody fishes blind. Anchored by a working guide and built on the Brian Chan / Phil Rowley stillwater methodology, it's the playbook and the room that cut years off your learning curve.</p>
 
   <div class="solution-photo">
-    <!-- PHOTO: /images/drop/member-catch.jpg — hero shot of a member's stillwater trophy -->
-    <img src="/images/drop/member-catch.jpg" alt="The Drop member with a Colorado stillwater trophy trout" loading="lazy" onerror="this.style.display='none';this.parentNode.insertAdjacentText('beforeend','PHOTO: /images/drop/member-catch.jpg');">
+    <!-- PHOTO PLACEHOLDER: swap for a real member trophy shot at /images/drop/member-catch.jpg before launch. Using an existing stillwater trophy rainbow for now. -->
+    <img src="/images/trophy-rainbow-stillwater.jpg" alt="The Drop member with a Colorado stillwater trophy trout" loading="lazy" onerror="this.style.display='none';this.parentNode.insertAdjacentText('beforeend','PHOTO: /images/drop/member-catch.jpg');">
   </div>
 </section>
 
@@ -767,8 +794,8 @@
 
   <div class="guide-block">
     <div class="guide-photo">
-      <!-- PHOTO: /images/drop/thomas.jpg — portrait of Thomas with a fish or at the bench -->
-      <img src="/images/drop/thomas.jpg" alt="Thomas Frank, Trout Tricks founder and stillwater guide" loading="lazy" onerror="this.style.display='none';this.parentNode.insertAdjacentText('beforeend','PHOTO: /images/drop/thomas.jpg');">
+      <!-- PHOTO PLACEHOLDER: swap for a dedicated Drop portrait at /images/drop/thomas.jpg before launch. Using the existing guide photo for now. -->
+      <img src="/thomas-frank-guide.jpg" alt="Thomas Frank, Trout Tricks founder and stillwater guide" loading="lazy" onerror="this.style.display='none';this.parentNode.insertAdjacentText('beforeend','PHOTO: /images/drop/thomas.jpg');">
     </div>
     <div>
       <div class="guide-name">Thomas Frank</div>
@@ -785,58 +812,50 @@
 </section>
 
 <!-- ============================================================
-  6. SOCIAL PROOF
-  REPLACE BEFORE LAUNCH — these are placeholder testimonials with
-  generic names. Swap in real member quotes + first names before
-  any spend goes live.
+  6. SOCIAL PROOF — real 5.0★ Google reviews of Trout Tricks flies.
+  The Drop is new, so these are product reviews from anglers fishing
+  our patterns; member quotes get added as the founding 10 fills.
 ============================================================ -->
 <section>
   <div class="eyebrow">From The Crew</div>
-  <h2 class="section-title">What members <span class="accent">say</span>.</h2>
+  <h2 class="section-title">Real reviews from <span class="accent">Trout Tricks anglers</span></h2>
+  <p class="section-sub">5.0★ on Google. The Drop is new — these reviews are from anglers fishing our patterns. Member quotes coming as the founding 10 fills.</p>
   <div class="divider"></div>
 
   <div class="testi-grid">
-    <!-- REPLACE BEFORE LAUNCH -->
     <div class="testi-card">
       <div class="testi-stars">★★★★★</div>
-      <p class="testi-quote">"First call paid for itself. Dialed in my indicator depth on Antero and netted three before noon the next weekend."</p>
-      <div class="testi-name">Jake M. <span>· Denver, CO</span></div>
+      <p class="testi-quote">"I love how these flies are tied on 2x wire hooks. You don't have to worry about losing trophy trout as these hooks don't bend out. Great selection of stillwater flies that are made here in Colorado. Nice to support a local family business."</p>
+      <div class="testi-name">Dustin H. <span>· Google Review</span></div>
     </div>
-    <!-- REPLACE BEFORE LAUNCH -->
     <div class="testi-card">
       <div class="testi-stars">★★★★★</div>
-      <p class="testi-quote">"The member patterns alone are worth it. Stuff you genuinely can't buy anywhere, and they flat-out work on Spinney."</p>
-      <div class="testi-name">Ryan T. <span>· Colorado Springs, CO</span></div>
+      <p class="testi-quote">"Best quality flies I have ever seen. Unique designs that catch fish. I would definitely buy through them again."</p>
+      <div class="testi-name">Peter F. <span>· Google Review</span></div>
     </div>
-    <!-- REPLACE BEFORE LAUNCH -->
     <div class="testi-card">
       <div class="testi-stars">★★★★★</div>
-      <p class="testi-quote">"I used to guess. Now I show up knowing the water temp, the hatch window, and what they're eating. Total game-changer."</p>
-      <div class="testi-name">Marcus D. <span>· Fort Collins, CO</span></div>
-    </div>
-    <!-- REPLACE BEFORE LAUNCH -->
-    <div class="testi-card">
-      <div class="testi-stars">★★★★★</div>
-      <p class="testi-quote">"Best fly fishing money I've spent. The crew is the real deal — everyone's sharing, nobody's gatekeeping."</p>
-      <div class="testi-name">Dave R. <span>· Boulder, CO</span></div>
-    </div>
-    <!-- REPLACE BEFORE LAUNCH -->
-    <div class="testi-card">
-      <div class="testi-stars">★★★★★</div>
-      <p class="testi-quote">"Cut my learning curve by years. Wish I'd found this crew before I wasted a hundred trips figuring it out alone."</p>
-      <div class="testi-name">Chris P. <span>· Littleton, CO</span></div>
+      <p class="testi-quote">"Website is easy to navigate and no better flies on the market! High quality and worth the money! Give them a shot, you won't regret it."</p>
+      <div class="testi-name">Tanner P. <span>· Google Review</span></div>
     </div>
   </div>
+
+  <p style="text-align:center;margin-top:22px;">
+    <a href="https://share.google/q3H0I3myXr0Y4OrTZ" target="_blank" rel="noopener" style="color:var(--gold);font-family:'Barlow Condensed',sans-serif;letter-spacing:0.08em;text-transform:uppercase;font-size:0.9rem;text-decoration:none;">See all reviews on Google →</a>
+  </p>
 </section>
 
 <!-- ============================================================
-  7. URGENCY
+  7. URGENCY / FOUNDING PRICE
 ============================================================ -->
 <div class="urgency">
-  <div class="urgency-eyebrow">Limited Crew Size</div>
-  <!-- TODO: set the real number of spots before launch -->
-  <div class="urgency-main">Only <span class="accent">10 spots</span> opening this month.</div>
-  <p class="urgency-sub">Application required to maintain crew quality. We screen for fit so the room stays sharp.</p>
+  <div class="urgency-eyebrow">Founding Offer</div>
+  <div class="urgency-main">Founding members — 10 spots, <span class="accent">$20/mo locked for life</span></div>
+  <p class="urgency-sub">The Drop is brand new. We're opening 10 founding spots at $20/mo — locked for life as a thank-you for backing it early. Once those 10 fill, the founding tier closes forever and the rate jumps to $35/mo standard.</p>
+  <p class="urgency-sub" style="margin-top:14px;">Both tiers get everything — same access, same calls, same community. Founding members just get the rate locked, and first look at new patterns before they hit the shop.</p>
+  <p class="urgency-sub" style="margin-top:14px;">The waitlist opens the founding 10 once it hits 25 signups. First live call within two weeks of the founding 10 filling.</p>
+  <!-- Placeholder founding-spots counter. Wire to the-drop.html TT_DROP_STATE later if reusable. -->
+  <div id="foundingSpots" style="margin-top:22px;font-family:'Bebas Neue',Impact,sans-serif;font-size:1.15rem;letter-spacing:0.06em;color:var(--gold);text-transform:uppercase;">[N of 10 founding spots claimed]</div>
 </div>
 
 <!-- ============================================================
@@ -852,30 +871,30 @@
       <div class="step-box">
         <div class="step-num">1</div>
         <div class="step-h">Drop Your Email</div>
-        <p>Grab your spot on the list and get insider access. Takes 10 seconds.</p>
+        <div id="ctaCaptureCard">
+          <p>Grab your spot on the list and get insider access. Takes 10 seconds.</p>
+          <form id="dropFormCta" class="cta-capture-form" onsubmit="return submitApply(event, this)">
+            <input type="email" id="ctaEmail" name="email" required autocomplete="email" placeholder="you@email.com" oninput="clearErr('ctaEmail')">
+            <div class="form-error" id="ctaEmailError">Please enter a valid email.</div>
+            <button type="submit" class="btn-primary">Get Insider Access</button>
+          </form>
+        </div>
+        <div class="cta-capture-success" id="ctaCaptureSuccess">
+          <strong>You're in 🪝</strong>
+          <span>Book your call below 👇</span>
+        </div>
       </div>
       <div class="step-box">
         <div class="step-num">2</div>
-        <div class="step-h">Book a 15-Min Call</div>
+        <div class="step-h">Book a Quick Call</div>
         <p>Quick fit call with Thomas. No pressure — we just make sure it's a match.</p>
       </div>
     </div>
 
     <div class="calendly-wrap">
-      <!-- CALENDLY_URL: REPLACE WITH ACTUAL CALENDLY EMBED CODE -->
-      <!--
-        Paste Thomas's Calendly inline embed here. From Calendly:
-        Share > Add to website > Inline Embed. It looks like:
-
-        <div class="calendly-inline-widget" data-url="https://calendly.com/YOUR-HANDLE/15min" style="min-width:320px;height:700px;"></div>
-        <script type="text/javascript" src="https://assets.calendly.com/assets/external/widget.js" async></script>
-
-        Delete the placeholder div below once the real embed is in.
-      -->
-      <div class="calendly-placeholder" id="calendlyPlaceholder">
-        <strong>Calendly Embed Goes Here</strong>
-        Thomas — paste your 15-min call booking link here before launch.
-      </div>
+      <!-- Calendly inline embed — Thomas's fit call. Gets re-rendered with name/email prefill once the visitor gives their email above. -->
+      <div class="calendly-inline-widget" id="calendlyEmbed" data-url="https://calendly.com/stillwaterflies5280/15min" style="min-width:320px;height:700px;"></div>
+      <script type="text/javascript" src="https://assets.calendly.com/assets/external/widget.js" async></script>
     </div>
   </div>
 </section>
@@ -899,7 +918,7 @@
     </details>
     <details class="faq">
       <summary>How much does it cost?</summary>
-      <div class="faq-body">We share membership details on the call. We screen for crew fit first — the room only works if everyone in it is serious — so the 15-minute call comes before any numbers.</div>
+      <div class="faq-body">Founding rate is $20/mo for the first 10 members — locked for life. After founding fills, standard rate is $35/mo. Both tiers get full access. We still do a quick fit call before you join to make sure the crew works for both sides.</div>
     </details>
     <details class="faq">
       <summary>What's the time commitment?</summary>
@@ -935,7 +954,7 @@
 
 <!-- MOBILE STICKY CTA — jumps to top form -->
 <div class="mobile-sticky-cta" id="mobileStickyCta">
-  <a class="msc-btn" href="#top">Get Insider Access →</a>
+  <a class="msc-btn" id="mscBtn" href="#top">Get Insider Access →</a>
 </div>
 
 <!-- Klaviyo onsite (company RyxZFj) -->
@@ -950,6 +969,71 @@
 // =====================================================================
 var KLAVIYO_LIST_ID = 'S5XAFW';
 var KLAVIYO_COMPANY_ID = 'RyxZFj';
+var CALENDLY_BASE = 'https://calendly.com/stillwaterflies5280/15min';
+
+// ---- "Already applied" state + Calendly prefill -------------------------
+// Once someone gives their email, we don't make them retype it: we pre-fill
+// the Calendly booking with their name/email and route the CTAs straight to
+// the calendar instead of back to the email form.
+function dropStore(name, email) {
+  try {
+    localStorage.setItem('dropApplied', '1');
+    if (name) localStorage.setItem('dropName', name);
+    if (email) localStorage.setItem('dropEmail', email);
+  } catch (e) {}
+}
+function dropGet() {
+  try {
+    return {
+      applied: localStorage.getItem('dropApplied') === '1',
+      name: localStorage.getItem('dropName') || '',
+      email: localStorage.getItem('dropEmail') || ''
+    };
+  } catch (e) { return { applied: false, name: '', email: '' }; }
+}
+
+function whenCalendlyReady(cb) {
+  if (window.Calendly && window.Calendly.initInlineWidget) return cb();
+  var tries = 0;
+  var t = setInterval(function () {
+    if (window.Calendly && window.Calendly.initInlineWidget) { clearInterval(t); cb(); }
+    else if (++tries > 60) { clearInterval(t); } // ~9s safety stop
+  }, 150);
+}
+// Re-render the inline Calendly with the email/name they already gave, so the
+// booking screen is pre-filled and they never type their email twice.
+function prefillCalendly(name, email) {
+  if (!email) return;
+  whenCalendlyReady(function () {
+    var el = document.getElementById('calendlyEmbed');
+    if (!el) return;
+    el.innerHTML = '';
+    window.Calendly.initInlineWidget({
+      url: CALENDLY_BASE,
+      parentElement: el,
+      prefill: { name: name || '', email: email }
+    });
+  });
+}
+
+// Flip the page into "you're already in" mode: show the success state instead
+// of the email form, point the sticky CTA at the calendar, prefill Calendly.
+function showAppliedState(name, email) {
+  // Hero capture
+  var card = document.getElementById('captureCard');
+  var ok = document.getElementById('captureSuccess');
+  if (card) card.style.display = 'none';
+  if (ok) ok.classList.add('show');
+  // Step-1 capture in the "Ready to level up?" section
+  var ctaCard = document.getElementById('ctaCaptureCard');
+  var ctaOk = document.getElementById('ctaCaptureSuccess');
+  if (ctaCard) ctaCard.style.display = 'none';
+  if (ctaOk) ctaOk.classList.add('show');
+  // Sticky CTA points forward to the calendar, not back to the form
+  var msc = document.getElementById('mscBtn');
+  if (msc) { msc.setAttribute('href', '#book'); msc.textContent = 'Book Your Call →'; }
+  prefillCalendly(name, email);
+}
 
 function isValidEmail(v) { return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test((v || '').trim()); }
 function clearErr(id) {
@@ -959,25 +1043,27 @@ function clearErr(id) {
   if (err) err.classList.remove('show');
 }
 
-function submitApply(ev) {
+// Handles BOTH the hero form (#dropForm) and the Step-1 form (#dropFormCta).
+function submitApply(ev, form) {
   ev.preventDefault();
+  form = form || document.getElementById('dropForm');
 
-  var nameEl = document.getElementById('applyName');
-  var emailEl = document.getElementById('applyEmail');
-  var submitBtn = document.getElementById('applySubmit');
+  var nameEl = form.querySelector('input[name="name"]');
+  var emailEl = form.querySelector('input[name="email"]');
+  var submitBtn = form.querySelector('button[type="submit"]');
+  var errEl = form.querySelector('.form-error');
 
-  var name = nameEl.value.trim();
-  var email = emailEl.value.trim();
+  var name = nameEl ? nameEl.value.trim() : '';
+  var email = emailEl ? emailEl.value.trim() : '';
 
   if (!isValidEmail(email)) {
-    emailEl.classList.add('invalid');
-    document.getElementById('applyEmailError').classList.add('show');
-    emailEl.focus();
+    if (emailEl) emailEl.classList.add('invalid');
+    if (errEl) errEl.classList.add('show');
+    if (emailEl) emailEl.focus();
     return false;
   }
 
-  submitBtn.disabled = true;
-  submitBtn.textContent = 'Getting you in…';
+  if (submitBtn) { submitBtn.disabled = true; submitBtn.textContent = 'Getting you in…'; }
 
   // Klaviyo — Drop Waitlist list, tagged as FB funnel traffic
   var kPromise = fetch('https://a.klaviyo.com/client/subscriptions/?company_id=' + KLAVIYO_COMPANY_ID, {
@@ -1016,16 +1102,27 @@ function submitApply(ev) {
     gtag('event', 'drop_funnel_signup', { acquisition_source: 'drop_funnel_fb' });
   }
 
-  // Swap to success state, then send them to book the call
+  // Remember them so we never ask for the email again, and prefill Calendly.
+  dropStore(name, email);
+
+  // Swap to success state, prefill the calendar, then nudge them to book.
+  var fromCta = form.id === 'dropFormCta';
   kPromise.finally(function () {
-    document.getElementById('captureCard').style.display = 'none';
-    var ok = document.getElementById('captureSuccess');
-    ok.classList.add('show');
-    ok.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    showAppliedState(name, email);
+    // Hero submit -> show the hero success card; Step-1 submit -> drop to the calendar right below.
+    var target = fromCta ? document.getElementById('calendlyEmbed') : document.getElementById('captureSuccess');
+    if (target) target.scrollIntoView({ behavior: 'smooth', block: fromCta ? 'start' : 'center' });
   });
 
   return false;
 }
+
+// RETURNING VISITOR — if they already gave their email (this or a past visit),
+// skip the form: show the success state and route them straight to the calendar.
+(function () {
+  var s = dropGet();
+  if (s.applied) showAppliedState(s.name, s.email);
+})();
 
 // MOBILE STICKY CTA — reveal after 25% scroll, hide while hero form / booking is on screen
 (function () {
