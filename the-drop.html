@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>The Drop | Real-Time Stillwater Intel for Colorado Anglers — Trout Tricks</title>
   <meta name="description" content="Premium monthly membership for serious Colorado stillwater anglers. Bi-weekly live intel calls, depth tactics, member-only patterns. Founding 10: $20/mo for life.">
-  <meta name="keywords" content="Colorado stillwater fly fishing membership, Antero Reservoir conditions, Spinney Mountain fly fishing intel, 11 Mile Canyon reports, chironomid technique, indicator depth, stillwater patterns, trophy trout Colorado, fly fishing community Colorado, premium fly fishing newsletter">
+  <meta name="keywords" content="Colorado stillwater fly fishing membership, Spinney Mountain fly fishing intel, 11 Mile Canyon reports, chironomid technique, indicator depth, stillwater patterns, trophy trout Colorado, fly fishing community Colorado, premium fly fishing newsletter">
   <meta name="author" content="Thomas Frank - Trout Tricks">
   <meta name="robots" content="index, follow">
   <meta name="geo.region" content="US-CO">
@@ -90,7 +90,7 @@
             "name": "How is this different from the free newsletter?",
             "acceptedAnswer": {
               "@type": "Answer",
-              "text": "The Crew newsletter is broad — patterns, blog posts, general tips, occasional product drops. The Drop is real-time and tactical: what's actually happening on Antero, Spinney, 11 Mile, Delaney, and the rest of the rotation right now. Live calls. Live Q&A. A community of members talking shop."
+              "text": "The Crew newsletter is broad — patterns, blog posts, general tips, occasional product drops. The Drop is real-time and tactical: what's actually happening on Spinney, 11 Mile, Delaney, and the rest of the rotation right now. Live calls. Live Q&A. A community of members talking shop."
             }
           },
           {
@@ -154,7 +154,7 @@
             "name": "Do I need to live in Colorado?",
             "acceptedAnswer": {
               "@type": "Answer",
-              "text": "No. The content is Colorado-focused — Antero, Spinney, 11 Mile, Delaney, Lake John, and the rest of the rotation — so it lands best for anglers fishing those waters. If you're in Wyoming, Utah, New Mexico, or visiting CO from out of state, plenty of the technique deep-dives (depth tuning, retrieve, balanced rigs, hatch timing) translate. The lake reports won't."
+              "text": "No. The content is Colorado-focused — Spinney, 11 Mile, Delaney, Lake John, and the rest of the rotation — so it lands best for anglers fishing those waters. If you're in Wyoming, Utah, New Mexico, or visiting CO from out of state, plenty of the technique deep-dives (depth tuning, retrieve, balanced rigs, hatch timing) translate. The lake reports won't."
             }
           },
           {
@@ -163,6 +163,14 @@
             "acceptedAnswer": {
               "@type": "Answer",
               "text": "The first call date locks in once the founding 10 fills (or we hit a critical mass on the waitlist). Waitlist members get the call date in their first email."
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "Can I talk to someone before I join?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "Yes. Book a free 15-minute call with Thomas right from the-drop.html — no pressure, no pitch. We'll talk through how you fish and whether The Drop is a fit before you commit to anything."
             }
           }
         ]
@@ -1017,6 +1025,15 @@
     margin-bottom: 8px;
   }
 
+  /* CALENDLY BOOKING (nugget ported from /apply.html) */
+  .calendly-wrap {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 16px;
+    margin-top: 24px;
+  }
+
   /* FAQ */
   .faq-list { display: grid; gap: 12px; }
   details.faq {
@@ -1125,6 +1142,9 @@
 </style>
 <script src="/js/nav.js" defer></script>
 <script async type="text/javascript" src="https://static.klaviyo.com/onsite/js/klaviyo.js?company_id=RyxZFj"></script>
+<!-- Calendly (fit-call booking) -->
+<link rel="stylesheet" href="https://assets.calendly.com/assets/external/widget.css">
+<script type="text/javascript" src="https://assets.calendly.com/assets/external/widget.js" async></script>
 </head>
 
 <body>
@@ -1144,6 +1164,7 @@
     <div class="founding-counter" data-drop-counter hidden></div>
     <div class="hero-cta-row" style="margin-top:18px;">
       <a class="btn-primary" href="#waitlist">Join the Waitlist</a>
+      <a class="btn-ghost" href="#book">Book a Call</a>
       <a class="btn-ghost" href="#what-you-get">What You Get</a>
     </div>
   </div>
@@ -1165,9 +1186,9 @@
   <h2 class="section-title">Real lake reports. <span class="accent">No BS.</span></h2>
   <div class="divider"></div>
   <div class="prose">
-    <p><strong>The Drop</strong> is a paid monthly membership for serious Colorado stillwater anglers. Two live calls a month, a private member group, member-only fly patterns, real lake reports, and 20% off everything in the shop — all built around what's actually working on Antero, Spinney, 11 Mile, Delaney, and the rest of the rotation right now.</p>
+    <p><strong>The Drop</strong> is a paid monthly membership for serious Colorado stillwater anglers. Two live calls a month, a private member group, member-only fly patterns, real lake reports, and 20% off everything in the shop — all built around what's actually working on Spinney, 11 Mile, Delaney, and the rest of the rotation right now.</p>
     <p><strong>It's a mastermind, not a webinar.</strong> Every call, every member brings something to the table — recent trip reports, conditions, hatches and food sources, lakes they're trying to crack, rigs that aren't working. We pool what we're seeing on the water and work the problems together. Thomas anchors the call with his Colorado stillwater knowledge and experience, and occasional special guests — well-known Colorado anglers — drop in to mastermind alongside the group. The real value compounds when serious anglers compare notes in the same room.</p>
-    <p><strong>Why now?</strong> The Colorado stillwater scene is underserved. Generic YouTube tells you how to tie a chironomid in 8 minutes. It doesn't tell you what's hitting at 17 feet on the south side of Antero this Tuesday because the water hit 52°F on Sunday. That gap — between general knowledge and right-now knowledge — is what The Drop fills.</p>
+    <p><strong>Why now?</strong> The Colorado stillwater scene is underserved. Generic YouTube tells you how to tie a chironomid in 8 minutes. It doesn't tell you what's hitting at 17 feet on the south side of Spinney this Tuesday because the water hit 52°F on Sunday. That gap — between general knowledge and right-now knowledge — is what The Drop fills.</p>
     <p><strong>Who it's for:</strong> intermediate-to-advanced anglers who fish CO stillwaters five or more times a year, already run indicators and balanced flies, and want a real edge. Not a beginner's class. Not a magazine. A working group of people serious enough to put time and money behind dialing their game in.</p>
   </div>
 </section>
@@ -1412,7 +1433,24 @@
     <div class="form-success" id="formSuccess">
       <h3>You're on the list 🪝</h3>
       <p>We'll email you the moment founding spots open. If you flagged founding interest, you'll get first access.</p>
-      <p style="color:var(--gray);font-size:0.88rem;">In the meantime, check out the free Crew newsletter sign-up on the <a href="/" style="color:var(--gold);">main page</a>.</p>
+      <p>Got questions before then? Grab a quick 15-minute call with Thomas — it's already pre-filled with your email below.</p>
+      <a class="btn-primary" href="#book" style="display:inline-block;margin-top:6px;">Book a Quick Call with Thomas →</a>
+      <p style="color:var(--gray);font-size:0.88rem;margin-top:14px;">In the meantime, check out the free Crew newsletter sign-up on the <a href="/" style="color:var(--gold);">main page</a>.</p>
+    </div>
+  </div>
+</section>
+
+<!-- BOOK A FIT CALL (Calendly) — nugget ported from /apply.html.
+     Optional, low-pressure: talk to Thomas before committing. The embed is
+     re-rendered with name/email prefill once someone joins the waitlist above. -->
+<section id="book">
+  <div style="max-width:720px;margin:0 auto;text-align:center;">
+    <div class="eyebrow">Optional · Talk First</div>
+    <h2 class="section-title">Want to <span class="accent">talk it through</span> first?</h2>
+    <div class="divider"></div>
+    <p class="section-sub">Not sure The Drop's a fit? Book a quick 15-minute call with Thomas. No pressure, no pitch — just straight answers on whether the crew's right for how you fish.</p>
+    <div class="calendly-wrap">
+      <div class="calendly-inline-widget" id="calendlyEmbed" data-url="https://calendly.com/stillwaterflies5280/15min" style="min-width:320px;height:700px;"></div>
     </div>
   </div>
 </section>
@@ -1433,7 +1471,7 @@
     <details class="faq">
       <summary>How is this different from the free newsletter?</summary>
       <div class="faq-body">
-        The Crew newsletter is broad — patterns, blog posts, general tips, occasional product drops. The Drop is real-time and tactical: what's actually happening on Antero, Spinney, 11 Mile, Delaney, and the rest of the rotation right now. Live calls. Live Q&amp;A. A community of members talking shop.
+        The Crew newsletter is broad — patterns, blog posts, general tips, occasional product drops. The Drop is real-time and tactical: what's actually happening on Spinney, 11 Mile, Delaney, and the rest of the rotation right now. Live calls. Live Q&amp;A. A community of members talking shop.
       </div>
     </details>
     <details class="faq">
@@ -1481,13 +1519,19 @@
     <details class="faq">
       <summary>Do I need to live in Colorado?</summary>
       <div class="faq-body">
-        No. The content is Colorado-focused — Antero, Spinney, 11 Mile, Delaney, Lake John, and the rest of the rotation — so it lands best for anglers fishing those waters. If you're in Wyoming, Utah, New Mexico, or visiting CO from out of state, plenty of the technique deep-dives (depth tuning, retrieve, balanced rigs, hatch timing) translate. The lake reports won't.
+        No. The content is Colorado-focused — Spinney, 11 Mile, Delaney, Lake John, and the rest of the rotation — so it lands best for anglers fishing those waters. If you're in Wyoming, Utah, New Mexico, or visiting CO from out of state, plenty of the technique deep-dives (depth tuning, retrieve, balanced rigs, hatch timing) translate. The lake reports won't.
       </div>
     </details>
     <details class="faq">
       <summary>When does the first call happen?</summary>
       <div class="faq-body">
         The first call date locks in once the founding 10 fills (or we hit a critical mass on the waitlist). Waitlist members get the call date in their first email.
+      </div>
+    </details>
+    <details class="faq">
+      <summary>Can I talk to someone before I join?</summary>
+      <div class="faq-body">
+        Yes. Book a free 15-minute call with Thomas right from this page — no pressure, no pitch. We'll talk through how you fish and whether The Drop's a fit before you commit to anything.
       </div>
     </details>
   </div>
@@ -1498,8 +1542,11 @@
   <div class="eyebrow">One More Thing</div>
   <h2 class="section-title">Founding 10 spots <span class="accent">will go fast</span>.</h2>
   <div class="divider"></div>
-  <p class="section-sub">The waitlist gets first access when founding 10 opens. If you're thinking about it — get on the list.</p>
-  <a class="btn-primary" href="#waitlist" style="margin-top:8px;">Join the Waitlist →</a>
+  <p class="section-sub">The waitlist gets first access when founding 10 opens. If you're thinking about it — get on the list, or talk it through with Thomas first.</p>
+  <div class="hero-cta-row" style="margin-top:8px;">
+    <a class="btn-primary" href="#waitlist">Join the Waitlist →</a>
+    <a class="btn-ghost" href="#book">Book a Call First</a>
+  </div>
 </section>
 
 <!-- FOOTER -->
@@ -1574,6 +1621,49 @@ const ENABLE_DROP_APPSSCRIPT = true;
 const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwc5JR5yo76y8-H81D3Dh4e-pc6kqha8rLO2Yu90ZtFV_s-3Hm__YI52WoaW54zXOqBdw/exec';
 const KLAVIYO_LIST_ID = 'S5XAFW';
 const KLAVIYO_COMPANY_ID = 'RyxZFj';
+const CALENDLY_BASE = 'https://calendly.com/stillwaterflies5280/15min';
+
+// ---- Calendly prefill (nugget ported from /apply.html) ------------------
+// Once someone gives us their email on the waitlist form, we pre-fill the
+// Calendly fit-call so they never retype it. Persisted across visits.
+function dropStore(name, email) {
+  try {
+    localStorage.setItem('dropWaitlisted', '1');
+    if (name) localStorage.setItem('dropName', name);
+    if (email) localStorage.setItem('dropEmail', email);
+  } catch (e) {}
+}
+function dropGet() {
+  try {
+    return {
+      joined: localStorage.getItem('dropWaitlisted') === '1',
+      name: localStorage.getItem('dropName') || '',
+      email: localStorage.getItem('dropEmail') || ''
+    };
+  } catch (e) { return { joined: false, name: '', email: '' }; }
+}
+function whenCalendlyReady(cb) {
+  if (window.Calendly && window.Calendly.initInlineWidget) return cb();
+  var tries = 0;
+  var t = setInterval(function () {
+    if (window.Calendly && window.Calendly.initInlineWidget) { clearInterval(t); cb(); }
+    else if (++tries > 60) { clearInterval(t); } // ~9s safety stop
+  }, 150);
+}
+// Re-render the inline Calendly with the name/email they already gave.
+function prefillCalendly(name, email) {
+  if (!email) return;
+  whenCalendlyReady(function () {
+    var el = document.getElementById('calendlyEmbed');
+    if (!el) return;
+    el.innerHTML = '';
+    window.Calendly.initInlineWidget({
+      url: CALENDLY_BASE,
+      parentElement: el,
+      prefill: { name: name || '', email: email }
+    });
+  });
+}
 
 function isValidEmail(v) { return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test((v||'').trim()); }
 function clearErr(id) {
@@ -1657,7 +1747,11 @@ function submitDropWaitlist(ev) {
     });
   }
 
-  // 4. Swap to success state (don't block on network; Klaviyo fires fast)
+  // 4. Remember them + pre-fill the Calendly fit-call so they never retype.
+  dropStore(name, email);
+  prefillCalendly(name, email);
+
+  // 5. Swap to success state (don't block on network; Klaviyo fires fast)
   kPromise.finally(function() {
     document.getElementById('formCard').style.display = 'none';
     document.getElementById('formSuccess').classList.add('show');
@@ -1666,6 +1760,13 @@ function submitDropWaitlist(ev) {
 
   return false;
 }
+
+// RETURNING VISITOR — if they already joined the waitlist (this or a past
+// visit), pre-fill the Calendly call so the booking screen is ready to go.
+(function () {
+  var s = dropGet();
+  if (s.joined && s.email) prefillCalendly(s.name, s.email);
+})();
 </script>
 
 <!-- CRO-2: Mobile sticky CTA. Text is rehydrated by renderDropCounter() in the

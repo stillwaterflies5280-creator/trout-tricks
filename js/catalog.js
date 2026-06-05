@@ -159,7 +159,7 @@ const flies = [
     id: 11, img: "mayers1",
     gallery: ["mayers1","mayers2","mayers3","mayers4"],
     name: "Mayer's Leech",
-    desc: "A stillwater classic refined for Colorado's high-altitude reservoirs. Slim profile, subtle movement, and deadly in the film or just below. When trout are finicky and chironomids aren't enough, this is the pattern to tie on. A consistent producer on Spinney, Antero, and 11 Mile.",
+    desc: "A stillwater classic refined for Colorado's high-altitude reservoirs. Slim profile, subtle movement, and deadly in the film or just below. When trout are finicky and chironomids aren't enough, this is the pattern to tie on. A consistent producer on Spinney, 11 Mile, and Delaney.",
     sizes: ["#14"],
     colors: ["Orange Bead / Black Marabou Tail","Orange Bead / Olive Marabou Tail","Black Bead / Black Marabou Tail","Black Bead / Olive Marabou Tail","Chartreuse Bead / Black Marabou Tail","Chartreuse Bead / Olive Marabou Tail","Gold Bead / Brown Marabou Tail"],
     price: 21,
