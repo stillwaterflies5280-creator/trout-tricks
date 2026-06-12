@@ -100,7 +100,7 @@ const flies = [
     name: "Chirono\'midge\'",
     desc: "An absolute killer searching pattern that works everywhere — lakes, tailwaters, slow runs. Tungsten bead on 2x heavy wire hooks. When you don\'t know what they\'re eating, tie this on.",
     sizes: ["#12","#14","#16","#18"],
-    colors: null,
+    colors: ["Black","Olive"],
     price: 21,
     pack: 5,
     badge: "Searching Pattern"
