@@ -3,8 +3,8 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Trout Tricks | Book a Guided Stillwater Fly Fishing Trip – Colorado</title>
-  <meta name="description" content="Guided stillwater fly fishing with Thomas Frank on Colorado and Wyoming's best waters.">
+<title>Guided Walk-Wade Fly Fishing Trips | Colorado &amp; Wyoming | Trout Tricks</title>
+  <meta name="description" content="DORA-licensed guided walk-wade fly fishing in Colorado &amp; Wyoming with stillwater specialist Thomas Frank. Wyoming stillwater, Chase Gulch Reservoir &amp; a private Colorado River ranch. Call or text 303-917-8278.">
   <meta name="keywords" content="chironomid flies Colorado, stillwater fly fishing Colorado, buy chironomids online, Colorado fly fishing guide, Spinney Mountain fly fishing, 11 Mile Reservoir trout, Delaney Buttes fly fishing, Lake John Colorado fly fishing, stillwater chironomid patterns, hand tied flies Colorado, fly fishing Fairmount CO, chironomid guide Colorado, rainbow trout flies, trophy trout Colorado, midge patterns Colorado, balanced chironomid, tungsten bead chironomid, indicator fly fishing Colorado, chironomids for sale, stillwater guide South Park Colorado">
   <meta name="author" content="Thomas Frank - Trout Tricks">
   <meta name="robots" content="index, follow">
@@ -14,8 +14,8 @@
   <!-- Open Graph -->
   <meta property="og:type" content="website">
   <meta property="og:site_name" content="Trout Tricks">
-  <meta property="og:title" content="Book a Guided Trip | Trout Tricks">
-  <meta property="og:description" content="Guided stillwater fly fishing with Thomas Frank on Colorado and Wyoming's best waters.">
+  <meta property="og:title" content="Guided Walk-Wade Fly Fishing | Colorado &amp; Wyoming | Trout Tricks">
+  <meta property="og:description" content="DORA-licensed guided walk-wade fly fishing in Colorado &amp; Wyoming with stillwater specialist Thomas Frank. Call or text 303-917-8278.">
   <meta property="og:url" content="https://www.trouttricks.com/trip.html">
   <meta property="og:image" content="https://www.trouttricks.com/og-image.jpg">
   <meta property="og:image:width" content="1200">
@@ -33,10 +33,10 @@
     "@context": "https://schema.org",
     "@graph": [
       {
-        "@type": "LocalBusiness",
+        "@type": ["LocalBusiness", "SportsActivityLocation"],
         "@id": "https://www.trouttricks.com#localbusiness",
-        "name": "Trout Tricks",
-        "description": "Hand-tied chironomid fly patterns and guided stillwater fly fishing trips in Colorado. Specializing in Spinney Mountain, 11 Mile Canyon, and Delaney Buttes.",
+        "name": "Trout Tricks Guide Services LLC",
+        "description": "DORA-licensed Colorado outfitter offering guided walk-wade fly fishing trips across Colorado and Wyoming with stillwater specialist Thomas Frank. Wyoming stillwater, Chase Gulch Reservoir, and private Colorado River ranch access.",
         "url": "https://www.trouttricks.com",
         "telephone": "+13039178278",
         "email": "thomas@trouttricks.com",
@@ -52,12 +52,32 @@
           "longitude": -105.0372
         },
         "openingHours": "Mo-Su 00:00-23:59",
-        "priceRange": "$21-$25",
+        "priceRange": "$250-$700",
         "areaServed": [
           "Colorado",
           "Wyoming",
-          "South Park CO",
-          "Spinney Mountain Reservoir"
+          "Westminster CO",
+          "Central City CO",
+          "Granby CO",
+          "Laramie WY"
+        ],
+        "hasCredential": [
+          {
+            "@type": "EducationalOccupationalCredential",
+            "credentialCategory": "license",
+            "name": "Colorado DORA Licensed Outfitter",
+            "identifier": "OUT.0003775",
+            "validThrough": "2027-03-31",
+            "recognizedBy": {
+              "@type": "GovernmentOrganization",
+              "name": "Colorado Department of Regulatory Agencies (DORA)"
+            }
+          },
+          {
+            "@type": "EducationalOccupationalCredential",
+            "credentialCategory": "certification",
+            "name": "Wilderness First Aid & CPR"
+          }
         ],
         "sameAs": [
           "https://www.facebook.com/share/g/14ZLtNGNF6W/",
@@ -68,7 +88,7 @@
       {
         "@type": "Service",
         "@id": "https://www.trouttricks.com/trip.html#service",
-        "name": "Guided Stillwater Fly Fishing Trips — Colorado & Wyoming",
+        "name": "Guided Walk-Wade Fly Fishing — Colorado & Wyoming",
         "serviceType": "Fly Fishing Guide Service",
         "provider": {
           "@id": "https://www.trouttricks.com#localbusiness"
@@ -77,41 +97,55 @@
           "Colorado",
           "Wyoming"
         ],
-        "description": "Expert guided fly fishing on Colorado and Wyoming's premier stillwater fisheries — chironomid specialists.",
-        "offers": {
-          "@type": "Offer",
-          "priceCurrency": "USD",
-          "url": "https://www.teamwildoutdoor.com/",
-          "availability": "https://schema.org/InStock"
+        "description": "Guided walk-wade and float-tube fly fishing on Wyoming stillwater (Lake Hattie, Wheatland Reservoir #3, Lake Gelatt), Chase Gulch Reservoir near Central City CO, and a private Colorado River cattle ranch near Granby. Stillwater specialist, small groups, education-focused.",
+        "hasOfferCatalog": {
+          "@type": "OfferCatalog",
+          "name": "Guided Trip Offerings",
+          "itemListElement": [
+            {
+              "@type": "Offer",
+              "name": "Wyoming Stillwater — Half Day",
+              "priceCurrency": "USD",
+              "price": "300",
+              "description": "Half day: $300 / 1 angler, $450 / 2 anglers. Lake Hattie, Wheatland Reservoir #3, Lake Gelatt."
+            },
+            {
+              "@type": "Offer",
+              "name": "Wyoming Stillwater — Full Day",
+              "priceCurrency": "USD",
+              "price": "500",
+              "description": "Full day: $500 / 1 angler, $700 / 2 anglers."
+            },
+            {
+              "@type": "Offer",
+              "name": "Chase Gulch Reservoir — Half Day",
+              "priceCurrency": "USD",
+              "price": "300",
+              "description": "Half day: $300 / 1 angler, $450 / 2 anglers. Central City, CO."
+            },
+            {
+              "@type": "Offer",
+              "name": "Chase Gulch Reservoir — Full Day",
+              "priceCurrency": "USD",
+              "price": "500",
+              "description": "Full day: $500 / 1 angler, $700 / 2 anglers."
+            },
+            {
+              "@type": "Offer",
+              "name": "Private Cattle Ranch — Colorado River (Half Day)",
+              "priceCurrency": "USD",
+              "price": "250",
+              "description": "Half day only: $250 / 1 angler, $375 / 2 anglers. Private access near Granby, CO."
+            }
+          ]
         }
       },
       {
-        "@type": "TouristTrip",
-        "@id": "https://www.trouttricks.com/trip.html#trip",
-        "name": "Colorado Stillwater Chironomid Fly Fishing Trip",
-        "url": "https://www.trouttricks.com/trip.html",
-        "description": "Day trip targeting trophy trout on Colorado's premier stillwater fisheries with stillwater specialist Thomas Frank.",
-        "provider": {
-          "@id": "https://www.trouttricks.com#localbusiness"
-        },
-        "touristType": [
-          "Fly anglers",
-          "Stillwater anglers"
-        ],
-        "itinerary": [
-          {
-            "@type": "TouristAttraction",
-            "name": "Spinney Mountain Reservoir"
-          },
-          {
-            "@type": "TouristAttraction",
-            "name": "11 Mile Reservoir"
-          },
-          {
-            "@type": "TouristAttraction",
-            "name": "Delaney Buttes Lakes"
-          }
-        ]
+        "@type": "Organization",
+        "@id": "https://www.teamwildoutdoor.com/#tcotw",
+        "name": "The Call of the Wild Outdoor Adventures",
+        "url": "https://www.teamwildoutdoor.com/",
+        "description": "Licensed Colorado outfitter and Trout Tricks partner for guided Colorado river fly fishing. Thomas Frank also guides for TCOTW."
       }
     ]
   }
@@ -1824,145 +1858,335 @@
 </header>
 <!-- BOOK A TRIP PAGE -->
 <div id="page-trip" class="page active">
-  <div style="padding:0 0 60px;">
 
-    <!-- HERO -->
-    <div class="hero" style="padding:36px 20px 28px;">
-      <div class="hero-tag">Colorado · South Park · Wyoming</div>
-      <h1 style="font-size:clamp(2rem,8vw,4.5rem);">BOOK A <span>TRIP</span></h1>
-      <div class="hero-sub">Guided Stillwater Fly Fishing</div>
-      <div class="hero-divider"></div>
+<!-- ============================================================
+  TRIP PAGE — Trout Tricks Guide Services LLC  (rebuilt 2026-06-17)
+  Public guide-services page. Booking = phone / text / email (no Square yet).
+  Partner: The Call of the Wild Outdoor Adventures (TCOTW).
+  NOTE: logo asset is still named team-wild-outdoor-logo.png — rename later
+  (kept as-is here to avoid breaking other pages that reference it).
+============================================================ -->
+<style>
+  /* ---- Trip rebuild components (shared theme vars + fonts) ---- */
+  .trip-hero { position:relative; min-height:58vh; display:flex; align-items:center; justify-content:center; text-align:center; padding:84px 20px; background:linear-gradient(rgba(8,8,8,0.58),rgba(8,8,8,0.82)), url('images/hero-fish.jpg') center/cover no-repeat; border-bottom:3px solid var(--red); }
+  .trip-hero-inner { max-width:760px; }
+  .trip-hero .th-eyebrow { font-family:'Barlow Condensed',sans-serif; letter-spacing:0.22em; text-transform:uppercase; color:var(--gold); font-size:0.85rem; margin-bottom:14px; }
+  .trip-hero h1 { font-family:'Bebas Neue',Impact,sans-serif; font-size:clamp(2.4rem,8vw,5rem); line-height:0.98; color:#fff; margin:0 0 10px; letter-spacing:0.02em; }
+  .trip-hero h1 span { color:var(--red); }
+  .trip-hero .th-sub { font-family:'Barlow Condensed',sans-serif; font-size:clamp(1rem,3.4vw,1.5rem); letter-spacing:0.12em; text-transform:uppercase; color:#ddd; margin-bottom:26px; }
+
+  .trust-strip { background:#0d0d0d; border-bottom:1px solid #262626; }
+  .trust-strip-inner { max-width:960px; margin:0 auto; display:flex; flex-wrap:wrap; justify-content:center; gap:10px 28px; padding:15px 18px; }
+  .trust-item { font-family:'Barlow Condensed',sans-serif; font-size:0.8rem; letter-spacing:0.07em; text-transform:uppercase; color:#bbb; display:flex; align-items:center; gap:7px; }
+  .trust-item b { color:#fff; font-weight:600; }
+
+  .tt-section { max-width:960px; margin:0 auto; padding:54px 16px 0; }
+  .tt-eyebrow { font-family:'Barlow Condensed',sans-serif; letter-spacing:0.2em; text-transform:uppercase; color:var(--red); font-size:0.78rem; margin-bottom:8px; text-align:center; }
+  .tt-h2 { font-family:'Bebas Neue',Impact,sans-serif; font-size:clamp(1.8rem,5vw,2.6rem); color:#fff; text-align:center; letter-spacing:0.03em; margin:0 0 6px; }
+  .tt-sub { text-align:center; color:#aaa; font-size:0.95rem; max-width:640px; margin:0 auto; line-height:1.6; }
+  .tt-divider { width:64px; height:3px; background:var(--red); margin:14px auto 30px; border-radius:2px; }
+
+  /* Reusable booking CTA cluster */
+  .cta-3btn { display:flex; flex-wrap:wrap; gap:10px; justify-content:center; }
+  .cta-3btn a { flex:1 1 0; min-width:118px; text-align:center; padding:14px 12px; border-radius:7px; text-decoration:none; font-family:'Bebas Neue',Impact,sans-serif; font-size:1.15rem; letter-spacing:0.05em; transition:transform .15s ease, filter .2s; }
+  .cta-3btn a:hover { transform:translateY(-2px); filter:brightness(1.08); }
+  .cta-call { background:var(--red); color:#fff; border:2px solid #ff6b5b; }
+  .cta-text { background:var(--gold); color:#111; border:2px solid #e8c45a; }
+  .cta-email { background:#1c1c1c; color:#fff; border:2px solid #454545; }
+
+  .trip-grid { display:grid; grid-template-columns:1fr; gap:22px; margin-top:4px; }
+  @media(min-width:760px){ .trip-grid { grid-template-columns:1fr 1fr; } }
+  .trip-card { background:#141414; border:1px solid #2a2a2a; border-radius:12px; padding:26px 22px; display:flex; flex-direction:column; }
+  .trip-card .tc-loc { font-family:'Barlow Condensed',sans-serif; font-size:0.74rem; letter-spacing:0.14em; text-transform:uppercase; color:var(--gold); margin-bottom:6px; }
+  .trip-card h3 { font-family:'Bebas Neue',Impact,sans-serif; font-size:1.85rem; color:#fff; margin:0 0 10px; letter-spacing:0.03em; }
+  .trip-card p.tc-desc { color:#bbb; font-size:0.92rem; line-height:1.65; margin:0 0 14px; }
+  .trip-card .tc-meta { font-family:'Barlow Condensed',sans-serif; font-size:0.78rem; letter-spacing:0.05em; text-transform:uppercase; color:#888; margin-bottom:16px; }
+  .price-matrix { width:100%; border-collapse:collapse; margin:0 0 18px; }
+  .price-matrix th, .price-matrix td { border:1px solid #2e2e2e; padding:8px 10px; text-align:center; font-size:0.88rem; }
+  .price-matrix th { font-family:'Barlow Condensed',sans-serif; letter-spacing:0.07em; text-transform:uppercase; color:#ccc; background:#1c1c1c; font-weight:600; }
+  .price-matrix td { color:#fff; }
+  .price-matrix td.rowlabel { font-family:'Barlow Condensed',sans-serif; text-transform:uppercase; letter-spacing:0.05em; color:var(--gold); text-align:left; background:#161616; }
+  .price-matrix .price { font-family:'Bebas Neue',Impact,sans-serif; font-size:1.15rem; }
+  .trip-card .cta-wrap { margin-top:auto; }
+
+  .trip-card.partner { background:#111; border:2px dashed var(--gold-dim); text-align:center; align-items:center; }
+  .trip-card.partner img { max-width:230px; width:72%; margin:6px auto 16px; display:block; }
+  .partner-badge { display:inline-block; font-family:'Barlow Condensed',sans-serif; font-size:0.68rem; letter-spacing:0.2em; text-transform:uppercase; color:var(--gold); border:1px solid var(--gold-dim); border-radius:20px; padding:4px 14px; margin-bottom:14px; }
+  .partner-btn { display:inline-block; margin-top:6px; background:var(--gold); color:#111; padding:14px 26px; border-radius:7px; text-decoration:none; font-family:'Bebas Neue',Impact,sans-serif; font-size:1.2rem; letter-spacing:0.05em; border:2px solid #e8c45a; transition:transform .15s ease; }
+  .partner-btn:hover { transform:translateY(-2px); }
+
+  .playbook-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(220px,1fr)); gap:16px; }
+  .playbook-item { background:#141414; border:1px solid #262626; border-radius:10px; padding:20px; }
+  .playbook-item .pb-icon { font-size:1.6rem; margin-bottom:8px; }
+  .playbook-item h4 { font-family:'Bebas Neue',Impact,sans-serif; font-size:1.2rem; color:#fff; margin:0 0 6px; letter-spacing:0.04em; }
+  .playbook-item p { color:#aaa; font-size:0.86rem; line-height:1.6; margin:0; }
+
+  .testi-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(260px,1fr)); gap:16px; }
+  .testi-card { background:#141414; border:1px solid #262626; border-radius:10px; padding:22px; }
+  .testi-stars { color:var(--gold); font-size:1rem; letter-spacing:0.1em; margin-bottom:10px; }
+  .testi-quote { color:#ddd; font-size:0.9rem; line-height:1.65; font-style:italic; margin:0 0 12px; }
+  .testi-name { font-family:'Barlow Condensed',sans-serif; letter-spacing:0.06em; text-transform:uppercase; color:#fff; font-size:0.85rem; }
+  .testi-name span { color:#777; }
+  .review-disclaimer { text-align:center; color:#999; font-size:0.84rem; line-height:1.6; max-width:620px; margin:22px auto 0; font-style:italic; }
+
+  .tt-faq-list { max-width:760px; margin:0 auto; }
+  .tt-faq { border:1px solid #262626; border-radius:8px; margin-bottom:10px; background:#141414; overflow:hidden; }
+  .tt-faq summary { cursor:pointer; padding:16px 44px 16px 18px; font-family:'Barlow Condensed',sans-serif; font-size:1.02rem; letter-spacing:0.03em; color:#fff; list-style:none; position:relative; }
+  .tt-faq summary::-webkit-details-marker { display:none; }
+  .tt-faq summary::after { content:'+'; position:absolute; right:18px; top:50%; transform:translateY(-50%); color:var(--red); font-size:1.4rem; line-height:1; }
+  .tt-faq[open] summary::after { content:'\2013'; }
+  .tt-faq .faq-body { padding:0 18px 16px; color:#bbb; font-size:0.9rem; line-height:1.7; }
+
+  .final-cta { max-width:760px; margin:60px auto 0; background:linear-gradient(160deg,#1c1c1c,#101010); border:2px solid var(--red); border-radius:14px; padding:42px 26px; text-align:center; }
+  .final-cta h2 { font-family:'Bebas Neue',Impact,sans-serif; font-size:clamp(1.8rem,5vw,2.8rem); color:#fff; margin:0 0 4px; letter-spacing:0.03em; }
+  .final-cta .fc-phone { font-family:'Bebas Neue',Impact,sans-serif; font-size:2.1rem; color:var(--gold); letter-spacing:0.04em; margin:6px 0 22px; display:inline-block; text-decoration:none; }
+  .final-cta .fc-cred { margin-top:18px; font-family:'Barlow Condensed',sans-serif; font-size:0.78rem; letter-spacing:0.1em; text-transform:uppercase; color:#888; }
+</style>
+
+<!-- ===================== 1. HERO ===================== -->
+<section class="trip-hero">
+  <div class="trip-hero-inner">
+    <div class="th-eyebrow">Trout Tricks Guide Services</div>
+    <h1>Guided Walk-Wade<br><span>Fly Fishing</span></h1>
+    <div class="th-sub">Colorado &amp; Wyoming Stillwater Specialty</div>
+    <!-- BOOKING-CTA-START — swap to Square Appointments here (find-and-replace this block) -->
+    <div class="cta-3btn" style="max-width:520px;margin:0 auto;">
+      <a class="cta-call" href="tel:+13039178278">📞 Call to Book</a>
+      <a class="cta-text" href="sms:+13039178278">📱 Text to Book</a>
+      <a class="cta-email" href="mailto:thomas@trouttricks.com">✉️ Email</a>
     </div>
+    <!-- BOOKING-CTA-END -->
+  </div>
+</section>
 
-    <div style="max-width:640px;margin:0 auto;padding:28px 16px 0;">
+<!-- ===================== 2. TRUST STRIP ===================== -->
+<div class="trust-strip">
+  <div class="trust-strip-inner">
+    <div class="trust-item">🪪 <b>DORA Licensed Outfitter</b> · OUT.0003775</div>
+    <div class="trust-item">🎣 <b>Wyoming Licensed</b></div>
+    <div class="trust-item">🛡️ <b>CO + WY Insured</b></div>
+    <div class="trust-item">⛑️ <b>Wilderness First Aid + CPR</b></div>
+  </div>
+</div>
 
-      <!-- PERMIT DISCLOSURE CARD -->
-      <div style="background:#1a1a1a;border-left:4px solid #c0392b;border-radius:6px;padding:24px;margin:32px auto;">
-        <div style="font-family:'Barlow Condensed',Impact,sans-serif;font-size:13px;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:#c0392b;margin-bottom:10px;">Permit Disclosure</div>
-        <p style="font-family:'Barlow',sans-serif;font-size:16px;color:#e0e0e0;line-height:1.65;margin:0 0 14px;">All guided trips offered by Trout Tricks on Antero Reservoir, Williams Fork Reservoir, and Lathrop State Park are guided by an employee of The Call of the Wild Outdoor Adventures (TCOTW), the licensed permit holder. All booking, pricing, scheduling, and final confirmation are completed through TCOTW.</p>
-        <a href="/permits.html" style="font-family:'Barlow Condensed',Impact,sans-serif;font-size:14px;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:#c0392b;text-decoration:none;transition:color 0.2s;" onmouseover="this.style.color='#e74c3c'" onmouseout="this.style.color='#c0392b'">Read Full Disclosure →</a>
-      </div>
-
-      <h2 style="font-family:'Bebas Neue',Impact,sans-serif;font-size:1.1rem;letter-spacing:0.12em;color:var(--red);text-transform:uppercase;margin:32px 0 10px;padding-left:2px;font-weight:normal;">Booking Through Team Wild Outdoor</h2>
-
-      <!-- TEAM WILD OUTDOOR PARTNERSHIP BANNER -->
-      <div style="background:#111;border:2px solid var(--red);border-radius:10px;padding:28px 24px;text-align:center;margin-bottom:24px;box-shadow:0 4px 24px rgba(192,57,43,0.18);">
-        <img src="team-wild-outdoor-logo.png" alt="Team Wild Outdoor — Trout Tricks guided trip booking partner" style="max-width:300px;width:100%;display:block;margin:0 auto 20px;">
-        <div style="font-family:'Barlow Condensed',Impact,sans-serif;font-size:0.72rem;letter-spacing:0.22em;text-transform:uppercase;color:var(--red);margin-bottom:8px;">Official Booking Partner</div>
-        <div style="font-family:'Bebas Neue',Impact,sans-serif;font-size:1.5rem;letter-spacing:0.08em;color:#fff;margin-bottom:12px;">Guided Trips Booked Through Team Wild Outdoor</div>
-        <p style="font-size:0.88rem;color:#bbb;line-height:1.7;margin-bottom:20px;max-width:480px;margin-left:auto;margin-right:auto;">Team Wild Outdoor is our trusted booking partner for all guided stillwater fly fishing trips in Colorado and Wyoming. Their platform makes it easy to check availability, select your dates, and reserve your spot with Thomas Frank — all in one place.</p>
-        <a href="https://www.teamwildoutdoor.com/" target="_blank" rel="noopener"
-           style="display:inline-block;background:var(--red);color:#fff;border:2px solid #ff6b5b;border-radius:6px;padding:16px 32px;text-decoration:none;font-family:'Bebas Neue',Impact,sans-serif;font-size:1.4rem;letter-spacing:0.1em;box-shadow:0 0 20px rgba(192,57,43,0.55);transition:background 0.2s;">
-          📅 Book a Trip with Team Wild Outdoor →
-        </a>
-        <div style="font-family:'Barlow Condensed',sans-serif;font-size:0.78rem;letter-spacing:0.08em;text-transform:uppercase;color:#666;margin-top:12px;">Opens on teamwildoutdoor.com · Secure booking</div>
-      </div>
-
-      <!-- WHY CALL OF THE WILD -->
-      <div class="contact-card" style="margin-bottom:20px;">
-        <div class="contact-card-header">Why We Partner with Team Wild Outdoor</div>
-        <div class="contact-card-body" style="flex-direction:column;gap:10px;align-items:flex-start;">
-          <p style="font-size:0.88rem;color:#ccc;line-height:1.7;margin:0;">Team Wild Outdoor connects serious anglers with the best guides in the West. They handle the booking logistics so we can focus on what matters — putting you on fish. Their platform is trusted by guides and anglers across Colorado and Wyoming, with transparent pricing and easy scheduling.</p>
-          <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;width:100%;margin-top:4px;">
-            <div style="background:#1a1a1a;border:1px solid #333;border-radius:5px;padding:10px 12px;">
-              <div style="font-family:'Bebas Neue',sans-serif;font-size:1rem;letter-spacing:0.06em;color:#fff;">✓ Easy Online Booking</div>
-              <div style="font-size:0.75rem;color:#888;margin-top:2px;">Check availability instantly</div>
-            </div>
-            <div style="background:#1a1a1a;border:1px solid #333;border-radius:5px;padding:10px 12px;">
-              <div style="font-family:'Bebas Neue',sans-serif;font-size:1rem;letter-spacing:0.06em;color:#fff;">✓ Trusted Platform</div>
-              <div style="font-size:0.75rem;color:#888;margin-top:2px;">Secure, transparent pricing</div>
-            </div>
-            <div style="background:#1a1a1a;border:1px solid #333;border-radius:5px;padding:10px 12px;">
-              <div style="font-family:'Bebas Neue',sans-serif;font-size:1rem;letter-spacing:0.06em;color:#fff;">✓ Vetted Guides</div>
-              <div style="font-size:0.75rem;color:#888;margin-top:2px;">Colorado & Wyoming specialists</div>
-            </div>
-            <div style="background:#1a1a1a;border:1px solid #333;border-radius:5px;padding:10px 12px;">
-              <div style="font-family:'Bebas Neue',sans-serif;font-size:1rem;letter-spacing:0.06em;color:#fff;">✓ All Trip Types</div>
-              <div style="font-size:0.75rem;color:#888;margin-top:2px;">Half-day, full-day & multi-day</div>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <!-- YOUR GUIDE -->
-      <h2 style="font-family:'Bebas Neue',Impact,sans-serif;font-size:1.1rem;letter-spacing:0.12em;color:var(--red);text-transform:uppercase;margin:0 0 10px;padding-left:2px;font-weight:normal;">Your Guide</h2>
-
-      <div class="contact-card" style="margin-bottom:12px;">
-        <div class="contact-card-body" style="flex-direction:column;gap:0;align-items:center;padding:24px 20px;">
-          <img src="thomas-frank-guide.jpg" alt="Thomas Frank — Stillwater Fly Fishing Guide" style="width:200px;height:200px;max-width:280px;object-fit:cover;border-radius:50%;border:3px solid var(--red);box-shadow:0 4px 20px rgba(192,57,43,0.35);display:block;margin:0 auto 18px;">
-          <div style="font-family:'Bebas Neue',Impact,sans-serif;font-size:1.5rem;letter-spacing:0.08em;color:#fff;text-align:center;margin-bottom:4px;">Thomas Frank</div>
-          <div style="font-family:'Barlow Condensed',sans-serif;font-size:0.82rem;letter-spacing:0.14em;text-transform:uppercase;color:var(--red);text-align:center;margin-bottom:16px;">Stillwater Specialist · Colorado &amp; Wyoming</div>
-          <p style="font-size:0.88rem;color:#ccc;line-height:1.7;margin:0 0 12px;">Thomas Frank has spent years obsessively dialing in stillwater trout tactics across Colorado's most productive high-altitude reservoirs — and now puts that hard-earned knowledge to work for his clients. His specialty is stillwater fly fishing with a deep focus on indicator-based systems, chironomid presentations, and balanced rigs, with the ability to transition to intermediate and sinking lines when conditions demand it.</p>
-          <p style="font-size:0.88rem;color:#ccc;line-height:1.7;margin:0 0 12px;">Thomas guides Colorado and Wyoming stillwater fly fishing — high-altitude reservoirs and lakes — with occasional tailwater and river trips mixed in. He operates fully within all required regulations and holds CPR and Wilderness First Aid certifications, ensuring every trip is as safe as it is productive.</p>
-          <p style="font-size:0.88rem;color:#ccc;line-height:1.7;margin:0;">What separates a Thomas Frank guided day is the emphasis on education. Clients don't just catch fish — they leave understanding depth control, presentation refinement, and in-the-moment adjustments they can apply on any water, anywhere. Whether you're a solo angler looking to crack the stillwater code or a small group chasing trophy cutbows, Thomas will put you on quality fish while building the kind of confidence that lasts beyond the trip.</p>
-        </div>
-      </div>
-
-      <div class="contact-card" style="margin-bottom:12px;">
-        <div class="contact-card-header">Waters We Fish</div>
-        <div class="contact-card-body">
-          <div class="contact-icon">🏔️</div>
-          <div>
-            <div class="contact-value" style="font-size:0.95rem;line-height:1.8;">Colorado &amp; Wyoming Stillwater Fly Fishing</div>
-          </div>
-        </div>
-      </div>
-
-      <div class="contact-card" style="margin-bottom:12px;">
-        <div class="contact-card-header">Specialties</div>
-        <div class="contact-card-body">
-          <div class="contact-icon">🪝</div>
-          <div>
-            <div class="contact-value" style="font-size:0.9rem;line-height:1.7;">Chironomids · Indicator Systems · Balanced Presentations · Intermediate &amp; Sinking Lines · Depth Selection · Trophy Cutbows &amp; Trout 20"+</div>
-          </div>
-        </div>
-      </div>
-
-      <!-- Reading before your trip -->
-      <p style="font-size:0.88rem;color:#bbb;line-height:1.7;margin:18px 4px 28px;">Reading before your trip: <a href="blog/indicator-fishing-setup-colorado-lakes.html" style="color:#e74c3c;">how to set up a stillwater indicator rig</a>, <a href="blog/chironomid-depth-control-stillwater.html" style="color:#e74c3c;">chironomid depth control</a>, and <a href="blog/balanced-leech-stillwater-colorado.html" style="color:#e74c3c;">balanced leeches for Colorado stillwater</a>. The more you bring with you, the more you'll get out of the day.</p>
-
-      <h2 style="font-family:'Bebas Neue',Impact,sans-serif;font-size:1.1rem;letter-spacing:0.12em;color:var(--red);text-transform:uppercase;margin:32px 0 10px;padding-left:2px;font-weight:normal;">Pre-Booking Questions</h2>
-
-      <div class="contact-card" style="margin-bottom:24px;">
-        <div class="contact-card-header">Questions Before Booking?</div>
-        <div class="contact-card-body" style="flex-direction:column;gap:10px;align-items:flex-start;">
-          <div style="display:flex;align-items:center;gap:14px;">
-            <div class="contact-icon">📱</div>
-            <div>
-              <div class="contact-value"><a href="tel:3039178278">(303) 917-8278</a></div>
-              <div class="contact-note">Text or call Thomas directly · Questions welcome</div>
-            </div>
-          </div>
-          <div style="display:flex;align-items:center;gap:14px;">
-            <div class="contact-icon">✉️</div>
-            <div>
-              <div class="contact-value"><a href="mailto:thomas@trouttricks.com">thomas@trouttricks.com</a></div>
-              <div class="contact-note">Send dates, group size & target waters</div>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <!-- PROMINENT BOOK BUTTON -->
-      <a href="https://www.teamwildoutdoor.com/" target="_blank" rel="noopener"
-         style="display:block;background:var(--red);color:#fff;border:2px solid #ff6b5b;border-radius:6px;padding:18px 20px;text-decoration:none;text-align:center;margin-bottom:16px;box-shadow:0 4px 20px rgba(192,57,43,0.5);transition:background 0.2s;">
-        <div style="font-family:'Bebas Neue',Impact,sans-serif;font-size:1.6rem;letter-spacing:0.1em;">📅 Book a Trip with Team Wild Outdoor</div>
-        <div style="font-family:'Barlow Condensed',sans-serif;font-size:0.82rem;letter-spacing:0.1em;text-transform:uppercase;color:rgba(255,255,255,0.8);margin-top:4px;">Opens teamwildoutdoor.com · Reserve your date online</div>
-      </a>
-
-      <button class="continue-shopping-btn" onclick="showPage('shop')" style="margin-bottom:32px;">🪝 While You're Here — Grab the Flies That Catch These Fish</button>
-
-      <!-- FEATURED FLIES ON TRIP PAGE -->
-      <div style="margin-top:8px;">
-        <div style="font-family:'Bebas Neue',Impact,sans-serif;font-size:1.4rem;letter-spacing:0.1em;color:#fff;text-align:center;margin-bottom:4px;">FLIES WE FISH ON GUIDED TRIPS</div>
-        <div style="font-family:'Barlow Condensed',sans-serif;font-size:0.8rem;letter-spacing:0.1em;text-transform:uppercase;color:#888;text-align:center;margin-bottom:16px;">The same patterns — available to order</div>
-        <div class="trip-fly-cards" id="tripFlyCards"></div>
-        <div style="margin-top:12px;">
-          <button class="continue-shopping-btn" onclick="showPage('shop')" style="background:#1a1a1a;border-color:#444;box-shadow:none;">See All The Flies →</button>
-        </div>
-      </div>
+<!-- ===================== 3. YOUR GUIDE ===================== -->
+<section class="tt-section">
+  <div class="tt-eyebrow">Your Guide</div>
+  <h2 class="tt-h2">Thomas Frank</h2>
+  <div class="tt-divider"></div>
+  <div class="trip-card" style="max-width:720px;margin:0 auto;align-items:center;text-align:center;">
+    <img src="thomas-frank-guide.jpg" alt="Thomas Frank — DORA-licensed stillwater fly fishing guide, Colorado &amp; Wyoming" style="width:190px;height:190px;object-fit:cover;border-radius:50%;border:3px solid var(--red);box-shadow:0 4px 20px rgba(192,57,43,0.35);margin:0 auto 16px;">
+    <div style="font-family:'Barlow Condensed',sans-serif;font-size:0.82rem;letter-spacing:0.14em;text-transform:uppercase;color:var(--red);margin-bottom:16px;">Stillwater Specialist · Colorado &amp; Wyoming</div>
+    <p style="font-size:0.92rem;color:#ccc;line-height:1.7;margin:0 0 12px;">Thomas Frank has spent years obsessively dialing in stillwater trout tactics across Colorado's most productive high-altitude reservoirs — and now puts that hard-earned knowledge to work for his clients. His specialty is stillwater fly fishing with a deep focus on indicator-based systems, chironomid presentations, and balanced rigs, with the ability to transition to intermediate and sinking lines when conditions demand it.</p>
+    <p style="font-size:0.92rem;color:#ccc;line-height:1.7;margin:0 0 12px;">His approach is built on the stillwater methodology pioneered by <strong style="color:#e0e0e0;">Brian Chan and Phil Rowley</strong> — reading water temperature and depth, matching the chironomid and leech life cycles, and letting the indicator do the work. It's a system, not guesswork, and it's what consistently puts clients on trophy cutbows and trout 20"+.</p>
+    <p style="font-size:0.92rem;color:#ccc;line-height:1.7;margin:0 0 14px;">What separates a Thomas Frank guided day is the emphasis on education. Clients don't just catch fish — they leave understanding depth control, presentation refinement, and in-the-moment adjustments they can apply on any water, anywhere.</p>
+    <div style="font-family:'Barlow Condensed',sans-serif;font-size:0.82rem;letter-spacing:0.06em;color:#fff;background:#1c1c1c;border:1px solid #333;border-radius:8px;padding:14px 16px;line-height:1.7;">
+      <strong style="color:var(--gold);">Credentials:</strong> DORA Licensed Colorado Outfitter (OUT.0003775, active through March 2027) · Wyoming non-resident license &amp; conservation stamp · CO + WY liability insured · Wilderness First Aid + CPR certified
     </div>
   </div>
+</section>
+
+<!-- ===================== 4. TRIP MENU ===================== -->
+<section class="tt-section">
+  <div class="tt-eyebrow">The Trips</div>
+  <h2 class="tt-h2">Choose Your Water</h2>
+  <p class="tt-sub">Small groups, 1–3 anglers per guide. Walk-wade and float tube. Book directly by phone, text, or email — no online checkout, just a real conversation about dates and what you want out of the day.</p>
+  <div class="tt-divider"></div>
+
+  <div class="trip-grid">
+
+    <!-- Card 1: Wyoming Stillwater -->
+    <div class="trip-card">
+      <div class="tc-loc">Lake Hattie · Wheatland Reservoir #3 · Lake Gelatt — Laramie, WY</div>
+      <h3>Wyoming Stillwater</h3>
+      <p class="tc-desc">Big-water trophy stillwater. Walk-wade the shorelines or kick out in a float tube for hard-pulling browns, rainbows, and lake trout. This is the flagship — wide-open water where the chironomid and balanced-leech game shines. About a 2–3 hour drive from Westminster, CO.</p>
+      <table class="price-matrix">
+        <tr><th></th><th>1 Angler</th><th>2 Anglers</th></tr>
+        <tr><td class="rowlabel">Half-Day</td><td class="price">$300</td><td class="price">$450</td></tr>
+        <tr><td class="rowlabel">Full-Day</td><td class="price">$500</td><td class="price">$700</td></tr>
+      </table>
+      <div class="cta-wrap">
+        <!-- BOOKING-CTA-START — swap to Square Appointments here (find-and-replace this block) -->
+        <div class="cta-3btn">
+          <a class="cta-call" href="tel:+13039178278">📞 Call</a>
+          <a class="cta-text" href="sms:+13039178278">📱 Text</a>
+          <a class="cta-email" href="mailto:thomas@trouttricks.com?subject=Wyoming%20Stillwater%20Trip">✉️ Email</a>
+        </div>
+        <!-- BOOKING-CTA-END -->
+      </div>
+    </div>
+
+    <!-- Card 2: Chase Gulch Reservoir -->
+    <div class="trip-card">
+      <div class="tc-loc">Chase Gulch Reservoir — Central City, CO</div>
+      <h3>Chase Gulch Reservoir</h3>
+      <p class="tc-desc">A quiet Front Range stillwater fishery, walk-wade primarily with float tube optional. Just ~45 minutes from Westminster — the easiest way to spend a day dialing in stillwater tactics close to home, without the crowds of the famous reservoirs.</p>
+      <table class="price-matrix">
+        <tr><th></th><th>1 Angler</th><th>2 Anglers</th></tr>
+        <tr><td class="rowlabel">Half-Day</td><td class="price">$300</td><td class="price">$450</td></tr>
+        <tr><td class="rowlabel">Full-Day</td><td class="price">$500</td><td class="price">$700</td></tr>
+      </table>
+      <div class="cta-wrap">
+        <!-- BOOKING-CTA-START — swap to Square Appointments here (find-and-replace this block) -->
+        <div class="cta-3btn">
+          <a class="cta-call" href="tel:+13039178278">📞 Call</a>
+          <a class="cta-text" href="sms:+13039178278">📱 Text</a>
+          <a class="cta-email" href="mailto:thomas@trouttricks.com?subject=Chase%20Gulch%20Reservoir%20Trip">✉️ Email</a>
+        </div>
+        <!-- BOOKING-CTA-END -->
+      </div>
+    </div>
+
+    <!-- Card 3: Private Cattle Ranch — Colorado River -->
+    <div class="trip-card">
+      <div class="tc-loc">Private Access — Granby Area, CO</div>
+      <h3>Private Cattle Ranch — Colorado River</h3>
+      <p class="tc-desc">Exclusive walk-wade access on a private cattle ranch along the Colorado River — no crowds, no competition for water, just you and the river. A premium, intimate river day about 1.5–2 hours from Westminster. Half-day only.</p>
+      <table class="price-matrix">
+        <tr><th></th><th>1 Angler</th><th>2 Anglers</th></tr>
+        <tr><td class="rowlabel">Half-Day</td><td class="price">$250</td><td class="price">$375</td></tr>
+      </table>
+      <div class="cta-wrap">
+        <!-- BOOKING-CTA-START — swap to Square Appointments here (find-and-replace this block) -->
+        <div class="cta-3btn">
+          <a class="cta-call" href="tel:+13039178278">📞 Call</a>
+          <a class="cta-text" href="sms:+13039178278">📱 Text</a>
+          <a class="cta-email" href="mailto:thomas@trouttricks.com?subject=Private%20Ranch%20Colorado%20River%20Trip">✉️ Email</a>
+        </div>
+        <!-- BOOKING-CTA-END -->
+      </div>
+    </div>
+
+    <!-- Card 4: TCOTW partner referral (visually distinct) -->
+    <div class="trip-card partner">
+      <div class="partner-badge">Partner Referral</div>
+      <img src="team-wild-outdoor-logo.png" alt="The Call of the Wild Outdoor Adventures (TCOTW) — Trout Tricks partner for guided Colorado river trips">
+      <h3 style="color:var(--gold);">Colorado Rivers</h3>
+      <p class="tc-desc" style="text-align:center;">Looking for Colorado <em>river</em> fishing? I also guide for <strong style="color:#e0e0e0;">The Call of the Wild Outdoor Adventures</strong> (TCOTW). For Colorado river trips, book through TCOTW — same guide, their permits and waters. They're a trusted partner, not a competitor.</p>
+      <a class="partner-btn" href="https://www.teamwildoutdoor.com/" target="_blank" rel="noopener">Visit TCOTW →</a>
+      <div style="font-family:'Barlow Condensed',sans-serif;font-size:0.74rem;letter-spacing:0.08em;text-transform:uppercase;color:#666;margin-top:12px;">Opens teamwildoutdoor.com</div>
+    </div>
+
+  </div>
+</section>
+
+<!-- ===================== 5. THE PLAYBOOK ===================== -->
+<section class="tt-section">
+  <div class="tt-eyebrow">What Makes This Different</div>
+  <h2 class="tt-h2">The Playbook</h2>
+  <div class="tt-divider"></div>
+  <div class="playbook-grid">
+    <div class="playbook-item">
+      <div class="pb-icon">🎯</div>
+      <h4>Stillwater Specialist</h4>
+      <p>This isn't a generalist guide service. Stillwater is the entire focus — depth, temperature, and the chironomid and leech life cycles that most anglers never crack.</p>
+    </div>
+    <div class="playbook-item">
+      <div class="pb-icon">📚</div>
+      <h4>Chan / Rowley Methodology</h4>
+      <p>Built on the proven stillwater system pioneered by Brian Chan and Phil Rowley. A repeatable process you can take to any lake — not a bag of one-off tricks.</p>
+    </div>
+    <div class="playbook-item">
+      <div class="pb-icon">🪝</div>
+      <h4>Hand-Tied Trout Tricks Flies</h4>
+      <p>You fish the exact patterns we tie and sell — the box that's been proven on these waters. The same flies are available to order so you can keep fishing them after the trip.</p>
+    </div>
+    <div class="playbook-item">
+      <div class="pb-icon">👥</div>
+      <h4>Small Groups (1–3)</h4>
+      <p>Never a crowd. One to three anglers per guide means real instruction time and your hands on the right rig all day long.</p>
+    </div>
+    <div class="playbook-item">
+      <div class="pb-icon">🧠</div>
+      <h4>Education-Focused</h4>
+      <p>You leave understanding depth control, presentation, and in-the-moment adjustments — the confidence that lasts long after the trip ends.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ===================== 6. REAL REVIEWS ===================== -->
+<section class="tt-section">
+  <div class="tt-eyebrow">From Trout Tricks Anglers</div>
+  <h2 class="tt-h2">Real Reviews</h2>
+  <p class="tt-sub">5.0★ on Google.</p>
+  <div class="tt-divider"></div>
+  <div class="testi-grid">
+    <div class="testi-card">
+      <div class="testi-stars">★★★★★</div>
+      <p class="testi-quote">"I love how these flies are tied on 2x wire hooks. You don't have to worry about losing trophy trout as these hooks don't bend out. Great selection of stillwater flies that are made here in Colorado. Nice to support a local family business."</p>
+      <div class="testi-name">Dustin H. <span>· Google Review</span></div>
+    </div>
+    <div class="testi-card">
+      <div class="testi-stars">★★★★★</div>
+      <p class="testi-quote">"Best quality flies I have ever seen. Unique designs that catch fish. I would definitely buy through them again."</p>
+      <div class="testi-name">Peter F. <span>· Google Review</span></div>
+    </div>
+    <div class="testi-card">
+      <div class="testi-stars">★★★★★</div>
+      <p class="testi-quote">"Website is easy to navigate and no better flies on the market! High quality and worth the money! Give them a shot, you won't regret it."</p>
+      <div class="testi-name">Tanner P. <span>· Google Review</span></div>
+    </div>
+  </div>
+  <p class="review-disclaimer">These reviews are from anglers fishing Trout Tricks patterns. Guide trip reviews coming as our first clients fish with us.</p>
+  <p style="text-align:center;margin-top:14px;">
+    <a href="https://share.google/q3H0I3myXr0Y4OrTZ" target="_blank" rel="noopener" style="color:var(--gold);font-family:'Barlow Condensed',sans-serif;letter-spacing:0.08em;text-transform:uppercase;font-size:0.9rem;text-decoration:none;">See all reviews on Google →</a>
+  </p>
+</section>
+
+<!-- ===================== 7. FAQ ===================== -->
+<section class="tt-section">
+  <div class="tt-eyebrow">Questions</div>
+  <h2 class="tt-h2">FAQ</h2>
+  <div class="tt-divider"></div>
+  <div class="tt-faq-list">
+    <details class="tt-faq">
+      <summary>How do I book a trip?</summary>
+      <div class="faq-body">Call or text Thomas directly at 303-917-8278, or email thomas@trouttricks.com. Send your preferred dates, how many anglers, and which trip you're interested in. There's no online checkout — we'll confirm everything over a quick conversation. (Online booking is coming later.)</div>
+    </details>
+    <details class="tt-faq">
+      <summary>What if the weather is bad? What's the cancellation policy?</summary>
+      <div class="faq-body">Stillwater fishing happens in a range of conditions — light rain and wind are often <em>good</em> for it. But if conditions are genuinely unsafe (lightning, dangerous wind, ice-off hazards), we'll reschedule at no charge. If you need to cancel, give as much notice as you can and we'll find another date. We'll talk through the specifics when you book.</div>
+    </details>
+    <details class="tt-faq">
+      <summary>What gear do I need to bring?</summary>
+      <div class="faq-body">Bring your fishing license, weather-appropriate layers, polarized sunglasses, and waders/boots if you have them. If you're fishing the float-tube option, we'll coordinate that ahead of time. Rods, reels, lines, and flies can be provided if you don't have stillwater-specific gear — just let us know when booking. The flies we fish are Trout Tricks patterns, available to take home.</div>
+    </details>
+    <details class="tt-faq">
+      <summary>Do I need fly fishing experience?</summary>
+      <div class="faq-body">No. These trips are education-focused and we tailor the day to your level — from first-timers to experienced anglers who want to crack the stillwater code. Beginners are genuinely welcome; you'll leave understanding the system, not just having caught a fish.</div>
+    </details>
+    <details class="tt-faq">
+      <summary>What's included in the trip price?</summary>
+      <div class="faq-body">Guided instruction, on-the-water coaching, and the local knowledge to put you on fish. Flies and terminal tackle for the day are included. What's not included: your fishing license, food/drinks, and gratuity. Wyoming trips require a Wyoming fishing license — we'll point you to where to get one.</div>
+    </details>
+    <details class="tt-faq">
+      <summary>Do you guide families and kids?</summary>
+      <div class="faq-body">Yes. Small groups of 1–3 anglers work well for families, and we keep the day paced and positive for younger or newer anglers. Reach out and tell us about your group and we'll set up the right trip.</div>
+    </details>
+    <details class="tt-faq">
+      <summary>How many people can come on one trip?</summary>
+      <div class="faq-body">Trips are built for 1–2 anglers per guide (pricing is listed for both), with up to 3 in some situations — ask. Keeping groups small is intentional: it means real instruction time and your hands on the right rig all day.</div>
+    </details>
+  </div>
+</section>
+
+<!-- ===================== 8. FINAL CTA ===================== -->
+<section class="tt-section">
+  <div class="final-cta">
+    <h2>Ready to Book?</h2>
+    <p style="color:#bbb;font-size:0.95rem;line-height:1.6;margin:6px 0 0;">Call or text Thomas to lock in your date.</p>
+    <a class="fc-phone" href="tel:+13039178278">303-917-8278</a>
+    <!-- BOOKING-CTA-START — swap to Square Appointments here (find-and-replace this block) -->
+    <div class="cta-3btn" style="max-width:520px;margin:0 auto;">
+      <a class="cta-call" href="tel:+13039178278">📞 Call</a>
+      <a class="cta-text" href="sms:+13039178278">📱 Text</a>
+      <a class="cta-email" href="mailto:thomas@trouttricks.com?subject=Guided%20Trip%20Inquiry">✉️ Email</a>
+    </div>
+    <!-- BOOKING-CTA-END -->
+    <div class="fc-cred">DORA Licensed · CO + WY Insured · WFA + CPR</div>
+  </div>
+</section>
+
 </div>
 
 <!-- CART OVERLAY + PANEL -->
