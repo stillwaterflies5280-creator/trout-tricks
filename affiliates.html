@@ -1815,6 +1815,24 @@
 </head>
 
 <body>
+<!--
+  JULY 2026 PROMO BANNER (in-flow, self-contained). Mirrors the home-page trips
+  banner. Sits above the sticky header and scrolls away with the page. Styles are
+  scoped here so it drops into any page without touching that page's own CSS.
+  TODO — EXPIRES JULY 31, 2026: remove this whole block when the 50%-off-trips
+  promo ends (and revert the home-page banner). It does NOT expire on its own.
+-->
+<style>
+  .tt-promo-bar { display:flex; align-items:center; justify-content:center; width:100%; min-height:56px; padding:10px 16px; background:#C0392B; border-bottom:2px solid #E74C3C; color:#fff; text-decoration:none; text-align:center; box-sizing:border-box; transition:background 0.2s; }
+  .tt-promo-bar:hover { background:#A93221; }
+  .tt-promo-inner { display:inline-block; font-family:'Bebas Neue', Impact, sans-serif; font-size:1.15rem; letter-spacing:0.06em; line-height:1.2; transform-origin:center center; animation:ttPromoPulse 2s ease-in-out infinite; }
+  @keyframes ttPromoPulse { 0%,100% { transform:scale(1); } 50% { transform:scale(1.02); } }
+  @media (prefers-reduced-motion: reduce) { .tt-promo-inner { animation:none; } }
+  @media (max-width: 640px) { .tt-promo-bar { min-height:50px; padding:8px 12px; } .tt-promo-inner { font-size:1rem; letter-spacing:0.04em; } }
+</style>
+<a class="tt-promo-bar" href="/trip.html">
+  <span class="tt-promo-inner" style="animation-delay:-1s;">🎣 JULY ONLY — 50% OFF GUIDED FLY FISHING TRIPS · THRU JULY 31 · BOOK NOW →</span>
+</a>
 
 <header>
   <a class="logo" href="/">TROUT <span>TRICKS</span></a>

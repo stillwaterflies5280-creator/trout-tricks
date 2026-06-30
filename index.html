@@ -2762,6 +2762,22 @@
     margin-top: 10px;
     letter-spacing: 0.04em;
   }
+  /* Secondary trips promo inside the popup — sits below the email form so it
+     never competes with the primary signup CTA. Gold accent, full-width tap. */
+  .email-popup-trip-note {
+    display: block;
+    margin-top: 16px;
+    padding-top: 14px;
+    border-top: 1px solid #2a2a2a;
+    font-size: 0.82rem;
+    font-weight: 600;
+    letter-spacing: 0.02em;
+    color: var(--gold);
+    text-decoration: none;
+    transition: color 0.2s ease;
+  }
+  .email-popup-trip-note:hover { color: #fff; }
+
   .email-popup-success {
     font-size: 1rem;
     color: #2ecc71;
@@ -3088,13 +3104,16 @@
 <body>
 
 <!--
-  Top-of-page promo bar. Previously pushed stickers; repurposed to advertise
-  the 50%-off-a-pack auto-promo (the bigger conversion lever). Class names
-  kept (sticker-promo-bar/inner) to reuse existing CSS untouched — they're
-  internal styling hooks, not visible to users.
+  Top-of-page promo bar. Previously pushed the 50%-off-a-pack auto-promo;
+  repurposed for July to advertise 50% off guided walk-wade trips (the
+  higher-ticket lever). Class names kept (sticker-promo-bar/inner) to reuse
+  existing CSS untouched — they're internal styling hooks, not visible to users.
+  TODO — PROMO EXPIRES JULY 31, 2026: after that, revert this banner (and the
+  matching in-flow banners on all other pages + the popup trip note) back to the
+  50%-off-a-pack promo, or swap in the next offer. It does NOT expire on its own.
 -->
-<a class="sticker-promo-bar" href="#shop-browse">
-  <span class="sticker-promo-inner" style="animation-delay:-1s;">🔥 50% OFF A PACK + FREE STICKER — AUTO-APPLIED IN CART · SHOP NOW →</span>
+<a class="sticker-promo-bar" href="/trip.html">
+  <span class="sticker-promo-inner" style="animation-delay:-1s;">🎣 JULY ONLY — 50% OFF GUIDED FLY FISHING TRIPS · THRU JULY 31 · BOOK NOW →</span>
 </a>
 
 <header>
@@ -3121,7 +3140,6 @@
     <h1>Hand-Tied Colorado Stillwater Flies</h1>
     <div class="hero-sub">Stillwater flies tied to catch trophy trout.</div>
     <div class="hero-divider"></div>
-    <div class="hero-promo">🎁 <strong>50% Off a Pack</strong> + Free Surprise Sticker · Auto-Applied at Checkout</div>
     <a href="#shop-browse" class="hero-cta">🪝 Browse the Patterns</a>
   </div>
 
@@ -3733,6 +3751,7 @@
         <button class="email-popup-btn" onclick="submitPopupEmail()">GET 50% OFF + FREE STICKER →</button>
         <div class="email-popup-fine">No spam. Unsubscribe anytime.</div>
       </div>
+      <a class="email-popup-trip-note" href="/trip.html">🎣 July only — 50% off guided fly fishing trips · Book your spot →</a>
     </div>
 
     <!-- SUCCESS STATE -->
