@@ -4,8 +4,9 @@
 // pages other than index.html.
 //
 // Tiers (stack with manual promo codes like WELCOME10):
-//   - Any fly pack(s) in cart → 50% off ONE pack (cheapest in cart),
-//     auto-applied. Customer-acquisition hook; capped at one pack for margin.
+//   - (Retired Oct 2026) The auto-applied 50%-off-one-pack discount was removed.
+//     The halfOff* fields below stay in the return shape, always 0/false, so
+//     callers in index.html keep working without edits.
 //   - Any fly pack(s) in cart → free "Surprise Sticker" added at $0
 //
 // Two integration modes:
@@ -37,23 +38,10 @@
     const packCount = packs.reduce(function (s, i) { return s + (i.qty || 0); }, 0);
     if (packCount === 0) return empty;
 
-    // 50% off ONE pack (the cheapest eligible pack in the cart) — auto-applied.
-    // Capped at a single pack so the discount stays margin-safe regardless of
-    // cart size; the free Surprise Sticker below stacks on top.
-    //
-    // The Guide's Choice Box (id 'gc', flagged noPromo) is excluded: it's
-    // already a discounted 25-fly bundle, so half-off would wreck the margin.
-    // It still counts toward the free-sticker threshold below, and any OTHER
-    // pack in the same cart can still take the 50% off.
-    const discountablePacks = packs.filter(function (i) {
-      return !i.fly.noPromo && i.fly.id !== 'gc';
-    });
-    const cheapestPackPrice = discountablePacks.reduce(function (min, i) {
-      const p = Number(i.fly.price) || 0;
-      return p > 0 && (min === null || p < min) ? p : min;
-    }, null) || 0;
-    const halfOffApplies = cheapestPackPrice > 0;
-    const halfOffDiscount = halfOffApplies ? Math.round(cheapestPackPrice * 50) / 100 : 0;
+    // Automatic pack discount retired Oct 2026: no discount is applied.
+    const cheapestPackPrice = 0;
+    const halfOffApplies = false;
+    const halfOffDiscount = 0;
 
     // Free sticker drops on ANY cart with at least one fly pack (box included).
     const stickerThresholdMet = packCount >= 1;
@@ -76,11 +64,7 @@
 
   function getPromoNudge(tiers) {
     if (!tiers || tiers.packCount === 0) return '';
-    // Reflect only the rewards that actually applied. The Guide's Choice Box
-    // alone gets the free sticker but not the 50% off (it's promo-excluded).
-    if (tiers.halfOffApplies) {
-      return '✅ 50% OFF a pack + FREE Surprise Sticker — applied!';
-    }
+    // Reflect only the rewards that actually applied.
     return '✅ FREE Surprise Sticker — applied!';
   }
 
@@ -310,12 +294,6 @@
         extra += '<div class="cart-promo-item">' +
           '<span><span class="promo-free">🎁 Free</span> · Surprise Sticker</span>' +
           '<span>$0.00</span>' +
-          '</div>';
-      }
-      if (tiers.halfOffApplies) {
-        extra += '<div class="cart-promo-item">' +
-          '<span><span class="promo-free">🎁 50% Off a Pack</span></span>' +
-          '<span>-$' + tiers.halfOffDiscount.toFixed(2) + '</span>' +
           '</div>';
       }
       if (extra) itemsEl.insertAdjacentHTML('beforeend', extra);
