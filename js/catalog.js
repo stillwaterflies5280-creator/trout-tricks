@@ -409,9 +409,7 @@ if (typeof document !== 'undefined') (function injectFlyPagePromoBanner() {
     banner.id = 'qaPromoBanner';
     banner.className = 'qa-promo-banner';
     banner.innerHTML =
-      '🔥 <strong>50% OFF a pack</strong> today' +
-      '<span class="qa-promo-divider">·</span>' +
-      '<strong>FREE</strong> Surprise Sticker with any pack';
+      '🎁 <strong>FREE</strong> Surprise Sticker with any pack';
 
     addBtn.parentNode.insertBefore(banner, addBtn);
   }

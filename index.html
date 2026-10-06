@@ -3104,16 +3104,10 @@
 <body>
 
 <!--
-  Top-of-page promo bar. Previously pushed the 50%-off-a-pack auto-promo;
-  repurposed for July to advertise 50% off guided walk-wade trips (the
-  higher-ticket lever). Class names kept (sticker-promo-bar/inner) to reuse
-  existing CSS untouched — they're internal styling hooks, not visible to users.
-  TODO — PROMO EXPIRES JULY 31, 2026: after that, revert this banner (and the
-  matching in-flow banners on all other pages + the popup trip note) back to the
-  50%-off-a-pack promo, or swap in the next offer. It does NOT expire on its own.
+  Top-of-page promo bar: free Surprise Sticker with any fly pack (auto-added in cart).
 -->
-<a class="sticker-promo-bar" href="/trip.html">
-  <span class="sticker-promo-inner" style="animation-delay:-1s;">🎣 JULY ONLY — 50% OFF GUIDED FLY FISHING TRIPS · THRU JULY 31 · BOOK NOW →</span>
+<a class="sticker-promo-bar" href="#shop-browse">
+  <span class="sticker-promo-inner" style="animation-delay:-1s;">🎁 FREE SURPRISE STICKER WITH ANY FLY PACK · AUTO-ADDED IN CART · SHOP NOW →</span>
 </a>
 
 <header>
@@ -3742,25 +3736,24 @@
 
     <!-- SIGNUP STATE -->
     <div id="emailPopupSignupState">
-      <div class="email-popup-discount-badge">50% Off a Pack + Free Sticker</div>
+      <div class="email-popup-discount-badge">Free Sticker With Any Pack</div>
       <div class="email-popup-eyebrow">Growing the Crew</div>
-      <h3>GET 50% OFF A PACK OF FLIES — TODAY</h3>
-      <div class="email-popup-sub">We're growing our customer base, so we're hooking you up: <strong>50% off a pack of flies</strong>, plus a <strong>FREE Surprise Sticker</strong> with any pack. Drop your email and the deal's yours — along with new patterns and Colorado stillwater reports.</div>
+      <h3>JOIN THE CREW</h3>
+      <div class="email-popup-sub">Get a <strong>FREE Surprise Sticker</strong> with any pack. Drop your email for new patterns and Colorado stillwater reports.</div>
       <div id="emailPopupForm">
         <input class="email-popup-input" id="popupEmailInput" type="email" placeholder="Your email address">
-        <button class="email-popup-btn" onclick="submitPopupEmail()">GET 50% OFF + FREE STICKER →</button>
+        <button class="email-popup-btn" onclick="submitPopupEmail()">JOIN THE CREW →</button>
         <div class="email-popup-fine">No spam. Unsubscribe anytime.</div>
       </div>
-      <a class="email-popup-trip-note" href="/trip.html">🎣 July only — 50% off guided fly fishing trips · Book your spot →</a>
     </div>
 
     <!-- SUCCESS STATE -->
     <div id="emailPopupSuccessState" style="display:none">
       <div class="email-popup-eyebrow success">You're In</div>
       <h3>WELCOME TO THE CREW</h3>
-      <div class="email-popup-sub">You're on the list — and your deal's already live: 50% off a pack and a free sticker apply automatically in your cart. We'll also send patterns, reports, and tactics that actually move fish.</div>
+      <div class="email-popup-sub">You're on the list. A free sticker comes with any pack, added automatically in your cart. We'll also send patterns, reports, and tactics that actually move fish.</div>
 
-      <button class="email-popup-btn shop-now-btn" onclick="shopNowFromPopup()">SHOP 50% OFF →</button>
+      <button class="email-popup-btn shop-now-btn" onclick="shopNowFromPopup()">SHOP FLIES →</button>
     </div>
 
   </div>
@@ -3827,7 +3820,7 @@
   <hr class="footer-divider">
   <div class="footer-email-section">
     <div class="footer-email-title">JOIN THE TEAM 🎣</div>
-    <div class="footer-email-sub">Exclusive fly patterns, gear picks, and news. <strong style="color:var(--red);">Get 50% off a pack + a free sticker.</strong></div>
+    <div class="footer-email-sub">Exclusive fly patterns, gear picks, and news. <strong style="color:var(--red);">Get a free sticker with any pack.</strong></div>
     <div class="footer-email-row">
       <input class="footer-email-input" id="footerEmailInput" type="email" placeholder="Your email address">
       <button class="footer-email-btn" onclick="submitFooterEmail()">JOIN</button>
@@ -4736,7 +4729,7 @@ function updateCartUI() {
   const flyTotal = cart.reduce((s,i) => s+i.fly.price*i.qty, 0);
   const tiers = (typeof getPromoTiers === 'function') ? getPromoTiers(cart) : { halfOffDiscount: 0, freeStickerLine: null, halfOffApplies: false, stickerThresholdMet: false };
   // Promo code applies to "the rest of the order" — the fly subtotal minus the
-  // one pack already getting 50% off, so the two discounts don't double-dip.
+  // pack-tier discount (retired; always 0).
   const promoBase = Math.max(0, flyTotal - (tiers.halfOffPackPrice || 0));
   const promoDiscount = appliedPromo ? promoBase * (appliedPromo.percent / 100) : 0;
   const tierDiscount = tiers.halfOffDiscount || 0;
@@ -4806,13 +4799,6 @@ function updateCartUI() {
         <span>$0.00</span>
       </div>`;
   }
-  if (tiers.halfOffApplies) {
-    cartHtml += `
-      <div class="cart-promo-item">
-        <span><span class="promo-free">🎁 50% Off a Pack</span></span>
-        <span>-$${tierDiscount.toFixed(2)}</span>
-      </div>`;
-  }
   el.innerHTML = cartHtml;
   saveCart();
 }
@@ -4856,7 +4842,7 @@ function buildOrderSummary() {
   const flyTotal = cart.reduce((s,i)=>s+i.fly.price*i.qty, 0);
   const tiers = (typeof getPromoTiers === 'function') ? getPromoTiers(cart) : { halfOffDiscount: 0, freeStickerLine: null, halfOffApplies: false };
   // Promo code applies to "the rest of the order" — the fly subtotal minus the
-  // one pack already getting 50% off, so the two discounts don't double-dip.
+  // pack-tier discount (retired; always 0).
   const promoBase = Math.max(0, flyTotal - (tiers.halfOffPackPrice || 0));
   const promoDiscount = appliedPromo ? promoBase * (appliedPromo.percent / 100) : 0;
   const tierDiscount = tiers.halfOffDiscount || 0;
@@ -4890,9 +4876,6 @@ function buildOrderSummary() {
   if (tiers.freeStickerLine) {
     lines += `<div class="order-line tier-reward"><span>🎁 FREE · Surprise Sticker (gift with order)</span><span class="price">$0.00</span></div>`;
   }
-  if (tiers.halfOffApplies) {
-    lines += `<div class="order-line tier-reward"><span>🎁 50% Off a Pack</span><span class="price">-$${tierDiscount.toFixed(2)}</span></div>`;
-  }
   if (appliedPromo) {
     lines += `<div class="order-line promo"><span>Promo ${appliedPromo.code} (${appliedPromo.percent}% off)</span><span class="price">-$${promoDiscount.toFixed(2)}</span></div>`;
   }
@@ -4921,9 +4904,7 @@ function buildOrderSummary() {
   }).join("\n");
   const fulfillmentLine = isPickup ? "\n  Fulfillment: LOCAL PICKUP" : "";
   const stickerRewardLine = tiers.freeStickerLine ? "\n  🎁 FREE: Surprise Sticker (gift with order)" : "";
-  const halfOffLine = tiers.halfOffApplies
-    ? `\n  🎁 50% Off a Pack: -$${tierDiscount.toFixed(2)}`
-    : "";
+  const halfOffLine = "";
   const promoLine = appliedPromo
     ? `\n  Promo ${appliedPromo.code}: -$${promoDiscount.toFixed(2)} (${appliedPromo.percent}% off)`
     : "";
@@ -4995,7 +4976,6 @@ function checkoutWithSquare(btnOverride) {
   // Build a descriptive label so the Square receipt shows what the discount is for.
   const discountLabelParts = [];
   if (appliedPromo) discountLabelParts.push(appliedPromo.code);
-  if (tiers.halfOffApplies) discountLabelParts.push("50% Off a Pack");
   const combinedPromoLabel = discountLabelParts.length ? discountLabelParts.join(" + ") : null;
 
   if (typeof gtag === "function") {
