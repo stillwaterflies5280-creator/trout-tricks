@@ -38,7 +38,7 @@ const flies = [
   {
     id: 9, img: "fly9",
     name: "Top Secret Winged Cone",
-    desc: "No description necessary.",
+    desc: "Hand-tied artificial chironomid fishing flies for stillwater trout. Five flies per pack, tied to order in Colorado. Choose size #12, #14 or #16. Artificial fishing tackle, not live bait.",
     sizes: ["#12","#14","#16"],
     colors: null,
     price: 25,
@@ -68,7 +68,7 @@ const flies = [
   {
     id: 27, img: "scud1", gallery: ["scud1", "scud2", "scud3"],
     name: "Bling Scud",
-    desc: "Flash scud back, antennas, tied on 2x heavy wire. The scud is the unsung hero of stillwater — match the bug profile in olive, tan, or grey. Fish it deep along weed lines, shoals, and rocky drop-offs.",
+    desc: "Hand-tied artificial scud fishing flies, sold in five-packs. Flash scud back, antennas, tied on 2x heavy wire. The scud is the unsung hero of stillwater - match the bug profile in olive, tan, or grey. Fish it deep along weed lines, shoals, and rocky drop-offs. Artificial fishing tackle, not live bait.",
     sizes: ["#14","#16"],
     colors: ["Olive","Tan","Grey"],
     price: 25,
