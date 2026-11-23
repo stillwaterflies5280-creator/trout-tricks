@@ -5411,6 +5411,11 @@ setTimeout(() => {
   document.getElementById('emailPopupOverlay').classList.add('open');
 }, 8000);
 
+// Deep link: /#join or /#crew opens the signup popup immediately (used by blog article CTAs).
+if (['#join', '#crew'].includes(location.hash) && !localStorage.getItem('tt_email_signup_complete') && !localStorage.getItem('tt_email_captured')) {
+  document.getElementById('emailPopupOverlay').classList.add('open');
+}
+
 // LEGACY: kept for Guide's Choice contact flow + pickup orders.
 // Catalog ship orders are handled by checkoutWithSquare() (Phase 2 — Cloudflare Worker).
 // This function still fires emailjs.send() × 2 and POSTs to the Zapier orders webhook.
